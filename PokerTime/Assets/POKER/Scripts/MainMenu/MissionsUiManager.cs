@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MissionsUiManager : MonoBehaviour
 {
@@ -66,7 +67,13 @@ public class MissionsUiManager : MonoBehaviour
             Destroy(Container.GetChild(i).gameObject);
         }
 
-
+        //      "missionID": 12,
+        //"missionType": "General",
+        //"missionIcon": null,
+        //"missionDesc": "Recieve 10 likes for a comment in Forum",
+        //"missionValue": 200000,
+        //"missionInterval": 1,
+        //"Status": "Active"
 
 
         for (int i = 0; i < data["getData"].Count; i++)
@@ -76,6 +83,22 @@ public class MissionsUiManager : MonoBehaviour
             gm1.GetComponent<MissionContentUIManager>().missionTypeTxt.text = data["getData"][i]["missionType"].ToString();
             gm1.GetComponent<MissionContentUIManager>().missionDiscriptionTxt.text = data["getData"][i]["missionDesc"].ToString();
             gm1.GetComponent<MissionContentUIManager>().missionValueTxt.text = "X " + data["getData"][i]["missionValue"].ToString();
+
+            gm1.GetComponent<MissionContentUIManager>().collectBtn.transform.GetChild(0).GetComponent<Text>().text = data["getData"][i]["Status"].ToString();
+            // gm1.GetComponent<MissionContentUIManager>().collectBtn.GetComponent<Image>().color.a = 1f;
+            Image image = gm1.GetComponent<MissionContentUIManager>().collectBtn.GetComponent<Image>();
+
+            Color c = image.color;
+            if (data["getData"][i]["Status"].ToString().Equals("Active"))
+            {
+                c.a = 0;
+            }
+            else
+            {
+                c.a = 1;
+            }
+            image.color = c;
+
         }
     }
 
