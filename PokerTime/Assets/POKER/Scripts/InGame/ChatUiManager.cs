@@ -82,6 +82,8 @@ public class ChatUiManager : MonoBehaviour
            // Debug.Log("HIHIHIHII    "+ chatList[i].desc);
            // gm.transform.Find("Desc").GetComponent<Text>().text = chatList[i].desc;
             gm.transform.Find("ADesc").GetChild(0).GetComponent<Text>().text = chatList[i].desc;
+
+          //  gm.transform.GetComponent<InOutMsgUIManager>().userId= chatList[i].us
         }
 
 

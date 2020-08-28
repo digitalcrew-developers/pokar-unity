@@ -18,12 +18,13 @@ public class ChatManager : MonoBehaviour
     public void OnChatMessageReceived(string serverResponse)
     {
         JsonData jsonData = JsonMapper.ToObject(serverResponse);
-
+        Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIZNNNNNNNNNNNNNNNNNNN");
         if (jsonData[0]["from"].ToString() != PlayerManager.instance.GetPlayerGameData().userId)
         {
             ChatMessage data = new ChatMessage();
             data.desc = jsonData[0]["desc"].ToString();
             data.title = jsonData[0]["title"].ToString();
+            data.userId = jsonData[0]["userId"].ToString();
             data.isMe = false;
             chatList.Add(data);
         }
@@ -64,4 +65,5 @@ public class ChatMessage
     public string userName;
     public bool isMe;
     public string desc,title;
+    public string userId;
 }
