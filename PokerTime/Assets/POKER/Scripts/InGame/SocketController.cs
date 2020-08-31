@@ -123,7 +123,7 @@ public class SocketController : MonoBehaviour
 
 
         socketManager.Socket.On("playerStatndOut", OnPlayerStandUp);
-        socketManager.Socket.On("checkCardType", OncheckCardType);
+
         socketManager.Open();
     }
 
@@ -237,7 +237,6 @@ public class SocketController : MonoBehaviour
                     break;
 
                 case SocketEvetns.ON_ROUND_NO_FOUND:
-                    Debug.LogError("ON_ROUND_NO_FOUND  ==>" + responseObject.data);
                     // InGameUiManager.instance.LoadingImage.SetActive(false);
                     InGameManager.instance.OnRoundDataFound(responseObject.data);
                     break;
@@ -291,8 +290,11 @@ public class SocketController : MonoBehaviour
                 case SocketEvetns.ON_PlayerStandUp:
                     InGameManager.instance.StandUpPlayer(responseObject.data);
                     break;
-                case SocketEvetns.ON_CheckCardType:
-                    Debug.LogError("ON_CheckCardType " + responseObject.data);
+                case SocketEvetns.ON_SendEmoji:
+                    InGameManager.instance.SendEmoji(responseObject.data);
+                    break;
+                case SocketEvetns.ON_TipToDealer:
+                    InGameManager.instance.TipToDealer(responseObject.data);
                     break;
 
                 default:
@@ -418,7 +420,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_NEXT_ROUND_TIMER_FOUND))
         {
-            Debug.Log("OnNextRoundTimerFound = " + responseText);
+            Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
         }
 #else
         Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -607,7 +609,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_BET_DATA_FOUND))
         {
-            Debug.Log("OnBetDataFound = " + responseText /*+ "  Time = " + System.DateTime.Now)*/);
+            Debug.Log("OnBetDataFound = " + responseText + "  Time = " + System.DateTime.Now);
         }
 #else
         Debug.Log("OnBetDataFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -839,7 +841,7 @@ public class SocketController : MonoBehaviour
 #if DEBUG
 
 #if UNITY_EDITOR
-        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_RECONNECTED))
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_TipToDealer))
         {
             Debug.Log("OnOtherSeeTip CALL = " + responseText + "  Time = " + System.DateTime.Now);
         }
@@ -849,7 +851,7 @@ public class SocketController : MonoBehaviour
 #endif
 
         SocketResponse response = new SocketResponse();
-        response.eventType = SocketEvetns.ON_CARD_DISTRIBUTE_TIMER_FOUND;
+        response.eventType = SocketEvetns.ON_TipToDealer;
         response.data = responseText;
         socketResponse.Add(response);
     }
@@ -864,7 +866,7 @@ public class SocketController : MonoBehaviour
 #if DEBUG
 
 #if UNITY_EDITOR
-        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_RECONNECTED))
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_SendEmoji))
         {
             Debug.Log("OnOtherSeeEmoji -CALL  = " + responseText + "  Time = " + System.DateTime.Now);
         }
@@ -873,7 +875,7 @@ public class SocketController : MonoBehaviour
 #endif
 #endif
         SocketResponse response = new SocketResponse();
-        response.eventType = SocketEvetns.ON_CARD_DISTRIBUTE_TIMER_FOUND;
+        response.eventType = SocketEvetns.ON_SendEmoji;
         response.data = responseText;
         socketResponse.Add(response);
     }
@@ -899,27 +901,6 @@ public class SocketController : MonoBehaviour
         socketResponse.Add(response);
     }
 
-    void OncheckCardType(Socket socket, Packet packet, params object[] args)
-    {
-        string responseText = JsonMapper.ToJson(args);
-
-#if DEBUG
-
-#if UNITY_EDITOR
-        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_CheckCardType))
-        {
-            //Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
-        }
-#else
-        Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
-#endif
-#endif
-
-        SocketResponse response = new SocketResponse();
-        response.eventType = SocketEvetns.ON_CheckCardType;
-        response.data = responseText;
-        socketResponse.Add(response);
-    }
     #endregion
 
 
@@ -947,11 +928,9 @@ public class SocketController : MonoBehaviour
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
         socketRequest.Add(request);
-    }
-    public void CheckCardType()
-    {
 
     }
+
     public void SendTopUpRequest(int coinsToAdd)
     {
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
@@ -995,12 +974,12 @@ public class SocketController : MonoBehaviour
             "\"deductionValue\":\"" + 2 + "\"," +
             "\"tableId\":\"" + int.Parse(TABLE_ID)).ToString() + "\"}";
 
-        
+        Debug.Log("i am SentEmoji   " + requestStringData);
         object requestObjectData = Json.Decode(requestStringData);
 
+        
         SocketRequest request = new SocketRequest();
         request.emitEvent = "sendEmoji";
-
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
@@ -1379,7 +1358,8 @@ public enum SocketEvetns
     ON_RECONNECTED,
     ON_MATCH_HISTORY_FOUND,
     ON_PlayerStandUp,
-    ON_CheckCardType,
+    ON_TipToDealer,
+    ON_SendEmoji,
     NULL
 }
 

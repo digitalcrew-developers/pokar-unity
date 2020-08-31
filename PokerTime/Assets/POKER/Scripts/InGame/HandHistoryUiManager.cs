@@ -172,8 +172,8 @@ public class HandHistoryUiManager : MonoBehaviour
         {
             if (matchHistoryData[pageNo].roundData[i].isSpawnHeading)
             {
-                GameObject heading = Instantiate(roundHeadingPrefab,container) as GameObject;
-                heading.transform.Find("Text").GetComponent<Text>().text = matchHistoryData[pageNo].roundData[i].roundName;
+                //GameObject heading = Instantiate(roundHeadingPrefab,container) as GameObject;
+                //heading.transform.Find("Text").GetComponent<Text>().text = matchHistoryData[pageNo].roundData[i].roundName;
             }
 
             GameObject gm = Instantiate(playerCardsPrefab, container) as GameObject;
@@ -184,7 +184,8 @@ public class HandHistoryUiManager : MonoBehaviour
                 gm.transform.Find("Card_1").GetComponent<Image>().sprite = matchHistoryData[pageNo].roundData[i].playerCards[1].cardsSprite;
 
                 gm.transform.Find("Name").GetComponent<Text>().text = matchHistoryData[pageNo].roundData[i].userName;
-                gm.transform.Find("Action").GetComponent<Text>().text = matchHistoryData[pageNo].roundData[i].betType;
+                //gm.transform.Find("Action").GetComponent<Text>().text = matchHistoryData[pageNo].roundData[i].betType;
+                gm.transform.Find("Action").GetComponent<Text>().text = matchHistoryData[pageNo].roundData[i].roundName;
             }
         }
 
@@ -307,6 +308,7 @@ public class UserBetHistory
     public string roundNo;
     public string roundName;
     public string userName;
+    public string ammount;
     public string betType;
     public CardData[] playerCards = new CardData[2];
 }

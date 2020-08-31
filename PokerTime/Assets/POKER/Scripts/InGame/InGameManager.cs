@@ -744,6 +744,18 @@ public class InGameManager : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
     }
 
+    public void SendEmoji(string serverResponse)
+    {
+        Debug.LogError("SendEmoji serverResponse  ---****-->" + serverResponse);
+      
+    }
+    public void TipToDealer(string serverResponse)
+    {
+        Debug.LogError("TipToDealer serverResponse ---*****----> " + serverResponse);
+       
+    }
+
+
     public void StandUpPlayer(string serverResponse)
     {
         Debug.LogError("standUp serverResponse  " + serverResponse);       
