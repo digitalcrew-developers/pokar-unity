@@ -123,7 +123,7 @@ public class SocketController : MonoBehaviour
 
 
         socketManager.Socket.On("playerStatndOut", OnPlayerStandUp);
-
+        socketManager.Socket.On("checkCardType", OncheckCardType);
         socketManager.Open();
     }
 
@@ -237,6 +237,7 @@ public class SocketController : MonoBehaviour
                     break;
 
                 case SocketEvetns.ON_ROUND_NO_FOUND:
+                    Debug.LogError("ON_ROUND_NO_FOUND  ==>" + responseObject.data);
                     // InGameUiManager.instance.LoadingImage.SetActive(false);
                     InGameManager.instance.OnRoundDataFound(responseObject.data);
                     break;
@@ -289,6 +290,9 @@ public class SocketController : MonoBehaviour
 
                 case SocketEvetns.ON_PlayerStandUp:
                     InGameManager.instance.StandUpPlayer(responseObject.data);
+                    break;
+                case SocketEvetns.ON_CheckCardType:
+                    Debug.LogError("ON_CheckCardType " + responseObject.data);
                     break;
 
                 default:
@@ -414,7 +418,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_NEXT_ROUND_TIMER_FOUND))
         {
-            Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+            Debug.Log("OnNextRoundTimerFound = " + responseText);
         }
 #else
         Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -603,7 +607,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_BET_DATA_FOUND))
         {
-            Debug.Log("OnBetDataFound = " + responseText + "  Time = " + System.DateTime.Now);
+            Debug.Log("OnBetDataFound = " + responseText /*+ "  Time = " + System.DateTime.Now)*/);
         }
 #else
         Debug.Log("OnBetDataFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -895,6 +899,27 @@ public class SocketController : MonoBehaviour
         socketResponse.Add(response);
     }
 
+    void OncheckCardType(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_CheckCardType))
+        {
+            //Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+        Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.ON_CheckCardType;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
     #endregion
 
 
@@ -922,9 +947,11 @@ public class SocketController : MonoBehaviour
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
         socketRequest.Add(request);
+    }
+    public void CheckCardType()
+    {
 
     }
-
     public void SendTopUpRequest(int coinsToAdd)
     {
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
@@ -1352,6 +1379,7 @@ public enum SocketEvetns
     ON_RECONNECTED,
     ON_MATCH_HISTORY_FOUND,
     ON_PlayerStandUp,
+    ON_CheckCardType,
     NULL
 }
 

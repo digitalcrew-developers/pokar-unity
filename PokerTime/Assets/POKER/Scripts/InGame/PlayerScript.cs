@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using LitJson;
+using System.Net;
+using UnityEngine.Networking;
+using System;
 
 public class PlayerScript: MonoBehaviour
 {
@@ -12,15 +15,15 @@ public class PlayerScript: MonoBehaviour
 
 
     [SerializeField]
-    private PlayerData playerData;
-
+    public PlayerData playerData;
+    public RectTransform fx_holder;
     private Image[] cardsImage;
     public Sprite[] EventSprite;
     private Image timerBar;
     public Image avtar,frame,flag;
     public GameObject lastActionImage;
-    private Text balanceText, lastActionText, userName, localBetPot;
-    private GameObject foldScreen, parentObject,emptyObject;
+    private Text balanceText, lastActionText, userName, localBetPot, RealTimeResulttxt;
+    private GameObject foldScreen, parentObject,emptyObject, RealTimeResult;
     private bool isItMe;
 
     public int otheruserId;
@@ -55,7 +58,7 @@ public class PlayerScript: MonoBehaviour
                     string av_url = (data["getData"][i]["profileImage"].ToString());
                     string flag_url = (data["getData"][i]["countryFlag"].ToString());
                     string frame_url = (data["getData"][i]["frameURL"].ToString());
-                    StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
+                   StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
                     StartCoroutine(loadSpriteImageFromUrl(flag_url, flag));
                     StartCoroutine(loadSpriteImageFromUrl(frame_url, frame));
                 }
@@ -68,8 +71,20 @@ public class PlayerScript: MonoBehaviour
     }
     IEnumerator loadSpriteImageFromUrl(string URL, Image image)
     {
-
-        WWW www = new WWW(URL);
+        UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
+        yield return unityWebRequest.SendWebRequest();
+       
+        if(unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+        {
+            Debug.LogError("Download failed");
+        }
+        else
+        {
+            var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
+            Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
+            image.sprite = sprite;
+        }
+       /* WWW www = new WWW(URL);
         while (!www.isDone)
         {
             //     Debug.Log("Download image on progress" + www.progress);
@@ -87,7 +102,7 @@ public class PlayerScript: MonoBehaviour
             www.LoadImageIntoTexture(texture);
             Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
             image.sprite = sprite;
-        }
+        }*/
     }
     public void Init(MatchMakingPlayerData matchMakingPlayerData)
     {
@@ -98,10 +113,12 @@ public class PlayerScript: MonoBehaviour
         {
             isItMe = true;
             InGameManager.instance.UpdateAvailableBalance(playerData.balance);
+            RealTimeResult.SetActive(true);
       
         }
         else
         {
+            RealTimeResult.SetActive(false);
             isItMe = false;
         }
        
@@ -113,7 +130,7 @@ public class PlayerScript: MonoBehaviour
         lastActionImage.SetActive(false);
         lastActionText.text = "";
         timerBar.fillAmount = 0;
-
+        fx_holder.gameObject.SetActive(false);
         userName.text = playerData.userName.Substring(0,4)+"...";
   //      Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
         otheruserId = int.Parse(playerData.userId);
@@ -136,10 +153,13 @@ public class PlayerScript: MonoBehaviour
             parentObject = transform.Find("Bg").gameObject;
             userName = transform.Find("Bg/NameBg/Name").GetComponent<Text>();
             localBetPot = transform.Find("Bg/LocalBet").GetComponent<Text>();
+            RealTimeResult = transform.Find("Bg/RealTime Result").gameObject;
+            RealTimeResulttxt = RealTimeResult.GetComponent<Text>();
             lastActionImage.SetActive(false);
             emptyObject = transform.Find("Empty").gameObject;
             cardsImage = new Image[GameConstants.NUMBER_OF_CARDS_PLAYER_GET_IN_MATCH[(int)GlobalGameManager.instance.GetRoomData().gameMode]];
           
+            fx_holder.gameObject.SetActive(false);
             string parentName = "" + cardsImage.Length + "_Cards";
 
             for (int i = 0; i < cardsImage.Length; i++)
@@ -199,19 +219,25 @@ public class PlayerScript: MonoBehaviour
         emptyObject.SetActive(isShow);
     }
 
+    public void ShowAvtars_frame_flag(string userId)
+    {
+        Debug.LogError("*****=> user id " + userId);
+  //      StartCoroutine("CountDownAnimation");
+        WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + userId + "\"}", true, OnServerResponseFound);
 
+    }
     public void ShowDetailsAsNewPlayer(PlayerData playerData)
     {
     //    Debug.LogError("Player data "+playerData.userName);
-        WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + playerData.userId + "\"}", true, OnServerResponseFound);
 
         LoadUI();
-        
+      //  StartCoroutine(loadSpriteImageFromUrl("http://18.191.15.121/pokr-time-admin/" + playerData.avatarurl, avtar));
         transform.Find("Bg/blance bg/Balance").GetComponent<Text>().text = "" + (int)playerData.balance;
         transform.Find("Bg/NameBg/Name").GetComponent<Text>().text = playerData.userName;
         transform.Find("Bg/Dealer").gameObject.SetActive(false);
-
+       ShowAvtars_frame_flag(playerData.userId);
         timerBar.fillAmount = 0;
+        fx_holder.gameObject.SetActive(false);
         lastActionImage.SetActive(false);
         lastActionText.text = "";
 
@@ -232,6 +258,23 @@ public class PlayerScript: MonoBehaviour
             ResetTurn();
         }
     }
+    public void UpdateRealTimeResult(string result)
+    {
+        JsonData data = JsonMapper.ToObject(result);
+
+Debug.Log("Success data send" + data);
+        //  [{"currentSubRounds":1.0,"currentRounds":0.0,"handType":[{"userId":64.0,"handType":"Straight"},{"userId":65.0,"handType":"Pair"}]}]
+        for (int i = 0; i < data[0]["handType"].Count; i++)
+        {
+            Debug.Log("Success data send" + data[0]["handType"][i]["userId"].ToString());
+            string userId = (data[0]["handType"][i]["userId"].ToString());
+            string handType = (data[0]["handType"][i]["handType"].ToString());
+            if (playerData.userId == userId)
+            {
+                RealTimeResulttxt.text = handType;
+            }
+        }
+    }
 
     public PlayerData GetPlayerData()
     {
@@ -250,8 +293,9 @@ public class PlayerScript: MonoBehaviour
 
     public void ResetTurn()
     {
+        fx_holder.gameObject.SetActive(false);
         timerBar.fillAmount = 0;
-       
+        StopCoroutine("CountDownAnimation");
     }
 
     public void ToggleLocalPot(bool isShow)
@@ -323,38 +367,27 @@ public class PlayerScript: MonoBehaviour
 
         lastActionText.text = textToShow;
     }
-
+    IEnumerator CountDownAnimation()
+    {
+        float t = 0;
+        float time = 9;
+        fx_holder.gameObject.SetActive(true);
+        while (t < time)
+        {
+            t += Time.deltaTime;
+            timerBar.fillAmount = t / time;
+            fx_holder.rotation = Quaternion.Euler(new Vector3(0, 0, -(timerBar.fillAmount) * 360));
+            yield return null;
+        }
+    }
     public void ShowRemainingTime(int remainingTime)
     {
         remainingTime = GameConstants.TURN_TIME - remainingTime;
-        Debug.Log("remainingTime     " + remainingTime);
-
-        /* if (remainingTime <= 1)
-         {
-             Debug.Log("remainingTime <=1           " + remainingTime);
-
-             timerBar.fillAmount = (float)remainingTime / GameConstants.TURN_TIME;           
-         }
-         else
-         {*/
-        Debug.Log("remainingTime >= 1          " + (float)remainingTime / GameConstants.TURN_TIME);
-        float val = (float)remainingTime / GameConstants.TURN_TIME;
-        DOTween.Kill(TIMER_ANIMATION_ID, true);
-        timerBar.DOFillAmount(val + 0.15f, 1).SetId(TIMER_ANIMATION_ID);
-
-        //  }
-
-
-        //DOTween.Kill(TIMER_ANIMATION_ID, true);
-
-        //if (isAnimate)
-        //{
-        //    timerBar.DOFillAmount((float)remainingTime / GameConstants.TURN_TIME, 1).SetId(TIMER_ANIMATION_ID);
-        //}
-        //else
-        //{
-        //    timerBar.fillAmount = remainingTime;
-        //}
+     Debug.Log("remainingTime     " + remainingTime);
+        if(remainingTime==0)
+        {
+            StartCoroutine("CountDownAnimation");
+        }      
     }
 
 
@@ -416,6 +449,20 @@ public class PlayerScript: MonoBehaviour
                     for (int i = 0; i < cardsImage.Length; i++)
                     {
                         cardsImage[i].sprite = playerData.cards[i].cardsSprite;
+
+                        if (!isItMe)
+                        {
+                            if (i == 0)
+                            {
+                                cardsImage[i].transform.localPosition = new Vector3(-53, 8);
+                                cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                            }
+                            if (i == 1)
+                            {
+                                cardsImage[i].transform.localPosition = new Vector3(-24, 8);
+                                cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                            }
+                        }
                     }
                 }
             }
@@ -423,8 +470,22 @@ public class PlayerScript: MonoBehaviour
             {
                 for (int i = 0; i < cardsImage.Length; i++)
                 {
+                    if (!isItMe)
+                    {
+                        if (i == 0)
+                        {
+                            cardsImage[i].transform.localPosition = new Vector3(0, 0);
+                            cardsImage[i].transform.localScale = new Vector3(0.35f, 0.35f);
+                        }
+                        if (i == 1)
+                        {
+                            cardsImage[i].transform.localPosition = new Vector3(16, 0);
+                            cardsImage[i].transform.localScale = new Vector3(0.35f, 0.35f);
+                        }
+                    }
                     cardsImage[i].sprite = CardsManager.instance.GetCardBackSideSprite();
                 }
+
             }
         }
     }
@@ -449,9 +510,13 @@ public class PlayerScript: MonoBehaviour
         return localBetAmount;
     }
 
-
+    public void ResetRealtimeResult()
+    {
+        RealTimeResulttxt.text = "";
+    }
     public void ResetAllData()
     {
+        RealTimeResulttxt.text = "";
         ToggleCards(false);
         ToggleLocalPot(false);
         UpdateLastAction("");
@@ -463,6 +528,8 @@ public class PlayerScript: MonoBehaviour
        localBetRoundNo = roundNo;
         UpdateLocalPot(0, roundNo);
         UpdateLastAction("");
+       
+       
     }
 }
 
@@ -475,9 +542,13 @@ public class PlayerData
     public bool isDealer, isSmallBlind, isBigBlind, isFold, isTurn, isCheckAvailable;
     public float balance, totalBet;
     public CardData[] cards;
+    public string avatarurl;
 }
 
-
+public class GetData
+{
+    public string cc;
+}
 public enum PlayerType
 {
     RealPlayer,

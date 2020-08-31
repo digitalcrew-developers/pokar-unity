@@ -52,15 +52,17 @@ public class SoundManager : MonoBehaviour
     public void SoundCheck()
     {
         string soundsCheck = PlayerPrefs.GetString("issound");
+            Debug.LogError("SOUND chec-----> " +soundsCheck);
         if (soundsCheck == "1")
         {
             sound = true;
             volume = 1;
         }
-        else if (soundsCheck == "2")
+        else if (soundsCheck == "0")
         {
             sound = false;
             volume = 0;
+            
         }
     }
 }
@@ -80,6 +82,7 @@ public enum SoundType
     Fold,
     Check,
     Tip,
-    Kiss
+    Kiss,
+    bigWin
 
 }

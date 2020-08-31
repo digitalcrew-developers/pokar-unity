@@ -36,7 +36,7 @@ public void OnClickLanguageBTN()
             issound = false;
             soundOff.SetActive(true);
             soundon.SetActive(false);
-            PlayerPrefs.SetString("SoundOnOf", "Off");
+            PlayerPrefs.SetString("issound", "0");
             PlayerPrefs.Save();
         }
         else
@@ -44,7 +44,7 @@ public void OnClickLanguageBTN()
             issound = true;
             soundOff.SetActive(false);
             soundon.SetActive(true);
-            PlayerPrefs.SetString("SoundOnOf", "On");
+            PlayerPrefs.SetString("issound", "1");
             PlayerPrefs.Save();
         }
         SoundManager.instance.SoundCheck();

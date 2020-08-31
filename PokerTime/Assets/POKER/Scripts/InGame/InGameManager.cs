@@ -301,6 +301,7 @@ public class InGameManager : MonoBehaviour
     }
 
 
+
     private IEnumerator WaitAndSendLeaveRequest()
     {
         SocketController.instance.SendLeaveMatchRequest();
@@ -347,7 +348,7 @@ public class InGameManager : MonoBehaviour
 
 
 
-    private void ShowNewPlayersOnTable(JsonData data,bool isMatchStarted)
+    private void ShowNewPlayersOnTable(JsonData data, bool isMatchStarted)
     {
         List<PlayerData> playerData = new List<PlayerData>();
 
@@ -361,7 +362,8 @@ public class InGameManager : MonoBehaviour
                 playerDataObject.userName = data[0][i]["userName"].ToString();
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
-
+                playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
+                Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
                 if (isMatchStarted)
                 {
                     playerDataObject.isFold = data[0][i]["isBlocked"].Equals(true);
@@ -375,13 +377,13 @@ public class InGameManager : MonoBehaviour
             }
         }
 
-        
+
+      
+       
         for (int i = onlinePlayersScript.Length; i < allPlayersObject.Length; i++)
         {
             allPlayersObject[i].TogglePlayerUI(false);
         }
-
-
         if (isMatchStarted)
         {
             if (playerData.Count > 0)
@@ -456,14 +458,28 @@ public class InGameManager : MonoBehaviour
         }
 
         int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
-        
+
         for (int i = 0; i < maxPlayerOnTable && i < allPlayersObject.Length; i++)
         {
             if (!allPlayersObject[i].IsPlayerObjectActive())
             {
+
                 allPlayersObject[i].ToggleEmptyObject(true);
             }
+
         }
+ /*       if (playerData.Count > 0)
+        {
+            int startIndex = onlinePlayersScript.Length;
+            int maxIndex = startIndex + playerData.Count;
+            int index = 0;
+
+            for (int i = startIndex; i < maxIndex && i < allPlayersObject.Length; i++)
+            {
+                allPlayersObject[i].ShowAvtars_frame_flag(playerData[index].userId);
+                ++index;
+            }
+        }*/
     }
 
 
@@ -579,6 +595,11 @@ public class InGameManager : MonoBehaviour
         bool isBetFound = false;
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
+            if (MATCH_ROUND != 0)
+            {
+            //    Debug.LogError("HT @ " + handtype);
+                onlinePlayersScript[i].UpdateRealTimeResult(handtype);
+            }
             Text text = onlinePlayersScript[i].GetLocaPot();
 
             if (text.gameObject.activeInHierarchy && !string.IsNullOrEmpty(text.text))
@@ -795,6 +816,10 @@ public class InGameManager : MonoBehaviour
                         GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
                         gm.transform.Find("WinBy").GetComponent<Text>().text = data[0][0][i]["name"].ToString();
                         gm.transform.Find("winAmount").GetComponent<Text>().text="+"+data[0][0][i]["winAmount"].ToString(); 
+                        if(data[0][0][i]["winAmount"].ToString()=="50000")
+                        {
+                            SoundManager.instance.PlaySound(SoundType.bigWin);
+                        }
                         gm.transform.position = winnerPlayer.gameObject.transform.position;
                         gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
                         gm.transform.SetSiblingIndex(0);
@@ -816,6 +841,10 @@ public class InGameManager : MonoBehaviour
 
     public void OnNextMatchCountDownFound(string serverResponse)
     {
+        for (int i = 0; i < onlinePlayersScript.Length; i++)
+        {
+            onlinePlayersScript[i].ResetRealtimeResult();
+        }
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
 
@@ -950,11 +979,13 @@ public class InGameManager : MonoBehaviour
         
     }
 
-
+    string handtype;
     public void OnRoundDataFound(string serverResponse)
     {
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
+        handtype = serverResponse;
+     //   Debug.LogError("hand typessss" + handtype);
         ShowCommunityCardsAnimation();
     }
 
@@ -977,7 +1008,7 @@ public class InGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
 
         int remainingTime = (int)float.Parse(data[0].ToString());
-
+        Debug.Log("Game Start in => " + remainingTime);
      /*   if (remainingTime < 30)
         {*/
             if (remainingTime <= 1)
@@ -1088,7 +1119,7 @@ public class InGameManager : MonoBehaviour
                     if (playerObject != null)
                     {
                         PlayerData playerData = new PlayerData();
-                        Debug.LogError("************************************************************");
+                    //    Debug.LogError("************************************************************");
                         playerData.isFold = data[0][i]["isBlocked"].Equals(true);
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
@@ -1108,7 +1139,7 @@ public class InGameManager : MonoBehaviour
                         }
                         else
                         {
-                            playerObject.UpdateDetails(playerData,"",0,-1);
+                            playerObject. UpdateDetails(playerData,"",0,-1);
                         }
                     }
                 }
@@ -1167,6 +1198,7 @@ public class InGameManager : MonoBehaviour
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScript[0];
     }
+  
 }
 
 public class MatchMakingPlayerData

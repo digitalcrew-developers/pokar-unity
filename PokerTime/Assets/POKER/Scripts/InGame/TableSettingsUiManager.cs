@@ -120,18 +120,19 @@ public class TableSettingsUiManager : MonoBehaviour
                     if (issound==1)
                     {
                         issound = 0;
-                        PlayerPrefs.SetInt("issound", issound);
+                        PlayerPrefs.SetString("issound", issound.ToString());
                         soundon.SetActive(false);
                         soundOff.SetActive(true);
                     }
                     else
                     {
                         issound = 1;
-                        PlayerPrefs.SetInt("issound", issound);
+                        PlayerPrefs.SetString("issound", issound.ToString());
                         soundon.SetActive(true);
                         soundOff.SetActive(false);
                     }
-                   
+                    SoundManager.instance.SoundCheck();
+
                 }
                 break;
             case "vibration":
@@ -256,6 +257,7 @@ public class TableSettingsUiManager : MonoBehaviour
         }
 
         if (ts.Issound == 1) { 
+
             soundon.SetActive(true);
             soundOff.SetActive(false);
         }
@@ -321,6 +323,8 @@ public class TableSettingsUiManager : MonoBehaviour
         isexactBetting = ts.IsexactBetting;
         iscustomizedActionbtn = ts.IscustomizedActionbtn;
         israise=ts.Israise;
+        PlayerPrefs.SetString("issound", issound.ToString());
+        SoundManager.instance.SoundCheck();
     }
 }
 [System.Serializable]
