@@ -290,6 +290,12 @@ public class SocketController : MonoBehaviour
                 case SocketEvetns.ON_PlayerStandUp:
                     InGameManager.instance.StandUpPlayer(responseObject.data);
                     break;
+                case SocketEvetns.ON_SendEmoji:
+                    InGameManager.instance.SendEmoji(responseObject.data);
+                    break;
+                case SocketEvetns.ON_TipToDealer:
+                    InGameManager.instance.TipToDealer(responseObject.data);
+                    break;
 
                 default:
                     Debug.LogError("UnHandlled EventType Found in response eventType = " + responseObject.eventType + "   responseStructure = " + responseObject.data);
@@ -835,7 +841,7 @@ public class SocketController : MonoBehaviour
 #if DEBUG
 
 #if UNITY_EDITOR
-        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_RECONNECTED))
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_TipToDealer))
         {
             Debug.Log("OnOtherSeeTip CALL = " + responseText + "  Time = " + System.DateTime.Now);
         }
@@ -845,7 +851,7 @@ public class SocketController : MonoBehaviour
 #endif
 
         SocketResponse response = new SocketResponse();
-        response.eventType = SocketEvetns.ON_CARD_DISTRIBUTE_TIMER_FOUND;
+        response.eventType = SocketEvetns.ON_TipToDealer;
         response.data = responseText;
         socketResponse.Add(response);
     }
@@ -860,7 +866,7 @@ public class SocketController : MonoBehaviour
 #if DEBUG
 
 #if UNITY_EDITOR
-        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_RECONNECTED))
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_SendEmoji))
         {
             Debug.Log("OnOtherSeeEmoji -CALL  = " + responseText + "  Time = " + System.DateTime.Now);
         }
@@ -869,7 +875,7 @@ public class SocketController : MonoBehaviour
 #endif
 #endif
         SocketResponse response = new SocketResponse();
-        response.eventType = SocketEvetns.ON_CARD_DISTRIBUTE_TIMER_FOUND;
+        response.eventType = SocketEvetns.ON_SendEmoji;
         response.data = responseText;
         socketResponse.Add(response);
     }
@@ -968,12 +974,12 @@ public class SocketController : MonoBehaviour
             "\"deductionValue\":\"" + 2 + "\"," +
             "\"tableId\":\"" + int.Parse(TABLE_ID)).ToString() + "\"}";
 
-        
+        Debug.Log("i am SentEmoji   " + requestStringData);
         object requestObjectData = Json.Decode(requestStringData);
 
+        
         SocketRequest request = new SocketRequest();
         request.emitEvent = "sendEmoji";
-
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
@@ -1352,6 +1358,8 @@ public enum SocketEvetns
     ON_RECONNECTED,
     ON_MATCH_HISTORY_FOUND,
     ON_PlayerStandUp,
+    ON_TipToDealer,
+    ON_SendEmoji,
     NULL
 }
 
