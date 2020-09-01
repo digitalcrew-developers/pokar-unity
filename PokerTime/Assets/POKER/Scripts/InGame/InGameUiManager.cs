@@ -552,7 +552,14 @@ public class InGameUiManager : MonoBehaviour
                 {
                     suggestionButtons[(int)SuggestionActions.Call].SetActive(true);
                     suggestionButtons[(int)SuggestionActions.Check].SetActive(false);
-                    suggestionCallText.text = "" + callAmount;
+                    if (callAmount != 0)
+                    {
+                        suggestionCallText.text = "" + callAmount;
+                    }
+                    else
+                    {
+                        suggestionCallText.text = "";
+                    }
                 }
                 else
                 {
@@ -626,6 +633,11 @@ public class InGameUiManager : MonoBehaviour
                 {
                     actionButtons[(int)PlayerAction.Call].SetActive(false);
                     actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                }
+                if(callAmount==0)
+                {
+                    callAmountText.text = "";
+
                 }
             }
 

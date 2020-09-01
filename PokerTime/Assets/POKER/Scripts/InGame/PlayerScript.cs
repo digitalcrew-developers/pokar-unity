@@ -9,7 +9,7 @@ using System.Net;
 using UnityEngine.Networking;
 using System;
 
-public class PlayerScript: MonoBehaviour
+public class PlayerScript : MonoBehaviour
 {
     private const string TIMER_ANIMATION_ID = "PlayerTime";
 
@@ -19,11 +19,12 @@ public class PlayerScript: MonoBehaviour
     public RectTransform fx_holder;
     private Image[] cardsImage;
     public Sprite[] EventSprite;
+    public Sprite defultavtar;
     private Image timerBar;
-    public Image avtar,frame,flag;
+    public Image avtar, frame, flag;
     public GameObject lastActionImage;
     private Text balanceText, lastActionText, userName, localBetPot, RealTimeResulttxt;
-    private GameObject foldScreen, parentObject,emptyObject, RealTimeResult;
+    private GameObject foldScreen, parentObject, emptyObject, RealTimeResult;
     private bool isItMe;
 
     public int otheruserId;
@@ -34,7 +35,7 @@ public class PlayerScript: MonoBehaviour
 
     public void Start()
     {
-       
+
     }
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
@@ -52,13 +53,13 @@ public class PlayerScript: MonoBehaviour
 
             if (data["success"].ToString() == "1")
             {
-            //    Debug.Log("Success data send");
+                //    Debug.Log("Success data send");
                 for (int i = 0; i < data["getData"].Count; i++)
                 {
                     string av_url = (data["getData"][i]["profileImage"].ToString());
                     string flag_url = (data["getData"][i]["countryFlag"].ToString());
                     string frame_url = (data["getData"][i]["frameURL"].ToString());
-                   StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
+                    StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
                     StartCoroutine(loadSpriteImageFromUrl(flag_url, flag));
                     StartCoroutine(loadSpriteImageFromUrl(frame_url, frame));
                 }
@@ -73,36 +74,20 @@ public class PlayerScript: MonoBehaviour
     {
         UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
         yield return unityWebRequest.SendWebRequest();
-       
-        if(unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+
+        if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
         {
             Debug.LogError("Download failed");
         }
         else
         {
+            //  image.sprite = null;
             var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
             Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
-            image.sprite = sprite;
-        }
-       /* WWW www = new WWW(URL);
-        while (!www.isDone)
-        {
-            //     Debug.Log("Download image on progress" + www.progress);
-            yield return null;
-        }
 
-        if (!string.IsNullOrEmpty(www.error))
-        {
-              Debug.LogError("Download failed");
-        }
-        else
-        {
-          //  Debug.Log("Image url is : " + URL + "            name  => " + image.gameObject.name);
-            Texture2D texture = new Texture2D(1, 1);
-            www.LoadImageIntoTexture(texture);
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
             image.sprite = sprite;
-        }*/
+
+        }
     }
     public void Init(MatchMakingPlayerData matchMakingPlayerData)
     {
@@ -114,14 +99,14 @@ public class PlayerScript: MonoBehaviour
             isItMe = true;
             InGameManager.instance.UpdateAvailableBalance(playerData.balance);
             RealTimeResult.SetActive(true);
-      
+
         }
         else
         {
             RealTimeResult.SetActive(false);
             isItMe = false;
         }
-       
+
         LoadUI();
 
         ToggleFoldScreen(playerData.isFold);
@@ -131,8 +116,8 @@ public class PlayerScript: MonoBehaviour
         lastActionText.text = "";
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
-        userName.text = playerData.userName.Substring(0,4)+"...";
-  //      Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
+        userName.text = playerData.userName.Substring(0, 4) + "...";
+        //      Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
         otheruserId = int.Parse(playerData.userId);
         transform.Find("Bg/Dealer").gameObject.SetActive(playerData.isDealer);
         localBetAmount = (int)playerData.totalBet;
@@ -158,7 +143,7 @@ public class PlayerScript: MonoBehaviour
             lastActionImage.SetActive(false);
             emptyObject = transform.Find("Empty").gameObject;
             cardsImage = new Image[GameConstants.NUMBER_OF_CARDS_PLAYER_GET_IN_MATCH[(int)GlobalGameManager.instance.GetRoomData().gameMode]];
-          
+
             fx_holder.gameObject.SetActive(false);
             string parentName = "" + cardsImage.Length + "_Cards";
 
@@ -187,7 +172,7 @@ public class PlayerScript: MonoBehaviour
 
     public void TogglePlayerUI(bool isShow)
     {
-       
+
         LoadUI();
         parentObject.SetActive(isShow);
 
@@ -207,7 +192,7 @@ public class PlayerScript: MonoBehaviour
 
         return parentObject.activeInHierarchy;
     }
-   
+
 
     public void ToggleEmptyObject(bool isShow)
     {
@@ -217,25 +202,28 @@ public class PlayerScript: MonoBehaviour
         }
 
         emptyObject.SetActive(isShow);
+        if (isShow == true)
+        {
+            avtar.sprite = defultavtar;
+
+        }
     }
 
     public void ShowAvtars_frame_flag(string userId)
     {
-        Debug.LogError("*****=> user id " + userId);
-  //      StartCoroutine("CountDownAnimation");
+        //  Debug.LogError("*****=> user id " + userId);
+        //      StartCoroutine("CountDownAnimation");
         WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + userId + "\"}", true, OnServerResponseFound);
-
     }
     public void ShowDetailsAsNewPlayer(PlayerData playerData)
     {
-    //    Debug.LogError("Player data "+playerData.userName);
+        //    Debug.LogError("Player data "+playerData.userName);
 
         LoadUI();
-      //  StartCoroutine(loadSpriteImageFromUrl("http://18.191.15.121/pokr-time-admin/" + playerData.avatarurl, avtar));
         transform.Find("Bg/blance bg/Balance").GetComponent<Text>().text = "" + (int)playerData.balance;
         transform.Find("Bg/NameBg/Name").GetComponent<Text>().text = playerData.userName;
         transform.Find("Bg/Dealer").gameObject.SetActive(false);
-       ShowAvtars_frame_flag(playerData.userId);
+        ShowAvtars_frame_flag(playerData.userId);
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
         lastActionImage.SetActive(false);
@@ -248,7 +236,7 @@ public class PlayerScript: MonoBehaviour
 
     public void ToggleFoldScreen(bool isShow)
     {
-    
+
         LoadUI();
         foldScreen.SetActive(isShow);
 
@@ -262,7 +250,7 @@ public class PlayerScript: MonoBehaviour
     {
         JsonData data = JsonMapper.ToObject(result);
 
-Debug.Log("Success data send" + data);
+        Debug.Log("Success data send" + data);
         //  [{"currentSubRounds":1.0,"currentRounds":0.0,"handType":[{"userId":64.0,"handType":"Straight"},{"userId":65.0,"handType":"Pair"}]}]
         for (int i = 0; i < data[0]["handType"].Count; i++)
         {
@@ -335,7 +323,8 @@ Debug.Log("Success data send" + data);
         InGameUiManager.instance.TempUserID = playerData.userId;
     }
     public void UpdateLastAction(string textToShow)
-    {if (textToShow == "" || string.IsNullOrEmpty(textToShow))
+    {
+        if (textToShow == "" || string.IsNullOrEmpty(textToShow))
         {
             lastActionImage.SetActive(false);
         }
@@ -343,7 +332,7 @@ Debug.Log("Success data send" + data);
         {
             lastActionImage.SetActive(true);
         }
-       switch (textToShow)
+        switch (textToShow)
         {
             case "Call":
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[0];
@@ -383,11 +372,11 @@ Debug.Log("Success data send" + data);
     public void ShowRemainingTime(int remainingTime)
     {
         remainingTime = GameConstants.TURN_TIME - remainingTime;
-     Debug.Log("remainingTime     " + remainingTime);
-        if(remainingTime==0)
+        // Debug.Log("remainingTime     " + remainingTime);
+        if (remainingTime == 0)
         {
             StartCoroutine("CountDownAnimation");
-        }      
+        }
     }
 
 
@@ -404,7 +393,7 @@ Debug.Log("Success data send" + data);
         playerData.balance = dataToAssign.balance;
         playerData.totalBet = dataToAssign.totalBet;
         playerData.isFold = dataToAssign.isFold;
-         if (IsMe())
+        if (IsMe())
         {
             InGameManager.instance.UpdateAvailableBalance(playerData.balance);
         }
@@ -422,7 +411,7 @@ Debug.Log("Success data send" + data);
             }
             else
             {
-               UpdateLastAction("");
+                UpdateLastAction("");
             }
         }
     }
@@ -525,11 +514,11 @@ Debug.Log("Success data send" + data);
     public void UpdateRoundNo(int roundNo)
     {
         localBetAmount = 0;
-       localBetRoundNo = roundNo;
+        localBetRoundNo = roundNo;
         UpdateLocalPot(0, roundNo);
         UpdateLastAction("");
-       
-       
+
+
     }
 }
 

@@ -18,7 +18,7 @@ public class InGameManager : MonoBehaviour
 
 
     [SerializeField]
-    private GameObject cardAnimationPrefab,betAnimationPrefab;
+    private GameObject cardAnimationPrefab, betAnimationPrefab;
     [SerializeField]
     private Transform animationLayer;
 
@@ -26,7 +26,7 @@ public class InGameManager : MonoBehaviour
     private Text potText;
 
     [SerializeField]
-    private GameObject winningPrefab,chipscoine;
+    private GameObject winningPrefab, chipscoine;
 
     [SerializeField]
     public Image[] communityCards;
@@ -34,7 +34,7 @@ public class InGameManager : MonoBehaviour
 
 
     private PlayerScript[] onlinePlayersScript = null;
-    private PlayerScript myPlayerObject = null,currentPlayer = null;
+    private PlayerScript myPlayerObject = null, currentPlayer = null;
     private int MATCH_ROUND = 0, LAST_BET_AMOUNT = 0;
     private CardData[] openCards = null;
     private string lastPlayerAction = "";
@@ -43,7 +43,7 @@ public class InGameManager : MonoBehaviour
     private int currentRoundTotalBets = 0;
     private float potAmount = 0;
 
-    private bool isRematchRequestSent = false,isTopUpDone = false;
+    private bool isRematchRequestSent = false, isTopUpDone = false;
     private float availableBalance = 0;
 
     public GameObject WinnAnimationpos;
@@ -102,7 +102,7 @@ public class InGameManager : MonoBehaviour
             else
             {
                 allPlayersObject[i].TogglePlayerUI(false);
-            }   
+            }
         }
 
         if (playerScriptWhosTurn != null)
@@ -157,7 +157,7 @@ public class InGameManager : MonoBehaviour
         }
 
         SocketController.instance.SetSocketState(SocketState.Game_Running);
-        SwitchTurn(playerScriptWhosTurn,false);
+        SwitchTurn(playerScriptWhosTurn, false);
     }
 
 
@@ -181,7 +181,7 @@ public class InGameManager : MonoBehaviour
 
     }
 
-    private void SwitchTurn(PlayerScript playerScript,bool isCheckAvailable)
+    private void SwitchTurn(PlayerScript playerScript, bool isCheckAvailable)
     {
         SoundManager.instance.PlaySound(SoundType.TurnSwitch);
 
@@ -233,9 +233,9 @@ public class InGameManager : MonoBehaviour
 
                     default:
                         {
-                            Debug.LogError("Unhandled suggetion type found = "+selectedSuggestionAction);
+                            Debug.LogError("Unhandled suggetion type found = " + selectedSuggestionAction);
                         }
-                    break;
+                        break;
                 }
             }
             else
@@ -363,7 +363,7 @@ public class InGameManager : MonoBehaviour
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
-                Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
+                //   Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
                 if (isMatchStarted)
                 {
                     playerDataObject.isFold = data[0][i]["isBlocked"].Equals(true);
@@ -378,8 +378,8 @@ public class InGameManager : MonoBehaviour
         }
 
 
-      
-       
+
+
         for (int i = onlinePlayersScript.Length; i < allPlayersObject.Length; i++)
         {
             allPlayersObject[i].TogglePlayerUI(false);
@@ -448,6 +448,7 @@ public class InGameManager : MonoBehaviour
             for (int i = 0; i < leftPlayers.Count; i++)
             {
                 leftPlayers[i].TogglePlayerUI(false);
+                leftPlayers[i].avtar.sprite = leftPlayers[i].defultavtar;
             }
         }
 
@@ -458,28 +459,27 @@ public class InGameManager : MonoBehaviour
         }
 
         int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
-
+        int indexav = 0;
         for (int i = 0; i < maxPlayerOnTable && i < allPlayersObject.Length; i++)
         {
             if (!allPlayersObject[i].IsPlayerObjectActive())
             {
-
-                allPlayersObject[i].ToggleEmptyObject(true);
+                 allPlayersObject[i].ToggleEmptyObject(true);
             }
-
+           
         }
- /*       if (playerData.Count > 0)
-        {
-            int startIndex = onlinePlayersScript.Length;
-            int maxIndex = startIndex + playerData.Count;
-            int index = 0;
+        /*      if (playerData.Count > 0)
+              {
+                  int startIndex = onlinePlayersScript.Length;
+                  int maxIndex = startIndex + playerData.Count;
+                  int index = 0;
 
-            for (int i = startIndex; i < maxIndex && i < allPlayersObject.Length; i++)
-            {
-                allPlayersObject[i].ShowAvtars_frame_flag(playerData[index].userId);
-                ++index;
-            }
-        }*/
+                  for (int i = startIndex; i < maxIndex && i < allPlayersObject.Length; i++)
+                  {
+                      allPlayersObject[i].ShowAvtars_frame_flag(playerData[index].userId);
+                      ++index;
+                  }
+              }*/
     }
 
 
@@ -523,30 +523,30 @@ public class InGameManager : MonoBehaviour
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
-        GameObject gm = Instantiate(betAnimationPrefab,animationLayer) as GameObject;
+        GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
         gm.GetComponent<Text>().text = betAmount;
         gm.transform.position = playerScript.transform.position;
         Vector3 initialScale = gm.transform.localScale;
         gm.transform.localScale = Vector3.zero;
 
-        gm.transform.DOMove(playerScript.GetLocaPot().transform.position,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        gm.transform.DOScale(initialScale,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        gm.transform.DOMove(playerScript.GetLocaPot().transform.position, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         SoundManager.instance.PlaySound(SoundType.Bet);
         yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
         Destroy(gm);
     }
 
-    private IEnumerator WaitAndShowWinnersAnimation(PlayerScript playerScript, string betAmount,GameObject amount)
+    private IEnumerator WaitAndShowWinnersAnimation(PlayerScript playerScript, string betAmount, GameObject amount)
     {
         yield return new WaitForSeconds(.6f);
-        GameObject gm = Instantiate(chipscoine,WinnAnimationpos.transform) as GameObject;
-    //    gm.GetComponent<Text>().text = betAmount;
+        GameObject gm = Instantiate(chipscoine, WinnAnimationpos.transform) as GameObject;
+        //    gm.GetComponent<Text>().text = betAmount;
         gm.transform.position = WinnAnimationpos.transform.position;
-/*        Vector3 initialScale = gm.transform.localScale;
-        gm.transform.localScale = Vector3.zero;*/
+        /*        Vector3 initialScale = gm.transform.localScale;
+                gm.transform.localScale = Vector3.zero;*/
 
         gm.transform.DOMove(playerScript.transform.position, .5f).SetEase(Ease.Linear);
-       // gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        // gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         SoundManager.instance.PlaySound(SoundType.Bet);
         yield return new WaitForSeconds(.6f);
         Destroy(gm);
@@ -597,7 +597,7 @@ public class InGameManager : MonoBehaviour
         {
             if (MATCH_ROUND != 0)
             {
-            //    Debug.LogError("HT @ " + handtype);
+                //    Debug.LogError("HT @ " + handtype);
                 onlinePlayersScript[i].UpdateRealTimeResult(handtype);
             }
             Text text = onlinePlayersScript[i].GetLocaPot();
@@ -609,7 +609,7 @@ public class InGameManager : MonoBehaviour
 
                 gm.GetComponent<Text>().text = text.text;
                 gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);
-                Destroy(gm,GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
+                Destroy(gm, GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
             }
 
             onlinePlayersScript[i].UpdateRoundNo(GetMatchRound());
@@ -630,14 +630,14 @@ public class InGameManager : MonoBehaviour
 
                     for (int i = 0; i < 3; i++)
                     {
-                        GameObject gm = Instantiate(cardAnimationPrefab,animationLayer) as GameObject;
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
                         gm.transform.localScale = communityCards[0].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
-                        gm.transform.Rotate(0,-90,0);
+                        gm.transform.Rotate(0, -90, 0);
                         gm.transform.position = communityCards[0].transform.position;
 
-                        gm.transform.DORotate(new Vector3(0,90,0), GameConstants.CARD_ANIMATION_DURATION,RotateMode.LocalAxisAdd);
-                        gm.transform.DOMove(communityCards[i].transform.position,GameConstants.CARD_ANIMATION_DURATION);
+                        gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                        gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
                         //gm.transform.DOScale(communityCards[i].transform.localScale, GameConstants.CARD_ANIMATION_DURATION).SetEase(Ease.OutBack);
 
                         yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
@@ -653,7 +653,7 @@ public class InGameManager : MonoBehaviour
                         communityCards[i].sprite = openCards[i].cardsSprite;
                     }
                 }
-            break;
+                break;
 
             case 2:
                 {
@@ -691,7 +691,7 @@ public class InGameManager : MonoBehaviour
                         communityCards[i].sprite = openCards[i].cardsSprite;
                     }
                 }
-            break;
+                break;
 
             case 3:
                 {
@@ -716,7 +716,7 @@ public class InGameManager : MonoBehaviour
                         gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
 
                         yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
-                        
+
                         Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
                     }
 
@@ -728,7 +728,7 @@ public class InGameManager : MonoBehaviour
                         communityCards[i].sprite = openCards[i].cardsSprite;
                     }
                 }
-            break;
+                break;
 
             default:
                 {
@@ -738,7 +738,7 @@ public class InGameManager : MonoBehaviour
                         communityCards[i].sprite = openCards[i].cardsSprite;
                     }
                 }
-            break;
+                break;
         }
 
         yield return new WaitForSeconds(0.1f);
@@ -747,18 +747,18 @@ public class InGameManager : MonoBehaviour
     public void SendEmoji(string serverResponse)
     {
         Debug.LogError("SendEmoji serverResponse  ---****-->" + serverResponse);
-      
+
     }
     public void TipToDealer(string serverResponse)
     {
         Debug.LogError("TipToDealer serverResponse ---*****----> " + serverResponse);
-       
+
     }
 
 
     public void StandUpPlayer(string serverResponse)
     {
-        Debug.LogError("standUp serverResponse  " + serverResponse);       
+        Debug.LogError("standUp serverResponse  " + serverResponse);
         GetMyPlayerObject().StandUp();
     }
     public void OnClickStandupBtn()
@@ -767,7 +767,7 @@ public class InGameManager : MonoBehaviour
     }
 
 
-    public void OnPlayerActionCompleted(PlayerAction actionType,int betAmount,string playerAction)
+    public void OnPlayerActionCompleted(PlayerAction actionType, int betAmount, string playerAction)
     {
         // GetMyPlayerObject().ResetTurn();
         PlayerTimerReset();
@@ -814,7 +814,7 @@ public class InGameManager : MonoBehaviour
         InGameUiManager.instance.ToggleSuggestionButton(false);
 
         JsonData data = JsonMapper.ToObject(serverResponse);
-        
+
         if (data[0].Count > 0)
         {
             for (int i = 0; i < data[0][0].Count; i++)
@@ -827,8 +827,8 @@ public class InGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
                         gm.transform.Find("WinBy").GetComponent<Text>().text = data[0][0][i]["name"].ToString();
-                        gm.transform.Find("winAmount").GetComponent<Text>().text="+"+data[0][0][i]["winAmount"].ToString(); 
-                        if(data[0][0][i]["winAmount"].ToString()=="50000")
+                        gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + data[0][0][i]["winAmount"].ToString();
+                        if (data[0][0][i]["winAmount"].ToString() == "50000")
                         {
                             SoundManager.instance.PlaySound(SoundType.bigWin);
                         }
@@ -837,8 +837,8 @@ public class InGameManager : MonoBehaviour
                         gm.transform.SetSiblingIndex(0);
                         Vector3 inititalScale = gm.transform.localScale;
                         gm.transform.localScale = Vector3.zero;
-                        StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer,  data[0][0][i]["winAmount"].ToString(), gm));
-                       // gm.transform.DOScale(inititalScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+                        StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer, data[0][0][i]["winAmount"].ToString(), gm));
+                        // gm.transform.DOScale(inititalScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
                         winnersObject.Add(gm);
                     }
                 }
@@ -846,7 +846,7 @@ public class InGameManager : MonoBehaviour
         }
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
-            onlinePlayersScript[i].ToggleCards(true,true);
+            onlinePlayersScript[i].ToggleCards(true, true);
         }
     }
 
@@ -862,8 +862,8 @@ public class InGameManager : MonoBehaviour
 
         if (remainingTime > 1)
         {
-           // InGameUiManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
-           // InGameUiManager.instance.LoadingImage.SetActive(true);
+            // InGameUiManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
+            // InGameUiManager.instance.LoadingImage.SetActive(true);
             if (!isRematchRequestSent)
             {
                 if (remainingTime > GameConstants.BUFFER_TIME)
@@ -911,7 +911,7 @@ public class InGameManager : MonoBehaviour
         }
         else
         {
-           // InGameUiManager.instance.LoadingImage.SetActive(false);
+            // InGameUiManager.instance.LoadingImage.SetActive(false);
             InGameUiManager.instance.ShowTableMessage("");
         }
 
@@ -932,7 +932,7 @@ public class InGameManager : MonoBehaviour
 
                 int remainingTime = (int)float.Parse(data[0].ToString());
 
-               // Debug.Log("%%%%%%%%%%%%%%%%%%%%%%  remainingTime " + remainingTime);
+                // Debug.Log("%%%%%%%%%%%%%%%%%%%%%%  remainingTime " + remainingTime);
                 if (remainingTime == 10)
                 {
                     PlayerTimerReset();
@@ -978,7 +978,7 @@ public class InGameManager : MonoBehaviour
 
                 if (playerObject != null)
                 {
-                    StartCoroutine(WaitAndShowBetAnimation(playerObject,""+ betAmount));
+                    StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));
                 }
                 else
                 {
@@ -988,7 +988,7 @@ public class InGameManager : MonoBehaviour
                 }
             }
         }
-        
+
     }
 
     string handtype;
@@ -997,7 +997,7 @@ public class InGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
         handtype = serverResponse;
-     //   Debug.LogError("hand typessss" + handtype);
+        //   Debug.LogError("hand typessss" + handtype);
         ShowCommunityCardsAnimation();
     }
 
@@ -1021,23 +1021,23 @@ public class InGameManager : MonoBehaviour
 
         int remainingTime = (int)float.Parse(data[0].ToString());
         Debug.Log("Game Start in => " + remainingTime);
-     /*   if (remainingTime < 30)
-        {*/
-            if (remainingTime <= 1)
-            {
-                InGameUiManager.instance.ShowTableMessage("");
-         //   InGameUiManager.instance.LoadingImage.SetActive (false);
-            }
-            else
-            {
-//InGameUiManager.instance.LoadingImage.SetActive(true);
-        //    InGameUiManager.instance.ShowTableMessage("Match will start in " + remainingTime + " sec");
-            }
-      /*  }
+        /*   if (remainingTime < 30)
+           {*/
+        if (remainingTime <= 1)
+        {
+            InGameUiManager.instance.ShowTableMessage("");
+            //   InGameUiManager.instance.LoadingImage.SetActive (false);
+        }
         else
         {
-            InGameUiManager.instance.ShowTableMessage("Waiting for opponent");
-        }*/
+            //InGameUiManager.instance.LoadingImage.SetActive(true);
+            //    InGameUiManager.instance.ShowTableMessage("Match will start in " + remainingTime + " sec");
+        }
+        /*  }
+          else
+          {
+              InGameUiManager.instance.ShowTableMessage("Waiting for opponent");
+          }*/
     }
 
     public void OnPlayerObjectFound(string serverResponse)
@@ -1085,7 +1085,7 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.isDealer = data[0][i]["isDealer"].Equals(true);
                         playerData.playerData.isSmallBlind = data[0][i]["smallBlind"].Equals(true);
                         playerData.playerData.isBigBlind = data[0][i]["bigBlind"].Equals(true);
-                     //   Debug.LogError("************************************************************");
+                        //   Debug.LogError("************************************************************");
 
                         if (playerData.isTurn)
                         {
@@ -1131,7 +1131,7 @@ public class InGameManager : MonoBehaviour
                     if (playerObject != null)
                     {
                         PlayerData playerData = new PlayerData();
-                    //    Debug.LogError("************************************************************");
+                        //    Debug.LogError("************************************************************");
                         playerData.isFold = data[0][i]["isBlocked"].Equals(true);
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
@@ -1151,7 +1151,7 @@ public class InGameManager : MonoBehaviour
                         }
                         else
                         {
-                            playerObject. UpdateDetails(playerData,"",0,-1);
+                            playerObject.UpdateDetails(playerData, "", 0, -1);
                         }
                     }
                 }
@@ -1167,7 +1167,7 @@ public class InGameManager : MonoBehaviour
 #endif
                 }
             }
-        }        
+        }
     }
 
     #endregion
@@ -1210,7 +1210,25 @@ public class InGameManager : MonoBehaviour
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScript[0];
     }
-  
+   /* void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            Debug.LogError("OnApplicationFocusOnApplicationFocusOnApplicationFocus");
+            LoadMainMenu();
+
+        }
+    }
+    void OnApplicationQuit()
+    {
+
+        Debug.LogError("OnApplicationQuitOnApplicationQuitOnApplicationQuit");
+        // StartCoroutine(WaitAndSendLeaveRequest());
+        LoadMainMenu();
+        SocketController.instance.SendLeaveMatchRequest();
+
+    }*/
+
 }
 
 public class MatchMakingPlayerData
