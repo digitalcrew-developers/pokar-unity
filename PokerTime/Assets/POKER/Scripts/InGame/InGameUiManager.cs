@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using LitJson;
 
 public class InGameUiManager : MonoBehaviour
 {
@@ -51,6 +52,11 @@ public class InGameUiManager : MonoBehaviour
     public GameObject tipsKiss;
     public Transform spwantipsKissPos;
     public string TempUserID;
+
+    public GameObject players;
+
+
+
     private void Awake()
     {
         instance = this;
@@ -76,6 +82,8 @@ public class InGameUiManager : MonoBehaviour
         ToggleSuggestionButton(false);
     }
 
+
+
     public void OnSpinWheelArrowBtnClick()
     {
         Debug.Log("IIII  SpinWheelArrowBtnClick");
@@ -83,6 +91,9 @@ public class InGameUiManager : MonoBehaviour
 
         ShowScreen(InGameScreens.SpinWheelScreen);
     }
+
+   
+
     public void OnArrowBtnClick()
     {
          ArrowPopUp.SetActive(true);
@@ -839,7 +850,29 @@ public class InGameUiManager : MonoBehaviour
         }
         g.transform.SetParent(EmojiShowTransform);
     }
-  
+
+    
+    public void OnGetEmoji(string serverResponse)
+    {
+        // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
+        JsonData data = JsonMapper.ToObject(serverResponse);
+       
+        Debug.Log("%%%%%%%%%%%%%%%%%%% " + data[0]["Status"]);
+        if (data[0]["Status"].ToString().Equals("1"))
+        {
+            for (int i = 0; i < players.transform.childCount; i++)
+            {
+                if (players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentTo"].ToString())
+                {
+                    EmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji");
+                }
+            }
+            
+        }
+
+        
+    }
+
 }
 
 

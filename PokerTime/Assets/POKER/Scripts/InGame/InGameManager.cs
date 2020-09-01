@@ -746,9 +746,11 @@ public class InGameManager : MonoBehaviour
 
     public void SendEmoji(string serverResponse)
     {
-        Debug.LogError("SendEmoji serverResponse  ---****-->" + serverResponse);
-      
-    }
+        Debug.LogError("SendEmoji serverResponse  ---**$$$$$$$$$$$$$$$$$$$$$$**-->" + serverResponse);
+        // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
+        InGameUiManager.instance.OnGetEmoji(serverResponse);
+        
+        }
     public void TipToDealer(string serverResponse)
     {
         Debug.LogError("TipToDealer serverResponse ---*****----> " + serverResponse);

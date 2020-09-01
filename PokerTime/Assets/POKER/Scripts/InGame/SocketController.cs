@@ -972,6 +972,7 @@ public class SocketController : MonoBehaviour
         string requestStringData = "{\"sentBy\":\"" + ((int.Parse(PlayerManager.instance.GetPlayerGameData().userId)).ToString() + "\"," +
             "\"sentTo\":\"" + otherUserId + "\"," +
             "\"deductionValue\":\"" + 2 + "\"," +
+            "\"emojiIndex\":\"" + 2 + "\"," +
             "\"tableId\":\"" + int.Parse(TABLE_ID)).ToString() + "\"}";
 
         Debug.Log("i am SentEmoji   " + requestStringData);
