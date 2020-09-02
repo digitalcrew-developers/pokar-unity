@@ -363,7 +363,7 @@ public class InGameManager : MonoBehaviour
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
-                Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
+           //     Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
                 if (isMatchStarted)
                 {
                     playerDataObject.isFold = data[0][i]["isBlocked"].Equals(true);
@@ -416,7 +416,6 @@ public class InGameManager : MonoBehaviour
                     allPlayersObject[index].TogglePlayerUI(true);
                     allPlayersObject[index].ShowDetailsAsNewPlayer(playerData[i]);
                 }
-
                 ++index;
             }
         }
@@ -458,15 +457,14 @@ public class InGameManager : MonoBehaviour
         }
 
         int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
-
+       
         for (int i = 0; i < maxPlayerOnTable && i < allPlayersObject.Length; i++)
         {
             if (!allPlayersObject[i].IsPlayerObjectActive())
             {
-
+             //   Debug.LogError(maxPlayerOnTable +"               " + allPlayersObject[i].gameObject.name);
                 allPlayersObject[i].ToggleEmptyObject(true);
             }
-
         }
  /*       if (playerData.Count > 0)
         {
@@ -1173,7 +1171,13 @@ public class InGameManager : MonoBehaviour
     }
 
     #endregion
-
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            LoadMainMenu();
+        }
+    }
 
 
     private void ResetMatchData()
@@ -1212,7 +1216,8 @@ public class InGameManager : MonoBehaviour
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScript[0];
     }
-     void OnApplicationFocus(bool focus)
+#if !UNITY_EDITOR
+   /* void OnApplicationFocus(bool focus)
       {
           if (!focus)
           {
@@ -1229,7 +1234,8 @@ public class InGameManager : MonoBehaviour
           LoadMainMenu();
           SocketController.instance.SendLeaveMatchRequest();
 
-      }
+      }*/
+#endif
 }
 
 public class MatchMakingPlayerData

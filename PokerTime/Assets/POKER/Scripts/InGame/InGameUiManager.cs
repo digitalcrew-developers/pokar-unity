@@ -110,8 +110,8 @@ public class InGameUiManager : MonoBehaviour
     public void OnClickEmojiTransform(Transform val)
     {
         EmojiShowTransform = val;
-        Debug.Log("I am getting emoji transform   "+this.transform.parent.parent.name);
-        otherId = int.Parse(this.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
+//        Debug.Log("I am getting emoji transform   "+this.transform.parent.parent.name);
+//        otherId = int.Parse(this.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
     }
 
 

@@ -18,7 +18,7 @@ public class ChatManager : MonoBehaviour
     public void OnChatMessageReceived(string serverResponse)
     {
         JsonData jsonData = JsonMapper.ToObject(serverResponse);
-        Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIZNNNNNNNNNNNNNNNNNNN");
+       // Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIZNNNNNNNNNNNNNNNNNNN");
         if (jsonData[0]["from"].ToString() != PlayerManager.instance.GetPlayerGameData().userId)
         {
             ChatMessage data = new ChatMessage();

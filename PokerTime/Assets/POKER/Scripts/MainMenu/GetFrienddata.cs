@@ -7,12 +7,12 @@ using UnityEngine.UI;
 public class GetFrienddata : MonoBehaviour
 {
     public Image profile,frame;
-    public Text name;
+    public Text userName;
     public Text online_offline;
     public string id;
     public string UserId;
     public string status;
-
+    public GameObject tipsFrineds;
     public void AcceptFriendRequest()
     {
         string requestData = "{\"id\":\"" +id+ "\"," +
@@ -30,7 +30,17 @@ public class GetFrienddata : MonoBehaviour
 
         WebServices.instance.SendRequest(RequestType.UpdateRequestStatus, requestData, true, OnServerResponseFound);
     }
-    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    public void onclickFriend()
+    {
+        GameObject Friendtips = Instantiate(tipsFrineds, MainMenuController.instance.screenLayers[3].transform);
+        Friendtips.GetComponent<FriendTipMenu>().userid.text = UserId;
+        Friendtips.GetComponent<FriendTipMenu>().username.text = userName.text;
+        Friendtips.GetComponent<FriendTipMenu>().profile.sprite = profile.sprite;
+        Friendtips.GetComponent<FriendTipMenu>().frame.sprite = frame.sprite;
+        Friendtips.GetComponent<FriendTipMenu>().id = id;
+
+    }
+     void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         if (errorMessage.Length > 0)
         {

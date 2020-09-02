@@ -28,7 +28,7 @@ public class SelectCountry : MonoBehaviour
 
         if (!string.IsNullOrEmpty(www.error))
         {
-               Debug.Log("Download failed");
+               Debug.Log("Download failed" + URL);
         }
         else
         {

@@ -10,7 +10,7 @@ public class FriendListManager : MonoBehaviour
     public Button friends, FriendList;
     public Transform container;
     public GameObject FriendsPrefeb, RequestFriendsPrefab;
-
+    public Text emptylistmsg;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,8 +33,8 @@ public class FriendListManager : MonoBehaviour
             case "Friends":
                 {
                     friends.interactable = false;
-                    friends.GetComponent<Image>().color = new Color(1, 1, 1, 0);
-                    FriendList.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                    friends.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                    FriendList.GetComponent<Image>().color = new Color(1, 1, 1, 0);
                     //    friends.GetComponent<Image>().color.a = 0;
                     for (int i = 0; i < container.childCount; i++)
                     {
@@ -49,8 +49,8 @@ public class FriendListManager : MonoBehaviour
             case "FriendList":
                 {
                     FriendList.interactable = false;
-                    friends.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-                    FriendList.GetComponent<Image>().color = new Color(1, 1, 1, 0);
+                    friends.GetComponent<Image>().color = new Color(1, 1, 1, 0);
+                    FriendList.GetComponent<Image>().color = new Color(1, 1, 1, 1);
                     for (int i = 0; i < container.childCount; i++)
                     {
                         Destroy(container.GetChild(i).gameObject);
@@ -90,11 +90,19 @@ public class FriendListManager : MonoBehaviour
                 {
                     for (int i = 0; i < data["getData"].Count; i++)
                     {
+                        emptylistmsg.text = "";
                         GameObject fl = Instantiate(FriendsPrefeb, container);
-                        fl.GetComponent<GetFrienddata>().name.text = data["getData"][i]["nickName"].ToString();
+                        fl.GetComponent<GetFrienddata>().userName.text = data["getData"][i]["nickName"].ToString();
+                        fl.GetComponent<GetFrienddata>().id = data["getData"][i]["id"].ToString();
+                        fl.GetComponent<GetFrienddata>().UserId = data["getData"][i]["userId"].ToString();
+                  //      StopAllCoroutines();
                         StartCoroutine(loadSpriteImageFromUrl(data["getData"][i]["profileImage"].ToString(), fl.GetComponent<GetFrienddata>().profile));
                         StartCoroutine(loadSpriteImageFromUrl(data["getData"][i]["frameURL"].ToString(), fl.GetComponent<GetFrienddata>().frame));
                     }
+                }
+                else
+                {
+                    emptylistmsg.text = "Send friend requests to players in Lobby game or Global Tournament!";
                 }
             }
         }
@@ -107,15 +115,21 @@ public class FriendListManager : MonoBehaviour
                 {
                     for (int i = 0; i < data["getData"].Count; i++)
                     {
-                        Debug.LogError("....................");
+                        emptylistmsg.text = "";
+                        
                         GameObject fl = Instantiate(RequestFriendsPrefab, container);
-                        fl.GetComponent<GetFrienddata>().name.text = data["getData"][i]["nickName"].ToString();
+                        fl.GetComponent<GetFrienddata>().userName.text = data["getData"][i]["nickName"].ToString();
                         fl.GetComponent<GetFrienddata>().id = data["getData"][i]["id"].ToString();
-                        fl.GetComponent<GetFrienddata>().UserId = data["getData"][i]["ToUserId"].ToString();
+                        fl.GetComponent<GetFrienddata>().UserId = data["getData"][i]["userId"].ToString();
                         fl.GetComponent<GetFrienddata>().status = data["getData"][i]["Status"].ToString();
+                      //  StopAllCoroutines();
                         StartCoroutine(loadSpriteImageFromUrl(data["getData"][i]["profileImage"].ToString(), fl.GetComponent<GetFrienddata>().profile));
                         //StartCoroutine(loadSpriteImageFromUrl(data["getData"][i]["frameURL"].ToString(), fl.GetComponent<GetFrienddata>().frame));
                     }
+                }
+                else
+                {
+                    emptylistmsg.text = "No message";
                 }
             }
         }

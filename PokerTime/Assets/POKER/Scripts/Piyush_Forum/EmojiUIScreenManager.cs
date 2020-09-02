@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using LitJson;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EmojiUIScreenManager : MonoBehaviour
 {
@@ -11,6 +13,8 @@ public class EmojiUIScreenManager : MonoBehaviour
 
     public int containerVal;
 
+    public Image profileimage, frame;
+    public Text userName, UserId, levletxt;
     // Start is called before the first frame update
     void Awake()
     {
@@ -20,6 +24,73 @@ public class EmojiUIScreenManager : MonoBehaviour
     private void Start()
     {
         ShowContainer(containerVal);
+        if(InGameUiManager.instance.TempUserID!=null)
+        {
+            GetUserDetails(InGameUiManager.instance.TempUserID);
+        }
+    }
+    public void GetUserDetails(string playerid)
+    {
+        WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + playerid + "\"}", true, OnServerResponseFound);
+    }
+    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    {
+        if (errorMessage.Length > 0)
+        {
+            if (isShowErrorMessage)
+            {
+                //  Debug.LogError("111111111111111111111111111111");
+                MainMenuController.instance.ShowMessage(errorMessage);
+            }
+            return;
+        }
+        if (requestType == RequestType.GetUserDetails)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+
+            if (data["success"].ToString() == "1")
+            {
+                for (int i = 0; i < data["getData"].Count; i++)
+                {
+
+                    loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString());
+                    levletxt.text = "Lvl. " + data["getData"][i]["userLevel"].ToString() + ">>";
+                    userName.text = data["getData"][i]["userName"].ToString();
+                    UserId.text = "UserID:" + data["getData"][i]["userId"].ToString();                    
+                }
+              
+            }
+            else
+            {
+                InGameUiManager.instance.ShowMessage(data["message"].ToString());
+            }
+        }
+    }
+    public void loadImages(string urlAvtar, string urlframe)
+    {
+        //   Debug.Log("Success data send");
+        StartCoroutine(loadSpriteImageFromUrl(urlAvtar, profileimage));
+        StartCoroutine(loadSpriteImageFromUrl(urlframe, frame));
+    }
+    IEnumerator loadSpriteImageFromUrl(string URL, Image image)
+    {
+        WWW www = new WWW(URL);
+        while (!www.isDone)
+        {
+            yield return null;
+        }
+        if (!string.IsNullOrEmpty(www.error))
+        {
+            Debug.Log("Download failed" + image.gameObject.name);
+        }
+        else
+        {
+            //  Debug.Log("Success222222222 data send");
+            Texture2D texture = new Texture2D(1, 1);
+            www.LoadImageIntoTexture(texture);
+            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            image.sprite = sprite;
+        }
     }
 
     void ShowContainer(int val)
@@ -101,6 +172,7 @@ public class EmojiUIScreenManager : MonoBehaviour
         {
             case "back":
                 {
+                    StopCoroutine("loadSpriteImageFromUrl");
                     InGameUiManager.instance.DestroyScreen(InGameScreens.EmojiScreen);
 
 

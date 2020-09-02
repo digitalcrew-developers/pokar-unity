@@ -27,8 +27,7 @@ public class PlayerScript : MonoBehaviour
     private GameObject foldScreen, parentObject, emptyObject, RealTimeResult;
     private bool isItMe;
 
-    public int otheruserId;
-
+    public string otheruserId;
 
     private int localBetAmount = 0;
     private int localBetRoundNo = 0;
@@ -118,7 +117,7 @@ public class PlayerScript : MonoBehaviour
         fx_holder.gameObject.SetActive(false);
         userName.text = playerData.userName.Substring(0, 4) + "...";
         //      Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
-        otheruserId = int.Parse(playerData.userId);
+     //   otheruserId = int.Parse(playerData.userId);
         transform.Find("Bg/Dealer").gameObject.SetActive(playerData.isDealer);
         localBetAmount = (int)playerData.totalBet;
 
@@ -205,7 +204,7 @@ public class PlayerScript : MonoBehaviour
         if (isShow == true)
         {
             avtar.sprite = defultavtar;
-
+          //  Debug.LogError(" Player scripts ===> " + this.gameObject.name);
         }
     }
 
@@ -224,6 +223,7 @@ public class PlayerScript : MonoBehaviour
         transform.Find("Bg/NameBg/Name").GetComponent<Text>().text = playerData.userName;
         transform.Find("Bg/Dealer").gameObject.SetActive(false);
         ShowAvtars_frame_flag(playerData.userId);
+        otheruserId = playerData.userId;
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
         lastActionImage.SetActive(false);
@@ -320,7 +320,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void SendUserID()
     {
-        InGameUiManager.instance.TempUserID = playerData.userId;
+        InGameUiManager.instance.TempUserID = otheruserId;
     }
     public void UpdateLastAction(string textToShow)
     {
