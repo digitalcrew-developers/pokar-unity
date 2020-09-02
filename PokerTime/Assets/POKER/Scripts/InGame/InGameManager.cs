@@ -1212,7 +1212,24 @@ public class InGameManager : MonoBehaviour
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScript[0];
     }
-  
+     void OnApplicationFocus(bool focus)
+      {
+          if (!focus)
+          {
+              Debug.LogError("OnApplicationFocusOnApplicationFocusOnApplicationFocus");
+              LoadMainMenu();
+
+          }
+      }
+      void OnApplicationQuit()
+      {
+
+          Debug.LogError("OnApplicationQuitOnApplicationQuitOnApplicationQuit");
+          // StartCoroutine(WaitAndSendLeaveRequest());
+          LoadMainMenu();
+          SocketController.instance.SendLeaveMatchRequest();
+
+      }
 }
 
 public class MatchMakingPlayerData

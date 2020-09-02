@@ -966,13 +966,13 @@ public class SocketController : MonoBehaviour
         socketRequest.Add(request);
     }
 
-    public void SentEmoji(int otherUserId)
+    public void SentEmoji(int otherUserId,int emojiIndex)
     {
    
         string requestStringData = "{\"sentBy\":\"" + ((int.Parse(PlayerManager.instance.GetPlayerGameData().userId)).ToString() + "\"," +
             "\"sentTo\":\"" + otherUserId + "\"," +
             "\"deductionValue\":\"" + 2 + "\"," +
-            "\"emojiIndex\":\"" + 2 + "\"," +
+            "\"emojiIndex\":\"" + emojiIndex + "\"," +
             "\"tableId\":\"" + int.Parse(TABLE_ID)).ToString() + "\"}";
 
         Debug.Log("i am SentEmoji   " + requestStringData);

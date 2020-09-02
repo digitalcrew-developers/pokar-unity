@@ -110,7 +110,8 @@ public class InGameUiManager : MonoBehaviour
     public void OnClickEmojiTransform(Transform val)
     {
         EmojiShowTransform = val;
-        Debug.Log("I am getting emoji transform");
+        Debug.Log("I am getting emoji transform   "+this.transform.parent.parent.name);
+        otherId = int.Parse(this.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
     }
 
 
@@ -810,7 +811,24 @@ public class InGameUiManager : MonoBehaviour
     }
 
     /////// EMOJI
-    ///
+    /// <summary>
+    /// 
+
+    /// </summary>
+    /// <param name="str"></param>
+    /// 
+
+    public int emojiIndex;
+    public int otherId;
+
+    public void CallEmojiSocket(int index) {
+        emojiIndex = index;
+        Debug.Log("i am here------------ call emoji "+index+"   "+emojiIndex);
+        SocketController.instance.SentEmoji(otherId, InGameUiManager.instance.emojiIndex);
+
+
+    }
+
     public void ShowEmojiOnScreen(string str)
     {
 
@@ -879,7 +897,49 @@ public class InGameUiManager : MonoBehaviour
                     EmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji");
                 }
             }
-            
+            switch (data[0]["emojiIndex"].ToString())
+            {
+                case "0":
+                    ShowEmojiOnScreen("bluffing");
+                    break;
+                case "1":
+                    ShowEmojiOnScreen("youRaPro");
+                    break;
+                case "2":
+                    ShowEmojiOnScreen("beerCheers");
+                    break;
+                case "3":
+                    ShowEmojiOnScreen("murgi");
+                    break;
+                case "4":
+                    ShowEmojiOnScreen("rocket");
+                    break;
+                case "5":
+                    ShowEmojiOnScreen("dung");
+                    break;
+                case "6":
+                    ShowEmojiOnScreen("oscar");
+                    break;
+                case "7":
+                    ShowEmojiOnScreen("donkey");
+                    break;
+                case "8":
+                    ShowEmojiOnScreen("gun");
+                    break;
+                case "9":
+                    ShowEmojiOnScreen("cherees");
+                    break;
+                case "10":
+                    ShowEmojiOnScreen("kiss");
+                    break;
+                case "11":
+                    ShowEmojiOnScreen("fish");
+                    break;
+                case "12":
+                    ShowEmojiOnScreen("thumbUp");
+                    break;
+                
+            }
         }
 
         

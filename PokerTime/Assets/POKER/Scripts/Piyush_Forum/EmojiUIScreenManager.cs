@@ -10,7 +10,7 @@ public class EmojiUIScreenManager : MonoBehaviour
     public GameObject[] containerAry;
 
     public int containerVal;
-    
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -22,24 +22,73 @@ public class EmojiUIScreenManager : MonoBehaviour
         ShowContainer(containerVal);
     }
 
-    void ShowContainer(int val) {
+    void ShowContainer(int val)
+    {
         for (int i = 0; i < containerAry.Length; i++)
         {
             if (i == val)
             {
                 containerAry[i].SetActive(true);
             }
-            else {
+            else
+            {
                 containerAry[i].SetActive(false);
             }
-        }    
+        }
     }
-
-    public void SelectEmojiButton(string str) {
+   
+    public void SelectEmojiButton(string str)
+    {
         SoundManager.instance.PlaySound(SoundType.Click);
 
-       // Debug.Log("Here Get The emoji name which show ---  "+str);
-        InGameUiManager.instance.ShowEmojiOnScreen(str);
+        int emojiIndex = 0;
+        Debug.Log("Here Get The emoji name which show ---  " + str);
+
+        switch (str)
+        {
+            case "bluffing":
+                emojiIndex = 0;
+                break;
+            case "youRaPro":
+                emojiIndex = 1;
+                break;
+            case "beerCheers":
+                emojiIndex = 2;
+                break;
+            case "murgi":
+                emojiIndex = 3;
+                break;
+            case "rocket":
+                emojiIndex = 4;
+                break;
+            case "dung":
+                emojiIndex = 5;
+                break;
+            case "oscar":
+                emojiIndex = 6;
+                break;
+            case "donkey":
+                emojiIndex = 7;
+                break;
+            case "thumbUp":
+                emojiIndex = 8;
+                break;
+            case "cherees":
+                emojiIndex = 9;
+                break;
+            case "kiss":
+                emojiIndex = 10;
+                break;
+            case "fish":
+                emojiIndex = 11;
+                break;
+            case "gun":
+                emojiIndex = 12;
+                break;
+        }
+        //InGameUiManager.instance.emojiIndex = emojiIndex;
+        // InGameUiManager.instance.ShowEmojiOnScreen(str);
+        InGameUiManager.instance.CallEmojiSocket(emojiIndex);
         OnClickOnButton("back");
     }
 
@@ -51,8 +100,8 @@ public class EmojiUIScreenManager : MonoBehaviour
         switch (eventName)
         {
             case "back":
-                {                   
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.EmojiScreen);              
+                {
+                    InGameUiManager.instance.DestroyScreen(InGameScreens.EmojiScreen);
 
 
                 }
