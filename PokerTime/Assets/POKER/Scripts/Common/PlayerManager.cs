@@ -55,6 +55,7 @@ public class PlayerGameDetails
     public string referralCode;
     public string userLevel;
     public string countryName;
+    public string countryCode;
     public float coins, diamonds, points;
     public int rabit, emoji, time;
 }

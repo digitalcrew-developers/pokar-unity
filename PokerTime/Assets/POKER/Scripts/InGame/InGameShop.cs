@@ -10,12 +10,17 @@ public class InGameShop : MonoBehaviour
     private PlayerData playerData;
 
     public Text playerGold;
+    public Text pointText, diamondText, coinsText;
 
     public void OnEnable()
     {
-        Debug.Log("I ammammamammammam");
+    
         OnClickOnButton("item");
         playerGold.text= "" + (int)playerData.balance;
+        pointText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().points);
+        diamondText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().diamonds);
+        coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
+
     }
     public void OnClickOnButton(string eventName)
     {

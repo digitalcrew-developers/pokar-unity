@@ -7,7 +7,7 @@ using LitJson;
 
 public class Utility : MonoBehaviour
 {
-    public static bool IsValidUserName(string dataToValidate,out string error)
+    public static bool IsValidUserName(string dataToValidate, out string error)
     {
         error = "";
 
@@ -21,7 +21,7 @@ public class Utility : MonoBehaviour
             {
                 error = "username must contains atleast 3 characters";
             }
-            
+
             return false;
         }
 
@@ -83,30 +83,32 @@ public class Utility : MonoBehaviour
         playerData.userId = data["userId"].ToString();
         playerData.userName = data["userName"].ToString();
         playerData.userLevel = data["userLevel"].ToString();
-        if(data["countryName"]!=null)
-        playerData.countryName = data["countryName"].ToString();
+        if (data["countryName"] != null)
+            playerData.countryName = data["countryName"].ToString();
         if (data["profileImage"] != null)
             playerData.avatarURL = data["profileImage"].ToString();
         if (data["countryFlag"] != null)
             playerData.CountryURL = data["countryFlag"].ToString();
         if (data["frameURL"] != null)
             playerData.FrameUrl = data["frameURL"].ToString();
-        //if (data["profileImage"] != null && data["profileImage"].ToString().Length > 0)
-        //{
-        //}
-        //else
-        //{
-        //    playerData.avatarURL = "";
-        //}
+        if (data["countryCode"] != null)
+            playerData.countryCode = data["countryCode"].ToString();
+            //if (data["profileImage"] != null && data["profileImage"].ToString().Length > 0)
+            //{
+            //}
+            //else
+            //{
+            //    playerData.avatarURL = "";
+            //}
 
-        if (data["referalCode"] != null && data["referalCode"].ToString().Length > 0)
-        {
-            playerData.referralCode = data["referalCode"].ToString();
-        }
-        else
-        {
-            playerData.referralCode = "";
-        }
+            if (data["referalCode"] != null && data["referalCode"].ToString().Length > 0)
+            {
+                playerData.referralCode = data["referalCode"].ToString();
+            }
+            else
+            {
+                playerData.referralCode = "";
+            }
 
 
 

@@ -8,6 +8,7 @@ public class ProfileScreenUiManager : MonoBehaviour
 {
     public static ProfileScreenUiManager instance;
     public Image avtar, frame;
+    public string countrycode,countryname;
     public void Awake()
     {
         instance = this;
@@ -20,9 +21,7 @@ public class ProfileScreenUiManager : MonoBehaviour
 		coinsText.text = Utility.GetTrimmedAmount("" + playerData.coins);
 		diamondsText.text = Utility.GetTrimmedAmount("" + playerData.diamonds);
 		pointsText.text = Utility.GetTrimmedAmount("" + playerData.points);
-        userLevel.text ="Lvl. "+ playerData.userLevel+">>";
-        userName.text = playerData.userName;
-		userId.text ="UserID:"+ playerData.userId;
+      
 
         GetProfileURLs(playerData.userId);
     }
@@ -52,12 +51,16 @@ public class ProfileScreenUiManager : MonoBehaviour
                 {                 
               
                     loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString());
+                    userLevel.text = "Lvl. " + data["getData"][i]["userLevel"].ToString() + ">>";
+                    userName.text = data["getData"][i]["userName"].ToString();
+                    userId.text = "UserID:" + data["getData"][i]["userId"].ToString();
+                    countrycode = data["getData"][i]["countryCode"].ToString();
+                    countryname = data["getData"][i]["countryName"].ToString(); 
                 }
                 MainMenuController.instance.OnClickOnButton("profile");
             }
             else
             {
-            //    Debug.LogError("111111111111111111111111111111");
                 MainMenuController.instance.ShowMessage(data["message"].ToString());
             }
         }

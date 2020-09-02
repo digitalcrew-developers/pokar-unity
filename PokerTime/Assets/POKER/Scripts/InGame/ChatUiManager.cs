@@ -72,10 +72,12 @@ public class ChatUiManager : MonoBehaviour
             if (chatList[i].isMe)
             {
                 gm = Instantiate(outGoingPrefab, container) as GameObject;
+                gm.GetComponent<InOutMsgUIManager>().userId = PlayerManager.instance.GetPlayerGameData().userId;
             }
             else
             {
                 gm = Instantiate(inComingPrefab,container) as GameObject;
+                gm.GetComponent<InOutMsgUIManager>().userId = chatList[i].userId;
             }
 
             gm.transform.Find("Title").GetComponent<Text>().text = chatList[i].title;

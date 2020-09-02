@@ -21,6 +21,8 @@ public class ProfileModification : MonoBehaviour
         instance = this;
         nickNameHeader.text = ProfileScreenUiManager.instance.userName.text;
         NickNameinputField.text = ProfileScreenUiManager.instance.userName.text;
+        countryRegion.text = ProfileScreenUiManager.instance.countryname;
+        countrycode = ProfileScreenUiManager.instance.countrycode;
         StartCoroutine(loadSpriteImageFromUrl(PlayerManager.instance.GetPlayerGameData().avatarURL, profileImage));
         StartCoroutine(loadSpriteImageFromUrl(PlayerManager.instance.GetPlayerGameData().CountryURL, countryimage));
         StartCoroutine(loadSpriteImageFromUrl(PlayerManager.instance.GetPlayerGameData().FrameUrl, frameImage));
