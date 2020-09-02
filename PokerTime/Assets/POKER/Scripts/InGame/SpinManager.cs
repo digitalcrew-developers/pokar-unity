@@ -9,7 +9,7 @@ public class SpinManager : MonoBehaviour
 {
     public static SpinManager instance;
     public Transform Container;
-
+    public GameObject InactiveSpinRotation;
     [SerializeField]
     public List<SpinItemData> spinItemList;
 
@@ -36,6 +36,7 @@ public class SpinManager : MonoBehaviour
     public void SpinBtnClick()
     {
         InGameUiManager.instance.spinWheel.SetActive(true);
+        InactiveSpinRotation.SetActive(false);
     }
 
     public void SetSpinWheelWinning(int index)

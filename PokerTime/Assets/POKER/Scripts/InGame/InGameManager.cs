@@ -749,8 +749,8 @@ public class InGameManager : MonoBehaviour
         Debug.LogError("SendEmoji serverResponse  ---**$$$$$$$$$$$$$$$$$$$$$$**-->" + serverResponse);
         // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
         InGameUiManager.instance.OnGetEmoji(serverResponse);
-        
-        }
+        Debug.LogError(" ---**$$$$$i am here $$$$$$$$$$$$$$$$$**-->" + serverResponse);
+    }
     public void TipToDealer(string serverResponse)
     {
         Debug.LogError("TipToDealer serverResponse ---*****----> " + serverResponse);
@@ -1212,7 +1212,7 @@ public class InGameManager : MonoBehaviour
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScript[0];
     }
-     void OnApplicationFocus(bool focus)
+   /*  void OnApplicationFocus(bool focus)
       {
           if (!focus)
           {
@@ -1229,7 +1229,7 @@ public class InGameManager : MonoBehaviour
           LoadMainMenu();
           SocketController.instance.SendLeaveMatchRequest();
 
-      }
+      }*/
 }
 
 public class MatchMakingPlayerData

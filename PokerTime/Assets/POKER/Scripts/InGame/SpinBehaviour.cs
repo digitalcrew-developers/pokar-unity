@@ -44,6 +44,7 @@ public class SpinBehaviour : MonoBehaviour
     public void DeActiveObj()
     {
         this.gameObject.SetActive(false);
+        SpinManager.instance.InactiveSpinRotation.SetActive(true);
     }
 
 

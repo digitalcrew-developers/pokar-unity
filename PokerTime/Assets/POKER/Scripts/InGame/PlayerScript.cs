@@ -29,14 +29,17 @@ public class PlayerScript : MonoBehaviour
 
     public int otheruserId;
 
-
+   
     private int localBetAmount = 0;
     private int localBetRoundNo = 0;
 
     public void Start()
     {
-
+        
     }
+
+    
+
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         if (errorMessage.Length > 0)
@@ -70,6 +73,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
+ 
     IEnumerator loadSpriteImageFromUrl(string URL, Image image)
     {
         UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
@@ -321,6 +325,7 @@ public class PlayerScript : MonoBehaviour
     public void SendUserID()
     {
         InGameUiManager.instance.TempUserID = playerData.userId;
+        
     }
     public void UpdateLastAction(string textToShow)
     {

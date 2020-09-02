@@ -7,7 +7,7 @@ public class EmojiBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("this.transform.parent.parent.parent &&&&&&&&&&&&&   "+ this.transform.parent.parent.parent.name);
+        Debug.Log("**********  GAME OBJECT NAME***************   "+ this.transform.name);
         //if (this.transform.parent.parent.parent.name.Equals("0")||
         //this.transform.parent.parent.parent.name.Equals("1")||
         //this.transform.parent.parent.parent.name.Equals("2")||
@@ -29,6 +29,13 @@ public class EmojiBehaviour : MonoBehaviour
         Destroy(this.gameObject, 3);
     }
 
-   
-    
+    public Transform target;
+    public float speed;
+    void Update()
+    {
+        float step = speed * Time.deltaTime*300;
+        Debug.LogError("$$$$$$$$      UPDATE i S CALLL  "+ step+"       "+ transform.position+"       "+ target.position);
+        transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+    }
+
 }
