@@ -108,6 +108,7 @@ public class InGameUiManager : MonoBehaviour
     public void OnClickEmoji(int val)
     {
         emojiContainerVal = val;
+        Debug.Log("I AM HERE______________  "+val);
     }
     public void OnClickEmojiTransform(Transform val)
     {
