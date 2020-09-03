@@ -975,7 +975,7 @@ public class SocketController : MonoBehaviour
             "\"emojiIndex\":\"" + emojiIndex + "\"," +
             "\"tableId\":\"" + int.Parse(TABLE_ID)).ToString() + "\"}";
 
-        Debug.Log("i am SentEmoji   " + requestStringData);
+        Debug.LogError("i am SentEmoji   " + requestStringData);
         object requestObjectData = Json.Decode(requestStringData);
 
         

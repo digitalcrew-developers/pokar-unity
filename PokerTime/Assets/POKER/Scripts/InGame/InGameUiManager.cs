@@ -113,7 +113,14 @@ public class InGameUiManager : MonoBehaviour
     {
         EmojiShowTransform = val;
         Debug.Log("I am getting emoji transform   "+val.transform.parent.parent.name);
-        otherId = int.Parse(val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
+        if (val.transform.parent.parent.name.Equals("LobbyTable"))
+        {
+            otherId = 0;
+        }
+        else {
+            otherId = int.Parse(val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
+        }
+        
     }
 
 
@@ -825,7 +832,7 @@ public class InGameUiManager : MonoBehaviour
 
     public void CallEmojiSocket(int index) {
         emojiIndex = index;
-        Debug.Log("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
+        Debug.LogError("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
         SocketController.instance.SentEmoji(otherId, InGameUiManager.instance.emojiIndex);
 
 
@@ -891,25 +898,19 @@ public class InGameUiManager : MonoBehaviour
         // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
         JsonData data = JsonMapper.ToObject(serverResponse);
        
-        Debug.LogError("%%%%%%%%%%%%%%%%%%% " + data[0]["Status"]);
         if (data[0]["Status"].ToString().Equals("1.0")|| data[0]["Status"].ToString().Equals("1"))
         {
-            Debug.LogError("%%%%%%%%%%0000000000%%%%%%%%% " + data[0]["Status"]);
             for (int i = 0; i < players.transform.childCount; i++)
             {
-                Debug.LogError("%%%%%%%%%%11111111111111%%%%%%%%% " + i);
                 if (players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentBy"].ToString())
                 {
-                    Debug.LogError("%%%%%%%%%%222222222222%%%%%%%%% " + players.transform.GetChild(i).GetChild(0).Find("Emoji").name);
                     EmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
-                    Debug.LogError("%%%%%%%%%%2222222222220000%%%%%%%%% " + EmojiShowTransform.name);
-
+                   
                     break;
                 }
             }
             for (int i = 0; i < players.transform.childCount; i++)
             {
-                Debug.LogError("#############11111111111111########## " + i);
                 if (data[0]["sentTo"].ToString().Equals("0"))
                 {
                     fromEmojiShowTransform = GirlDealerEmoji.transform;
@@ -918,10 +919,8 @@ public class InGameUiManager : MonoBehaviour
                 {
                     if (players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentTo"].ToString())
                     {
-                        Debug.LogError("###########222222222222############ " + players.transform.GetChild(i).GetChild(0).Find("Emoji").name);
-                        fromEmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
-                        Debug.LogError("##############2222222222220000############ " + fromEmojiShowTransform.name);
-
+                       fromEmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
+                        
                         break;
                     }
                 }

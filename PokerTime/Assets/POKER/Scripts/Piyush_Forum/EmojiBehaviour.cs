@@ -24,8 +24,8 @@ public class EmojiBehaviour : MonoBehaviour
         //   // SocketController.instance.SentEmoji(this.transform.parent.parent.parent.GetComponent<PlayerScript>().otheruserId,InGameUiManager.instance.emojiIndex);
 
         //}
-        
-        
+
+        this.transform.SetParent(target.transform);
         Destroy(this.gameObject, 3);
     }
 
@@ -34,7 +34,7 @@ public class EmojiBehaviour : MonoBehaviour
     void Update()
     {
         float step = speed * Time.deltaTime*300;
-        Debug.LogError("$$$$$$$$      UPDATE i S CALLL  "+ step+"       "+ transform.position+"       "+ target.position);
+       // Debug.LogError("$$$$$$$$      UPDATE i S CALLL  "+ step+"       "+ transform.position+"       "+ target.position);
         transform.position = Vector3.MoveTowards(transform.position, target.position, step);
     }
 

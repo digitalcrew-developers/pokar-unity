@@ -23,9 +23,10 @@ public class ProfileModification : MonoBehaviour
         NickNameinputField.text = ProfileScreenUiManager.instance.userName.text;
         countryRegion.text = ProfileScreenUiManager.instance.countryname;
         countrycode = ProfileScreenUiManager.instance.countrycode;
-        StartCoroutine(loadSpriteImageFromUrl(PlayerManager.instance.GetPlayerGameData().avatarURL, profileImage));
-        StartCoroutine(loadSpriteImageFromUrl(PlayerManager.instance.GetPlayerGameData().CountryURL, countryimage));
-        StartCoroutine(loadSpriteImageFromUrl(PlayerManager.instance.GetPlayerGameData().FrameUrl, frameImage));
+        avtarid = ProfileScreenUiManager.instance.avtarid;
+        StartCoroutine(loadSpriteImageFromUrl(ProfileScreenUiManager.instance.avtarurl, profileImage));
+        StartCoroutine(loadSpriteImageFromUrl(ProfileScreenUiManager.instance.flagurl, countryimage));
+        StartCoroutine(loadSpriteImageFromUrl(ProfileScreenUiManager.instance.frameurl, frameImage));
     }
     IEnumerator loadSpriteImageFromUrl(string URL,Image image)
     {

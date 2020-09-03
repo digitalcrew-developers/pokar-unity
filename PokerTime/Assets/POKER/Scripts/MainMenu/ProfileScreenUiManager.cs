@@ -8,26 +8,28 @@ public class ProfileScreenUiManager : MonoBehaviour
 {
     public static ProfileScreenUiManager instance;
     public Image avtar, frame;
-    public string countrycode,countryname;
+    public string countrycode, countryname;
+    public string avtarurl, flagurl, frameurl;
+    public int avtarid;
     public void Awake()
     {
         instance = this;
     }
-    public Text coinsText,diamondsText,pointsText,userName,userId,userLevel;
-    
-	void Start()
-	{
-		PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
-		coinsText.text = Utility.GetTrimmedAmount("" + playerData.coins);
-		diamondsText.text = Utility.GetTrimmedAmount("" + playerData.diamonds);
-		pointsText.text = Utility.GetTrimmedAmount("" + playerData.points);
-      
+    public Text coinsText, diamondsText, pointsText, userName, userId, userLevel;
+
+    void Start()
+    {
+        PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
+        coinsText.text = Utility.GetTrimmedAmount("" + playerData.coins);
+        diamondsText.text = Utility.GetTrimmedAmount("" + playerData.diamonds);
+        pointsText.text = Utility.GetTrimmedAmount("" + playerData.points);
+
 
         GetProfileURLs(playerData.userId);
     }
     public void GetProfileURLs(string playerid)
     {
-        WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" +playerid + "\"}", true, OnServerResponseFound);
+        WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + playerid + "\"}", true, OnServerResponseFound);
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -36,7 +38,7 @@ public class ProfileScreenUiManager : MonoBehaviour
         {
             if (isShowErrorMessage)
             {
-              //  Debug.LogError("111111111111111111111111111111");
+                //  Debug.LogError("111111111111111111111111111111");
                 MainMenuController.instance.ShowMessage(errorMessage);
             }
             return;
@@ -48,14 +50,18 @@ public class ProfileScreenUiManager : MonoBehaviour
             if (data["success"].ToString() == "1")
             {
                 for (int i = 0; i < data["getData"].Count; i++)
-                {                 
-              
+                {
+
                     loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString());
                     userLevel.text = "Lvl. " + data["getData"][i]["userLevel"].ToString() + ">>";
                     userName.text = data["getData"][i]["userName"].ToString();
                     userId.text = "UserID:" + data["getData"][i]["userId"].ToString();
                     countrycode = data["getData"][i]["countryCode"].ToString();
-                    countryname = data["getData"][i]["countryName"].ToString(); 
+                    countryname = data["getData"][i]["countryName"].ToString();
+                    avtarurl = data["getData"][i]["profileImage"].ToString();
+                    frameurl = data["getData"][i]["frameURL"].ToString();
+                    flagurl = data["getData"][i]["countryFlag"].ToString();
+                    avtarid = int.Parse(data["getData"][i]["avatarID"].ToString());
                 }
                 MainMenuController.instance.OnClickOnButton("profile");
             }
@@ -65,7 +71,6 @@ public class ProfileScreenUiManager : MonoBehaviour
             }
         }
     }
-
     public void loadImages(string urlAvtar,string urlframe)
     {
      //   Debug.Log("Success data send");
