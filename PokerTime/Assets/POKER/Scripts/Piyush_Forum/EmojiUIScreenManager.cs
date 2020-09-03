@@ -21,6 +21,8 @@ public class EmojiUIScreenManager : MonoBehaviour
         instance = this;
     }
 
+
+
     private void Start()
     {
         ShowContainer(containerVal);
@@ -97,7 +99,7 @@ public class EmojiUIScreenManager : MonoBehaviour
     {
         for (int i = 0; i < containerAry.Length; i++)
         {
-            if (i == val)
+            if (i == InGameUiManager.instance.emojiContainerVal)
             {
                 containerAry[i].SetActive(true);
             }

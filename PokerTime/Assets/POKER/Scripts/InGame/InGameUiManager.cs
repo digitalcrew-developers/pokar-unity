@@ -42,7 +42,7 @@ public class InGameUiManager : MonoBehaviour
 
     public GameObject ArrowPopUp;
 
-    private int emojiContainerVal;
+    public int emojiContainerVal;
     public Transform EmojiShowTransform;
     public Transform fromEmojiShowTransform;
     public GameObject[] EmojiPrefabs;
@@ -108,6 +108,7 @@ public class InGameUiManager : MonoBehaviour
     public void OnClickEmoji(int val)
     {
         emojiContainerVal = val;
+        Debug.Log("I AM HERE______________  "+val);
     }
     public void OnClickEmojiTransform(Transform val)
     {

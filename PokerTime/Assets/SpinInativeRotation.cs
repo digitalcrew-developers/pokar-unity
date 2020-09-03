@@ -13,29 +13,29 @@ public class SpinInativeRotation : MonoBehaviour
 
     private void OnEnable()
     {
-        //spinVal.SetActive(false);
         StartSpin();
 
     }
 
-
+    private void OnDisable()
+    {
+        //StartSpin();
+        StopSpin();
+    }
 
 
     public void StartSpin()
     {
-        InvokeRepeating("RotateSpin", 0.15f, 0.15f);
-        //float rand = Random.Range(3.0f, 5.5f);
-        //Invoke("StopSpin", rand);
+        InvokeRepeating("RotateSpin", 0.25f, 0.25f);
+       
+        
     }
 
 
     void StopSpin()
     {
         CancelInvoke("RotateSpin");
-        //spinVal.SetActive(true);
-       // spinVal.GetComponent<Text>().text = "+ " + SpinManager.instance.spinItemList[spinStartIndex].itemValue;
-        //SpinManager.instance.SetSpinWheelWinning(spinStartIndex);
-        Invoke("DeActiveObj", 2);
+        
     }
 
 
