@@ -42,7 +42,7 @@ public class InGameUiManager : MonoBehaviour
 
     public GameObject ArrowPopUp;
 
-    private int emojiContainerVal;
+    public int emojiContainerVal;
     public Transform EmojiShowTransform;
     public Transform fromEmojiShowTransform;
     public GameObject[] EmojiPrefabs;

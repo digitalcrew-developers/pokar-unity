@@ -18,12 +18,17 @@ public class SpinInativeRotation : MonoBehaviour
 
     }
 
+    private void OnDisable()
+    {
+        //spinVal.SetActive(false);
+        StopSpin();
 
+    }
 
 
     public void StartSpin()
     {
-        InvokeRepeating("RotateSpin", 0.15f, 0.15f);
+        InvokeRepeating("RotateSpin", 0.25f, 0.25f);
         //float rand = Random.Range(3.0f, 5.5f);
         //Invoke("StopSpin", rand);
     }

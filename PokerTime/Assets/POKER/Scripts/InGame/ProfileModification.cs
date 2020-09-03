@@ -77,9 +77,7 @@ public class ProfileModification : MonoBehaviour
                               "\"avatarID\":\"" + avtarid + "\"}";
         
         WebServices.instance.SendRequest(RequestType.UpdateUserSettings, requestData, true,OnServerResponseFound);
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.ProfileModification);
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Profile);
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Profile);
+       
         //PlayerManager.instance.GetPlayerGameData().userName
 
     }
@@ -103,9 +101,11 @@ public class ProfileModification : MonoBehaviour
                 if (requestType == RequestType.UpdateUserSettings)
                 {
                     Debug.Log("Success data send");
-                 //   ProfileScreenUiManager.instance.GetProfileURLs(PlayerManager.instance.GetPlayerGameData().userId);
-                   
+                    //   ProfileScreenUiManager.instance.GetProfileURLs(PlayerManager.instance.GetPlayerGameData().userId);
 
+                    MainMenuController.instance.DestroyScreen(MainMenuScreens.ProfileModification);
+                    MainMenuController.instance.DestroyScreen(MainMenuScreens.Profile);
+                    MainMenuController.instance.ShowScreen(MainMenuScreens.Profile);
                 }
                 MainMenuController.instance.OnClickOnButton("profile");
             }
