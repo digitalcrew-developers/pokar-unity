@@ -18,6 +18,8 @@ public class ForumListUIManager : MonoBehaviour
 
     public GameObject forumListPannel;
     public GameObject commentPannel;
+    public GameObject commentPannelCommentObj;
+    public GameObject commentPannelVedioObj;
     public GameObject commentPrefab;
 
     public void Awake()
@@ -37,6 +39,22 @@ public class ForumListUIManager : MonoBehaviour
     public void ClickBackBtn() {
         MainMenuController.instance.OnClickOnButton("menu");
        
+    }
+    public void OnClickVedioOnShowCommentObj()
+    {
+        commentPannelVedioObj.SetActive(true);
+        commentPannelCommentObj.SetActive(false);
+    }
+    public void OnClickCommentbtnOnVedioObj()
+    {
+        commentPannelVedioObj.SetActive(true);
+        commentPannelCommentObj.SetActive(true);
+        //ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().GetComment(true, forumId, userId);
+    }
+    public void OnClickBackBtnOnVedioObj()
+    {
+        commentPannel.SetActive(false);
+        commentPannelVedioObj.SetActive(false);
     }
     public void BackBtnCommentPannel()
     {

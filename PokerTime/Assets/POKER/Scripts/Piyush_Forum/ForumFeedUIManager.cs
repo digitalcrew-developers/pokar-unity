@@ -28,6 +28,8 @@ public class ForumFeedUIManager : MonoBehaviour
     public GameObject likeIconBtn;
     public GameObject unlikeIconbtn;
 
+    public Button vedioBtn;
+
 
     //    {
     //	"forumId":1,
@@ -42,6 +44,8 @@ public class ForumFeedUIManager : MonoBehaviour
             likeIconBtn.SetActive(true);
             unlikeIconbtn.SetActive(false);
         }
+
+        vedioBtn.onClick.AddListener(OnClickVedioBtn);
     }
 
 
@@ -62,20 +66,21 @@ public class ForumFeedUIManager : MonoBehaviour
 
         
         ForumListUIManager.instance.commentPannel.SetActive(true);
+        ForumListUIManager.instance.commentPannelCommentObj.SetActive(true);
         ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().GetComment(true,forumId,userId);
-        //for(int i = 0;i < 10;i++)
-        //    {
-        //    Debug.Log("Comment is CLICK"); 
-        //    GameObject g = Instantiate(ForumListUIManager.instance.commentPrefab, ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().Container) as GameObject;
-
-        //}
-
-
-
+        
     }
 
+    public void OnClickVedioBtn()
+    {
 
+        ForumListUIManager.instance.commentPannel.SetActive(true);
+        ForumListUIManager.instance.commentPannelVedioObj.SetActive(true);
+        ForumListUIManager.instance.commentPannelCommentObj.SetActive(false);
+        ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().GetComment(true, forumId, userId);
+    }
 
+   
     public void PostLike(bool isShowLoading = true)
     {
 

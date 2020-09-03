@@ -9,6 +9,8 @@ using System.Collections.Generic;
 [RequireComponent(typeof(ScrollRect))]
 public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler {
 
+    public static ScrollSnapRect instance;
+
     [Tooltip("Set starting page index - starting from 0")]
     public int startingPage = 0;
     [Tooltip("Threshold time for fast swipe in seconds")]
@@ -39,7 +41,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     
     // number of pages in container
     private int _pageCount;
-    private int _currentPage;
+    public int _currentPage;
 
     // whether lerping is in progress and target lerp position
     private bool _lerp;
@@ -58,6 +60,11 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     private int _previousPageSelectionIndex;
     // container with Image components - one Image for each page
     private List<Image> _pageSelectionImages;
+
+    public void Awake()
+    {
+        instance = this;
+    }
 
     //------------------------------------------------------------------------
     void Start() {

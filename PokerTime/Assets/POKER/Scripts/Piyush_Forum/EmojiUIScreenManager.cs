@@ -15,6 +15,11 @@ public class EmojiUIScreenManager : MonoBehaviour
 
     public Image profileimage, frame;
     public Text userName, UserId, levletxt;
+
+    public GameObject addBtn;
+    public GameObject dealerBtn;
+
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -30,7 +35,14 @@ public class EmojiUIScreenManager : MonoBehaviour
         {
             GetUserDetails(InGameUiManager.instance.TempUserID);
         }
+
+      
     }
+
+    public void OnDealerBtnClick() {
+         InGameUiManager.instance.ShowScreen(InGameScreens.DealerImageScreen);
+    }
+
     public void GetUserDetails(string playerid)
     {
         WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + playerid + "\"}", true, OnServerResponseFound);
@@ -102,6 +114,15 @@ public class EmojiUIScreenManager : MonoBehaviour
             if (i == InGameUiManager.instance.emojiContainerVal)
             {
                 containerAry[i].SetActive(true);
+                if (i == 2)
+                {
+                    addBtn.SetActive(false);
+                    dealerBtn.SetActive(true);
+                }
+                else {
+                    addBtn.SetActive(true);
+                    dealerBtn.SetActive(false);
+                }
             }
             else
             {

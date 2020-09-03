@@ -1001,7 +1001,8 @@ public enum InGameScreens
     EmojiScreen,
     PointEarnMsg,
     Tips,
-    SpinWheelScreen
+    SpinWheelScreen,
+    DealerImageScreen
 }
 
 public enum PlayerAction
