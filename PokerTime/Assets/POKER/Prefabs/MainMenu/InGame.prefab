@@ -6666,12 +6666,12 @@ MonoBehaviour:
   - {fileID: 5301997521374224886, guid: 291dab53c508567428dfcb7d8d1031cb, type: 3}
   - {fileID: 5301997521374224886, guid: d20f3b01dd93df241a9707768eb9388d, type: 3}
   - {fileID: 5301997521374224886, guid: 9707fe8c902c7704aa309a18da2bcbed, type: 3}
-  - {fileID: 5301997521374224886, guid: 6a3e90c87caa5c34184b2c21f80b190e, type: 3}
+  - {fileID: 5301997521374224886, guid: 1ac50ab5ca02e9344872a4f6ce7d5aac, type: 3}
   - {fileID: 5301997521374224886, guid: d9cc958d058daa64a842204f7d078074, type: 3}
   - {fileID: 5301997521374224886, guid: cacea47f27b141247bcc2a002b73a4ff, type: 3}
   - {fileID: 5301997521374224886, guid: 4ba2142e0c57cb34ebb26967e3318bb4, type: 3}
   - {fileID: 5301997521374224886, guid: 8f7a02fd925f0c845b674dc2906cb7aa, type: 3}
-  - {fileID: 5301997521374224886, guid: 1ac50ab5ca02e9344872a4f6ce7d5aac, type: 3}
+  - {fileID: 5301997521374224886, guid: 6a3e90c87caa5c34184b2c21f80b190e, type: 3}
   - {fileID: 5301997521374224886, guid: 895cc0d6ba369204f9d6cf26eb86c582, type: 3}
   GirlDealerEmoji: {fileID: 3665160717276576691}
   spinWheel: {fileID: 9018308218685574064}
@@ -15319,7 +15319,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -102.6, y: 59.6}
+  m_AnchoredPosition: {x: -105, y: 58}
   m_SizeDelta: {x: 113, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4385659908435050290
@@ -15777,7 +15777,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 102.8, y: 2.2}
+  m_AnchoredPosition: {x: 100, y: 2.2}
   m_SizeDelta: {x: 113, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4385659908435050337
@@ -16508,7 +16508,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 95.2, y: 57.9}
+  m_AnchoredPosition: {x: 100, y: 58}
   m_SizeDelta: {x: 113, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4385659908435050248
@@ -17317,6 +17317,7 @@ GameObject:
   - component: {fileID: 4385659908435050260}
   - component: {fileID: 4385659908435043132}
   - component: {fileID: 4385659908435043111}
+  - component: {fileID: 7127670760676796631}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -17399,6 +17400,19 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0.3647059, b: 0.24313727, a: 1}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 0
+--- !u!114 &7127670760676796631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4385659908435047719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2ef36f87ebc11f41bef27dcaddf7afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  callAmount: {fileID: 4385659908435043265}
 --- !u!1 &4385659908435047720
 GameObject:
   m_ObjectHideFlags: 0
@@ -17962,7 +17976,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -110.8, y: 14.5}
+  m_AnchoredPosition: {x: -115, y: -2}
   m_SizeDelta: {x: 113, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4385659908435050256
@@ -18823,7 +18837,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 98.7, y: 27.4}
+  m_AnchoredPosition: {x: 100, y: 27.4}
   m_SizeDelta: {x: 113, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4385659908435050263
@@ -20541,7 +20555,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -109.1, y: 25.8}
+  m_AnchoredPosition: {x: -105, y: 25.8}
   m_SizeDelta: {x: 113, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4385659908435050461
@@ -20802,7 +20816,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -116.4, y: 4}
+  m_AnchoredPosition: {x: -110, y: 4}
   m_SizeDelta: {x: 113, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4385659908435050456
@@ -22694,6 +22708,7 @@ GameObject:
   - component: {fileID: 4385659908435050349}
   - component: {fileID: 4385659908435043193}
   - component: {fileID: 4385659908435043194}
+  - component: {fileID: 4749195271216399967}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -22776,6 +22791,19 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0.3647059, b: 0.24313727, a: 1}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 0
+--- !u!114 &4749195271216399967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4385659908435047801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2ef36f87ebc11f41bef27dcaddf7afe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  callAmount: {fileID: 1930118751856832341}
 --- !u!1 &4385659908435047802
 GameObject:
   m_ObjectHideFlags: 0
@@ -23642,7 +23670,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 110, y: 15.2}
+  m_AnchoredPosition: {x: 115, y: -2}
   m_SizeDelta: {x: 113, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4385659908435050296
@@ -27243,6 +27271,7 @@ MonoBehaviour:
   betAnimationPrefab: {fileID: 7338481242400696259, guid: 6c62cb0c6acd64bc6b7eb72a0f7e5c9b,
     type: 3}
   animationLayer: {fileID: 6804876052118045337}
+  Pot: {fileID: 5932100457085159383}
   potText: {fileID: 4385659908435043277}
   winningPrefab: {fileID: 3994682506545177590, guid: d4fd682ad9cf04d669d6f08166d52c71,
     type: 3}
@@ -27254,6 +27283,7 @@ MonoBehaviour:
   - {fileID: 7946648711533672415}
   - {fileID: 7946648711634995354}
   - {fileID: 7946648710705021605}
+  isGameStart: 0
   WinnAnimationpos: {fileID: 8151787256875801600}
 --- !u!1 &4707413370506578446
 GameObject:
@@ -35508,7 +35538,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.9655625, y: 0.12344232}
   m_AnchorMax: {x: 1, y: 0.17962503}
-  m_AnchoredPosition: {x: 0, y: 34.299927}
+  m_AnchoredPosition: {x: 0, y: 34.30005}
   m_SizeDelta: {x: 2.941534, y: 3.1957397}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4666541659803664208

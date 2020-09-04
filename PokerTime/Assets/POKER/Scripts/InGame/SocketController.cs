@@ -352,6 +352,7 @@ public class SocketController : MonoBehaviour
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.PLAYER_OBJECT))
         {
             Debug.Log("OnPlayerObjectFound = " + responseText + "  Time = " + System.DateTime.Now);
+           
         }
 #else
         Debug.Log("OnPlayerObjectFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -365,13 +366,14 @@ public class SocketController : MonoBehaviour
     void OnOpenCardDataFound(Socket socket, Packet packet, params object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
-
+        InGameManager.instance.Pot.SetActive(true);
 #if DEBUG
 
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_OPEN_CARD_DATA_FOUND))
         {
             Debug.Log("OnOpenCardDataFound = " + responseText + "  Time = " + System.DateTime.Now);
+           
         }
 #else
         Debug.Log("OnOpenCardDataFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -557,7 +559,7 @@ public class SocketController : MonoBehaviour
     void OnResultDataFound(Socket socket, Packet packet, params object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
-
+        InGameManager.instance.Pot.SetActive(false);
 #if DEBUG
 
 #if UNITY_EDITOR

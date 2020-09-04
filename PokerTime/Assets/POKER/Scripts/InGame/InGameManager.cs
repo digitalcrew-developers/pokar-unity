@@ -22,6 +22,9 @@ public class InGameManager : MonoBehaviour
     [SerializeField]
     private Transform animationLayer;
 
+    
+    public GameObject Pot;
+
     [SerializeField]
     private Text potText;
 
@@ -31,7 +34,7 @@ public class InGameManager : MonoBehaviour
     [SerializeField]
     public Image[] communityCards;
 
-
+    public bool isGameStart;
 
     private PlayerScript[] onlinePlayersScript = null;
     private PlayerScript myPlayerObject = null,currentPlayer = null;
@@ -63,7 +66,8 @@ public class InGameManager : MonoBehaviour
         }
 
         UpdatePot("");
-
+        Debug.Log("i am here!!!!!!!!!!!!!!!!!");
+        Pot.SetActive(false);
         onlinePlayersScript = new PlayerScript[0];
 
         for (int i = 0; i < allPlayersObject.Length; i++)
@@ -73,6 +77,8 @@ public class InGameManager : MonoBehaviour
         }
 
         AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
+
+
     }
 
 
