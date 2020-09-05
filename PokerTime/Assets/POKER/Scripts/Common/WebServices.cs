@@ -8,6 +8,7 @@ public class WebServices : MonoBehaviour
 
 	void Awake()
 	{
+	//	PlayerPrefs.DeleteAll();
 		
 		instance = this;
 	}

@@ -119,7 +119,15 @@ public class InGameUiManager : MonoBehaviour
             otherId = 0;
         }
         else {
-            otherId = int.Parse(val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
+            Debug.Log("I am getting emoji transform 000000  " + val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
+            //if ((val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId) != "")
+            //{
+            //    otherId = int.Parse(val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
+            //}
+            if (InGameUiManager.instance.TempUserID!= "")
+            {
+                otherId = int.Parse(InGameUiManager.instance.TempUserID);
+            }
         }
         
     }

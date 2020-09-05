@@ -34,9 +34,7 @@ public class EmojiUIScreenManager : MonoBehaviour
         if(InGameUiManager.instance.TempUserID!=null)
         {
             GetUserDetails(InGameUiManager.instance.TempUserID);
-        }
-
-      
+        }      
     }
 
     public void OnDealerBtnClick() {
