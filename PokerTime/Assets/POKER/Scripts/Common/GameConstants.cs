@@ -79,7 +79,8 @@ public class GameConstants : MonoBehaviour
          API_URL+"/sendFriendRequest",
          API_URL+"/updateRequestStatus",
           API_URL +"/getSpinWheelItems",
-          API_URL +"/setSpinWheelWinning"
+          API_URL +"/setSpinWheelWinning",
+          SOCKET_URL+"/shopItem"
     };
     #endregion
 
@@ -117,5 +118,6 @@ public enum RequestType
     GetUserDetails,
     GetRewardCoins, GetFriendList, GetAllFriendRequest, SendFriendRequest, UpdateRequestStatus,
     GetSpinWheelItems,
-    SetSpinWheelWinning
+    SetSpinWheelWinning,
+    GetInGameShopValue
 }

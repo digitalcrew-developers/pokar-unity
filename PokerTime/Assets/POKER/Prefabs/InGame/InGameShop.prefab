@@ -954,24 +954,27 @@ MonoBehaviour:
   itemScreen: {fileID: 6972337011922478700}
   diamondScreen: {fileID: 8019755161057050347}
   pointScreen: {fileID: 8019755161228247097}
-  playerData:
-    userId: 
-    userName: 
-    tableId: 
-    isDealer: 0
-    isSmallBlind: 0
-    isBigBlind: 0
-    isFold: 0
-    isTurn: 0
-    isCheckAvailable: 0
-    balance: 0
-    totalBet: 0
-    cards: []
-    avatarurl: 
-  playerGold: {fileID: 3331136862177633633}
   pointText: {fileID: 8019755162024305265}
   diamondText: {fileID: 8019755162275764233}
   coinsText: {fileID: 8019755161222947605}
+  playerData:
+    userId: 
+    userName: 
+    password: 
+    avatarURL: 
+    FrameUrl: 
+    CountryURL: 
+    referralCode: 
+    userLevel: 
+    countryName: 
+    countryCode: 
+    coins: 0
+    diamonds: 0
+    points: 0
+    rabit: 0
+    emoji: 0
+    time: 0
+  playerGold: {fileID: 3331136862177633633}
 --- !u!1 &1743916059811546573
 GameObject:
   m_ObjectHideFlags: 0
@@ -2906,7 +2909,18 @@ MonoBehaviour:
   m_VerticalScrollbarSpacing: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6972337012599640413
 GameObject:
   m_ObjectHideFlags: 0
@@ -3725,15 +3739,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickOnButton
+      - m_Target: {fileID: 1498075412349823631}
+        m_MethodName: OnClickOnBuyButton
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: diamond
+          m_StringArgument: diamond_three
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &8019755160697926418
@@ -4121,15 +4135,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickOnButton
+      - m_Target: {fileID: 1498075412349823631}
+        m_MethodName: OnClickOnBuyButton
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: diamond
+          m_StringArgument: point_three
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &8019755160944806911
@@ -4252,15 +4266,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickOnButton
+      - m_Target: {fileID: 1498075412349823631}
+        m_MethodName: OnClickOnBuyButton
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: diamond
+          m_StringArgument: item_three
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &8019755161057050347
@@ -4985,15 +4999,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickOnButton
+      - m_Target: {fileID: 1498075412349823631}
+        m_MethodName: OnClickOnBuyButton
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: diamond
+          m_StringArgument: point_two
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &8019755161337894531
@@ -6290,15 +6304,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickOnButton
+      - m_Target: {fileID: 1498075412349823631}
+        m_MethodName: OnClickOnBuyButton
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: diamond
+          m_StringArgument: item_two
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &8019755161924162450
@@ -6495,15 +6509,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickOnButton
+      - m_Target: {fileID: 1498075412349823631}
+        m_MethodName: OnClickOnBuyButton
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: diamond
+          m_StringArgument: diamond_two
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &8019755161936007494
@@ -7968,15 +7982,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickOnButton
+      - m_Target: {fileID: 1498075412349823631}
+        m_MethodName: OnClickOnBuyButton
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: diamond
+          m_StringArgument: diamond_one
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &8019755162423457268
@@ -8177,15 +8191,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickOnButton
+      - m_Target: {fileID: 1498075412349823631}
+        m_MethodName: OnClickOnBuyButton
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: diamond
+          m_StringArgument: item_one
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &8019755162716516015
@@ -9276,15 +9290,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnClickOnButton
+      - m_Target: {fileID: 1498075412349823631}
+        m_MethodName: OnClickOnBuyButton
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: diamond
+          m_StringArgument: point_one
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &8152751628309780705

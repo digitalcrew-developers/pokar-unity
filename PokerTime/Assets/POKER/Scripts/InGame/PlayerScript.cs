@@ -24,10 +24,10 @@ public class PlayerScript : MonoBehaviour
     public Image avtar, frame, flag;
     public GameObject lastActionImage;
     private Text balanceText, lastActionText, userName, localBetPot, RealTimeResulttxt;
-    private GameObject foldScreen, parentObject, emptyObject, RealTimeResult;
+    private GameObject foldScreen, parentObject, emptyObject, RealTimeResult, localbetBG;
     private bool isItMe;
 
-    public int otheruserId;
+    public string otheruserId;
 
    
     private int localBetAmount = 0;
@@ -122,7 +122,7 @@ public class PlayerScript : MonoBehaviour
         fx_holder.gameObject.SetActive(false);
         userName.text = playerData.userName.Substring(0, 4) + "...";
         //      Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
-        otheruserId = int.Parse(playerData.userId);
+       
         transform.Find("Bg/Dealer").gameObject.SetActive(playerData.isDealer);
         localBetAmount = (int)playerData.totalBet;
 
@@ -141,7 +141,8 @@ public class PlayerScript : MonoBehaviour
             foldScreen = transform.Find("Bg/Fold").gameObject;
             parentObject = transform.Find("Bg").gameObject;
             userName = transform.Find("Bg/NameBg/Name").GetComponent<Text>();
-            localBetPot = transform.Find("Bg/LocalBet").GetComponent<Text>();
+            localbetBG = transform.Find("Bg/Local bet bg").gameObject;
+            localBetPot = transform.Find("Bg/Local bet bg/LocalBet").GetComponent<Text>();
             RealTimeResult = transform.Find("Bg/RealTime Result").gameObject;
             RealTimeResulttxt = RealTimeResult.GetComponent<Text>();
             lastActionImage.SetActive(false);
@@ -227,6 +228,7 @@ public class PlayerScript : MonoBehaviour
         transform.Find("Bg/blance bg/Balance").GetComponent<Text>().text = "" + (int)playerData.balance;
         transform.Find("Bg/NameBg/Name").GetComponent<Text>().text = playerData.userName;
         transform.Find("Bg/Dealer").gameObject.SetActive(false);
+        otheruserId = playerData.userId;
         ShowAvtars_frame_flag(playerData.userId);
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
@@ -292,7 +294,8 @@ public class PlayerScript : MonoBehaviour
 
     public void ToggleLocalPot(bool isShow)
     {
-        localBetPot.gameObject.SetActive(isShow);
+        localbetBG.SetActive(isShow);
+//        localBetPot.gameObject.SetActive(isShow);
     }
 
     private void UpdateLocalPot(int amount, int roundNo)
@@ -312,6 +315,10 @@ public class PlayerScript : MonoBehaviour
             ToggleLocalPot(false);
         }
     }
+    public GameObject localBg()
+    {
+        return localbetBG;
+    }
 
     public Text GetLocaPot()
     {
@@ -324,7 +331,8 @@ public class PlayerScript : MonoBehaviour
     }
     public void SendUserID()
     {
-        InGameUiManager.instance.TempUserID = playerData.userId;
+        InGameUiManager.instance.TempUserID = otheruserId;
+         Debug.LogError("Onclick");
         
     }
     public void UpdateLastAction(string textToShow)

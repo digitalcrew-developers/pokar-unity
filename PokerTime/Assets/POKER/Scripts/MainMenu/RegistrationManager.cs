@@ -140,7 +140,7 @@ public class RegistrationManager : MonoBehaviour
 
             if (data["success"].ToString() == "1")
             {
-        
+                MainMenuController.instance.ShowMessage(data["message"].ToString());
                 JsonData parsedObject = JsonMapper.ToObject(data["result"].ToString().Replace(@"\",""));
 
 
@@ -150,14 +150,14 @@ public class RegistrationManager : MonoBehaviour
                 playerData.password = registrationPassword.text;
 
 
-                string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
+               /* string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
                         "\"userPassword\":\"" + registrationPassword.text + "\"," +
                         "\"registrationType\":\"Custom\"," +
                         "\"socialId\":\"\"}";
 
 
                 MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-                WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
+                WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);*/
             }
             else
             {

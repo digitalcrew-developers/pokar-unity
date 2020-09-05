@@ -1,27 +1,39 @@
-﻿using System.Collections;
+﻿using LitJson;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InGameShop : MonoBehaviour
 {
-    public GameObject itemScreen,diamondScreen,pointScreen;
+    public GameObject itemScreen, diamondScreen, pointScreen;
+
+    public Text pointText, diamondText, coinsText;
+
     [SerializeField]
-    private PlayerData playerData;
+    private PlayerGameDetails playerData;
 
     public Text playerGold;
-    public Text pointText, diamondText, coinsText;
 
     public void OnEnable()
     {
-    
+        playerData = PlayerManager.instance.GetPlayerGameData();
+
+     
+
         OnClickOnButton("item");
-        playerGold.text= "" + (int)playerData.balance;
+        /*playerGold.text= "" + (int)playerData.balance;*/
+
         pointText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().points);
         diamondText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().diamonds);
         coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
 
+        string requestData = "{\"shopCategoryId\":\"\"}";
+        WebServices.instance.SendRequest(RequestType.GetShopValues, requestData, true, OnServerResponseFound);
     }
+
+
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -36,16 +48,14 @@ public class InGameShop : MonoBehaviour
 
             case "item":
                 {
-                   // Debug.Log("I ammamm000000000amammammam");
                     itemScreen.SetActive(true);
                     diamondScreen.SetActive(false);
                     pointScreen.SetActive(false);
                 }
-            break;
+                break;
 
             case "point":
                 {
-                   // Debug.Log("I ammamm111111111111amammammam");
                     itemScreen.SetActive(false);
                     diamondScreen.SetActive(false);
                     pointScreen.SetActive(true);
@@ -55,21 +65,150 @@ public class InGameShop : MonoBehaviour
 
             case "diamond":
                 {
-                   // Debug.Log("I ammamm33333333333333330amammammam");
                     itemScreen.SetActive(false);
                     diamondScreen.SetActive(true);
                     pointScreen.SetActive(false);
                 }
                 break;
 
-                
-
-
             default:
                 {
                     Debug.LogError("Unhandled eventName found in RealTimeResultUiManager = " + eventName);
                 }
                 break;
+        }
+    }
+
+    public void OnClickOnBuyButton(string eventName)
+    {
+        switch (eventName)
+        {
+            case "item_one":
+                {
+                    Debug.Log("Item One");
+                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                                "\"shopId\":\"" + 10 + "\"," +
+                                "\"itemType\":\"" + "ITEM" + "\"}";
+
+                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                }
+                break;
+            case "item_two":
+                {
+                    Debug.Log("Item Two");
+                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                                "\"shopId\":\"" + 16 + "\"," +
+                                "\"itemType\":\"" + "ITEM" + "\"}";
+
+                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                }
+                break;
+            case "item_three":
+                {
+                    Debug.Log("Item Three");
+                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                                "\"shopId\":\"" + 13 + "\"," +
+                                "\"itemType\":\"" + "ITEM" + "\"}";
+
+                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                }
+                break;
+            case "diamond_one":
+                {
+                    Debug.Log("Diamond One");
+                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                                "\"shopId\":\"" + 23 + "\"," +
+                                "\"itemType\":\"" + "DIAMOND" + "\"}";
+
+                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                }
+                break;
+            case "diamond_two":
+                {
+                    Debug.Log("Diamond Two");
+                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                                "\"shopId\":\"" + 24 + "\"," +
+                                "\"itemType\":\"" + "DIAMOND" + "\"}";
+
+                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                }
+                break;
+            case "diamond_three":
+                {
+                    Debug.Log("Diamond Three");
+                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                                "\"shopId\":\"" + 23 + "\"," +
+                                "\"itemType\":\"" + "DIAMOND" + "\"}";
+
+                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                }
+                break;
+            case "point_one":
+                {
+                    Debug.Log("Point One");
+                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                                "\"shopId\":\"" + 29 + "\"," +
+                                "\"itemType\":\"" + "POINT" + "\"}";
+
+                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                }
+                break;
+            case "point_two":
+                {
+                    Debug.Log("Point Two");
+                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                                "\"shopId\":\"" + 30 + "\"," +
+                                "\"itemType\":\"" + "POINT" + "\"}";
+
+                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                }
+                break;
+            case "point_three":
+                {
+                    Debug.Log("Point Three");
+                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                                "\"shopId\":\"" + 32 + "\"," +
+                                "\"itemType\":\"" + "POINT" + "\"}";
+
+                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                }
+                break;
+        }
+    }
+
+    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    {
+        if (errorMessage.Length > 0)
+        {
+            if (isShowErrorMessage)
+            {
+                InGameUiManager.instance.ShowMessage(errorMessage);
+            }
+            return;
+        }
+        if (requestType == RequestType.GetShopValues)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+
+            Debug.Log("Shop Data.." + data.ToJson().ToString());
+        }
+
+        if (requestType == RequestType.GetInGameShopValue)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+
+            Debug.Log("Player Purchase Data.." + data.ToJson().ToString());
+
+            if (data["status"].Equals(true))
+            {
+                Debug.Log("Purchase Successfull !!!");
+                InGameUiManager.instance.ShowMessage(data["response"].ToString());
+            }
+            else
+            {
+                Debug.Log("You don't have sufficient fund to purchase");
+                InGameUiManager.instance.ShowMessage(data["response"].ToString());
+            }
         }
     }
 }

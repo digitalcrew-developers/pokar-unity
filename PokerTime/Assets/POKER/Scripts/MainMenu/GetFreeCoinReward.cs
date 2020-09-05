@@ -13,7 +13,7 @@ public class GetFreeCoinReward : MonoBehaviour
     public DateTime lastRewardTime, now;     // The last time the user clicked in a reward
     public TimeSpan timer;
     public float maxTime = 900f; // How many seconds until the player can claim the reward
-    public bool canClaim;              // Checks if the user can claim the reward
+    public bool canClaim;              // Checks if the user can claim the reward 
     // Needed Constants
     private const string TIMED_REWARDS_TIME = "TimedRewardsTime";
     private const string FMT = "O";

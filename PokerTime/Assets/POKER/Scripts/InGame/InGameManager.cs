@@ -530,12 +530,12 @@ public class InGameManager : MonoBehaviour
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
         GameObject gm = Instantiate(betAnimationPrefab,animationLayer) as GameObject;
-        gm.GetComponent<Text>().text = betAmount;
+        gm.transform.GetChild(0).GetComponent<Text>().text = betAmount;
         gm.transform.position = playerScript.transform.position;
         Vector3 initialScale = gm.transform.localScale;
         gm.transform.localScale = Vector3.zero;
 
-        gm.transform.DOMove(playerScript.GetLocaPot().transform.position,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        gm.transform.DOMove(playerScript.localBg().transform.position,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         gm.transform.DOScale(initialScale,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         SoundManager.instance.PlaySound(SoundType.Bet);
         yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
@@ -613,7 +613,7 @@ public class InGameManager : MonoBehaviour
                 isBetFound = true;
                 GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
 
-                gm.GetComponent<Text>().text = text.text;
+                gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
                 gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);
                 Destroy(gm,GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
             }
