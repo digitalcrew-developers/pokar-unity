@@ -6,17 +6,31 @@ using UnityEngine.UI;
 
 public class SpinWheelUIManager : MonoBehaviour
 {
-
+    public static SpinWheelUIManager instance;
     public GameObject oneXBtn,fiveXBtn;
 
     public GameObject ImgGetContainer;
     public GameObject TextGetContainer;
+    public GameObject spinWheel;
+    public Image draw1xOutput;
 
-    // Start is called before the first frame update
+
+    public void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
         GetLuckyDrawAvatars(); 
         GetTextItemsList(); 
+    }
+
+
+    public void ShowSpinWheelOutPut(int val) {
+        draw1xOutput.transform.parent.gameObject.SetActive(false);
+        draw1xOutput = ImgGetContainer.transform.GetChild(val).GetComponent<Image>();
+        
+
     }
 
     public void GetLuckyDrawAvatars() {
@@ -72,16 +86,29 @@ public class SpinWheelUIManager : MonoBehaviour
                 break;
             case "1x":
                 {
-                   
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
-                    InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
+                    Debug.Log("PLAYER GAMEDATA COIN_______   "+ (PlayerManager.instance.GetPlayerGameData().coins > 150));
+                     if (PlayerManager.instance.GetPlayerGameData().coins > 150)
+                    {
+                        spinWheel.SetActive(true);
+                    }
+                    else {
+                        InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
+                    }
+                   // 
                 }
                 break;
             case "5x":
                 {
                     
                     InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
-                    InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
+                    if (PlayerManager.instance.GetPlayerGameData().coins < 480)
+                    {
+                        spinWheel.SetActive(true);
+                    }
+                    else
+                    {
+                        InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
+                    }
                 }
                 break;
 
