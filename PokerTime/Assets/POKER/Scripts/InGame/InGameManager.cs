@@ -1218,7 +1218,9 @@ public class InGameManager : MonoBehaviour
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScript[0];
     }
-   /*  void OnApplicationFocus(bool focus)
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+    void OnApplicationFocus(bool focus)
       {
           if (!focus)
           {
@@ -1235,7 +1237,9 @@ public class InGameManager : MonoBehaviour
           LoadMainMenu();
           SocketController.instance.SendLeaveMatchRequest();
 
-      }*/
+      }
+#elif UNITY_EDITOR
+#endif
 }
 
 public class MatchMakingPlayerData

@@ -12,8 +12,11 @@ public class SpinWheelUIManager : MonoBehaviour
     public GameObject ImgGetContainer;
     public GameObject TextGetContainer;
     public GameObject spinWheel;
-    public Image draw1xOutput;
+    public GameObject drawOutput;
+    public Image draw1xOutputImg;
+    public Text draw1xOutputText;
 
+    public string eventValue;
 
     public void Awake()
     {
@@ -25,13 +28,11 @@ public class SpinWheelUIManager : MonoBehaviour
         GetTextItemsList(); 
     }
 
-
-    public void ShowSpinWheelOutPut(int val) {
-        draw1xOutput.transform.parent.gameObject.SetActive(false);
-        draw1xOutput = ImgGetContainer.transform.GetChild(val).GetComponent<Image>();
-        
-
+    private void OnEnable()
+    {
+        drawOutput.SetActive(false);
     }
+
 
     public void GetLuckyDrawAvatars() {
         for (int i = 0; i < ImgGetContainer.transform.childCount; i++)
@@ -73,42 +74,48 @@ public class SpinWheelUIManager : MonoBehaviour
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
+        SpinWheelUIManager.instance.drawOutput.SetActive(false);
+        SpinWheelUIManager.instance.drawOutput.transform.GetChild(0).gameObject.SetActive(false);
+        SpinWheelUIManager.instance.drawOutput.transform.GetChild(1).gameObject.SetActive(false);
 
         switch (eventName)
         {
             case "back":
                 {
                     
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
-                  
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);                   
 
                 }
                 break;
             case "1x":
                 {
+                    eventValue = "1x";
                     Debug.Log("PLAYER GAMEDATA COIN_______   "+ (PlayerManager.instance.GetPlayerGameData().coins > 150));
-                     if (PlayerManager.instance.GetPlayerGameData().coins > 150)
+                     if (PlayerManager.instance.GetPlayerGameData().coins > 1500)
                     {
                         spinWheel.SetActive(true);
                     }
                     else {
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
+
                         InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
                     }
-                   // 
+                   
                 }
                 break;
             case "5x":
                 {
-                    
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
-                    if (PlayerManager.instance.GetPlayerGameData().coins < 480)
-                    {
-                        spinWheel.SetActive(true);
-                    }
-                    else
-                    {
+                    eventValue = "5x";
+                    //if (PlayerManager.instance.GetPlayerGameData().coins > 4800)
+                    //{
+                    //    spinWheel.SetActive(true); 
+                    //}
+                    //else
+                    //{
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
+
                         InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
-                    }
+                    //}
                 }
                 break;
 

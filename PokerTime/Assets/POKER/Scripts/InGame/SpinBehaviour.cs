@@ -36,14 +36,6 @@ public class SpinBehaviour : MonoBehaviour
         CancelInvoke("RotateSpin");
         spinVal.SetActive(true);
         spinVal.GetComponent<Text>().text = "+ "+SpinManager.instance.spinItemList[spinStartIndex].itemValue ;
-        
-        
-       
-        if ((SpinWheelUIManager.instance == null))
-        {
-            Debug.Log("RRRRRRRRR000000RRRRRRRRRRRRRR" + (SpinWheelUIManager.instance == null));
-            SpinWheelUIManager.instance.ShowSpinWheelOutPut(spinStartIndex);
-        }
 
         SpinManager.instance.SetSpinWheelWinning(spinStartIndex);
         Invoke("DeActiveObj", 2);

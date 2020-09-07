@@ -1152,7 +1152,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -10, y: 3.1}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &505201157641578979
@@ -1706,7 +1706,7 @@ GameObject:
   - component: {fileID: 3260177454056423767}
   - component: {fileID: 3260177454056423770}
   - component: {fileID: 3260177454056423765}
-  - component: {fileID: 3260177454056423764}
+  - component: {fileID: 3022114118188148366}
   m_Layer: 5
   m_Name: NewSpin
   m_TagString: Untagged
@@ -1772,7 +1772,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3260177454056423764
+--- !u!114 &3022114118188148366
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1781,7 +1781,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3260177454056423766}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 518c190b9233fd24f9317fc019b6f34b, type: 3}
+  m_Script: {fileID: 11500000, guid: 106b314f6381e7b44a1f716ab9eb5254, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spinVal: {fileID: 7533571816293448054}
@@ -2232,6 +2232,84 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4243190657970477180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5339057271095062480}
+  - component: {fileID: 4891926148974131473}
+  - component: {fileID: 8267861489244295504}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5339057271095062480
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4243190657970477180}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4725508084761691278}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -10, y: -80.5}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4891926148974131473
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4243190657970477180}
+  m_CullTransparentMesh: 0
+--- !u!114 &8267861489244295504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4243190657970477180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 12c72c22876d37149be2a172fdd29872, type: 3}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: New Text
 --- !u!1 &4468296493002202607
 GameObject:
   m_ObjectHideFlags: 0
@@ -3250,7 +3328,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4660588780141055090}
   m_Layer: 5
-  m_Name: AfterSpinValue
+  m_Name: DrawOutPutValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4223,7 +4301,10 @@ MonoBehaviour:
   ImgGetContainer: {fileID: 3238525199650583681}
   TextGetContainer: {fileID: 2061467135628444781}
   spinWheel: {fileID: 3260177454056423766}
-  out1xDrawSpinWheel: {fileID: 2860481092536116287}
+  drawOutput: {fileID: 6073846544840730121}
+  draw1xOutputImg: {fileID: 2860481092536116287}
+  draw1xOutputText: {fileID: 8267861489244295504}
+  eventValue: 
 --- !u!1 &6745031552939916595
 GameObject:
   m_ObjectHideFlags: 0
@@ -5667,6 +5748,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 644947805232346328}
+  - {fileID: 5339057271095062480}
   m_Father: {fileID: 4660588780141055090}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
