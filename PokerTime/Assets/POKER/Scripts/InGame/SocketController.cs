@@ -193,9 +193,11 @@ public class SocketController : MonoBehaviour
                 case SocketEvetns.PLAYER_OBJECT:
 
 
-
+                    Debug.Log("Error of player object----------");
                     if (InGameManager.instance != null)
                     {
+                        Debug.Log("Error of player object---000000000-------");
+
                         if (GetSocketState() == SocketState.ReConnecting)
                         {
                             SetSocketState(SocketState.Game_Running);

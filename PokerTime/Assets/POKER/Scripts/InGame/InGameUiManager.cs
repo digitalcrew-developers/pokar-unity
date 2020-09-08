@@ -56,6 +56,7 @@ public class InGameUiManager : MonoBehaviour
     public string TempUserID;
 
     public GameObject players;
+    public string tableId;
 
 
 
