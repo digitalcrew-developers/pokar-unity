@@ -366,6 +366,7 @@ public class MainMenuController : MonoBehaviour
 				playerData.userName = PlayerManager.instance.GetPlayerGameData().userName;
 				PlayerManager.instance.SetPlayerGameData(playerData);
 				ShowScreen(MainMenuScreens.MainMenu);
+				/*ShowMessage(data["message"].ToString());*/
 			}
 			else
 			{

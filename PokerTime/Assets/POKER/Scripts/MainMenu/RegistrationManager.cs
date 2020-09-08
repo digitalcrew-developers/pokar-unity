@@ -178,7 +178,8 @@ public class RegistrationManager : MonoBehaviour
                 PlayerManager.instance.SetPlayerGameData(playerData);
 
                 MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
-               // GlobalGameManager.instance.SendFirebaseToken(FireBaseAnalyticsIntegration.TOKEN);
+                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                // GlobalGameManager.instance.SendFirebaseToken(FireBaseAnalyticsIntegration.TOKEN);
             }
             else
             {

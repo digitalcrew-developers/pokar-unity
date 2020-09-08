@@ -167,6 +167,8 @@ public class LobbyUiManager: MonoBehaviour
             gm.transform.Find("Blinds").GetComponent<Text>().text = "" + Utility.GetTrimmedAmount("" + data.smallBlind) + "/" + Utility.GetTrimmedAmount("" + data.bigBlind);
             gm.transform.Find("BuyIn").transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "" + Utility.GetTrimmedAmount("" + data.minBuyIn);
 
+            gm.transform.Find("LivePlayer").GetComponent<Text>().text = data.totalActivePlayers.ToString();
+
             gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(data));
         }
 
@@ -230,6 +232,8 @@ public class LobbyUiManager: MonoBehaviour
             roomData.bigBlind = float.Parse(data["data"][i]["bigBlind"].ToString());
             roomData.minBuyIn = float.Parse(data["data"][i]["minBet"].ToString());
             roomData.maxBuyIn = float.Parse(data["data"][i]["maxBet"].ToString());
+
+            roomData.totalActivePlayers = int.Parse(data["data"][i]["totalActivePlayer"].ToString());
 
 
             switch (data["data"][i]["gameType"].ToString())

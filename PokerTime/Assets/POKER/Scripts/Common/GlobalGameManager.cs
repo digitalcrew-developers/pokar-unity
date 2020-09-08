@@ -162,6 +162,8 @@ public class RoomData
     public int callTimer;
     public GameMode gameMode;
     public bool isLobbyRoom;
+
+    public int totalActivePlayers;
 }
 
 
