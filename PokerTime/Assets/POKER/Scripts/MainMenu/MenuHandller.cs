@@ -14,6 +14,9 @@ public class MenuHandller : MonoBehaviour
 	public GameObject createClubPopUp,joinClubPopUp,notificationIcon;
 	public InputField createClubField, joinClubField, agentField;
 
+    //temp. club item until we call club list api
+    [SerializeField]
+    private Button tempClubItem;
 
     private void Awake()
     {
@@ -32,8 +35,20 @@ public class MenuHandller : MonoBehaviour
 
 		UpdateAllText();
 		UpdateNotificationData(MainMenuController.instance.GetNotificationDetails().unreadMessageCount);
-	}
+        UpdateClubList();
+    }
 
+    public void UpdateClubList()
+    {
+        //To-Do. 
+        //1.Call API to get club list
+        //2.Populate club list using json data
+        //3.Bind on click to club item prefabs to open club details/initialise.
+
+        //temp.
+        tempClubItem.onClick.RemoveAllListeners();
+        tempClubItem.onClick.AddListener(() => OnClickOnButton("clubDetails"));
+    }
 
 	public void UpdateNotificationData(int unreadMessageCount)
 	{
@@ -177,6 +192,12 @@ public class MenuHandller : MonoBehaviour
 				MainMenuController.instance.ShowScreen(MainMenuScreens.Missions);
 			}
 			break;
+        case "clubDetails":
+            {
+                MainMenuController.instance.ShowScreen(MainMenuScreens.ClubDetails, new object[] { "Dummmy Club1",
+                System.Guid.NewGuid().ToString(),System.Guid.NewGuid().ToString()});
+            }
+            break;
 
 
 			default:
