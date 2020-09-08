@@ -43,8 +43,12 @@ public class SpinManager : MonoBehaviour
     {
         int itemid = int.Parse(spinItemList[index].itemID);
         Debug.Log("VALUE OF ITEM--->  "+itemid);
+
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-                                "\"itemID\":\"" + itemid + "\"}";
+                             "\"itemID\":\"" + itemid + "\"," +
+                             "\"gameType\":\"" + GlobalGameManager.instance.currentRoomData.gameMode + "\"," +
+                             "\"smallBlind\":\"" + GlobalGameManager.instance.currentRoomData.smallBlind + "\"," +
+                              "\"bigBlind\":\"" + GlobalGameManager.instance.currentRoomData.smallBlind + "\"}";
         WebServices.instance.SendRequest(RequestType.SetSpinWheelWinning, requestData, true, OnServerResponseFound);
     }
 

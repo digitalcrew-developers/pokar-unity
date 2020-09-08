@@ -56,6 +56,8 @@ public class SpinBehaviour : MonoBehaviour
             if (spinStartIndex == i)
             {
                 this.transform.Find("Focus").GetChild(i).GetChild(0).gameObject.SetActive(true);
+                SoundManager.instance.PlaySound(SoundType.spinWheel);
+
             }
             else
             {

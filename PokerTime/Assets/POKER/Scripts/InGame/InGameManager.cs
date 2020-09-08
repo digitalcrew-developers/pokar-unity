@@ -24,7 +24,7 @@ public class InGameManager : MonoBehaviour
 
     
     public GameObject Pot;
-
+    
     [SerializeField]
     private Text potText;
 
@@ -1050,6 +1050,8 @@ public class InGameManager : MonoBehaviour
 
     public void OnPlayerObjectFound(string serverResponse)
     {
+        Debug.Log("Error of player object-----11111111111-----");
+
         if (serverResponse.Length < 20)
         {
             Debug.LogError("Invalid playerObject response found = " + serverResponse);
@@ -1057,15 +1059,19 @@ public class InGameManager : MonoBehaviour
         }
 
         JsonData data = JsonMapper.ToObject(serverResponse);
+        Debug.Log("Error of player object-----11111111111-----"+ data[0].Count);
 
         if (data[0].Count > 0)
         {
+            Debug.Log("Error of player object-----22222-----" + data[0].Count);
+
             //AdjustAllPlayersOnTable(data[0].Count);
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
             ShowNewPlayersOnTable(data, isMatchStarted);
 
             if (SocketController.instance.GetSocketState() == SocketState.WaitingForOpponent)
             {
+               
                 SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
 
                 if (isMatchStarted) // Match is started
@@ -1082,6 +1088,8 @@ public class InGameManager : MonoBehaviour
 
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
+                        InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
+                        Debug.LogError("Table userID $$$$$$$$$$$$ "+ data[0][i]["tableId"].ToString());
                         playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());

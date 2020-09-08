@@ -29,7 +29,7 @@ public class GlobalGameManager : MonoBehaviour
     private GameObject previousScene = null; // contains current loaded sceneObject
 
     [SerializeField]
-    private RoomData currentRoomData = new RoomData();
+    public RoomData currentRoomData = new RoomData();
 
     public static bool IsJoiningPreviousGame = false;
     public bool isTokenSent = false;
