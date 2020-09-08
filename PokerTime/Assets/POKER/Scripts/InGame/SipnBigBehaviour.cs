@@ -52,7 +52,7 @@ public class SipnBigBehaviour : MonoBehaviour
     {
         CancelInvoke("RotateSpin");
         spinVal.SetActive(true);
-        spinVal.GetComponent<Text>().text = "+ " + SpinManager.instance.spinItemList[spinStartIndex].itemValue;
+        spinVal.GetComponent<Text>().text = "" ;
 
 
         switch (SpinWheelUIManager.instance.eventValue)
