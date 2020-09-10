@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class ClubDetailsUIManager : MonoBehaviour
 {
-	public static ClubDetailsUIManager instance;
-
-
+	public static ClubDetailsUIManager instance;    
 	public Text clubNameText, uniqueClubIdText;
 	private string clubId = "", uniqueClubId = "";
 
+    private string layout = "Listed";
+    private bool isJackpotOn = false;
 
 	private void Awake()
 	{
@@ -24,6 +24,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 		uniqueClubIdText.text = "Club Id : "+clubUniqueId;
 		clubId = idOfClub;
 		uniqueClubId = clubUniqueId;
+
+        //to-do... get layout from server for this club and update in local string
 	}
 
 
@@ -91,14 +93,47 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	}
 
+    public Sprite GetClubImage()
+    {
+        return null;
+    }
+
+    public string GetClubName()
+    {
+        return clubNameText.text;
+    }
+
 	public string GetClubId()
 	{
 		return clubId;
 	}
-
-
+    
 	public string GetClubUniqueId()
 	{
 		return uniqueClubId;
 	}
+
+    public void SetLayout(ClubTableLayout _layout) { layout = _layout.ToString(); }
+
+    public string GetLayout()
+    {
+        return layout;
+    }
+
+    public void SetJackpotStatus(bool val)
+    {
+        isJackpotOn = val;
+    }
+
+    public bool GetJackpotStatus()
+    {
+        return isJackpotOn;
+    }
+
+}
+
+public enum ClubTableLayout
+{
+    Listed,
+    Classic
 }
