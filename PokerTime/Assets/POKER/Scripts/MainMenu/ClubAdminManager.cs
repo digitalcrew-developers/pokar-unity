@@ -482,7 +482,7 @@ public class ClubAdminManager : MonoBehaviour
 
             case RequestType.PostNotification:
                 {
-                    
+                    MainMenuController.instance.ShowMessage("Notification sent to all members");
                 }
                 break;
 
