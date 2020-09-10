@@ -83,6 +83,10 @@ public class GameConstants : MonoBehaviour
           SOCKET_URL+"/shopItem",
           API_URL+"/getSpinWinnerList",
           API_URL+"/deductFromWallet",
+          API_URL+"/emailVerified",
+          API_URL+"/unlinkEmail",
+          API_URL+"/changePassword",
+          API_URL+"/redeemCoupon",
     };
     #endregion
 
@@ -123,5 +127,9 @@ public enum RequestType
     SetSpinWheelWinning,
     GetInGameShopValue,
     getSpinWinnerList,
-    deductFromWallet
+    deductFromWallet,
+    emailVerified,
+    unlinkEmail,
+    changePassword,
+    redeemCoupon
 }
