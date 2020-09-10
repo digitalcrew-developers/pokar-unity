@@ -54,6 +54,14 @@ public class ClubAdminManager : MonoBehaviour
     public Text DisbandClubIdText;
     #endregion
 
+    [Space(10)]
+
+    #region Preferences
+    [Header("PREFERENCES")]
+    public Toggle ListedToogle;
+    public Toggle ClassicToogle;
+    #endregion
+
     private void Awake()
     {
         if (null == instance)
@@ -96,6 +104,7 @@ public class ClubAdminManager : MonoBehaviour
                 break;
             case "Preferences":
                 AllScreens[5].SetActive(true);
+                InitialisePreferences();
                 break;
             case "DisbandTheClub":
                 AllScreens[6].SetActive(true);
@@ -428,6 +437,35 @@ public class ClubAdminManager : MonoBehaviour
     #endregion
 
     #region Preferences
+
+    private void InitialisePreferences()
+    {
+        ListedToogle.onValueChanged.RemoveAllListeners();
+        ClassicToogle.onValueChanged.RemoveAllListeners();
+
+        ListedToogle.onValueChanged.AddListener(delegate {
+            ListedToogleValueChanged(ListedToogle);
+        });
+        ClassicToogle.onValueChanged.AddListener(delegate {
+            ClassicToogleValueChanged(ClassicToogle);
+        });
+    }
+
+    private void ListedToogleValueChanged(Toggle change)
+    {
+        if (change.isOn)
+        {
+            SetLayout("Listed");
+        }
+    }
+
+    private void ClassicToogleValueChanged(Toggle change)
+    {
+        if (change.isOn)
+        {
+            SetLayout("Classic");
+        }
+    }
 
     public void SetLayout(string layout)
     {
