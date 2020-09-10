@@ -18,6 +18,9 @@ public class SpinWheelUIManager : MonoBehaviour
     public Text draw1xOutputText;
     public Image[] draw5xOutputImg;
     public Text[] draw5xOutputText;
+
+    public Text winnerListFirstTxt;
+    public Text winnerListSecondTxt;
     public GameObject winnerListItemPrefabs;
     public GameObject bottomWinnerListContainer;
 
@@ -122,9 +125,21 @@ public class SpinWheelUIManager : MonoBehaviour
                     }
 
                     Debug.Log("Now the STR of value ---  " + str);
-                    GameObject g = Instantiate(winnerListItemPrefabs,bottomWinnerListContainer.transform) as GameObject;
-                    g.transform.SetParent(bottomWinnerListContainer.transform);
-                    g.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = str;
+
+                    if (i == 0)
+                    {
+                        winnerListFirstTxt.text = str;
+                    }
+                    else if (i == 1)
+                    {
+                        winnerListSecondTxt.text = str;
+                    }
+                    else {
+                        GameObject g = Instantiate(winnerListItemPrefabs, bottomWinnerListContainer.transform) as GameObject;
+                        g.transform.SetParent(bottomWinnerListContainer.transform);
+                        g.transform.GetComponent<Text>().text = str;
+                    }
+                   
                 }
                 //ShowSpinWheelContent(data);
 

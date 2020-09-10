@@ -90,6 +90,10 @@ public class GameConstants : MonoBehaviour
           API_URL+"/readNotification",
           API_URL+"/getPendingClubJoinRequest",
           API_URL+"/rateClub",
+          API_URL+"/emailVerified",
+          API_URL+"/unlinkEmail",
+          API_URL+"/changePassword",
+          API_URL+"/redeemCoupon"
     };
     #endregion
 
@@ -137,5 +141,9 @@ public enum RequestType
     GetNotification,
     ReadNotification,
     GetPendingClubJoinRequest,
-    RateClub
+    RateClub,
+    emailVerified,
+    unlinkEmail,
+    changePassword,
+    redeemCoupon
 }

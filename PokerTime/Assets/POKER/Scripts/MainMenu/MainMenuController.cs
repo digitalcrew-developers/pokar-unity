@@ -311,8 +311,13 @@ public class MainMenuController : MonoBehaviour
 			case MainMenuScreens.FairGaming:
 			case MainMenuScreens.Compliance:
 			case MainMenuScreens.Contact:
-			case MainMenuScreens.ProfileSetting:
 			case MainMenuScreens.FriendList:
+			case MainMenuScreens.Language:
+			case MainMenuScreens.LinkYourEmail:
+			case MainMenuScreens.LinkingSucessfull:
+			case MainMenuScreens.UnlinkYourEmail:
+			case MainMenuScreens.ChangePassword:
+			case MainMenuScreens.RedeemCode:
 
 				return ScreenLayer.LAYER3;
 
@@ -320,7 +325,6 @@ public class MainMenuController : MonoBehaviour
 			case MainMenuScreens.ChangeFrame:
 			case MainMenuScreens.SelectRegion:
 			case MainMenuScreens.ChangeProfileIcon:
-			case MainMenuScreens.Language:
 			
 				 return ScreenLayer.LAYER4;
 
@@ -366,6 +370,7 @@ public class MainMenuController : MonoBehaviour
 				playerData.userName = PlayerManager.instance.GetPlayerGameData().userName;
 				PlayerManager.instance.SetPlayerGameData(playerData);
 				ShowScreen(MainMenuScreens.MainMenu);
+				/*ShowMessage(data["message"].ToString());*/
 			}
 			else
 			{
@@ -424,7 +429,13 @@ public enum MainMenuScreens
 	Compliance,
 	Contact,
 	Language,
-	TopPlayer,FriendList
+	TopPlayer,
+	FriendList,
+	LinkYourEmail,
+	LinkingSucessfull,
+	UnlinkYourEmail,
+	ChangePassword,
+	RedeemCode
 }
 
 

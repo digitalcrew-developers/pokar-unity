@@ -10,7 +10,18 @@ public class RegistrationManager : MonoBehaviour
     public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
 
-
+    private void OnEnable()
+    {
+        if (GlobalGameManager.instance.isLoginShow)
+        {
+            registrationScreen.SetActive(false);
+            loginScreen.SetActive(true);
+        }
+        else {
+            registrationScreen.SetActive(true);
+            loginScreen.SetActive(false);
+        }
+    }
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -178,7 +189,8 @@ public class RegistrationManager : MonoBehaviour
                 PlayerManager.instance.SetPlayerGameData(playerData);
 
                 MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
-               // GlobalGameManager.instance.SendFirebaseToken(FireBaseAnalyticsIntegration.TOKEN);
+                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                // GlobalGameManager.instance.SendFirebaseToken(FireBaseAnalyticsIntegration.TOKEN);
             }
             else
             {

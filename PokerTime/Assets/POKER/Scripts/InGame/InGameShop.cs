@@ -16,6 +16,8 @@ public class InGameShop : MonoBehaviour
 
     public Text playerGold;
 
+    public Button[] menuBtn;
+
     public void OnEnable()
     {
         playerData = PlayerManager.instance.GetPlayerGameData();
@@ -33,6 +35,13 @@ public class InGameShop : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.GetShopValues, requestData, true, OnServerResponseFound);
     }
 
+    private void Start()
+    {
+        Debug.Log("i kdsjffgkdjghghghghghghghghghghghghghfs");
+        var colors = menuBtn[0].GetComponent<Button>().colors;
+        colors.normalColor = new Color32(255, 255, 255, 255);
+        menuBtn[0].GetComponent<Button>().colors = colors;
+    }
 
     public void OnClickOnButton(string eventName)
     {
@@ -51,6 +60,21 @@ public class InGameShop : MonoBehaviour
                     itemScreen.SetActive(true);
                     diamondScreen.SetActive(false);
                     pointScreen.SetActive(false);
+
+                    int val = 0;
+                    for (int i = 0; i < menuBtn.Length; i++)
+                    {
+                        var colors = menuBtn[i].GetComponent<Button>().colors;
+                        if (i == val)
+                        {
+                            colors.normalColor = new Color32(255, 255, 255, 255);                            
+                        }
+                        else {
+                            colors.normalColor = new Color32(255, 255, 255, 0);
+                        }
+                        menuBtn[i].GetComponent<Button>().colors = colors;
+                    }
+                    
                 }
                 break;
 
@@ -59,6 +83,21 @@ public class InGameShop : MonoBehaviour
                     itemScreen.SetActive(false);
                     diamondScreen.SetActive(false);
                     pointScreen.SetActive(true);
+
+                    int val = 2;
+                    for (int i = 0; i < menuBtn.Length; i++)
+                    {
+                        var colors = menuBtn[i].GetComponent<Button>().colors;
+                        if (i == val)
+                        {
+                            colors.normalColor = new Color32(255, 255, 255, 255);
+                        }
+                        else
+                        {
+                            colors.normalColor = new Color32(255, 255, 255, 0);
+                        }
+                        menuBtn[i].GetComponent<Button>().colors = colors;
+                    }
                 }
                 break;
 
@@ -68,6 +107,21 @@ public class InGameShop : MonoBehaviour
                     itemScreen.SetActive(false);
                     diamondScreen.SetActive(true);
                     pointScreen.SetActive(false);
+
+                    int val = 1;
+                    for (int i = 0; i < menuBtn.Length; i++)
+                    {
+                        var colors = menuBtn[i].GetComponent<Button>().colors;
+                        if (i == val)
+                        {
+                            colors.normalColor = new Color32(255, 255, 255, 255);
+                        }
+                        else
+                        {
+                            colors.normalColor = new Color32(255, 255, 255, 0);                           
+                        }
+                        menuBtn[i].GetComponent<Button>().colors = colors;
+                    }
                 }
                 break;
 

@@ -7,25 +7,19 @@ public class EmojiBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("**********  GAME OBJECT NAME***************   "+ this.transform.name);
-        //if (this.transform.parent.parent.parent.name.Equals("0")||
-        //this.transform.parent.parent.parent.name.Equals("1")||
-        //this.transform.parent.parent.parent.name.Equals("2")||
-        //this.transform.parent.parent.parent.name.Equals("3")||
-        //this.transform.parent.parent.parent.name.Equals("4")||
-        //this.transform.parent.parent.parent.name.Equals("5")||
-        //this.transform.parent.parent.parent.name.Equals("6")||
-        //this.transform.parent.parent.parent.name.Equals("7")||
-        //this.transform.parent.parent.parent.name.Equals("8")||
-        //this.transform.parent.parent.parent.name.Equals("9"))
-        //{
-        //    Debug.Log("EMOJI userID-------------   ");
-        //    InGameUiManager.instance.otherId = this.transform.parent.parent.parent.GetComponent<PlayerScript>().otheruserId;
-        //   // SocketController.instance.SentEmoji(this.transform.parent.parent.parent.GetComponent<PlayerScript>().otheruserId,InGameUiManager.instance.emojiIndex);
+        Debug.Log("**********  GAME OBJECT NAME***************   "+ InGameUiManager.instance.emojiContainerVal);
+        
+        if (InGameUiManager.instance.emojiContainerVal == 2|| InGameUiManager.instance.sentToEmojiValue.Equals("Dealer"))
+        {
+            
+                this.transform.SetParent(InGameUiManager.instance.spwantipsKissPos);
 
-        //}
+            
+        }
+        else {
+            this.transform.SetParent(target.transform);
 
-        this.transform.SetParent(target.transform);
+        }
         Destroy(this.gameObject, 3);
     }
 
@@ -33,7 +27,7 @@ public class EmojiBehaviour : MonoBehaviour
     public float speed;
     void Update()
     {
-        float step = speed * Time.deltaTime*300;
+        float step = speed * Time.deltaTime*400;
        // Debug.LogError("$$$$$$$$      UPDATE i S CALLL  "+ step+"       "+ transform.position+"       "+ target.position);
         transform.position = Vector3.MoveTowards(transform.position, target.position, step);
     }

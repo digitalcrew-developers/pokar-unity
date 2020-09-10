@@ -13,6 +13,9 @@ public class EmojiUIScreenManager : MonoBehaviour
 
     public int containerVal;
 
+    public GameObject hideOnDealerClick;
+    public GameObject showOnDealerClick;
+
     public Image profileimage, frame;
     public Text userName, UserId, levletxt;
 
@@ -112,14 +115,19 @@ public class EmojiUIScreenManager : MonoBehaviour
             if (i == InGameUiManager.instance.emojiContainerVal)
             {
                 containerAry[i].SetActive(true);
+                
                 if (i == 2)
                 {
                     addBtn.SetActive(false);
                     dealerBtn.SetActive(true);
+                    hideOnDealerClick.SetActive(false);
+                    showOnDealerClick.SetActive(true);
                 }
                 else {
                     addBtn.SetActive(true);
                     dealerBtn.SetActive(false);
+                    hideOnDealerClick.SetActive(true);
+                    showOnDealerClick.SetActive(false);
                 }
             }
             else
@@ -177,9 +185,22 @@ public class EmojiUIScreenManager : MonoBehaviour
             case "gun":
                 emojiIndex = 12;
                 break;
+            case "rose":
+                emojiIndex = 13;
+                break;
+            case "perfume":
+                emojiIndex = 14;
+                break;
+            case "ring":
+                emojiIndex = 15;
+                break;
+            case "car":
+                emojiIndex = 16;
+                break;
         }
         //InGameUiManager.instance.emojiIndex = emojiIndex;
         // InGameUiManager.instance.ShowEmojiOnScreen(str);
+        Debug.Log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$    "+emojiIndex);
         InGameUiManager.instance.CallEmojiSocket(emojiIndex);
         OnClickOnButton("back");
     }

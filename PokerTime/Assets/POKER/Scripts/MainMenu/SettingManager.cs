@@ -8,7 +8,7 @@ public class SettingManager : MonoBehaviour
     public bool issound;
     public void Start()
     {
-        if(SoundManager.instance.sound)
+        if (SoundManager.instance.sound)
         {
             soundOff.SetActive(false);
             soundon.SetActive(true);
@@ -24,14 +24,48 @@ public class SettingManager : MonoBehaviour
     {
         MainMenuController.instance.DestroyScreen(MainMenuScreens.ProfileSetting);
     }
-   
-public void OnClickLanguageBTN()
+
+    public void OnClickLanguageBTN()
     {
         MainMenuController.instance.ShowScreen(MainMenuScreens.Language);
     }
-   public void OnClickSoundBTN()
+
+    public void OnClickLinkEmailBTN()
     {
-        if(issound)
+        SoundManager.instance.PlaySound(SoundType.Click);
+
+        MainMenuController.instance.ShowScreen(MainMenuScreens.LinkYourEmail);
+    }
+
+
+    public void OnClickChangePwdBTN()
+    {
+        SoundManager.instance.PlaySound(SoundType.Click);
+        MainMenuController.instance.ShowScreen(MainMenuScreens.ChangePassword);
+    }
+
+
+    public void OnClickRedeemCodeBTN()
+    {
+        Debug.Log("**********You CLICK ON RADEEM CODE");
+        SoundManager.instance.PlaySound(SoundType.Click);
+        MainMenuController.instance.ShowScreen(MainMenuScreens.RedeemCode);
+    }
+
+
+    public void OnClickLogOutBTN()
+    {
+        Debug.Log("*********You CLICK ON LOG OUT");
+        SoundManager.instance.PlaySound(SoundType.Click);
+        PlayerPrefs.DeleteAll();
+        GlobalGameManager.instance.isLoginShow = true;
+        MainMenuController.instance.ShowScreen(MainMenuScreens.Registration);
+    }
+
+
+    public void OnClickSoundBTN()
+    {
+        if (issound)
         {
             issound = false;
             soundOff.SetActive(true);

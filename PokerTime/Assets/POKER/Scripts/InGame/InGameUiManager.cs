@@ -84,8 +84,50 @@ public class InGameUiManager : MonoBehaviour
         ToggleActionButton(false);
         ToggleSuggestionButton(false);
     }
+    public void CallDectuct(int val) {
+        DeductCoinPostServer(val);
+    }
+    void DeductCoinPostServer(int val)
+    {
 
+        int amount = val;
 
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                              "\"amount\":\"" + amount + "\"," +
+                              "\"deductFrom\":\"" + "coins" + "\"," +
+                               "\"narration\":\"" + "Wining Booster" + "\"}";
+        WebServices.instance.SendRequest(RequestType.deductFromWallet, requestData, true, OnServerResponseFound);
+    }
+    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    {
+
+        Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+
+        if (errorMessage.Length > 0)
+        {
+            if (isShowErrorMessage)
+            {
+                MainMenuController.instance.ShowMessage(errorMessage);
+            }
+
+            return;
+        }
+        if (requestType == RequestType.deductFromWallet)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+            if (data["success"].ToString() == "1")
+            {
+
+              
+            }
+            else
+            {
+                MainMenuController.instance.ShowMessage(data["message"].ToString());
+            }
+        }
+       
+    }
 
     public void OnSpinWheelArrowBtnClick()
     {
@@ -839,6 +881,7 @@ public class InGameUiManager : MonoBehaviour
 
     public int emojiIndex;
     public int otherId;
+    public string sentToEmojiValue;
 
     public void CallEmojiSocket(int index) {
         emojiIndex = index;
@@ -897,6 +940,18 @@ public class InGameUiManager : MonoBehaviour
             case "gun":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Gun], EmojiShowTransform) as GameObject;
                 break;
+            case "rose":
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Rose], EmojiShowTransform) as GameObject;
+                break;
+            case "perfume":
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Perfume], EmojiShowTransform) as GameObject;
+                break;
+            case "ring":
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Ring], EmojiShowTransform) as GameObject;
+                break;
+            case "car":
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Car], EmojiShowTransform) as GameObject;
+                break;
         }
         g.transform.SetParent(EmojiShowTransform);
         g.GetComponent<EmojiBehaviour>().target = fromEmojiShowTransform;
@@ -924,6 +979,7 @@ public class InGameUiManager : MonoBehaviour
                 if (data[0]["sentTo"].ToString().Equals("0"))
                 {
                     fromEmojiShowTransform = GirlDealerEmoji.transform;
+                    sentToEmojiValue = "Dealer";
                 }
                 else
                 {
@@ -976,7 +1032,19 @@ public class InGameUiManager : MonoBehaviour
                 case "12":
                     ShowEmojiOnScreen("thumbUp");
                     break;
-                
+                case "13":
+                    ShowEmojiOnScreen("rose");
+                    break;
+                case "14":
+                    ShowEmojiOnScreen("perfume");
+                    break;
+                case "15":
+                    ShowEmojiOnScreen("ring");
+                    break;
+                case "16":
+                    ShowEmojiOnScreen("car");
+                    break;
+
             }
         }
 
@@ -1046,5 +1114,9 @@ public enum Emoji
     Oscar,
     Rocket,
     ThumbsUp,
-    YouRaPro
+    YouRaPro,
+    Rose,
+    Perfume,
+    Ring,
+    Car
 }

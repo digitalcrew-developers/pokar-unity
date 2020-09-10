@@ -24,7 +24,7 @@ public class SipnBigBehaviour : MonoBehaviour
 
     public void StartSpin()
     {
-        InvokeRepeating("RotateSpin", 0.15f, 0.15f);
+        InvokeRepeating("RotateSpin", 0.01f, 0.08f);
 
         SpinWheelUIManager.instance.oneXBtn.GetComponent<Image>().color = new Color32(120, 120, 120, 255);
         SpinWheelUIManager.instance.oneXBtn.GetComponent<Button>().enabled = false;
@@ -35,11 +35,11 @@ public class SipnBigBehaviour : MonoBehaviour
         switch (SpinWheelUIManager.instance.eventValue)
         {
             case "1x":
-                rand = Random.Range(3.0f, 5.5f);
+                rand = Random.Range(1.0f, 2.5f);
                 Invoke("StopSpin", rand);
                 break;
             case "5x":
-                rand = Random.Range(3.0f, 5.5f);
+                rand = Random.Range(1.0f, 2.5f);
                 Invoke("StopSpin", rand);
 
                 break;
@@ -52,7 +52,7 @@ public class SipnBigBehaviour : MonoBehaviour
     {
         CancelInvoke("RotateSpin");
         spinVal.SetActive(true);
-        spinVal.GetComponent<Text>().text = "+ " + SpinManager.instance.spinItemList[spinStartIndex].itemValue;
+        spinVal.GetComponent<Text>().text = "" ;
 
 
         switch (SpinWheelUIManager.instance.eventValue)
