@@ -87,6 +87,7 @@ public class GameConstants : MonoBehaviour
           API_URL+"/unlinkEmail",
           API_URL+"/changePassword",
           API_URL+"/redeemCoupon",
+          SOCKET_URL+"/userLoginLogs",
     };
     #endregion
 
@@ -131,5 +132,6 @@ public enum RequestType
     emailVerified,
     unlinkEmail,
     changePassword,
-    redeemCoupon
+    redeemCoupon,
+    userLoginLogs
 }
