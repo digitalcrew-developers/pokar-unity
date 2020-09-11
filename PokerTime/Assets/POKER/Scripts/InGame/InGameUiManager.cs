@@ -58,11 +58,21 @@ public class InGameUiManager : MonoBehaviour
     public GameObject players;
     public string tableId;
 
+    //DEV_CODE
+    public float height, width;
 
 
     private void Awake()
     {
         instance = this;
+
+        //DEV_CODE
+        Canvas canvas = gameObject.GetComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceCamera;
+        canvas.worldCamera = Camera.main;
+
+        height = gameObject.GetComponent<RectTransform>().rect.height;
+        width = gameObject.GetComponent<RectTransform>().rect.width;
     }
 
 

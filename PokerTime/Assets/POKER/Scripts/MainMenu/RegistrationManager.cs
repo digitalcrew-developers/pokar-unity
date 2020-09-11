@@ -149,15 +149,16 @@ public class RegistrationManager : MonoBehaviour
                 playerData.userName = registrationUserName.text;
                 playerData.password = registrationPassword.text;
 
+                MainMenuController.instance.ShowMessage(data["message"].ToString());
 
-               /* string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
-                        "\"userPassword\":\"" + registrationPassword.text + "\"," +
-                        "\"registrationType\":\"Custom\"," +
-                        "\"socialId\":\"\"}";
+                /* string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
+                         "\"userPassword\":\"" + registrationPassword.text + "\"," +
+                         "\"registrationType\":\"Custom\"," +
+                         "\"socialId\":\"\"}";
 
 
-                MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-                WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);*/
+                 MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+                 WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);*/
             }
             else
             {

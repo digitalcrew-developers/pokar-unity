@@ -8,11 +8,13 @@ using LitJson;
 using System.Net;
 using UnityEngine.Networking;
 using System;
+using System.IO;
 
 public class PlayerScript : MonoBehaviour
 {
     private const string TIMER_ANIMATION_ID = "PlayerTime";
 
+    public static PlayerScript instance;
 
     [SerializeField]
     public PlayerData playerData;
@@ -35,7 +37,7 @@ public class PlayerScript : MonoBehaviour
 
     public void Start()
     {
-        
+        instance = this;   
     }
 
     
@@ -452,6 +454,38 @@ public class PlayerScript : MonoBehaviour
                     {
                         cardsImage[i].sprite = playerData.cards[i].cardsSprite;
 
+                        //DEV_CODE
+                        //InGameManager.instance.cardValue = InGameManager.instance.cardValue + GetPlayerData().cards[i].cardNumber + GetPlayerData().cards[i].cardIcon.ToString();
+
+                        /*Debug.Log("Current Player Card Data is--->>> : " + InGameManager.instance.cardValue);*/
+
+                        /*Debug.Log("Card Number" + ":  " + i + " is ->>>>>>>>>>  " + GetPlayerData().cards[i].cardNumber);
+                        Debug.Log("Card Icon" + ":  " + i + " is ->>>>>>>>>>  " + GetPlayerData().cards[i].cardIcon.ToString());*/
+
+
+                        /*
+                        Sprite[] cardSprites = Resources.LoadAll<Sprite>("cards");
+
+                        CardData data = new CardData();
+                        data.cardNumber = playerData.cards[i].cardNumber;
+                        data.cardIcon = playerData.cards[i].cardIcon;
+
+                        int totalCardNumbers = Enum.GetNames(typeof(CardNumber)).Length - 1;
+                        int totalCardIcons = Enum.GetNames(typeof(CardIcon)).Length - 1;
+
+
+                        int cardNumber = totalCardNumbers - (int)data.cardNumber; // reverse order
+                        int cardIcon = totalCardIcons - (int)data.cardIcon; // reverse order
+
+                        data.cardsSprite = cardSprites[(cardIcon * 13) + cardNumber];*/
+
+                        /*Sprite cardSprite = GetPlayerData().cards[i].cardsSprite;*/
+                        /*Texture2D cardTex = data.cardsSprite.texture;
+                        var bytes = cardTex.EncodeToPNG();
+                        //byte[] cardByte = cardTex.EncodeToPNG();
+                        File.WriteAllBytes(Application.persistentDataPath + "/Card" + i + ".png", bytes);
+*/
+
                         if (!isItMe)
                         {
                             if (i == 0)
@@ -464,7 +498,7 @@ public class PlayerScript : MonoBehaviour
                                 cardsImage[i].transform.localPosition = new Vector3(-24, 8);
                                 cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
                             }
-                        }
+                        }                        
                     }
                 }
             }

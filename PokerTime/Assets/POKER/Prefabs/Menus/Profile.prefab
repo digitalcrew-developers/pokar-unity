@@ -2051,7 +2051,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3506750608254725731}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4071401963018341291}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: hand
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3506750608612724920
 GameObject:
   m_ObjectHideFlags: 0
@@ -2509,6 +2520,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   avtar: {fileID: 3506750608690210181}
   frame: {fileID: 1823907061637887891}
+  countrycode: 
+  countryname: 
+  avtarurl: 
+  flagurl: 
+  frameurl: 
+  avtarid: 0
+  panels:
+  - {fileID: 1245795184206029318, guid: 05e035ba43a6de346a951e43dc2777df, type: 3}
   coinsText: {fileID: 2745252199189876717}
   diamondsText: {fileID: 1122952140987704808}
   pointsText: {fileID: 1735204503277466204}
