@@ -29,7 +29,7 @@ public class MainMenuController : MonoBehaviour
 		if (PlayerManager.instance.IsLogedIn())
 		{
 			FetchUserData();
-			FetchUserLogs();
+			//FetchUserLogs();
 
 		}
 		else
