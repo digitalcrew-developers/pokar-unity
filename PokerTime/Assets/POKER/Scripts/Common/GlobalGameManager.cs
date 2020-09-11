@@ -25,6 +25,7 @@ public class GlobalGameManager : MonoBehaviour
 
     public static GlobalGameManager instance;
 
+    public bool isLoginShow = false;
     public GameObject[] gameScens; // prefab of all parent screens in game
     private GameObject previousScene = null; // contains current loaded sceneObject
 
@@ -164,6 +165,8 @@ public class RoomData
     public bool isLobbyRoom;
 
     public int totalActivePlayers;
+    
+
 }
 
 

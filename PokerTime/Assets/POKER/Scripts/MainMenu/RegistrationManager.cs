@@ -10,7 +10,18 @@ public class RegistrationManager : MonoBehaviour
     public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
 
-
+    private void OnEnable()
+    {
+        if (GlobalGameManager.instance.isLoginShow)
+        {
+            registrationScreen.SetActive(false);
+            loginScreen.SetActive(true);
+        }
+        else {
+            registrationScreen.SetActive(true);
+            loginScreen.SetActive(false);
+        }
+    }
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);

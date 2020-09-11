@@ -29,6 +29,8 @@ public class MainMenuController : MonoBehaviour
 		if (PlayerManager.instance.IsLogedIn())
 		{
 			FetchUserData();
+			//FetchUserLogs();
+
 		}
 		else
 		{
@@ -96,7 +98,15 @@ public class MainMenuController : MonoBehaviour
 
 		DownloadNotificationMessage();
 	}
+	private void FetchUserLogs()
+	{
+		string requestData = "{\"userName\":\"" + PlayerManager.instance.GetPlayerGameData().userId +  "\"}";
+		//{ userId: 2}
 
+		WebServices.instance.SendRequest(RequestType.userLoginLogs, requestData, true, OnServerResponseFound);
+
+	
+	}
 	public void DownloadNotificationMessage()
 	{
 		string notificationRequestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
@@ -311,8 +321,14 @@ public class MainMenuController : MonoBehaviour
 			case MainMenuScreens.FairGaming:
 			case MainMenuScreens.Compliance:
 			case MainMenuScreens.Contact:
-			case MainMenuScreens.ProfileSetting:
 			case MainMenuScreens.FriendList:
+			case MainMenuScreens.Language:
+			case MainMenuScreens.LinkYourEmail:
+			case MainMenuScreens.LinkingSucessfull:
+			case MainMenuScreens.UnlinkYourEmail:
+			case MainMenuScreens.ChangePassword:
+			case MainMenuScreens.RedeemCode:
+			case MainMenuScreens.InGameShop:
 
 				return ScreenLayer.LAYER3;
 
@@ -320,7 +336,6 @@ public class MainMenuController : MonoBehaviour
 			case MainMenuScreens.ChangeFrame:
 			case MainMenuScreens.SelectRegion:
 			case MainMenuScreens.ChangeProfileIcon:
-			case MainMenuScreens.Language:
 			
 				 return ScreenLayer.LAYER4;
 
@@ -387,6 +402,20 @@ public class MainMenuController : MonoBehaviour
 				ShowMessage(data["message"].ToString());
 			}
 		}
+		else if (requestType == RequestType.userLoginLogs)
+		{
+			JsonData data = JsonMapper.ToObject(serverResponse);
+
+			Debug.Log("USER LOGIN LOGS____________  ");
+			if (data["success"].ToString() == "1")
+			{
+				//PraseNotificationMessage(data);
+			}
+			else
+			{
+				ShowMessage(data["message"].ToString());
+			}
+		}
 	}
 }
 
@@ -425,7 +454,14 @@ public enum MainMenuScreens
 	Compliance,
 	Contact,
 	Language,
-	TopPlayer,FriendList
+	TopPlayer,
+	FriendList,
+	LinkYourEmail,
+	LinkingSucessfull,
+	UnlinkYourEmail,
+	ChangePassword,
+	RedeemCode,
+	InGameShop
 }
 
 

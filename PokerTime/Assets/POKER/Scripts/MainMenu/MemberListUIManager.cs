@@ -13,7 +13,7 @@ public class MemberListUIManager : MonoBehaviour
     public GameObject oldMemberPrefab, newMemberPrefab,memberListScreen;
     public Transform container;
     public Button newMemberButton, oldMemberButton;
-
+    public GameObject memeberPanel;
     [SerializeField]
     private List<ClubMemberDetails> newMembersList = new List<ClubMemberDetails>();
 
@@ -64,8 +64,11 @@ public class MemberListUIManager : MonoBehaviour
 
             case "newMember":
                 {
-                    newMemberButton.interactable = false;
-                    oldMemberButton.interactable = true;
+                    Color c = new Color(1, 1, 1, 1);
+                    newMemberButton.GetComponent<Image>().color = c;
+
+                    Color c1 = new Color(1, 1, 1, 0);
+                    oldMemberButton.GetComponent<Image>().color = c1;
 
                     ShowMemberDetails(true);
                 }
@@ -73,8 +76,11 @@ public class MemberListUIManager : MonoBehaviour
 
             case "oldMember":
                 {
-                    newMemberButton.interactable = true;
-                    oldMemberButton.interactable = false;
+                    Color c = new Color(1, 1, 1, 1);
+                    oldMemberButton.GetComponent<Image>().color = c;
+
+                    Color c1 = new Color(1, 1, 1, 0);
+                    newMemberButton.GetComponent<Image>().color = c1;
 
                     ShowMemberDetails(false);
                 }
@@ -91,6 +97,8 @@ public class MemberListUIManager : MonoBehaviour
 
     private void ShowMemberDetails(bool isShowNewMembers)
     {
+        memeberPanel.SetActive(true);
+
         for (int i = 0; i < container.childCount; i++)
         {
             Destroy(container.GetChild(i).gameObject);
@@ -119,7 +127,7 @@ public class MemberListUIManager : MonoBehaviour
             }
         }
 
-        layoutManager.UpdateLayout();
+        //layoutManager.UpdateLayout();
     }
 
 

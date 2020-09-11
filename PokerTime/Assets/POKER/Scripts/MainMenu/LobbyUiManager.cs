@@ -22,7 +22,7 @@ public class LobbyUiManager: MonoBehaviour
 
     [SerializeField]
     private Text coinsText;
-
+    [SerializeField]
     private List<List<RoomData>> allRoomData = new List<List<RoomData>>();
 
     public Button missionBtn;
@@ -170,6 +170,7 @@ public class LobbyUiManager: MonoBehaviour
             gm.transform.Find("LivePlayer").GetComponent<Text>().text = data.totalActivePlayers.ToString();
 
             gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(data));
+            gm.GetComponent<Button>().onClick.AddListener(() => gm.GetComponent<LobbyRoomManager>().CallInsufficientCoin(data));
         }
 
         layoutManager.UpdateLayout();
@@ -183,12 +184,14 @@ public class LobbyUiManager: MonoBehaviour
 
         if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
         {
-            MainMenuController.instance.ShowMessage("You dont have sufficient coins to play, please purchase coins to continue",()=>{
-                MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
-            },()=> {
-            },"Shop","Cancel");
+           
+            //MainMenuController.instance.ShowMessage("You dont have sufficient coins to play, please purchase coins to continue",()=>{
+            //    MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+            //},()=> {
+            //},"Shop","Cancel");
 
             return;
+           // InsufficientCoinLobbyRoomManager.in
         }
 
 
