@@ -84,6 +84,19 @@ public class GameConstants : MonoBehaviour
           API_URL+"/getSpinWinnerList",
           API_URL+"/deductFromWallet",
           API_URL+"/getFrames",
+          API_URL+"/updateClub",
+          API_URL+"/getUnionClubList",
+          API_URL+"/postNotification",
+          API_URL+"/getNotifications",
+          API_URL+"/readNotification",
+          API_URL+"/getPendingClubJoinRequest",
+          API_URL+"/rateClub",
+          API_URL+"/emailVerified",
+          API_URL+"/unlinkEmail",
+          API_URL+"/changePassword",
+          API_URL+"/redeemCoupon",
+          SOCKET_URL+"/userLoginLogs",
+          API_URL+"/createForum"
     };
     #endregion
 
@@ -129,5 +142,18 @@ public enum RequestType
     GetInGameShopValue,
     getSpinWinnerList,
     deductFromWallet,
-    getFrames
+    getFrames,
+    UpdateClub,
+    GetUnionClubList,
+    PostNotification,
+    GetNotification,
+    ReadNotification,
+    GetPendingClubJoinRequest,
+    RateClub,
+    emailVerified,
+    unlinkEmail,
+    changePassword,
+    redeemCoupon,
+    userLoginLogs,
+    createForum
 }

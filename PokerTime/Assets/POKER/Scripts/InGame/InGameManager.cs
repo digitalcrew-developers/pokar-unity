@@ -9,6 +9,7 @@ using NatCorder.Clocks;
 using NatCorder.Inputs;
 using UnityEditor;
 using System.IO;
+using UnityEngine.Networking;
 
 public class InGameManager : MonoBehaviour
 {
@@ -56,7 +57,7 @@ public class InGameManager : MonoBehaviour
     public GameObject WinnAnimationpos;
 
     //DEV_CODE
-    public int videoWidth/* = 1280*/;
+    public int videoWidth /* = 1280*/;
     public int videoHeight /*= 720*/;
     public bool isRecording = false;
     
@@ -66,6 +67,7 @@ public class InGameManager : MonoBehaviour
     //To Store Player Data
     public string cardValue = "";          //To Store Card Number with Card Icon
     string tableValue = "";         //To Store table blinds values
+    string userID = "";
 
     //To Store Date and Time
     string date = "";
@@ -162,7 +164,7 @@ public class InGameManager : MonoBehaviour
             {
                 Image[] playerCards = players[i].GetCardsImage();
 
-                Debug.Log("Player Cards: " + playerCards[i].name);
+/*                Debug.Log("Player Cards: " + playerCards[i].name);*/
 
                 for (int j = 0; j < playerCards.Length; j++)
                 {
@@ -196,10 +198,7 @@ public class InGameManager : MonoBehaviour
 
         SocketController.instance.SetSocketState(SocketState.Game_Running);
         SwitchTurn(playerScriptWhosTurn,false);
-
-        //DEV_CODE
     }
-
 
 
     public int GetLastBetAmount()
@@ -1019,12 +1018,11 @@ public class InGameManager : MonoBehaviour
             //DEV_CODE
             if (!isCardValueSet)
             {
-
                 for (int i = 0; i < GetMyPlayerObject().GetPlayerData().cards.Length; i++)
                 {
                     cardValue = cardValue + GetMyPlayerObject().GetPlayerData().cards[i].cardIcon.ToString() + "_" + GetMyPlayerObject().GetPlayerData().cards[i].cardNumber + "_";
                 }
-                Debug.Log("Current Player Card Data is--->>> : " + cardValue);
+                userID = GetMyPlayerObject().GetPlayerData().userId;
             }
 
             isCardValueSet = true;
@@ -1311,7 +1309,7 @@ public class InGameManager : MonoBehaviour
         recorder = new MP4Recorder(videoWidth, videoHeight, frameRate);
         var clock = new RealtimeClock();
         // And use a `CameraInput` to record the main game camera
-        cameraInput = new CameraInput(recorder, clock, Camera.main);
+        cameraInput = new CameraInput(recorder, clock, InGameUiManager.instance.cameraObj/*Camera.main*/);
 
         tableValue = GlobalGameManager.instance.GetRoomData().smallBlind.ToString() + "_" + GlobalGameManager.instance.GetRoomData().bigBlind.ToString();
         date = System.DateTime.Now.ToString("dd-MM-yyyy");
@@ -1332,25 +1330,103 @@ public class InGameManager : MonoBehaviour
             Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Video"));
 
         //For Android
-        DirectoryInfo dirInfo = new DirectoryInfo(Application.persistentDataPath);
-        FileInfo[] fileInfo = dirInfo.GetFiles("*.mp4");
+        //DirectoryInfo dirInfo = new DirectoryInfo(Application.persistentDataPath);
+        //FileInfo[] fileInfo = dirInfo.GetFiles("*.mp4");
 
-        foreach (FileInfo f in fileInfo)
-        {
+        //foreach (FileInfo f in fileInfo)
+        //{
             //File.Move(f.FullName, Path.Combine(Application.persistentDataPath, "Video", "Video_" + ".mp4"));
-            File.Move(f.FullName, Path.Combine(Application.persistentDataPath, "Video", "Video_ " + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+            //File.Move(f.FullName, Path.Combine(Application.persistentDataPath, "Video", "Video_ " + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
             //InGameUiManager.instance.ShowMessage("TableValue: " + tableValue + "  ## Card Value: " + cardValue + " $$ Date: " + date + " %% Time: " + time);
-        }
+        //}
 
-        Debug.Log("CardValue is: " + cardValue);
+        File.Move(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+
+        StartCoroutine(UploadVideo(Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4")));
 
         //For PC
         //FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Video", tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
 
         cardValue = "";
         isCardValueSet = false;
-        Debug.Log("Recording Stopped ...");
+
+        //Delete Extra files
+        DirectoryInfo dirInfo = new DirectoryInfo(Application.persistentDataPath);
+        FileInfo[] fileInfo = dirInfo.GetFiles("*.mp4");
+        for (int j = 0; j < fileInfo.Length; j++)
+        {
+            File.Delete(fileInfo[j].FullName);
+        }        
+
+        Debug.Log("Recording Stopped ..." + Path.GetDirectoryName(path));
         //InGameUiManager.instance.ShowMessage(path);
+    }
+
+    IEnumerator UploadVideo(string path)
+    {
+        byte[] videoByte = File.ReadAllBytes(path);
+        WWWForm formData = new WWWForm();
+        //List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+        formData.AddField("userId", userID/*new MultipartFormDataSection(userID)*/);
+        formData.AddField("description","hello"/*new MultipartFormDataSection("Uploading")*/);
+        formData.AddBinaryData("forumImage",videoByte, path, "video/mp4"/*new MultipartFormFileSection(videoByte)*/);        
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://18.191.15.121:3000/createForum", formData))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
+            }
+        }
+
+        //WebServices.instance.SendRequest(RequestType.createForum, formData.ToString(), true, OnServerResponseFound);
+
+        /*WWWForm form = new WWWForm();
+        form.AddField("myField", "myData");
+
+        using (UnityWebRequest www = UnityWebRequest.Post(RequestType.createForum, form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Form upload complete!");
+            }
+        }*/
+    }
+
+    void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    {
+        if (errorMessage.Length > 0)
+        {
+            if (isShowErrorMessage)
+            {
+                InGameUiManager.instance.ShowMessage(errorMessage);
+            }
+            return;
+        }
+        if (requestType == RequestType.createForum)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+            Debug.Log("Data is: " + data.ToString());         
+        }
+        else
+        {
+
+#if ERROR_LOG
+            Debug.LogError("Unhadnled response found in  = " + requestType);
+#endif
+        }
     }
 }
 

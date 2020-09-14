@@ -17,6 +17,9 @@ public class HandUiManager : MonoBehaviour
 
     public GameObject image;
 
+    private DirectoryInfo dir;
+    private FileInfo[] info;
+
     private GameObject handObject, videoObject;
 
     private VideoPlayer videoPlayer;
@@ -31,26 +34,60 @@ public class HandUiManager : MonoBehaviour
             Destroy(container.GetChild(i).gameObject);
         }
 
-        DirectoryInfo dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Video"));
-        FileInfo[] info = dir.GetFiles("*.mp4");
+
+        dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Video"));
+        info = dir.GetFiles("*.mp4");
 
         Sprite[] cardSprites = Resources.LoadAll<Sprite>("cards");
 
         //data.cardsSprite = cardSprites[(cardIcon * 13) + cardNumber];
 
+        for (int j = 0; j < info.Length; j++)
+        {
+            string[] x = info[j].Name.Split('_');
+            Debug.Log("File --> " + info[j].Name + "    Length : " + x.Length);
+
+            if (x.Length == 7)
+            {
+                Debug.Log("Currepted FIle !!!!!!");
+                File.Delete(info[j].FullName);
+            }
+            /*else
+            {
+                Debug.Log("No file to delete");
+                if (x[9].Length == 1)
+                    x[9] = "0" + x[9];
+
+                handObject = Instantiate(handPrefab, container) as GameObject;
+
+                handObject.transform.GetChild(2).GetComponent<Text>().text = x[7] + " " + x[8] + " : " + x[9];
+                handObject.transform.GetChild(5).GetComponent<Text>().text = x[1] + "/" + x[2];
+
+                GetFirstCardDetail(x[4], x[3], handObject, cardSprites);
+                GetSecondCardDetail(x[6], x[5], handObject, cardSprites);
+
+                //handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(info[j - 1].Name));
+            }*/
+        }
+
+        dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Video"));
+        info = dir.GetFiles("*.mp4");
+
         foreach (FileInfo f in info)
         {
             string[] x = f.Name.Split('_');
 
+            Debug.Log("File --> " + f.Name + "    Length : " + x.Length);
             /*for (int i = 0; i < x.Length; i++)
             {
-                Debug.Log("Val: " + x[i]);
+                Debug.Log("Val "+i+" : "+ x[i] + " Length: " + x[i].Length);                
             }*/
-
+            
+            Debug.Log("Instantiate Object");
             handObject = Instantiate(handPrefab, container) as GameObject;
 
-            /*if (x[9].Length == 1)
-                x[9] = "0" + x[9];*/
+            if (x[9].Length == 1)
+                x[9] = "0" + x[9];
 
             handObject.transform.GetChild(2).GetComponent<Text>().text = x[7] + " " + x[8] + " : " + x[9];
             handObject.transform.GetChild(5).GetComponent<Text>().text = x[1] + "/" + x[2];
@@ -58,19 +95,34 @@ public class HandUiManager : MonoBehaviour
             GetFirstCardDetail(x[4], x[3], handObject, cardSprites);
             GetSecondCardDetail(x[6], x[5], handObject, cardSprites);
 
-            handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(f.Name));
+            handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(f.Name));            
         }
 
-        ChangeBtnFocus(0);
+        
+
+        /*Debug.Log("Container Count: " + container.childCount);*/
+        /*for (int k = 0; k < container.childCount; k++)
+        {
+            container.GetChild(k).GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(info[k-1].Name));
+        }*/
+
+        /*foreach (FileInfo f in info)
+        {
+            handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(f.Name));
+        }*/
+
+
+            ChangeBtnFocus(0);
         //GetAllVideoList(true);        
     }
 
     private void OnClickOnPlayButton(string name)
     {
-        StartCoroutine(playVideo(name));
+        Debug.Log("Name @@@@@@@@@@" + name);
+        StartCoroutine(PlayVideo(name));
     }
 
-    IEnumerator playVideo(string vn)
+    IEnumerator PlayVideo(string vn)
     {
         if (!gameObject.GetComponent<VideoPlayer>() && !gameObject.GetComponent<AudioSource>())
         {
@@ -83,7 +135,7 @@ public class HandUiManager : MonoBehaviour
         //audioSource.Pause();
 
         videoPlayer.source = VideoSource.Url;
-        videoPlayer.url = Application.persistentDataPath + "/Video/" + vn;
+        videoPlayer.url = Path.Combine(Application.persistentDataPath, "Video", vn);/*Application.persistentDataPath + "/Video/" + vn;*/
 
         videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
         //Assign the Audio from Video to AudioSource to be played
@@ -191,7 +243,7 @@ public class HandUiManager : MonoBehaviour
                     data.cardNumber = (CardNumber)(numberIndex - 2);
                     break; */
         }
-        Debug.Log("Card Number: !!!! " + data.cardNumber);
+        /*Debug.Log("Card Number: !!!! " + data.cardNumber);*/
 
         switch (cardType)
         {
@@ -216,7 +268,7 @@ public class HandUiManager : MonoBehaviour
                 data.cardNumber = (CardNumber)(numberIndex - 2);
                 break;*/
         }
-        Debug.Log("Card Number: !!!! " + data.cardNumber);
+        /*Debug.Log("Card Number: !!!! " + data.cardNumber);*/
 
         int totalCardNumbers = Enum.GetNames(typeof(CardNumber)).Length - 1;
         int totalCardIcons = Enum.GetNames(typeof(CardIcon)).Length - 1;

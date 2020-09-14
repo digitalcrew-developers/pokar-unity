@@ -59,6 +59,7 @@ public class InGameUiManager : MonoBehaviour
     public string tableId;
 
     //DEV_CODE
+    public Camera cameraObj;
     public float height, width;
 
 
@@ -67,9 +68,11 @@ public class InGameUiManager : MonoBehaviour
         instance = this;
 
         //DEV_CODE
+        cameraObj = GameObject.Find("VideoRecordingCamera").GetComponent<Camera>();
+
         Canvas canvas = gameObject.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
-        canvas.worldCamera = Camera.main;
+        canvas.worldCamera = cameraObj;
 
         height = gameObject.GetComponent<RectTransform>().rect.height;
         width = gameObject.GetComponent<RectTransform>().rect.width;
