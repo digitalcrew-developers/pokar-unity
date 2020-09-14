@@ -124,7 +124,7 @@ public class SpinWheelUIManager : MonoBehaviour
                         str = str + " -- " ;
                     }
 
-                    Debug.Log("Now the STR of value ---  " + str);
+                    //Debug.Log("Now the STR of value ---  " + str);
 
                     if (i == 0)
                     {

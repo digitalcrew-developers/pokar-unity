@@ -21,7 +21,9 @@ public class MenuHandller : MonoBehaviour
     private void Awake()
     {
 		instance = this;
-    }
+
+		/*Debug.Log("Current Date and time:" + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));*/		
+	}
 
     private void OnDestroy()
     {
