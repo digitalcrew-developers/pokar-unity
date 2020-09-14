@@ -8,20 +8,25 @@ using UnityEngine.UI;
 using NatCorder;
 using System;
 using UnityEngine.Video;
+using UnityEngine.EventSystems;
 
-public class HandUiManager : MonoBehaviour
+public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public Transform container;
     public Image[] onfocusImageAry;
     public GameObject handPrefab;
-
     public GameObject image;
+    public GameObject commentPanel, commentPanelCommentObj, videoPanel;
 
     private DirectoryInfo dir;
     private FileInfo[] info;
 
     private GameObject handObject, videoObject;
+    
 
+    bool slide = false;
+
+    private Slider tracking;
     private VideoPlayer videoPlayer;
     private VideoSource videoSource;
 
@@ -29,11 +34,12 @@ public class HandUiManager : MonoBehaviour
 
     void Start()
     {
+        commentPanel.SetActive(false);
+
         for (int i = 0; i < container.childCount; i++)
         {
             Destroy(container.GetChild(i).gameObject);
         }
-
 
         dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Video"));
         info = dir.GetFiles("*.mp4");
@@ -45,7 +51,7 @@ public class HandUiManager : MonoBehaviour
         for (int j = 0; j < info.Length; j++)
         {
             string[] x = info[j].Name.Split('_');
-            Debug.Log("File --> " + info[j].Name + "    Length : " + x.Length);
+/*            Debug.Log("File --> " + info[j].Name + "    Length : " + x.Length);*/
 
             if (x.Length == 7)
             {
@@ -83,7 +89,7 @@ public class HandUiManager : MonoBehaviour
                 Debug.Log("Val "+i+" : "+ x[i] + " Length: " + x[i].Length);                
             }*/
             
-            Debug.Log("Instantiate Object");
+/*            Debug.Log("Instantiate Object");*/
             handObject = Instantiate(handPrefab, container) as GameObject;
 
             if (x[9].Length == 1)
@@ -112,15 +118,43 @@ public class HandUiManager : MonoBehaviour
         }*/
 
 
-            ChangeBtnFocus(0);
+        ChangeBtnFocus(0);
         //GetAllVideoList(true);        
     }
-
+    
     private void OnClickOnPlayButton(string name)
     {
-        Debug.Log("Name @@@@@@@@@@" + name);
+        commentPanel.SetActive(true);
+        videoPanel.SetActive(true);
+        commentPanelCommentObj.SetActive(false);
         StartCoroutine(PlayVideo(name));
     }
+
+    public void OnPointerUp(PointerEventData a)
+    {
+        float frame = (float)tracking.value * (float)videoPlayer.frameCount;
+        videoPlayer.frame = (long)frame;
+        slide = false;
+    }
+
+
+    public void OnPointerDown(PointerEventData a)
+    {
+        Debug.Log("Pointer Down!!");
+
+        slide = true;
+
+        if (videoPlayer.isPlaying && !videoObject.transform.GetChild(2).gameObject.activeSelf)
+            videoObject.transform.GetChild(2).gameObject.SetActive(true);
+        else if(videoPlayer.isPlaying && videoObject.transform.GetChild(2).gameObject.activeSelf)
+            videoObject.transform.GetChild(2).gameObject.SetActive(false);
+        else if (!videoPlayer.isPlaying && !videoObject.transform.GetChild(1).gameObject.activeSelf)
+            videoObject.transform.GetChild(1).gameObject.SetActive(true);
+        else if(!videoPlayer.isPlaying && videoObject.transform.GetChild(1).gameObject.activeSelf)
+            videoObject.transform.GetChild(1).gameObject.SetActive(false);
+
+    }
+
 
     IEnumerator PlayVideo(string vn)
     {
@@ -135,7 +169,7 @@ public class HandUiManager : MonoBehaviour
         //audioSource.Pause();
 
         videoPlayer.source = VideoSource.Url;
-        videoPlayer.url = Path.Combine(Application.persistentDataPath, "Video", vn);/*Application.persistentDataPath + "/Video/" + vn;*/
+        videoPlayer.url = Path.Combine(Application.persistentDataPath, "Video", vn);
 
         videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
         //Assign the Audio from Video to AudioSource to be played
@@ -158,12 +192,31 @@ public class HandUiManager : MonoBehaviour
         }
 
         /*Debug.Log("Done Preparing Video");*/
-        videoObject = Instantiate(image, this.transform) as GameObject;
+        videoObject = Instantiate(image, videoPanel.transform) as GameObject;
         //Assign the Texture from Video to RawImage to be displayed
         videoObject.GetComponent<RawImage>().texture = videoPlayer.texture;
 
+        //Assign the Slider
+        tracking = videoObject.transform.GetChild(4).GetComponent<Slider>();
+                
         //Assign back button click listner
-        videoObject.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => ClickBackBtn());
+        videoObject.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => OnClickBackBtn());
+
+        //Assign play button click listner
+        videoObject.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => OnClickPlayBtn());
+
+        //Assign pause button click listner
+        videoObject.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => OnClickPauseBtn());
+
+        //Assign add post button click listner
+        videoObject.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => OnClickAddPostButton());
+
+        //Assign comment button click listner
+        videoObject.transform.GetChild(6).GetComponent<Button>().onClick.AddListener(() => OnClickCommentBtn());
+
+        //Assign like button click listner
+        videoObject.transform.GetChild(7).GetComponent<Button>().onClick.AddListener(() => OnClickLikeBtn());
+
 
         //Play Video
         videoPlayer.Play();
@@ -175,9 +228,97 @@ public class HandUiManager : MonoBehaviour
         while (videoPlayer.isPlaying)
         {
             //Debug.Log("Video Time: " + Mathf.FloorToInt((float)videoPlayer.time));
+            
+            tracking.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
+
             yield return null;
         }
         /*Debug.Log("Done Playing Video");*/
+    }
+
+
+    public void OnClickBackBtn()
+    {
+        Destroy(videoObject);
+    }
+
+    public void OnClickCommentBtn()
+    {
+        commentPanel.SetActive(true);
+        commentPanelCommentObj.SetActive(true);
+        videoPanel.SetActive(false);
+    }
+
+    public void OnClickCommentBackButton()
+    {
+        commentPanelCommentObj.SetActive(false);
+    }
+
+    public void OnClickLikeBtn()
+    {
+
+    }
+
+    public void OnClickAddPostButton()
+    {
+
+    }
+
+    public void OnClickPauseBtn()
+    {
+        videoPlayer.Pause();
+        videoObject.transform.GetChild(1).gameObject.SetActive(true);
+        videoObject.transform.GetChild(2).gameObject.SetActive(false);
+    }
+
+    public void OnClickPlayBtn()
+    {
+        videoPlayer.Play();
+        videoObject.transform.GetChild(1).gameObject.SetActive(false);
+        videoObject.transform.GetChild(2).gameObject.SetActive(false);
+
+        StartCoroutine(PlayVideo());
+        //tracking.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
+    }
+
+    IEnumerator PlayVideo()
+    {
+        while (videoPlayer.isPlaying)
+        {
+            tracking.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
+
+            yield return null;
+        }
+    }
+
+    public void OnClickBtnClose()
+    {
+        //MainMenuController.instance.DestroyScreen(ScreenLayer.LAYER2);
+        Destroy(gameObject);
+    }
+
+    public void GetAllVideoList(bool isShowLoading)
+    {
+        ChangeBtnFocus(0);
+    }
+
+    void ChangeBtnFocus(int focusVal)
+    {
+        for (int i = 0; i < onfocusImageAry.Length; i++)
+        {
+            if (i != focusVal)
+            {
+                Color temp = onfocusImageAry[i].color;
+                temp.a = 0.01f;
+                onfocusImageAry[i].color = temp;
+            }
+            else
+            {
+                Color temp = onfocusImageAry[i].color;
+                temp.a = 1f;
+                onfocusImageAry[i].color = temp;
+            }
+        }
     }
 
     private void GetFirstCardDetail(string cardVal, string cardType, GameObject g1, Sprite[] cardSprites)
@@ -263,10 +404,10 @@ public class HandUiManager : MonoBehaviour
                 data.cardIcon = CardIcon.SPADES;
                 break;
 
-            /*default:
-                int numberIndex = int.Parse(cardVal);
-                data.cardNumber = (CardNumber)(numberIndex - 2);
-                break;*/
+                /*default:
+                    int numberIndex = int.Parse(cardVal);
+                    data.cardNumber = (CardNumber)(numberIndex - 2);
+                    break;*/
         }
         /*Debug.Log("Card Number: !!!! " + data.cardNumber);*/
 
@@ -337,10 +478,10 @@ public class HandUiManager : MonoBehaviour
             case "NINE":
                 data.cardNumber = CardNumber.NINE;
                 break;
-             /*default:
-                    int numberIndex = int.Parse(cardVal.ToString());
-                    data.cardNumber = (CardNumber)(numberIndex - 2);
-                    break;*/
+                /*default:
+                       int numberIndex = int.Parse(cardVal.ToString());
+                       data.cardNumber = (CardNumber)(numberIndex - 2);
+                       break;*/
         }
 
 
@@ -362,10 +503,10 @@ public class HandUiManager : MonoBehaviour
                 data.cardIcon = CardIcon.SPADES;
                 break;
 
-            /*default:
-                int numberIndex = int.Parse(cardVal.ToString());
-                data.cardNumber = (CardNumber)(numberIndex - 2);
-                break;*/
+                /*default:
+                    int numberIndex = int.Parse(cardVal.ToString());
+                    data.cardNumber = (CardNumber)(numberIndex - 2);
+                    break;*/
         }
 
         int totalCardNumbers = Enum.GetNames(typeof(CardNumber)).Length - 1;
@@ -376,40 +517,5 @@ public class HandUiManager : MonoBehaviour
         int cardIcon = totalCardIcons - (int)data.cardIcon; // reverse order
 
         g1.transform.GetChild(1).GetComponent<Image>().sprite = cardSprites[(cardIcon * 13) + cardNumber];
-    }
-
-    public void ClickBackBtn()
-    {
-        Destroy(videoObject);
-    }
-
-    public void OnClickBtnClose()
-    {
-        //MainMenuController.instance.DestroyScreen(ScreenLayer.LAYER2);
-        Destroy(gameObject);
-    }
-
-    public void GetAllVideoList(bool isShowLoading)
-    {
-        ChangeBtnFocus(0);
-    }
-
-    void ChangeBtnFocus(int focusVal)
-    {
-        for (int i = 0; i < onfocusImageAry.Length; i++)
-        {
-            if (i != focusVal)
-            {
-                Color temp = onfocusImageAry[i].color;
-                temp.a = 0.01f;
-                onfocusImageAry[i].color = temp;
-            }
-            else
-            {
-                Color temp = onfocusImageAry[i].color;
-                temp.a = 1f;
-                onfocusImageAry[i].color = temp;
-            }
-        }
     }
 }

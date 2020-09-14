@@ -1329,23 +1329,15 @@ public class InGameManager : MonoBehaviour
         if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Video")))
             Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Video"));
 
-        //For Android
-        //DirectoryInfo dirInfo = new DirectoryInfo(Application.persistentDataPath);
-        //FileInfo[] fileInfo = dirInfo.GetFiles("*.mp4");
-
-        //foreach (FileInfo f in fileInfo)
-        //{
-            //File.Move(f.FullName, Path.Combine(Application.persistentDataPath, "Video", "Video_" + ".mp4"));
-            //File.Move(f.FullName, Path.Combine(Application.persistentDataPath, "Video", "Video_ " + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
-            //InGameUiManager.instance.ShowMessage("TableValue: " + tableValue + "  ## Card Value: " + cardValue + " $$ Date: " + date + " %% Time: " + time);
-        //}
-
+        //For PC to move file
+#if UNITY_EDITOR
+        FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+#elif UNITY_ANDROID
         File.Move(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+#endif
 
+        //To Upload Video
         StartCoroutine(UploadVideo(Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4")));
-
-        //For PC
-        //FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Video", tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
 
         cardValue = "";
         isCardValueSet = false;
@@ -1364,69 +1356,52 @@ public class InGameManager : MonoBehaviour
 
     IEnumerator UploadVideo(string path)
     {
+        Debug.Log("Started Uploading Vide..." + path);
         byte[] videoByte = File.ReadAllBytes(path);
         WWWForm formData = new WWWForm();
         //List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
         formData.AddField("userId", userID/*new MultipartFormDataSection(userID)*/);
         formData.AddField("description","hello"/*new MultipartFormDataSection("Uploading")*/);
-        formData.AddBinaryData("forumImage",videoByte, path, "video/mp4"/*new MultipartFormFileSection(videoByte)*/);        
+        formData.AddBinaryData("forumImage",videoByte, path, "video/mp4"/*new MultipartFormFileSection(videoByte)*/);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://18.191.15.121:3000/createForum", formData))
+        UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/createForum", formData);
+        
+        Debug.Log("Uploading !!!!!!");
+        yield return www.SendWebRequest();
+
+        Debug.Log("Upload Success...");
+
+        if (www.isNetworkError || www.isHttpError)
         {
-            yield return www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
-            }
-        }
-
-        //WebServices.instance.SendRequest(RequestType.createForum, formData.ToString(), true, OnServerResponseFound);
-
-        /*WWWForm form = new WWWForm();
-        form.AddField("myField", "myData");
-
-        using (UnityWebRequest www = UnityWebRequest.Post(RequestType.createForum, form))
-        {
-            yield return www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                Debug.Log("Form upload complete!");
-            }
-        }*/
-    }
-
-    void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
-    {
-        if (errorMessage.Length > 0)
-        {
-            if (isShowErrorMessage)
-            {
-                InGameUiManager.instance.ShowMessage(errorMessage);
-            }
-            return;
-        }
-        if (requestType == RequestType.createForum)
-        {
-            JsonData data = JsonMapper.ToObject(serverResponse);
-            Debug.Log("Data is: " + data.ToString());         
+            Debug.Log(www.error);
         }
         else
         {
-
-#if ERROR_LOG
-            Debug.LogError("Unhadnled response found in  = " + requestType);
-#endif
+            Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
         }
+
+
+
+        //TYPE - 2
+
+        /*WWW localFile = new WWW(path);
+        yield return localFile;
+        WWWForm postForm = new WWWForm();
+        postForm.AddField("userId", userID *//*new MultipartFormDataSection(userID)*//*);
+        postForm.AddField("description", "hello" *//*new MultipartFormDataSection("Uploading")*//*);
+        postForm.AddBinaryData("forumImage", localFile.bytes, path, "video/mp4");
+        WWW upload = new WWW("http://18.191.15.121:3000/createForum", postForm);
+        yield return upload;
+        if (upload.error == null)
+        {
+            Debug.Log("Upload Success !!!" + upload.text);
+        }
+        else
+        {
+            Debug.Log("Error during upload: " + upload.error);
+        }*/
+
+
     }
 }
 
