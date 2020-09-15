@@ -114,9 +114,7 @@ public class ClubAdminManager : MonoBehaviour
                 break;
         }
     }
-
-
-
+    
     private void CloseAllScreens()
     {
         foreach(GameObject g in AllScreens)
