@@ -83,6 +83,7 @@ public class GameConstants : MonoBehaviour
           SOCKET_URL+"/shopItem",
           API_URL+"/getSpinWinnerList",
           API_URL+"/deductFromWallet",
+          API_URL+"/getFrames",
           API_URL+"/updateClub",
           API_URL+"/getUnionClubList",
           API_URL+"/postNotification",
@@ -93,7 +94,9 @@ public class GameConstants : MonoBehaviour
           API_URL+"/emailVerified",
           API_URL+"/unlinkEmail",
           API_URL+"/changePassword",
-          API_URL+"/redeemCoupon"
+          API_URL+"/redeemCoupon",
+          SOCKET_URL+"/userLoginLogs",
+          API_URL+"/createForum"
     };
     #endregion
 
@@ -129,12 +132,17 @@ public enum RequestType
     UpdateTableSettings,
     GetTableSettingData,
     GetUserDetails,
-    GetRewardCoins, GetFriendList, GetAllFriendRequest, SendFriendRequest, UpdateRequestStatus,
+    GetRewardCoins, 
+    GetFriendList, 
+    GetAllFriendRequest, 
+    SendFriendRequest, 
+    UpdateRequestStatus,
     GetSpinWheelItems,
     SetSpinWheelWinning,
     GetInGameShopValue,
     getSpinWinnerList,
     deductFromWallet,
+    getFrames,
     UpdateClub,
     GetUnionClubList,
     PostNotification,
@@ -145,5 +153,7 @@ public enum RequestType
     emailVerified,
     unlinkEmail,
     changePassword,
-    redeemCoupon
+    redeemCoupon,
+    userLoginLogs,
+    createForum
 }

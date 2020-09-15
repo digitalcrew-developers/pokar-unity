@@ -11,6 +11,10 @@ public class ProfileScreenUiManager : MonoBehaviour
     public string countrycode, countryname;
     public string avtarurl, flagurl, frameurl;
     public int avtarid;
+
+    //DEV_CODE
+    public List<GameObject> panels = new List<GameObject>();
+
     public void Awake()
     {
         instance = this;
@@ -104,6 +108,10 @@ public class ProfileScreenUiManager : MonoBehaviour
 
         switch (eventName)
         {
+            case "hand":
+                GameObject gm = Instantiate(panels[0], MainMenuController.instance.screenLayers[(int)ScreenLayer.LAYER2]) as GameObject;
+                break;
+
             case "coinShop":
                 {
                     MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);

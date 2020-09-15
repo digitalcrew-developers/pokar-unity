@@ -4,7 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
 using DG.Tweening;
-
+using NatCorder;
+using NatCorder.Clocks;
+using NatCorder.Inputs;
+using UnityEditor;
+using System.IO;
+using UnityEngine.Networking;
 
 public class InGameManager : MonoBehaviour
 {
@@ -51,15 +56,42 @@ public class InGameManager : MonoBehaviour
 
     public GameObject WinnAnimationpos;
 
+    //DEV_CODE
+    public int videoWidth /* = 1280*/;
+    public int videoHeight /*= 720*/;
+    public bool isRecording = false;
+    
+    private MP4Recorder recorder;
+    private CameraInput cameraInput;
+
+    //To Store Player Data
+    public string cardValue = "";          //To Store Card Number with Card Icon
+    string tableValue = "";         //To Store table blinds values
+    string userID = "";
+
+    //To Store Date and Time
+    string date = "";
+    string time = "";
+
+    //To Store total player bet value
+    string balance = "";
+
+    bool isCardValueSet = false;
 
     private void Awake()
     {
         instance = this;
+        Debug.Log("Date: " + System.DateTime.Now.ToString("dd/MM/yyyy"));
+        //Debug.Log("Time: " + System.DateTime.Now.Hour + System.DateTime.Now.Minute);
     }
 
 
     private void Start()
     {
+        //DEV_CODE
+        videoHeight = (int)InGameUiManager.instance.height;
+        videoWidth = (int)InGameUiManager.instance.width;
+
         for (int i = 0; i < communityCards.Length; i++)
         {
             communityCards[i].gameObject.SetActive(false);
@@ -132,6 +164,8 @@ public class InGameManager : MonoBehaviour
             {
                 Image[] playerCards = players[i].GetCardsImage();
 
+/*                Debug.Log("Player Cards: " + playerCards[i].name);*/
+
                 for (int j = 0; j < playerCards.Length; j++)
                 {
                     GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
@@ -165,7 +199,6 @@ public class InGameManager : MonoBehaviour
         SocketController.instance.SetSocketState(SocketState.Game_Running);
         SwitchTurn(playerScriptWhosTurn,false);
     }
-
 
 
     public int GetLastBetAmount()
@@ -603,7 +636,7 @@ public class InGameManager : MonoBehaviour
         {
             if (MATCH_ROUND != 0)
             {
-            //    Debug.LogError("HT @ " + handtype);
+                //Debug.LogError("HT @ " + handtype);
                 onlinePlayersScript[i].UpdateRealTimeResult(handtype);
             }
             Text text = onlinePlayersScript[i].GetLocaPot();
@@ -811,6 +844,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnResultResponseFound(string serverResponse)
     {
+
         if (winnersObject.Count > 0)
         {
             return;
@@ -861,6 +895,10 @@ public class InGameManager : MonoBehaviour
 
     public void OnNextMatchCountDownFound(string serverResponse)
     {
+        //DEV_CODE
+        if (isRecording)
+            StopRecording();
+
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             onlinePlayersScript[i].ResetRealtimeResult();
@@ -948,7 +986,6 @@ public class InGameManager : MonoBehaviour
 
                 if (currentPlayer.IsMe())
                 {
-
                     int endTime = (int)(GameConstants.TURN_TIME * 0.25f);
 
                     if (remainingTime == endTime)
@@ -978,6 +1015,18 @@ public class InGameManager : MonoBehaviour
 
         if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         {
+            //DEV_CODE
+            if (!isCardValueSet)
+            {
+                for (int i = 0; i < GetMyPlayerObject().GetPlayerData().cards.Length; i++)
+                {
+                    cardValue = cardValue + GetMyPlayerObject().GetPlayerData().cards[i].cardIcon.ToString() + "_" + GetMyPlayerObject().GetPlayerData().cards[i].cardNumber + "_";
+                }
+                userID = GetMyPlayerObject().GetPlayerData().userId;
+            }
+
+            isCardValueSet = true;
+
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
 
             if (betAmount > 0 && userId != PlayerManager.instance.GetPlayerGameData().userId)
@@ -1006,6 +1055,13 @@ public class InGameManager : MonoBehaviour
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
         handtype = serverResponse;
      //   Debug.LogError("hand typessss" + handtype);
+
+        //DEV_CODE
+        if(!isRecording)
+        {
+            StartRecording();
+        }
+
         ShowCommunityCardsAnimation();
     }
 
@@ -1121,7 +1177,7 @@ public class InGameManager : MonoBehaviour
 #endif
                             }
 
-                            playerData.playerData.cards[j] = CardsManager.instance.GetCardData(data[0][i]["cards"][j].ToString());
+                            playerData.playerData.cards[j] = CardsManager.instance.GetCardData(data[0][i]["cards"][j].ToString());                            
                         }
 
                         matchMakingPlayerData.Add(playerData);
@@ -1222,8 +1278,8 @@ public class InGameManager : MonoBehaviour
         onlinePlayersScript = new PlayerScript[0];
     }
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-    void OnApplicationFocus(bool focus)
+ 
+    /*void OnApplicationFocus(bool focus)
       {
           if (!focus)
           {
@@ -1240,9 +1296,113 @@ public class InGameManager : MonoBehaviour
           LoadMainMenu();
           SocketController.instance.SendLeaveMatchRequest();
 
-      }
-#elif UNITY_EDITOR
+      }*/
+
+
+    //DEV_CODE
+    public void StartRecording()
+    {
+        isRecording = true;
+        var frameRate = 30;
+
+        // Create a recorder
+        recorder = new MP4Recorder(videoWidth, videoHeight, frameRate);
+        var clock = new RealtimeClock();
+        // And use a `CameraInput` to record the main game camera
+        cameraInput = new CameraInput(recorder, clock, InGameUiManager.instance.cameraObj/*Camera.main*/);
+
+        tableValue = GlobalGameManager.instance.GetRoomData().smallBlind.ToString() + "_" + GlobalGameManager.instance.GetRoomData().bigBlind.ToString();
+        date = System.DateTime.Now.ToString("dd-MM-yyyy");
+        time = System.DateTime.Now.Hour + "_" + System.DateTime.Now.Minute + "_";
+
+        Debug.Log("Recording Started !!!");
+    }
+
+    public async void StopRecording()
+    {
+        isRecording = false;
+        cameraInput.Dispose();
+        var path = await recorder.FinishWriting();
+
+        /*balance = GetMyPlayerObject().GetPlayerData().totalBet.ToString();*/
+
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Video")))
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Video"));
+
+        //For PC to move file
+#if UNITY_EDITOR
+        FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+#elif UNITY_ANDROID
+        File.Move(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
 #endif
+
+        //To Upload Video
+        StartCoroutine(UploadVideo(Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4")));
+
+        cardValue = "";
+        isCardValueSet = false;
+
+        //Delete Extra files
+        DirectoryInfo dirInfo = new DirectoryInfo(Application.persistentDataPath);
+        FileInfo[] fileInfo = dirInfo.GetFiles("*.mp4");
+        for (int j = 0; j < fileInfo.Length; j++)
+        {
+            File.Delete(fileInfo[j].FullName);
+        }        
+
+        Debug.Log("Recording Stopped ..." + Path.GetDirectoryName(path));
+        //InGameUiManager.instance.ShowMessage(path);
+    }
+
+    IEnumerator UploadVideo(string path)
+    {
+        Debug.Log("Started Uploading Vide..." + path);
+        byte[] videoByte = File.ReadAllBytes(path);
+        WWWForm formData = new WWWForm();
+        //List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+        formData.AddField("userId", userID/*new MultipartFormDataSection(userID)*/);
+        formData.AddField("description","hello"/*new MultipartFormDataSection("Uploading")*/);
+        formData.AddBinaryData("forumImage",videoByte, path, "video/mp4"/*new MultipartFormFileSection(videoByte)*/);
+
+        UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/createForum", formData);
+        
+        Debug.Log("Uploading !!!!!!");
+        yield return www.SendWebRequest();
+
+        Debug.Log("Upload Success...");
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
+        }
+
+
+
+        //TYPE - 2
+
+        /*WWW localFile = new WWW(path);
+        yield return localFile;
+        WWWForm postForm = new WWWForm();
+        postForm.AddField("userId", userID *//*new MultipartFormDataSection(userID)*//*);
+        postForm.AddField("description", "hello" *//*new MultipartFormDataSection("Uploading")*//*);
+        postForm.AddBinaryData("forumImage", localFile.bytes, path, "video/mp4");
+        WWW upload = new WWW("http://18.191.15.121:3000/createForum", postForm);
+        yield return upload;
+        if (upload.error == null)
+        {
+            Debug.Log("Upload Success !!!" + upload.text);
+        }
+        else
+        {
+            Debug.Log("Error during upload: " + upload.error);
+        }*/
+
+
+    }
 }
 
 public class MatchMakingPlayerData

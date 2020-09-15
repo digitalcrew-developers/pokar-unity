@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class ForumListUIManager : MonoBehaviour
+public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 {
     public static ForumListUIManager instance;
     public LayoutManager layoutManager;
@@ -22,9 +23,22 @@ public class ForumListUIManager : MonoBehaviour
     public GameObject commentPannelVedioObj;
     public GameObject commentPrefab;
 
+    //DEV_CODE
+    public GameObject addVideoPanel;
+    private bool isAddVideoPanelActive = false;
+
+    private float width;
+    private float height;
+
+    public List<GameObject> panels = new List<GameObject>();
+
+
+
     public void Awake()
     {
         instance = this;
+        width = (float)Screen.width;
+        height = (float)Screen.height;
     }
 
     // Start is called before the first frame update
@@ -33,12 +47,22 @@ public class ForumListUIManager : MonoBehaviour
         backButton.onClick.AddListener(ClickBackBtn);
         GetAllForumList(true);
         commentPannel.SetActive(false);
+
+        //DEV_CODE
+        addVideoPanel.SetActive(false);
     }
 
+    public void OnPointerDown(PointerEventData a)
+    {
+        if (addVideoPanel.activeSelf)
+        {
+            addVideoPanel.SetActive(false);
+            isAddVideoPanelActive = false;
+        }
+    }
 
     public void ClickBackBtn() {
         MainMenuController.instance.OnClickOnButton("menu");
-       
     }
     public void OnClickVedioOnShowCommentObj()
     {
@@ -58,27 +82,27 @@ public class ForumListUIManager : MonoBehaviour
     }
     public void BackBtnCommentPannel()
     {
-        
+
         commentPannel.SetActive(false);
 
     }
 
-    public void GetAllForumList(bool isShowLoading )
+    public void GetAllForumList(bool isShowLoading)
     {
         ChangeBtnFocus(0);
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                              "\"FilterUserID\":\"" + "" + "\"}";
 
         if (isShowLoading)
-        {            
+        {
             MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
         }
-       
+
         WebServices.instance.SendRequest(RequestType.GetForum, requestData, true, OnServerResponseFound);
     }
     public void GetHotForumList(bool isShowLoading)
     {
-        
+
         ChangeBtnFocus(1);
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                               "\"FilterUserID\":\"" + "" + "\"}";
@@ -86,11 +110,11 @@ public class ForumListUIManager : MonoBehaviour
         {
             MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
         }
-         WebServices.instance.SendRequest(RequestType.GetForum, requestData, true, OnServerResponseFound);
+        WebServices.instance.SendRequest(RequestType.GetForum, requestData, true, OnServerResponseFound);
     }
     public void GetLatestForumList(bool isShowLoading)
     {
-        
+
         ChangeBtnFocus(2);
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                              "\"FilterUserID\":\"" + "" + "\"}";
@@ -103,7 +127,7 @@ public class ForumListUIManager : MonoBehaviour
 
     public void GetMineForumList(bool isShowLoading)
     {
-        
+
         ChangeBtnFocus(3);
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                              "\"FilterUserID\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
@@ -130,7 +154,7 @@ public class ForumListUIManager : MonoBehaviour
                 onfocusImageAry[i].color = temp;
             }
         }
-        
+
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -169,7 +193,7 @@ public class ForumListUIManager : MonoBehaviour
             Destroy(container.GetChild(i).gameObject);
         }
 
-      
+
         for (int i = 0; i < data["data"].Count; i++)
         {
 
@@ -197,35 +221,59 @@ public class ForumListUIManager : MonoBehaviour
             //{
             //    GameObject gm = Instantiate(forumFeedPrefab, container) as GameObject;
 
-                //    string uniqueClubId = data["data"][i]["uniqueClubId"].ToString();
-                //    string clubName = data["data"][i]["clubName"].ToString();
-                //    string clubId = data["data"][i]["clubId"].ToString();
+            //    string uniqueClubId = data["data"][i]["uniqueClubId"].ToString();
+            //    string clubName = data["data"][i]["clubName"].ToString();
+            //    string clubId = data["data"][i]["clubId"].ToString();
 
 
-                //    gm.transform.Find("ClubName").GetComponent<Text>().text = clubName;
-                //    Transform stars = gm.transform.Find("Star");
+            //    gm.transform.Find("ClubName").GetComponent<Text>().text = clubName;
+            //    Transform stars = gm.transform.Find("Star");
 
 
-                //    int activeStarCount = UnityEngine.Random.Range(2, stars.childCount);
+            //    int activeStarCount = UnityEngine.Random.Range(2, stars.childCount);
 
-                //    for (int k = 0; k < stars.childCount; k++)
-                //    {
-                //        if (k < activeStarCount)
-                //        {
-                //            stars.GetChild(k).gameObject.SetActive(true);
-                //        }
-                //        else
-                //        {
-                //            stars.GetChild(k).gameObject.SetActive(false);
-                //        }
-                //    }
+            //    for (int k = 0; k < stars.childCount; k++)
+            //    {
+            //        if (k < activeStarCount)
+            //        {
+            //            stars.GetChild(k).gameObject.SetActive(true);
+            //        }
+            //        else
+            //        {
+            //            stars.GetChild(k).gameObject.SetActive(false);
+            //        }
+            //    }
 
-                //    //gm.transform.Find("ClubId").GetComponent<Text>().text = "ClubId : " + uniqueClubId;
-                //    //gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnClub(clubName, uniqueClubId, clubId));
-                //}
+            //    //gm.transform.Find("ClubId").GetComponent<Text>().text = "ClubId : " + uniqueClubId;
+            //    //gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnClub(clubName, uniqueClubId, clubId));
+            //}
         }
 
-       //layoutManager.UpdateLayout();
+        //layoutManager.UpdateLayout();
     }
 
+
+    //DEV_CODE
+    public void OnClickVideoAddObject()
+    {
+        if (!isAddVideoPanelActive)
+        {
+            addVideoPanel.SetActive(true);
+            isAddVideoPanelActive = true;
+        }
+    }
+
+    public void OnClickOpenPanel(string panelName)
+    {
+        switch(panelName)
+        {
+            case "hand":
+                Debug.Log("On Click Hand");
+                GameObject gm = Instantiate(panels[0], MainMenuController.instance.screenLayers[(int)ScreenLayer.LAYER2]) as GameObject;
+                break;
+
+            case "text":
+                break;
+        }
+    }   
 }

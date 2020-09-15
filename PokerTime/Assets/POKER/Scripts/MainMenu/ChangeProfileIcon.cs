@@ -24,7 +24,12 @@ public class ChangeProfileIcon : MonoBehaviour
     {
         MainMenuController.instance.DestroyScreen(MainMenuScreens.ChangeProfileIcon);
     }
-  
+    public void OnConfirmChangeProfileIcon()
+    {
+        MainMenuController.instance.DestroyScreen(MainMenuScreens.ChangeProfileIcon);
+        MainMenuController.instance.DestroyScreen(MainMenuScreens.SelectFrom);
+    }
+
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
      

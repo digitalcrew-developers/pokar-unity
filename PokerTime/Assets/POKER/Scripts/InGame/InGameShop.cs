@@ -51,7 +51,12 @@ public class InGameShop : MonoBehaviour
         {
             case "back":
                 {
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.InGameShop);
+                    if (InGameUiManager.instance != null) {
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.InGameShop);
+                    } else {
+                        MainMenuController.instance.DestroyScreen(MainMenuScreens.InGameShop);
+                    }
+                    
                 }
                 break;
 
@@ -236,7 +241,14 @@ public class InGameShop : MonoBehaviour
         {
             if (isShowErrorMessage)
             {
-                InGameUiManager.instance.ShowMessage(errorMessage);
+                if (InGameUiManager.instance != null)
+                {
+                    InGameUiManager.instance.ShowMessage(errorMessage);
+                }
+                else
+                {
+                    MainMenuController.instance.ShowMessage(errorMessage);
+                }
             }
             return;
         }
