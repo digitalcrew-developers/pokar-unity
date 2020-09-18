@@ -29,7 +29,7 @@ public class MainMenuController : MonoBehaviour
 		if (PlayerManager.instance.IsLogedIn())
 		{
 			FetchUserData();
-			//FetchUserLogs();
+			FetchUserLogs();
 
 		}
 		else
@@ -70,6 +70,11 @@ public class MainMenuController : MonoBehaviour
 					ShowScreen(MainMenuScreens.Forum);
 				}
 				break;
+			case "career":
+				{
+					ShowScreen(MainMenuScreens.Career);
+				}
+				break;
 
 			default:
 #if ERROR_LOG
@@ -100,7 +105,7 @@ public class MainMenuController : MonoBehaviour
 	}
 	private void FetchUserLogs()
 	{
-		string requestData = "{\"userName\":\"" + PlayerManager.instance.GetPlayerGameData().userId +  "\"}";
+		string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId +  "\"}";
 		//{ userId: 2}
 
 		WebServices.instance.SendRequest(RequestType.userLoginLogs, requestData, true, OnServerResponseFound);
@@ -329,6 +334,11 @@ public class MainMenuController : MonoBehaviour
 			case MainMenuScreens.ChangePassword:
 			case MainMenuScreens.RedeemCode:
 			case MainMenuScreens.InGameShop:
+			case MainMenuScreens.Missions:
+			case MainMenuScreens.ConsecutiveLoginReward:
+			case MainMenuScreens.Congratulation:
+			case MainMenuScreens.BackPack:
+			case MainMenuScreens.CareerMenuScreen:
 
 				return ScreenLayer.LAYER3;
 
@@ -461,7 +471,12 @@ public enum MainMenuScreens
 	UnlinkYourEmail,
 	ChangePassword,
 	RedeemCode,
-	InGameShop
+	InGameShop,
+	ConsecutiveLoginReward,
+	Congratulation,
+	BackPack,
+	Career,
+	CareerMenuScreen
 }
 
 

@@ -28,6 +28,7 @@ public class LobbyUiManager: MonoBehaviour
     public Button missionBtn;
     public Button topPlayerBtn;
     public Button shopBtn;
+    public Button BagPackBtn;
 
 
     private void Start()
@@ -54,6 +55,7 @@ public class LobbyUiManager: MonoBehaviour
         missionBtn.onClick.AddListener(() => ShowMissonScreen());
         topPlayerBtn.onClick.AddListener(() => ShowTopPlayerScreen());
         shopBtn.onClick.AddListener(() => ShowShopScreen());
+        BagPackBtn.onClick.AddListener(() => ShowBackPackScreen());
         ChangeTextColor(0);
     }
     void ShowMissonScreen()
@@ -64,6 +66,10 @@ public class LobbyUiManager: MonoBehaviour
     void ShowTopPlayerScreen()
     {
         MainMenuController.instance.ShowScreen(MainMenuScreens.TopPlayer);
+    }
+    void ShowBackPackScreen()
+    {
+        MainMenuController.instance.ShowScreen(MainMenuScreens.BackPack);
     }
     void ShowShopScreen()
     {
