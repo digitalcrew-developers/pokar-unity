@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class ForumListUIManager : MonoBehaviour
+public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 {
     public static ForumListUIManager instance;
     public LayoutManager layoutManager;
@@ -51,14 +52,14 @@ public class ForumListUIManager : MonoBehaviour
         addVideoPanel.SetActive(false);
     }
 
-    private void Update()
+    public void OnPointerDown(PointerEventData a)
     {
-        if(Input.touchCount>0)
+        if (addVideoPanel.activeSelf)
         {
-            Debug.Log("Touch Detected");
+            addVideoPanel.SetActive(false);
+            isAddVideoPanelActive = false;
         }
     }
-
 
     public void ClickBackBtn() {
         MainMenuController.instance.OnClickOnButton("menu");
@@ -259,11 +260,6 @@ public class ForumListUIManager : MonoBehaviour
         {
             addVideoPanel.SetActive(true);
             isAddVideoPanelActive = true;
-        }
-        else
-        {
-            addVideoPanel.SetActive(false);
-            isAddVideoPanelActive = false;
         }
     }
 
