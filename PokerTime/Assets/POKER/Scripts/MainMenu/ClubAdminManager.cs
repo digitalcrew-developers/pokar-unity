@@ -114,9 +114,7 @@ public class ClubAdminManager : MonoBehaviour
                 break;
         }
     }
-
-
-
+    
     private void CloseAllScreens()
     {
         foreach(GameObject g in AllScreens)
@@ -284,7 +282,7 @@ public class ClubAdminManager : MonoBehaviour
         //until then manually instantiate each item.
 
         //Fill Stars        
-        int rating = 0;//temp 
+        int rating = 5;//temp 
         foreach (GameObject g in Stars) { g.SetActive(true); };
         if (rating > 0)
         {
@@ -294,7 +292,7 @@ public class ClubAdminManager : MonoBehaviour
             }
         }
         //Fill Level
-        LevelText.text = "Le." + rating.ToString();
+        LevelText.text = "Lv." + rating.ToString();
 
         //Fill Diamonds available
         DiamondsCountText.text = "0"; //temp value
@@ -308,44 +306,44 @@ public class ClubAdminManager : MonoBehaviour
         }
 
         GameObject gm = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm.GetComponent<ClubRatingItem>().Initialise("One-Star Club", "(valid for 30 days)", "Manager:3", "Member:60", "1,500");
+        gm.GetComponent<ClubRatingItem>().Initialise("One-Star Club", "(valid for 30 days)", "Manager:3", "Member:60", "1,500","Club/LV 1");
         gm.SetActive(true);
 
         GameObject gm1 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm1.GetComponent<ClubRatingItem>().Initialise("Two-Star Club", "(valid for 30 days)", "Manager:4", "Member:100", "2,500");
+        gm1.GetComponent<ClubRatingItem>().Initialise("Two-Star Club", "(valid for 30 days)", "Manager:4", "Member:100", "2,500", "Club/LV 2");
         gm1.SetActive(true);
 
         GameObject gm2 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm2.GetComponent<ClubRatingItem>().Initialise("Three-Star Club", "(valid for 30 days)", "Manager:5", "Member:150", "4,000");
+        gm2.GetComponent<ClubRatingItem>().Initialise("Three-Star Club", "(valid for 30 days)", "Manager:5", "Member:150", "4,000", "Club/LV 3");
         gm2.SetActive(true);
 
         GameObject gm3 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm3.GetComponent<ClubRatingItem>().Initialise("Four-Star Club", "(valid for 30 days)", "Manager:6", "Member:250", "8,000");
+        gm3.GetComponent<ClubRatingItem>().Initialise("Four-Star Club", "(valid for 30 days)", "Manager:6", "Member:250", "8,000","Club/LV 4");
         gm3.SetActive(true);
 
         GameObject gm4 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm4.GetComponent<ClubRatingItem>().Initialise("Five-Star Club", "(valid for 30 days)", "Manager:10", "Member:600", "20,000");
+        gm4.GetComponent<ClubRatingItem>().Initialise("Five-Star Club", "(valid for 30 days)", "Manager:10", "Member:600", "20,000", "Club/LV 5");
         gm4.SetActive(true);
 
-        GameObject gm5 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm5.GetComponent<ClubRatingItem>().Initialise("Six-Star Club", "(valid for 30 days)", "Manager:12", "Member:800", "30,000");
-        gm5.SetActive(true);
+        //GameObject gm5 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
+        //gm5.GetComponent<ClubRatingItem>().Initialise("Six-Star Club", "(valid for 30 days)", "Manager:12", "Member:800", "30,000");
+        //gm5.SetActive(true);
 
-        GameObject gm6 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm6.GetComponent<ClubRatingItem>().Initialise("Seven-Star Club", "(valid for 30 days)", "Manager:15", "Member:1,200", "45,000");
-        gm6.SetActive(true);
+        //GameObject gm6 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
+        //gm6.GetComponent<ClubRatingItem>().Initialise("Seven-Star Club", "(valid for 30 days)", "Manager:15", "Member:1,200", "45,000");
+        //gm6.SetActive(true);
 
-        GameObject gm7 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm7.GetComponent<ClubRatingItem>().Initialise("Eight-Star Club", "(valid for 30 days)", "Manager:20", "Member:1,500", "60,000");
-        gm7.SetActive(true);
+        //GameObject gm7 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
+        //gm7.GetComponent<ClubRatingItem>().Initialise("Eight-Star Club", "(valid for 30 days)", "Manager:20", "Member:1,500", "60,000");
+        //gm7.SetActive(true);
 
-        GameObject gm8 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm8.GetComponent<ClubRatingItem>().Initialise("Nine-Star Club", "(valid for 30 days)", "Manager:25", "Member:1,800", "80,000");
-        gm8.SetActive(true);
+        //GameObject gm8 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
+        //gm8.GetComponent<ClubRatingItem>().Initialise("Nine-Star Club", "(valid for 30 days)", "Manager:25", "Member:1,800", "80,000");
+        //gm8.SetActive(true);
 
-        GameObject gm9 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
-        gm9.GetComponent<ClubRatingItem>().Initialise("Ten-Star Club", "(valid for 30 days)", "Manager:35", "Member:2,500", "110,000");
-        gm9.SetActive(true);
+        //GameObject gm9 = Instantiate(ClubRatingItemPrefab, ClubRatingScrollParent.transform) as GameObject;
+        //gm9.GetComponent<ClubRatingItem>().Initialise("Ten-Star Club", "(valid for 30 days)", "Manager:35", "Member:2,500", "110,000");
+        //gm9.SetActive(true);
     }
     #endregion
 
@@ -355,11 +353,11 @@ public class ClubAdminManager : MonoBehaviour
         //To-Do.. when opening notification screen. get data from server for existing notification sent
         //allow edit of existing text, image notification
        
-        NotificationClubImage.sprite = ClubDetailsUIManager.instance.GetClubImage();
-        NotificationClubName.text = ClubDetailsUIManager.instance.GetClubName();
+        //NotificationClubImage.sprite = ClubDetailsUIManager.instance.GetClubImage();
+        //NotificationClubName.text = ClubDetailsUIManager.instance.GetClubName();
 
         NotificationEditButton.onClick.RemoveAllListeners();
-        NotificationHelpButton.onClick.RemoveAllListeners();
+        //NotificationHelpButton.onClick.RemoveAllListeners();
 
         NotificationTextTabButton.onClick.RemoveAllListeners();
         NotificationImageTabButton.onClick.RemoveAllListeners();

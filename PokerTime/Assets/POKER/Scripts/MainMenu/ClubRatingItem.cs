@@ -12,8 +12,9 @@ public class ClubRatingItem : MonoBehaviour
     private GameObject TipPopup;
     private Button TipPopConfirmButton;
     private string title1, title2, manager, member, diamonds;
+    public Image LevelImage;
 
-    public void Initialise(string _title1, string _title2, string _manager, string _member, string _diamonds)
+    public void Initialise(string _title1, string _title2, string _manager, string _member, string _diamonds, string levelImagePath = "")
     {
         title1 = _title1;
         title2 = _title2;
@@ -27,12 +28,13 @@ public class ClubRatingItem : MonoBehaviour
         Member.text = member;
         Diamonds.text = diamonds;
 
+        LevelImage.sprite = Resources.Load(levelImagePath, typeof(Sprite)) as Sprite;
         ClickButton.onClick.RemoveAllListeners();
         ClickButton.onClick.AddListener(() => OnClick(title1, diamonds));
 
-        TipPopup = GameObject.FindObjectOfType<ClubAdminManager>().gameObject.transform.Find("ClubTips").gameObject;
-        TipText = TipPopup.transform.Find("Heading/Panel/Panel/Text").GetComponent<Text>();
-        TipPopConfirmButton = TipPopup.transform.Find("Heading/Panel/BtnConfirm").GetComponent<Button>();
+        //TipPopup = GameObject.FindObjectOfType<ClubAdminManager>().gameObject.transform.Find("ClubTips").gameObject;
+        //TipText = TipPopup.transform.Find("Heading/Panel/Panel/Text").GetComponent<Text>();
+        //TipPopConfirmButton = TipPopup.transform.Find("Heading/Panel/BtnConfirm").GetComponent<Button>();
     }
 
     private void OnClick(string title, string diamonds)

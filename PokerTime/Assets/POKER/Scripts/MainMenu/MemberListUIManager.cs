@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
-
-
+using System;
 
 public class MemberListUIManager : MonoBehaviour
 {
@@ -14,10 +13,10 @@ public class MemberListUIManager : MonoBehaviour
     public Transform container;
     public Button newMemberButton, oldMemberButton;
     public GameObject memeberPanel;
-    [SerializeField]
-    private List<ClubMemberDetails> newMembersList = new List<ClubMemberDetails>();
+    public TMPro.TextMeshProUGUI MemberCountText;
+    public GameObject MemberDetailsPanel;
 
-    [SerializeField]
+    private List<ClubMemberDetails> newMembersList = new List<ClubMemberDetails>();
     private List<ClubMemberDetails> oldMembersList = new List<ClubMemberDetails>();
 
 
@@ -33,9 +32,7 @@ public class MemberListUIManager : MonoBehaviour
         FetchMembersList();
     }
 
-
-
-    private void FetchMembersList()
+    public void FetchMembersList()
     {
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
 
@@ -70,7 +67,7 @@ public class MemberListUIManager : MonoBehaviour
                     Color c1 = new Color(1, 1, 1, 0);
                     oldMemberButton.GetComponent<Image>().color = c1;
 
-                    ShowMemberDetails(true);
+                    //ShowMemberDetails(true);
                 }
                 break;
 
@@ -122,14 +119,34 @@ public class MemberListUIManager : MonoBehaviour
             for (int i = 0; i < oldMembersList.Count; i++)
             {
                 GameObject gm = Instantiate(oldMemberPrefab, container) as GameObject;
-                gm.transform.Find("Name").GetComponent<Text>().text = oldMembersList[i].userName;
-                gm.transform.Find("Id").GetComponent<Text>().text = "ID : " + oldMembersList[i].userId;
+                gm.SetActive(true);
+
+                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = oldMembersList[i].userName;
+                gm.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "ID : " + oldMembersList[i].userId;
+                gm.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + oldMembersList[i].nickName;
+                gm.transform.Find("Coins").GetComponent<TMPro.TextMeshProUGUI>().text = oldMembersList[i].ptChips;
+                string initial = oldMembersList[i].userName.ToUpper();
+                initial = initial.Substring(0, 2);
+                gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
+
+                gm.GetComponent<Button>().onClick.RemoveAllListeners();
+                Debug.Log("Debug i value :" + i);
+                gm.GetComponent<Button>().onClick.AddListener(() => OpenMemberDetailsPanel(i));
+
             }
+            MemberCountText.text = "Members : " + oldMembersList.Count;
         }
 
         //layoutManager.UpdateLayout();
     }
 
+    private void OpenMemberDetailsPanel(int i)
+    {
+        MemberDetailsPanel.SetActive(true);
+        Debug.Log(oldMembersList.Count);
+        Debug.Log("i is"  + i);
+        //MemberDetails.instance.Initialise(oldMembersList[i]);
+    }
 
     public void ChangeUserRole(GameObject gm,bool isDeleteRequest, ClubMemberDetails memberDetails,ClubMemberRole roleToAssign = ClubMemberRole.Member)
     {
@@ -219,8 +236,10 @@ public class MemberListUIManager : MonoBehaviour
         {
             ClubMemberDetails clubMemberDetails = new ClubMemberDetails();
             clubMemberDetails.userId = data["data"][i]["requestUserId"].ToString();
-            clubMemberDetails.userName = data["data"][i]["userName"].ToString();
+            clubMemberDetails.userName = data["data"][i]["requestUserName"].ToString();
+            clubMemberDetails.nickName = data["data"][i]["nickName"].ToString();
             clubMemberDetails.clubRequestId = data["data"][i]["clubRequestId"].ToString();
+            clubMemberDetails.ptChips = data["data"][i]["ptChips"].ToString();
 
 
             switch (data["data"][i]["assignRole"].ToString())
@@ -319,6 +338,8 @@ public class ClubMemberDetails
     public string userId;
     public string clubRequestId;
     public string userName;
+    public string nickName;
+    public string ptChips;
 
     public ClubMemberRole memberRole;
 }
