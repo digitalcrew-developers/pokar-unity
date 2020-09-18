@@ -25,7 +25,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     public GameObject videoRawImage;
     public GameObject commentPanel, commentPanelCommentObj, videoPanel, newPostPanel, hashTagPanel, inviteCommentPanel;
 
-    public List<FileInfo> collectionVideoList = new List<FileInfo>();
+    public List<string> videoList = new List<string>();
 
     private GameObject handObject, videoObject, inviteCommentObject;
 
@@ -64,109 +64,84 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     public void OnPointerDown(PointerEventData a)
     {
-        Debug.Log("Pointer Down!!");
-
         slide = true;
 
-        if (videoPlayer.isPlaying && !videoObject.transform.GetChild(2).gameObject.activeSelf)
+        /*if (videoPlayer.isPlaying && !videoObject.transform.GetChild(8).gameObject.activeSelf)
+        {
+            videoObject.transform.GetChild(8).gameObject.SetActive(true);
+            videoObject.transform.GetChild(9).gameObject.SetActive(true);
+        }
+        else if (videoPlayer.isPlaying && videoObject.transform.GetChild(8).gameObject.activeSelf)
+        {
+            videoObject.transform.GetChild(8).gameObject.SetActive(false);
+            videoObject.transform.GetChild(9).gameObject.SetActive(false);
+        }
+        else if (!videoPlayer.isPlaying && !videoObject.transform.GetChild(8).gameObject.activeSelf)
+        {
+            videoObject.transform.GetChild(8).gameObject.SetActive(true);
+            videoObject.transform.GetChild(9).gameObject.SetActive(true);
+        }
+        else if (!videoPlayer.isPlaying && videoObject.transform.GetChild(8).gameObject.activeSelf)
+        {
+            videoObject.transform.GetChild(8).gameObject.SetActive(false);
+            videoObject.transform.GetChild(9).gameObject.SetActive(false);
+        }*/
+
+        if (videoPlayer.isPlaying && !videoObject.transform.GetChild(2).gameObject.activeSelf/* && !videoObject.transform.GetChild(8).gameObject.activeSelf*/)
+        {
             videoObject.transform.GetChild(2).gameObject.SetActive(true);
-        else if (videoPlayer.isPlaying && videoObject.transform.GetChild(2).gameObject.activeSelf)
+            videoObject.transform.GetChild(8).gameObject.SetActive(true);
+            videoObject.transform.GetChild(9).gameObject.SetActive(true);
+        }
+        else if (videoPlayer.isPlaying && videoObject.transform.GetChild(2).gameObject.activeSelf/* && videoObject.transform.GetChild(8).gameObject.activeSelf*/)
+        {
             videoObject.transform.GetChild(2).gameObject.SetActive(false);
-        else if (!videoPlayer.isPlaying && !videoObject.transform.GetChild(1).gameObject.activeSelf)
+            videoObject.transform.GetChild(8).gameObject.SetActive(false);
+            videoObject.transform.GetChild(9).gameObject.SetActive(false);
+        }
+        else if (!videoPlayer.isPlaying && !videoObject.transform.GetChild(1).gameObject.activeSelf/* && !videoObject.transform.GetChild(8).gameObject.activeSelf*/)
+        {
             videoObject.transform.GetChild(1).gameObject.SetActive(true);
-        else if (!videoPlayer.isPlaying && videoObject.transform.GetChild(1).gameObject.activeSelf)
+            videoObject.transform.GetChild(8).gameObject.SetActive(true);
+            videoObject.transform.GetChild(9).gameObject.SetActive(true);
+        }
+        else if (!videoPlayer.isPlaying && videoObject.transform.GetChild(1).gameObject.activeSelf/* && videoObject.transform.GetChild(8).gameObject.activeSelf*/)
+        {
             videoObject.transform.GetChild(1).gameObject.SetActive(false);
-
+            videoObject.transform.GetChild(8).gameObject.SetActive(false);
+            videoObject.transform.GetChild(9).gameObject.SetActive(false);
+        }
     }
 
-    private void OnClickOnPlayButton(string name)
+    public void OnClickPreviosuButton(int index)
     {
-        commentPanelCommentObj.SetActive(false);
-        commentPanel.SetActive(true);
-        videoPanel.SetActive(true);
-        StartCoroutine(PlayVideo(name));
+        DirectoryInfo dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Video"));
+        FileInfo[] info = dir.GetFiles("*.mp4");
+
+        for (int i = 0; i < info.Length; i++)
+        {
+            if (info[i].Name == videoList[index])
+            {
+                Debug.Log("File Available");
+                OnClickOnPlayButton(index + info[i].Name);
+            }
+        }
     }
 
-    IEnumerator PlayVideo(string vn)
+    public void OnClickNextButton(int index)
     {
-        if (!gameObject.GetComponent<VideoPlayer>() && !gameObject.GetComponent<AudioSource>())
+        DirectoryInfo dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Video"));
+        FileInfo[] info = dir.GetFiles("*.mp4");
+
+        for (int i = 0; i < info.Length; i++)
         {
-            videoPlayer = gameObject.AddComponent<VideoPlayer>();
-            audioSource = gameObject.AddComponent<AudioSource>();
+            if (info[i].Name == videoList[index])
+            {
+                Debug.Log("File Available");
+                OnClickOnPlayButton(index + info[i].Name);
+            }
         }
-
-        videoPlayer.playOnAwake = false;
-        audioSource.playOnAwake = false;
-        //audioSource.Pause();
-
-        videoPlayer.source = VideoSource.Url;
-        videoPlayer.url = Path.Combine(Application.persistentDataPath, "Video", vn);
-
-        videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
-        //Assign the Audio from Video to AudioSource to be played
-        videoPlayer.EnableAudioTrack(0, true);
-        videoPlayer.SetTargetAudioSource(0, audioSource);
-
-        //Set video To Play then prepare Audio to prevent Buffering
-        //videoPlayer.clip = videoToPlay;
-        videoPlayer.Prepare();
-
-        //Wait until video is prepared
-        WaitForSeconds waitTime = new WaitForSeconds(1);
-        while (!videoPlayer.isPrepared)
-        {
-            /*Debug.Log("Preparing Video");*/
-            //Prepare/Wait for 5 sceonds only
-            yield return waitTime;
-            //Break out of the while loop after 5 seconds wait
-            break;
-        }
-
-        /*Debug.Log("Done Preparing Video");*/
-        videoObject = Instantiate(videoRawImage, videoPanel.transform) as GameObject;
-        //Assign the Texture from Video to RawImage to be displayed
-        videoObject.GetComponent<RawImage>().texture = videoPlayer.texture;
-
-        //Assign the Slider
-        tracking = videoObject.transform.GetChild(4).GetComponent<Slider>();
-
-        //Assign back button click listner
-        videoObject.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => OnClickBackBtn());
-
-        //Assign play button click listner
-        videoObject.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => OnClickPlayBtn());
-
-        //Assign pause button click listner
-        videoObject.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => OnClickPauseBtn());
-
-        //Assign add post button click listner
-        videoObject.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => OnClickAddPostButton());
-
-        //Assign comment button click listner
-        videoObject.transform.GetChild(6).GetComponent<Button>().onClick.AddListener(() => OnClickCommentBtn());
-
-        //Assign like button click listner
-        videoObject.transform.GetChild(7).GetComponent<Button>().onClick.AddListener(() => OnClickLikeBtn());
-
-
-        //Play Video
-        videoPlayer.Play();
-
-        //Play Sound
-        audioSource.Play();
-
-        /*Debug.Log("Playing Video");*/
-        while (videoPlayer.isPlaying)
-        {
-            //Debug.Log("Video Time: " + Mathf.FloorToInt((float)videoPlayer.time));
-
-            tracking.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
-
-            yield return null;
-        }
-        /*Debug.Log("Done Playing Video");*/
     }
-
 
     public void OnClickBackBtn()
     {
@@ -218,11 +193,11 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         videoObject.transform.GetChild(1).gameObject.SetActive(false);
         videoObject.transform.GetChild(2).gameObject.SetActive(false);
 
-        StartCoroutine(PlayVideo());
+        StartCoroutine(ResumeVideo());
         //tracking.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
     }
 
-    IEnumerator PlayVideo()
+    IEnumerator ResumeVideo()
     {
         while (videoPlayer.isPlaying)
         {
@@ -250,30 +225,14 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         LoadAllCollectionVideos();
     }
 
-    void ChangeBtnFocus(int focusVal)
-    {
-        for (int i = 0; i < onfocusImageAry.Length; i++)
-        {
-            if (i != focusVal)
-            {
-                Color temp = onfocusImageAry[i].color;
-                temp.a = 0.01f;
-                onfocusImageAry[i].color = temp;
-            }
-            else
-            {
-                Color temp = onfocusImageAry[i].color;
-                temp.a = 1f;
-                onfocusImageAry[i].color = temp;
-            }
-        }
-    }
-
     private void LoadAllVideosFromDevice()
     {
+        //Reset VideoList
+        videoList.Clear();
+
         DirectoryInfo dir;
         FileInfo[] info;
-
+        
         for (int i = 0; i < container.childCount; i++)
         {
             Destroy(container.GetChild(i).gameObject);
@@ -292,45 +251,27 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         for (int j = 0; j < info.Length; j++)
         {
             string[] x = info[j].Name.Split('_');
-            /*            Debug.Log("File --> " + info[j].Name + "    Length : " + x.Length);*/
+            /*Debug.Log("File --> " + info[j].Name + "    Length : " + x.Length);*/
 
             if (x.Length == 7)
             {
                 Debug.Log("Currepted FIle !!!!!!");
                 File.Delete(info[j].FullName);
-            }
-            /*else
-            {
-                Debug.Log("No file to delete");
-                if (x[9].Length == 1)
-                    x[9] = "0" + x[9];
-
-                handObject = Instantiate(handPrefab, container) as GameObject;
-
-                handObject.transform.GetChild(2).GetComponent<Text>().text = x[7] + " " + x[8] + " : " + x[9];
-                handObject.transform.GetChild(5).GetComponent<Text>().text = x[1] + "/" + x[2];
-
-                GetFirstCardDetail(x[4], x[3], handObject, cardSprites);
-                GetSecondCardDetail(x[6], x[5], handObject, cardSprites);
-
-                //handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(info[j - 1].Name));
-            }*/
+            }            
         }
 
         dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Video"));
         info = dir.GetFiles("*.mp4");
 
-        foreach (FileInfo f in info)
+        for (int i = 0; i < info.Length; i++)
         {
-            string[] x = f.Name.Split('_');
+            FileInfo f = new FileInfo(info[i].Name);
 
-            /*Debug.Log("File --> " + f.Name + "    Length : " + x.Length);*/
-            /*for (int i = 0; i < x.Length; i++)
-            {
-                Debug.Log("Val "+i+" : "+ x[i] + " Length: " + x[i].Length);                
-            }*/
+            videoList.Add(f.Name);
 
-            /*            Debug.Log("Instantiate Object");*/
+            FileInfo f1 = new FileInfo(i + info[i].Name);
+            string[] x = info[i].Name.Split('_');
+
             handObject = Instantiate(handPrefab, container) as GameObject;
 
             if (x[9].Length == 1)
@@ -342,7 +283,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             GetFirstCardDetail(x[4], x[3], handObject, cardSprites);
             GetSecondCardDetail(x[6], x[5], handObject, cardSprites);
 
-            handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(f.Name));
+            handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(f1.Name));
 
             //Add Share button click listner
             handObject.transform.GetChild(8).GetComponent<Button>().onClick.AddListener(() => OnClickOnShareButton(f.Name));
@@ -355,7 +296,59 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
             //Disable Remove/Delete Button for Hand UI
             handObject.transform.GetChild(10).gameObject.SetActive(false);
+
+            //To enable collection icon as saved into collection list
+            if (PlayerPrefs.HasKey(f.Name))
+            {
+                handObject.transform.GetChild(9).GetComponent<Button>().image.color = Color.white;
+            }            
         }
+
+       
+        /*foreach (FileInfo f in info)
+        {
+            string[] x = f.Name.Split('_');
+
+            *//*Debug.Log("File --> " + f.Name + "    Length : " + x.Length);*/
+            /*for (int i = 0; i < x.Length; i++)
+            {
+                Debug.Log("Val "+i+" : "+ x[i] + " Length: " + x[i].Length);                
+            }*//*
+
+            handObject = Instantiate(handPrefab, container) as GameObject;
+
+            if (x[9].Length == 1)
+                x[9] = "0" + x[9];
+
+            handObject.transform.GetChild(2).GetComponent<Text>().text = x[7] + " " + x[8] + " : " + x[9];
+            handObject.transform.GetChild(5).GetComponent<Text>().text = x[1] + "/" + x[2];
+
+            GetFirstCardDetail(x[4], x[3], handObject, cardSprites);
+            GetSecondCardDetail(x[6], x[5], handObject, cardSprites);
+
+            handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(f.Name, videoList.Count));
+
+            //Add Share button click listner
+            handObject.transform.GetChild(8).GetComponent<Button>().onClick.AddListener(() => OnClickOnShareButton(f.Name));
+
+            //Enable  Collection buttin UI
+            handObject.transform.GetChild(9).gameObject.SetActive(true);
+
+            //Add Collection button click listner
+            handObject.transform.GetChild(9).GetComponent<Button>().onClick.AddListener(() => OnClickOnCollectionButton(f.Name));
+
+            //Disable Remove/Delete Button for Hand UI
+            handObject.transform.GetChild(10).gameObject.SetActive(false);
+
+            //To enable collection icon as saved into collection list
+            if (PlayerPrefs.HasKey(f.Name))
+            {
+                handObject.transform.GetChild(9).GetComponent<Button>().image.color = Color.white;
+            }
+
+            //Adding Video to videoList
+            videoList.Add(handObject);
+        }*/
 
         //Show No Record Image
         if (container.childCount <= 0)
@@ -366,6 +359,9 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     private void LoadAllCollectionVideos()
     {
+        //Reset VideoList
+        videoList.Clear();
+
         for (int i = 0; i < container.childCount; i++)
         {
             Destroy(container.GetChild(i).gameObject);
@@ -387,15 +383,50 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         else
             noRecordImage.gameObject.SetActive(false);
 
-        foreach (FileInfo f in info)
+        for (int i = 0; i < info.Length; i++)
         {
-            if(PlayerPrefs.HasKey(f.Name))
+            FileInfo f = new FileInfo(info[i].Name);
+            //FileInfo f1 = new FileInfo(i + info[i].Name);
+           
+            if (PlayerPrefs.HasKey(f.Name))
             {
                 FileInfo file = new FileInfo(f.Name);
+                FileInfo f1 = new FileInfo(i + info[i].Name);
                 string[] x = file.Name.Split('_');
 
                 handObject = Instantiate(handPrefab, container) as GameObject;
 
+                handObject.transform.GetChild(2).GetComponent<Text>().text = x[7] + " " + x[8] + " : " + x[9];
+                handObject.transform.GetChild(5).GetComponent<Text>().text = x[1] + "/" + x[2];
+
+                GetFirstCardDetail(x[4], x[3], handObject, cardSprites);
+                GetSecondCardDetail(x[6], x[5], handObject, cardSprites);
+
+                handObject.transform.GetChild(8).GetComponent<Button>().onClick.AddListener(() => OnClickOnShareButton(f.Name));
+
+                //Disable collection button UI
+                handObject.transform.GetChild(9).gameObject.SetActive(false);
+
+                //Enable close button UI
+                handObject.transform.GetChild(10).gameObject.SetActive(true);
+
+                //Add close button click listner
+                handObject.transform.GetChild(10).GetComponent<Button>().onClick.AddListener(() => OnClickOnRemoveVideoFromCollection(f.Name));
+
+                ////Adding Video to videoList
+                //videoList.Add(handObject);
+            }
+        }
+
+        /*foreach (FileInfo f in info)
+        {
+            if(PlayerPrefs.HasKey(f.Name))
+            {
+                FileInfo file = new FileInfo(f.Name);
+                FileInfo f1 = new FileInfo(i + info[i].Name);
+                string[] x = file.Name.Split('_');
+
+                handObject = Instantiate(handPrefab, container) as GameObject;
 
                 handObject.transform.GetChild(2).GetComponent<Text>().text = x[7] + " " + x[8] + " : " + x[9];
                 handObject.transform.GetChild(5).GetComponent<Text>().text = x[1] + "/" + x[2];
@@ -414,40 +445,163 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
                 handObject.transform.GetChild(10).gameObject.SetActive(true);
 
                 //Add close button click listner
-                handObject.transform.GetChild(10).GetComponent<Button>().onClick.AddListener(() => OnClickOnRemoveVideoFromCollection(f.Name));                
+                handObject.transform.GetChild(10).GetComponent<Button>().onClick.AddListener(() => OnClickOnRemoveVideoFromCollection(f.Name));
+
+                ////Adding Video to videoList
+                //videoList.Add(handObject);
             }
-        }
-
-        
-        //Without PlayerPrefs
-        /*for (int i = 0; i < collectionVideoList.Count; i++)
-        {
-            FileInfo f = new FileInfo(collectionVideoList[i].Name);
-            string[] x = collectionVideoList[i].Name.Split('_');
-
-            handObject = Instantiate(handPrefab, container) as GameObject;
-
-            handObject.transform.GetChild(2).GetComponent<Text>().text = x[7] + " " + x[8] + " : " + x[9];
-            handObject.transform.GetChild(5).GetComponent<Text>().text = x[1] + "/" + x[2];
-
-            GetFirstCardDetail(x[4], x[3], handObject, cardSprites);
-            GetSecondCardDetail(x[6], x[5], handObject, cardSprites);
-
-            handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(f.Name));
-
-            handObject.transform.GetChild(8).GetComponent<Button>().onClick.AddListener(() => OnClickOnShareButton(f.Name));
-
-            //Disable collection button UI
-            handObject.transform.GetChild(9).gameObject.SetActive(false);
-
-            //Enable close button UI
-            handObject.transform.GetChild(10).gameObject.SetActive(true);
-            
-            //Add close button click listner
-            handObject.transform.GetChild(10).GetComponent<Button>().onClick.AddListener(() => OnClickOnRemoveVideoFromCollection(f.Name));
         }*/
 
+
+            //Without PlayerPrefs
+            /*for (int i = 0; i < collectionVideoList.Count; i++)
+            {
+                FileInfo f = new FileInfo(collectionVideoList[i].Name);
+                string[] x = collectionVideoList[i].Name.Split('_');
+
+                handObject = Instantiate(handPrefab, container) as GameObject;
+
+                handObject.transform.GetChild(2).GetComponent<Text>().text = x[7] + " " + x[8] + " : " + x[9];
+                handObject.transform.GetChild(5).GetComponent<Text>().text = x[1] + "/" + x[2];
+
+                GetFirstCardDetail(x[4], x[3], handObject, cardSprites);
+                GetSecondCardDetail(x[6], x[5], handObject, cardSprites);
+
+                handObject.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(f.Name));
+
+                handObject.transform.GetChild(8).GetComponent<Button>().onClick.AddListener(() => OnClickOnShareButton(f.Name));
+
+                //Disable collection button UI
+                handObject.transform.GetChild(9).gameObject.SetActive(false);
+
+                //Enable close button UI
+                handObject.transform.GetChild(10).gameObject.SetActive(true);
+
+                //Add close button click listner
+                handObject.transform.GetChild(10).GetComponent<Button>().onClick.AddListener(() => OnClickOnRemoveVideoFromCollection(f.Name));
+            }*/
+
     }
+
+    private void OnClickOnPlayButton(string name)
+    {
+        int index = int.Parse(name.Substring(0, 1));
+        string newName = name.Substring(1, name.Length-1);
+        
+        commentPanelCommentObj.SetActive(false);
+        commentPanel.SetActive(true);
+        videoPanel.SetActive(true);
+        StartCoroutine(PlayVideo(newName, index));
+    }
+
+    IEnumerator PlayVideo(string vn, int index)
+    {
+        if (!gameObject.GetComponent<VideoPlayer>() && !gameObject.GetComponent<AudioSource>())
+        {
+            videoPlayer = gameObject.AddComponent<VideoPlayer>();
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        videoPlayer.playOnAwake = false;
+        audioSource.playOnAwake = false;
+        //audioSource.Pause();
+
+        videoPlayer.source = VideoSource.Url;
+        videoPlayer.url = Path.Combine(Application.persistentDataPath, "Video", vn);
+
+        videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+        //Assign the Audio from Video to AudioSource to be played
+        videoPlayer.EnableAudioTrack(0, true);
+        videoPlayer.SetTargetAudioSource(0, audioSource);
+
+        //Set video To Play then prepare Audio to prevent Buffering
+        //videoPlayer.clip = videoToPlay;
+        videoPlayer.Prepare();
+
+        //Wait until video is prepared
+        WaitForSeconds waitTime = new WaitForSeconds(1);
+        while (!videoPlayer.isPrepared)
+        {
+            /*Debug.Log("Preparing Video");*/
+            //Prepare/Wait for 5 sceonds only
+            yield return waitTime;
+            //Break out of the while loop after 5 seconds wait
+            break;
+        }
+
+        /*Debug.Log("Done Preparing Video");*/
+        videoObject = Instantiate(videoRawImage, videoPanel.transform) as GameObject;
+        //Assign the Texture from Video to RawImage to be displayed
+        videoObject.GetComponent<RawImage>().texture = videoPlayer.texture;
+
+        //Assign the Slider
+        tracking = videoObject.transform.GetChild(4).GetComponent<Slider>();
+
+        //Assign back button click listner
+        videoObject.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => OnClickBackBtn());
+
+        //Disable play button and assign play button click listner
+        videoObject.transform.GetChild(1).gameObject.SetActive(false);
+        videoObject.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => OnClickPlayBtn());
+
+        //Disable pause button and assign pause button click listner
+        videoObject.transform.GetChild(2).gameObject.SetActive(false);
+        videoObject.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => OnClickPauseBtn());
+
+        //Assign add post button click listner
+        videoObject.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => OnClickAddPostButton());
+
+        //Assign comment button click listner
+        videoObject.transform.GetChild(6).GetComponent<Button>().onClick.AddListener(() => OnClickCommentBtn());
+
+        //Assign like button click listner
+        videoObject.transform.GetChild(7).GetComponent<Button>().onClick.AddListener(() => OnClickLikeBtn());
+
+        //Disable previous button and assign previous button click listner
+        videoObject.transform.GetChild(8).gameObject.SetActive(false);
+        videoObject.transform.GetChild(8).GetComponent<Button>().onClick.AddListener(() => OnClickPreviosuButton(index - 1));
+
+        //Disable next button and assign next button click listner
+        videoObject.transform.GetChild(9).gameObject.SetActive(false);
+        videoObject.transform.GetChild(9).GetComponent<Button>().onClick.AddListener(() => OnClickNextButton(index + 1));
+
+        videoObject.transform.GetChild(10).GetComponent<Text>().text = index.ToString();
+
+        if (videoObject.transform.GetChild(10).GetComponent<Text>().text == "0")
+        {
+            videoObject.transform.GetChild(8).GetComponent<Button>().interactable = false;
+            videoObject.transform.GetChild(9).GetComponent<Button>().interactable = true;
+        }
+        else if (videoObject.transform.GetChild(10).GetComponent<Text>().text == (container.childCount - 1).ToString())
+        {
+            videoObject.transform.GetChild(8).GetComponent<Button>().interactable = true;
+            videoObject.transform.GetChild(9).GetComponent<Button>().interactable = false;
+        }
+        else
+        {
+            videoObject.transform.GetChild(8).GetComponent<Button>().interactable = true;
+            videoObject.transform.GetChild(9).GetComponent<Button>().interactable = true;
+        }
+
+        //Play Video
+        videoPlayer.Play();
+
+        //Play Sound
+        audioSource.Play();
+
+        /*Debug.Log("Playing Video");*/
+        while (videoPlayer.isPlaying)
+        {
+            //Debug.Log("Video Time: " + Mathf.FloorToInt((float)videoPlayer.time));
+
+            tracking.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
+
+            yield return null;
+        }
+        /*Debug.Log("Done Playing Video");*/
+    }
+
+
 
     private void OnClickOnShareButton(string name)
     {
@@ -472,8 +626,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             PlayerPrefs.SetInt("CollectionVideoCount", PlayerPrefs.GetInt("CollectionVideoCount") + 1);
             PlayerPrefs.SetString(name, name);
             StartCoroutine(MsgForVideo("Saved into collection", 2.0f));
-
-            
+            LoadAllVideosFromDevice();
         }
         else
         {
@@ -485,19 +638,20 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
                 {
                     //Debug.Log("Already Available video");
                     isVideoAvailable = true;
-                    
+
                     PlayerPrefs.DeleteKey(name);
                     PlayerPrefs.SetInt("CollectionVideoCount", PlayerPrefs.GetInt("CollectionVideoCount") - 1);
                     StartCoroutine(MsgForVideo("Delete from collection", 2.0f));
+                    LoadAllVideosFromDevice();
                 }
             }
 
             if (!isVideoAvailable)
             {
-                
                 PlayerPrefs.SetInt("CollectionVideoCount", PlayerPrefs.GetInt("CollectionVideoCount") + 1);
                 PlayerPrefs.SetString(name, name);
                 StartCoroutine(MsgForVideo("Saved into collection", 2.0f));
+                LoadAllVideosFromDevice();
             }
         }
 
@@ -568,12 +722,30 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
         LoadAllCollectionVideos();
     }
-    
+
     public void OnCloseDeletePopUp()
     {
         deletePopUp.SetActive(false);
     }
 
+    void ChangeBtnFocus(int focusVal)
+    {
+        for (int i = 0; i < onfocusImageAry.Length; i++)
+        {
+            if (i != focusVal)
+            {
+                Color temp = onfocusImageAry[i].color;
+                temp.a = 0.01f;
+                onfocusImageAry[i].color = temp;
+            }
+            else
+            {
+                Color temp = onfocusImageAry[i].color;
+                temp.a = 1f;
+                onfocusImageAry[i].color = temp;
+            }
+        }
+    }
     private void GetFirstCardDetail(string cardVal, string cardType, GameObject g1, Sprite[] cardSprites)
     {
         CardData data = new CardData();
