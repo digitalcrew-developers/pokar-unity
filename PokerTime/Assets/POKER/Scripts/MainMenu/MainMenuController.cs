@@ -18,7 +18,7 @@ public class MainMenuController : MonoBehaviour
 
 	private void Awake()
 	{
-		instance = this;
+		instance = this;		
 	}
 
 

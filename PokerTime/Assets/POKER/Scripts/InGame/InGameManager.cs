@@ -1336,9 +1336,6 @@ public class InGameManager : MonoBehaviour
         File.Move(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
 #endif
 
-        //To Upload Video
-        StartCoroutine(UploadVideo(Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4")));
-
         cardValue = "";
         isCardValueSet = false;
 
@@ -1352,57 +1349,7 @@ public class InGameManager : MonoBehaviour
 
         Debug.Log("Recording Stopped ..." + Path.GetDirectoryName(path));
         //InGameUiManager.instance.ShowMessage(path);
-    }
-
-    IEnumerator UploadVideo(string path)
-    {
-        Debug.Log("Started Uploading Vide..." + path);
-        byte[] videoByte = File.ReadAllBytes(path);
-        WWWForm formData = new WWWForm();
-        //List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
-        formData.AddField("userId", userID/*new MultipartFormDataSection(userID)*/);
-        formData.AddField("description","hello"/*new MultipartFormDataSection("Uploading")*/);
-        formData.AddBinaryData("forumImage",videoByte, path, "video/mp4"/*new MultipartFormFileSection(videoByte)*/);
-
-        UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/createForum", formData);
-        
-        Debug.Log("Uploading !!!!!!");
-        yield return www.SendWebRequest();
-
-        Debug.Log("Upload Success...");
-
-        if (www.isNetworkError || www.isHttpError)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
-            Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
-        }
-
-
-
-        //TYPE - 2
-
-        /*WWW localFile = new WWW(path);
-        yield return localFile;
-        WWWForm postForm = new WWWForm();
-        postForm.AddField("userId", userID *//*new MultipartFormDataSection(userID)*//*);
-        postForm.AddField("description", "hello" *//*new MultipartFormDataSection("Uploading")*//*);
-        postForm.AddBinaryData("forumImage", localFile.bytes, path, "video/mp4");
-        WWW upload = new WWW("http://18.191.15.121:3000/createForum", postForm);
-        yield return upload;
-        if (upload.error == null)
-        {
-            Debug.Log("Upload Success !!!" + upload.text);
-        }
-        else
-        {
-            Debug.Log("Error during upload: " + upload.error);
-        }*/
-
-
-    }
+    }    
 }
 
 public class MatchMakingPlayerData
