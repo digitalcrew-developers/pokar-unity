@@ -11,6 +11,9 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
 
     public static ScrollSnapRect instance;
 
+    public Text changeIndexTxt;
+    public string containerScroll_Name;
+
     [Tooltip("Set starting page index - starting from 0")]
     public int startingPage = 0;
     [Tooltip("Threshold time for fast swipe in seconds")]
@@ -64,6 +67,12 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     public void Awake()
     {
         instance = this;
+        containerScroll_Name = "DayScroll";
+    }
+
+    public void OnEnable()
+    {
+        ChangeTxtVal();
     }
 
     //------------------------------------------------------------------------
@@ -98,6 +107,23 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         if (prevButton)
             prevButton.GetComponent<Button>().onClick.AddListener(() => { PreviousScreen(); });
 	}
+
+    public void ChangeTxtVal() {
+        switch (this.gameObject.name)
+        {
+            case "YearScroll":
+                changeIndexTxt.text = "202" + _currentPage ;
+                break;
+            case "MonthScroll":
+                changeIndexTxt.text = "2020 - "+_currentPage + 1 ;
+                break;
+            case "DayScroll":
+                changeIndexTxt.text = _currentPage + 1 + "/25";
+                break;
+        }
+    }
+
+
 
     //------------------------------------------------------------------------
     void Update() {
@@ -175,6 +201,8 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         aPageIndex = Mathf.Clamp(aPageIndex, 0, _pageCount - 1);
         _container.anchoredPosition = _pagePositions[aPageIndex];
         _currentPage = aPageIndex;
+        ChangeTxtVal();
+      
     }
 
     //------------------------------------------------------------------------
@@ -183,6 +211,9 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         _lerpTo = _pagePositions[aPageIndex];
         _lerp = true;
         _currentPage = aPageIndex;
+
+        ChangeTxtVal();
+      
     }
 
     //------------------------------------------------------------------------

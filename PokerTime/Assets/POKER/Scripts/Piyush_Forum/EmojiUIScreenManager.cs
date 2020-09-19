@@ -124,7 +124,10 @@ public class EmojiUIScreenManager : MonoBehaviour
                     showOnDealerClick.SetActive(true);
                 }
                 else {
-                    addBtn.SetActive(true);
+                    if(i==0)
+                    addBtn.SetActive(false);
+                    else
+                        addBtn.SetActive(true);
                     dealerBtn.SetActive(false);
                     hideOnDealerClick.SetActive(true);
                     showOnDealerClick.SetActive(false);
