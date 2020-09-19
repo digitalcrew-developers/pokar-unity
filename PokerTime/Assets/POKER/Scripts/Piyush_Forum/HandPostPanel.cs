@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class HandPostPanel : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class HandPostPanel : MonoBehaviour
     public string userID;
     public string path;
 
-    public Image videoImage;
+    public RawImage videoImage;
     public InputField description;
     public Text hashTagText;
 
@@ -29,12 +30,38 @@ public class HandPostPanel : MonoBehaviour
 
     private void OnEnable()
     {
-        hashTagText.text = "#hashtag";
+        //hashTagText.text = "#hashtag";
+        path = HandUiManager.instance.videoPath;
+        LoadImage();
     }
 
     public void OnClickBackButton()
     {
         gameObject.SetActive(false);
+    }
+
+    public void LoadImage()
+    {
+        string newPath = "Image";
+
+        string[] x = path.Split('_');
+        for (int i = 1; i < x.Length - 1; i++)
+        {
+            Debug.Log("Val " + i + " : " + x[i] + " Length: " + x[i].Length);
+            newPath = newPath + "_" + x[i];
+        }
+
+
+        byte[] byteArray = File.ReadAllBytes(Path.Combine(Application.persistentDataPath, "Screenshots", newPath + "_.png"));
+        Texture2D sampleTexture = new Texture2D(2, 2);
+        // the size of the texture will be replaced by image size
+        bool isLoaded = sampleTexture.LoadImage(byteArray);
+        
+        // apply this texure as per requirement on image or material
+        if (isLoaded)
+        {
+            videoImage.texture = sampleTexture;
+        }
     }
 
     public void OnPostVideo()

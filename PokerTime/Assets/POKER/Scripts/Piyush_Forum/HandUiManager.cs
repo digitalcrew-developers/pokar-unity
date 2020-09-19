@@ -15,6 +15,8 @@ using UnityEngine.XR;
 
 public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    public static HandUiManager instance;
+
     public Transform container;
     public Image[] onfocusImageAry;
     public Text handReviewText;
@@ -31,11 +33,18 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     bool slide = false;
 
+    public string videoPath;
+
     private Slider tracking;
     private VideoPlayer videoPlayer;
     private VideoSource videoSource;
 
     private AudioSource audioSource;
+
+    void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -65,27 +74,6 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     public void OnPointerDown(PointerEventData a)
     {
         slide = true;
-
-        /*if (videoPlayer.isPlaying && !videoObject.transform.GetChild(8).gameObject.activeSelf)
-        {
-            videoObject.transform.GetChild(8).gameObject.SetActive(true);
-            videoObject.transform.GetChild(9).gameObject.SetActive(true);
-        }
-        else if (videoPlayer.isPlaying && videoObject.transform.GetChild(8).gameObject.activeSelf)
-        {
-            videoObject.transform.GetChild(8).gameObject.SetActive(false);
-            videoObject.transform.GetChild(9).gameObject.SetActive(false);
-        }
-        else if (!videoPlayer.isPlaying && !videoObject.transform.GetChild(8).gameObject.activeSelf)
-        {
-            videoObject.transform.GetChild(8).gameObject.SetActive(true);
-            videoObject.transform.GetChild(9).gameObject.SetActive(true);
-        }
-        else if (!videoPlayer.isPlaying && videoObject.transform.GetChild(8).gameObject.activeSelf)
-        {
-            videoObject.transform.GetChild(8).gameObject.SetActive(false);
-            videoObject.transform.GetChild(9).gameObject.SetActive(false);
-        }*/
 
         if (videoPlayer.isPlaying && !videoObject.transform.GetChild(2).gameObject.activeSelf/* && !videoObject.transform.GetChild(8).gameObject.activeSelf*/)
         {
@@ -509,6 +497,8 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         videoPlayer.source = VideoSource.Url;
         videoPlayer.url = Path.Combine(Application.persistentDataPath, "Video", vn);
 
+        videoPath = videoPlayer.url;
+
         videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
         //Assign the Audio from Video to AudioSource to be played
         videoPlayer.EnableAudioTrack(0, true);
@@ -567,7 +557,12 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
         videoObject.transform.GetChild(10).GetComponent<Text>().text = index.ToString();
 
-        if (videoObject.transform.GetChild(10).GetComponent<Text>().text == "0")
+        if (container.childCount == 1)
+        {
+            videoObject.transform.GetChild(8).GetComponent<Button>().interactable = false;
+            videoObject.transform.GetChild(9).GetComponent<Button>().interactable = false;
+        }
+        else if (videoObject.transform.GetChild(10).GetComponent<Text>().text == "0")
         {
             videoObject.transform.GetChild(8).GetComponent<Button>().interactable = false;
             videoObject.transform.GetChild(9).GetComponent<Button>().interactable = true;
