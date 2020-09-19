@@ -339,6 +339,8 @@ public class MainMenuController : MonoBehaviour
 			case MainMenuScreens.Congratulation:
 			case MainMenuScreens.BackPack:
 			case MainMenuScreens.CareerMenuScreen:
+			case MainMenuScreens.CareerDataScreen:
+			case MainMenuScreens.CareerDefinationScreen:
 
 				return ScreenLayer.LAYER3;
 
@@ -476,7 +478,9 @@ public enum MainMenuScreens
 	Congratulation,
 	BackPack,
 	Career,
-	CareerMenuScreen
+	CareerMenuScreen,
+	CareerDataScreen,
+	CareerDefinationScreen
 }
 
 
