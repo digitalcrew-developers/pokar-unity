@@ -81,7 +81,6 @@ public class InGameManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        Debug.Log("Date: " + System.DateTime.Now.ToString("dd/MM/yyyy"));
         //Debug.Log("Time: " + System.DateTime.Now.Hour + System.DateTime.Now.Minute);
     }
 
