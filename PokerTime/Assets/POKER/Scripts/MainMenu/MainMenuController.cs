@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
-
+using System.IO;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -24,6 +24,13 @@ public class MainMenuController : MonoBehaviour
 
 	private void Start()
 	{
+		//Create directories to store videos and screenshots
+		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
+			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
+
+		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Screenshots")))
+			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Screenshots"));
+
 		GlobalGameManager.IsJoiningPreviousGame = false;
 
 		if (PlayerManager.instance.IsLogedIn())
@@ -480,7 +487,8 @@ public enum MainMenuScreens
 	Career,
 	CareerMenuScreen,
 	CareerDataScreen,
-	CareerDefinationScreen
+	CareerDefinationScreen,
+	HandScreen,
 }
 
 

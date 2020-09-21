@@ -268,11 +268,13 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
         switch(panelName)
         {
             case "hand":
-                Debug.Log("On Click Hand");
-                GameObject gm = Instantiate(panels[0], MainMenuController.instance.screenLayers[(int)ScreenLayer.LAYER2]) as GameObject;
+                MainMenuController.instance.ShowScreen(MainMenuScreens.HandScreen);
                 break;
 
             case "text":
+                //MainMenuController.instance.ShowScreen(MainMenuScreens.NewPost);
+                //GameObject gm = Instantiate(panels[1], container) as GameObject;
+                //HandPostPanel.instance.isFromForum = true;
                 break;
         }
     }   

@@ -863,10 +863,10 @@ public class InGameManager : MonoBehaviour
             RenderTexture renderTexture = new RenderTexture(videoWidth, videoHeight, 24);
             Camera.main.targetTexture = renderTexture;
 
-            screenshot = new Texture2D(590, 345, TextureFormat.RGB24, false);
+            screenshot = new Texture2D(videoWidth, videoHeight, TextureFormat.RGB24, false);
             Camera.main.Render();
             RenderTexture.active = renderTexture;
-            Rect rect = new Rect(0, 0, 590, 345);
+            Rect rect = new Rect(0, 0, videoWidth, videoHeight);
             screenshot.ReadPixels(rect, 0, 0);
 
             Camera.main.targetTexture = null;
@@ -1345,15 +1345,15 @@ public class InGameManager : MonoBehaviour
 
         /*balance = GetMyPlayerObject().GetPlayerData().totalBet.ToString();*/
 
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Video")))
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Video"));
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
 
         //For PC to move file
 #if UNITY_EDITOR
-        FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
         SaveScreenshot();
 #elif UNITY_ANDROID
-        File.Move(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        File.Move(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
         SaveScreenshot();
 #endif
 

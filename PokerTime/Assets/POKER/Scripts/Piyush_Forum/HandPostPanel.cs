@@ -15,7 +15,7 @@ public class HandPostPanel : MonoBehaviour
     public string userID;
     public string path;
 
-    public RawImage videoImage;
+    public RawImage bgImage, frontImage;
     public InputField description;
     public Text hashTagText;
 
@@ -51,6 +51,8 @@ public class HandPostPanel : MonoBehaviour
             newPath = newPath + "_" + x[i];
         }
 
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Screenshots")))
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Screenshots"));
 
         byte[] byteArray = File.ReadAllBytes(Path.Combine(Application.persistentDataPath, "Screenshots", newPath + "_.png"));
         Texture2D sampleTexture = new Texture2D(2, 2);
@@ -60,7 +62,8 @@ public class HandPostPanel : MonoBehaviour
         // apply this texure as per requirement on image or material
         if (isLoaded)
         {
-            videoImage.texture = sampleTexture;
+            bgImage.texture = sampleTexture;
+            frontImage.texture = sampleTexture;
         }
     }
 
