@@ -80,6 +80,11 @@ public class ChangePasswordManager : MonoBehaviour
                     GlobalGameManager.instance.isLoginShow = true;
                     MainMenuController.instance.DestroyScreen(MainMenuScreens.ChangePassword);
                     MainMenuController.instance.DestroyScreen(MainMenuScreens.ProfileSetting);
+
+                    //Deactivate bottom panel
+                    if (MainMenuController.instance.bottomPanel.activeSelf)
+                        MainMenuController.instance.bottomPanel.SetActive(false);
+
                     MainMenuController.instance.ShowScreen(MainMenuScreens.Registration);
                 }
 

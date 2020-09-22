@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
 using TMPro;
+using UnityEngine.Networking;
 
 public class LobbyUiManager: MonoBehaviour
 {
@@ -169,6 +170,9 @@ public class LobbyUiManager: MonoBehaviour
             RoomData data = allRoomData[index][i];
 
             GameObject gm = Instantiate(roomPrefab, container) as GameObject;
+
+            loadRoomImage(data.roomIconUrl, gm);
+
             gm.transform.Find("Name").GetComponent<Text>().text = data.title;
             gm.transform.Find("Blinds").GetComponent<Text>().text = "" + Utility.GetTrimmedAmount("" + data.smallBlind) + "/" + Utility.GetTrimmedAmount("" + data.bigBlind);
             gm.transform.Find("BuyIn").transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "" + Utility.GetTrimmedAmount("" + data.minBuyIn);
@@ -181,6 +185,32 @@ public class LobbyUiManager: MonoBehaviour
 
         layoutManager.UpdateLayout();
 
+    }
+
+    public void loadRoomImage(string url, GameObject obj)
+    {
+        //   Debug.Log("Success data send");
+        StartCoroutine(loadSpriteImageFromUrl(url, obj));
+    }
+    
+    IEnumerator loadSpriteImageFromUrl(string URL, GameObject obj)
+    {
+        UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
+        yield return unityWebRequest.SendWebRequest();
+
+        if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+        {
+            Debug.LogError("Download failed");
+        }
+        else
+        {
+            //  image.sprite = null;
+            var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
+            Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
+
+            obj.transform.Find("PhotoBg").GetComponent<Image>().sprite = sprite;
+            obj.transform.Find("PhotoBg").GetChild(0).GetComponent<Image>().sprite = sprite;
+        }
     }
 
 
@@ -242,8 +272,10 @@ public class LobbyUiManager: MonoBehaviour
             roomData.minBuyIn = float.Parse(data["data"][i]["minBet"].ToString());
             roomData.maxBuyIn = float.Parse(data["data"][i]["maxBet"].ToString());
 
+            //DEV_CODE
             roomData.totalActivePlayers = int.Parse(data["data"][i]["totalActivePlayer"].ToString());
 
+            roomData.roomIconUrl = data["data"][i]["iconBaseUrl"].ToString();
 
             switch (data["data"][i]["gameType"].ToString())
             {
@@ -266,9 +298,7 @@ public class LobbyUiManager: MonoBehaviour
 
         ShowScreen(GameMode.NLH);
     }
-
-
-
+    
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);

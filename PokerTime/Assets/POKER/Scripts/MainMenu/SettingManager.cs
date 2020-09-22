@@ -59,6 +59,11 @@ public class SettingManager : MonoBehaviour
         SoundManager.instance.PlaySound(SoundType.Click);
         PlayerPrefs.DeleteAll();
         GlobalGameManager.instance.isLoginShow = true;
+
+        //Deactivate bottom panel
+        if(MainMenuController.instance.bottomPanel.activeSelf)
+            MainMenuController.instance.bottomPanel.SetActive(false);
+
         MainMenuController.instance.ShowScreen(MainMenuScreens.Registration);
     }
 

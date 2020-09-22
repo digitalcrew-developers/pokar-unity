@@ -9,6 +9,7 @@ public class MainMenuController : MonoBehaviour
 {
 	public static MainMenuController instance;
 
+	public GameObject bottomPanel;
 
 	public GameObject[] screens; // All screens prefab
 	public Transform[] screenLayers; // screen spawn parent
@@ -35,13 +36,20 @@ public class MainMenuController : MonoBehaviour
 
 		if (PlayerManager.instance.IsLogedIn())
 		{
-			FetchUserData();
-			FetchUserLogs();
+			//Activate bottom panel
+			if (!bottomPanel.activeSelf)
+				bottomPanel.SetActive(true);
 
+			FetchUserData();
+			FetchUserLogs();			
 		}
 		else
 		{
-			ShowScreen(MainMenuScreens.Registration);
+			//Deactivate bottom panel
+			if (bottomPanel.activeSelf)
+				bottomPanel.SetActive(false);
+			
+			ShowScreen(MainMenuScreens.Registration);			
 		}
 	}
 
@@ -399,12 +407,22 @@ public class MainMenuController : MonoBehaviour
 				playerData.password = PlayerManager.instance.GetPlayerGameData().password;
 				playerData.userName = PlayerManager.instance.GetPlayerGameData().userName;
 				PlayerManager.instance.SetPlayerGameData(playerData);
+
+				//Activate bottom panel
+				if (!bottomPanel.activeSelf)
+					bottomPanel.SetActive(true);
+
 				ShowScreen(MainMenuScreens.MainMenu);
 				/*ShowMessage(data["message"].ToString());*/
 			}
 			else
 			{
 				ShowMessage(data["message"].ToString());
+
+				//Deactivate bottom panel
+				if (!bottomPanel.activeSelf)
+					bottomPanel.SetActive(false);
+
 				ShowScreen(MainMenuScreens.Registration);
 			}
 		}

@@ -86,9 +86,12 @@ public class HandPostPanel : MonoBehaviour
         UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/createForum", formData);
 
         Debug.Log("Uploading !!!!!!");
+        MainMenuController.instance.ShowMessage("Uploaded Successfully.");
+        gameObject.SetActive(false);
         yield return www.SendWebRequest();
 
         Debug.Log("Upload Success...");
+        
 
         if (www.isNetworkError || www.isHttpError)
         {
