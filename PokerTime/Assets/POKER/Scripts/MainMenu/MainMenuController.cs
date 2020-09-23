@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
-
+using System.IO;
 
 public class MainMenuController : MonoBehaviour
 {
 	public static MainMenuController instance;
 
+	public GameObject bottomPanel;
 
 	public GameObject[] screens; // All screens prefab
 	public Transform[] screenLayers; // screen spawn parent
@@ -24,17 +25,31 @@ public class MainMenuController : MonoBehaviour
 
 	private void Start()
 	{
+		//Create directories to store videos and screenshots
+		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
+			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
+
+		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Screenshots")))
+			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Screenshots"));
+
 		GlobalGameManager.IsJoiningPreviousGame = false;
 
 		if (PlayerManager.instance.IsLogedIn())
 		{
-			FetchUserData();
-			FetchUserLogs();
+			//Activate bottom panel
+			if (!bottomPanel.activeSelf)
+				bottomPanel.SetActive(true);
 
+			FetchUserData();
+			FetchUserLogs();			
 		}
 		else
 		{
-			ShowScreen(MainMenuScreens.Registration);
+			//Deactivate bottom panel
+			if (bottomPanel.activeSelf)
+				bottomPanel.SetActive(false);
+			
+			ShowScreen(MainMenuScreens.Registration);			
 		}
 	}
 
@@ -392,12 +407,22 @@ public class MainMenuController : MonoBehaviour
 				playerData.password = PlayerManager.instance.GetPlayerGameData().password;
 				playerData.userName = PlayerManager.instance.GetPlayerGameData().userName;
 				PlayerManager.instance.SetPlayerGameData(playerData);
+
+				//Activate bottom panel
+				if (!bottomPanel.activeSelf)
+					bottomPanel.SetActive(true);
+
 				ShowScreen(MainMenuScreens.MainMenu);
 				/*ShowMessage(data["message"].ToString());*/
 			}
 			else
 			{
 				ShowMessage(data["message"].ToString());
+
+				//Deactivate bottom panel
+				if (!bottomPanel.activeSelf)
+					bottomPanel.SetActive(false);
+
 				ShowScreen(MainMenuScreens.Registration);
 			}
 		}
@@ -480,7 +505,8 @@ public enum MainMenuScreens
 	Career,
 	CareerMenuScreen,
 	CareerDataScreen,
-	CareerDefinationScreen
+	CareerDefinationScreen,
+	HandScreen,
 }
 
 

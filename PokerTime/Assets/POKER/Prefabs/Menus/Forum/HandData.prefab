@@ -353,7 +353,7 @@ GameObject:
   - component: {fileID: 4258150530960826915}
   - component: {fileID: 6028608987415955623}
   m_Layer: 5
-  m_Name: RemoveFavouriteButton
+  m_Name: RemoveFromFavouriteButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -896,6 +896,7 @@ GameObject:
   - component: {fileID: 7405072737055661991}
   - component: {fileID: 7935941949367193976}
   - component: {fileID: 4877213468567510871}
+  - component: {fileID: 430528786651753462}
   m_Layer: 5
   m_Name: HandData
   m_TagString: Untagged
@@ -1013,6 +1014,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &430528786651753462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8545980551265940908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0ad92b90f144644b12a4424e191565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cards:
+  - {fileID: 3866827977235103110}
+  - {fileID: 5242615349878201821}
+  dateAndTime: {fileID: 2912500886733719260}
+  roomData: {fileID: 6817565084569923736}
+  chipsData: {fileID: 2181057564444577744}
+  betData: {fileID: 7680409603136254438}
+  shareButton: {fileID: 7490682568030793098}
+  collectionButton: {fileID: 2958947085520311928}
+  removeFromCollectionButton: {fileID: 6028608987415955623}
 --- !u!1 &8627427054337023937
 GameObject:
   m_ObjectHideFlags: 0

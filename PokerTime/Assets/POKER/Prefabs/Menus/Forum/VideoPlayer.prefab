@@ -1144,8 +1144,9 @@ GameObject:
   - component: {fileID: 2894081817622885491}
   - component: {fileID: 7025457335725085684}
   - component: {fileID: 3501669715277178406}
+  - component: {fileID: 4908882484518533690}
   m_Layer: 5
-  m_Name: VideoBG
+  m_Name: VideoPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1215,6 +1216,29 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &4908882484518533690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6933491708852424765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a454556d533c05545b96d2da076bb327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  videoIndexText: {fileID: 138561438025185626}
+  backButton: {fileID: 7752221358356298586}
+  playButton: {fileID: 1230330258755600005}
+  pauseButton: {fileID: 8165197783976328182}
+  postButton: {fileID: 7931625325860441943}
+  commentButton: {fileID: 4541172888059765143}
+  likeButton: {fileID: 8045139171207199787}
+  previousButton: {fileID: 7234321521322486516}
+  nextButton: {fileID: 4079426730596113180}
+  slider: {fileID: 1973068978057771134}
+  sliderValue: {fileID: 7055059538313792186}
 --- !u!1 &7406071726516160326
 GameObject:
   m_ObjectHideFlags: 0

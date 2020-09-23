@@ -57,6 +57,7 @@ public class InGameManager : MonoBehaviour
     public GameObject WinnAnimationpos;
 
     //DEV_CODE
+    Texture2D screenshot;
     public int videoWidth /* = 1280*/;
     public int videoHeight /*= 720*/;
     public bool isRecording = false;
@@ -77,6 +78,7 @@ public class InGameManager : MonoBehaviour
     string balance = "";
 
     bool isCardValueSet = false;
+    bool isScreenshotCaptured = false;
 
     private void Awake()
     {
@@ -854,6 +856,25 @@ public class InGameManager : MonoBehaviour
         InGameUiManager.instance.ToggleActionButton(false);
         InGameUiManager.instance.ToggleSuggestionButton(false);
 
+        //DEV_CODE
+        if (!isScreenshotCaptured)
+        {
+            //Taking Screenshot
+            RenderTexture renderTexture = new RenderTexture(videoWidth, videoHeight, 24);
+            Camera.main.targetTexture = renderTexture;
+
+            screenshot = new Texture2D(videoWidth, videoHeight, TextureFormat.RGB24, false);
+            Camera.main.Render();
+            RenderTexture.active = renderTexture;
+            Rect rect = new Rect(0, 0, videoWidth, videoHeight);
+            screenshot.ReadPixels(rect, 0, 0);
+
+            Camera.main.targetTexture = null;
+            RenderTexture.active = null;
+            Destroy(renderTexture);
+        }
+        isScreenshotCaptured = true;
+
         JsonData data = JsonMapper.ToObject(serverResponse);
         
         if (data[0].Count > 0)
@@ -1023,7 +1044,6 @@ public class InGameManager : MonoBehaviour
                 }
                 userID = GetMyPlayerObject().GetPlayerData().userId;
             }
-
             isCardValueSet = true;
 
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
@@ -1058,7 +1078,7 @@ public class InGameManager : MonoBehaviour
         //DEV_CODE
         if(!isRecording)
         {
-            StartRecording();
+            StartRecording();            
         }
 
         ShowCommunityCardsAnimation();
@@ -1308,7 +1328,7 @@ public class InGameManager : MonoBehaviour
         recorder = new MP4Recorder(videoWidth, videoHeight, frameRate);
         var clock = new RealtimeClock();
         // And use a `CameraInput` to record the main game camera
-        cameraInput = new CameraInput(recorder, clock, InGameUiManager.instance.cameraObj/*Camera.main*/);
+        cameraInput = new CameraInput(recorder, clock, /*InGameUiManager.instance.cameraObj*/Camera.main);
 
         tableValue = GlobalGameManager.instance.GetRoomData().smallBlind.ToString() + "_" + GlobalGameManager.instance.GetRoomData().bigBlind.ToString();
         date = System.DateTime.Now.ToString("dd-MM-yyyy");
@@ -1325,14 +1345,16 @@ public class InGameManager : MonoBehaviour
 
         /*balance = GetMyPlayerObject().GetPlayerData().totalBet.ToString();*/
 
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Video")))
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Video"));
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
 
         //For PC to move file
 #if UNITY_EDITOR
-        FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        SaveScreenshot();
 #elif UNITY_ANDROID
-        File.Move(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        File.Move(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        SaveScreenshot();
 #endif
 
         cardValue = "";
@@ -1348,7 +1370,20 @@ public class InGameManager : MonoBehaviour
 
         Debug.Log("Recording Stopped ..." + Path.GetDirectoryName(path));
         //InGameUiManager.instance.ShowMessage(path);
-    }    
+    }
+
+    void SaveScreenshot()
+    {
+        //Taking Screenshot
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Screenshots")))
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Screenshots"));
+
+        byte[] byteArray = screenshot.EncodeToPNG();
+        File.WriteAllBytes(Path.Combine(Application.persistentDataPath , "Screenshots", "Image_" + tableValue + "_" + cardValue + date + "_" + time + ".png"), byteArray);
+
+        Debug.Log("Saved Screenshot successfully...");
+        isScreenshotCaptured = false;
+    }
 }
 
 public class MatchMakingPlayerData

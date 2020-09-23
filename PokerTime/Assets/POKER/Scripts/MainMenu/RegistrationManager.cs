@@ -160,6 +160,7 @@ public class RegistrationManager : MonoBehaviour
                 playerData.userName = registrationUserName.text;
                 playerData.password = registrationPassword.text;
 
+                
                 MainMenuController.instance.ShowMessage(data["message"].ToString());
 
                 /* string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
@@ -188,6 +189,10 @@ public class RegistrationManager : MonoBehaviour
                 playerData.password = loginPassword.text;
 
                 PlayerManager.instance.SetPlayerGameData(playerData);
+
+                //Activate bottom panel
+                if (!MainMenuController.instance.bottomPanel.activeSelf)
+                    MainMenuController.instance.bottomPanel.SetActive(true);
 
                 MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
                 MainMenuController.instance.ShowMessage(data["message"].ToString());

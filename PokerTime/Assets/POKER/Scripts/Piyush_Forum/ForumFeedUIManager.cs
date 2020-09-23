@@ -28,9 +28,9 @@ public class ForumFeedUIManager : MonoBehaviour
     public GameObject likeIconBtn;
     public GameObject unlikeIconbtn;
 
-    public Button vedioBtn;
-
-
+    //DEV_CODE
+    public RawImage videoBGImage, videoFrontImage;
+    
     //    {
     //	"forumId":1,
     //    "userId":8,
@@ -45,7 +45,7 @@ public class ForumFeedUIManager : MonoBehaviour
             unlikeIconbtn.SetActive(false);
         }
 
-        vedioBtn.onClick.AddListener(OnClickVedioBtn);
+        videoBtn.GetComponent<Button>().onClick.AddListener(OnClickVideoBtn);
     }
 
 
@@ -71,13 +71,18 @@ public class ForumFeedUIManager : MonoBehaviour
         
     }
 
-    public void OnClickVedioBtn()
+    public void OnClickVideoBtn()
     {
 
         ForumListUIManager.instance.commentPannel.SetActive(true);
         ForumListUIManager.instance.commentPannelVedioObj.SetActive(true);
         ForumListUIManager.instance.commentPannelCommentObj.SetActive(false);
         ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().GetComment(true, forumId, userId);
+
+        if(ForumListUIManager.instance.isMinePanel)
+        {
+
+        }
     }
 
    

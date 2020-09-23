@@ -109,7 +109,7 @@ public class ProfileScreenUiManager : MonoBehaviour
         switch (eventName)
         {
             case "hand":
-                GameObject gm = Instantiate(panels[0], MainMenuController.instance.screenLayers[(int)ScreenLayer.LAYER2]) as GameObject;
+                MainMenuController.instance.ShowScreen(MainMenuScreens.HandScreen);
                 break;
 
             case "coinShop":
