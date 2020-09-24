@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ForumFeedUIManager : MonoBehaviour
 {
 
-
+    public static ForumFeedUIManager instance;
     public int forumId;
     public int userId;
     public string likeStatus;
@@ -30,14 +30,17 @@ public class ForumFeedUIManager : MonoBehaviour
 
     //DEV_CODE
     public RawImage videoBGImage, videoFrontImage;
-    
+
     //    {
     //	"forumId":1,
     //    "userId":8,
     //    "likeStatus":1
     //}
-
-     void Start()
+    private void Awake()
+    {
+        instance = this;
+    }
+    void Start()
     {
         if (isLike)
         {
@@ -90,7 +93,8 @@ public class ForumFeedUIManager : MonoBehaviour
     {
 
         string requestData = "{\"forumId\":\"" + forumId + "\"," +
-                           "\"userId\":\"" + userId + "\"," +
+                           "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                           "\"commentId\":\"" + ""+ "\"," +
                            "\"likeStatus\":\"1\"}";
 
         if (isShowLoading)
