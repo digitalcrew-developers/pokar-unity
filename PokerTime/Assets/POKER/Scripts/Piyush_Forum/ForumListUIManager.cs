@@ -5,6 +5,7 @@ using LitJson;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.IO;
+using UnityEngine.Video;
 
 public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 {
@@ -29,12 +30,12 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     private bool isAddVideoPanelActive = false;
     public bool isMinePanel = false;
 
+    public VideoPlayer videoPlayer;
+
     private float width;
     private float height;
 
     public List<GameObject> panels = new List<GameObject>();
-
-
 
     public void Awake()
     {
@@ -75,6 +76,10 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     {
         commentPannelVedioObj.SetActive(true);
         commentPannelCommentObj.SetActive(true);
+
+        //DEV_CODE
+        videoPlayer.source = VideoSource.VideoClip;
+
         //ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().GetComment(true, forumId, userId);
     }
     public void OnClickBackBtnOnVedioObj()
@@ -220,7 +225,11 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
             {
                 Debug.Log("Path: " + data["data"][i]["forumName"].ToString().Substring(53));
                 LoadImage(gm1, data["data"][i]["forumName"].ToString().Substring(53));
-                
+
+                if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
+                    Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
+
+                gm1.GetComponent<ForumFeedUIManager>().videoPath = data["data"][i]["forumName"].ToString().Substring(53);
             }
 
             if (data["data"][i]["isLiked"].ToString().Equals("No"))
@@ -295,8 +304,6 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
             obj.GetComponent<ForumFeedUIManager>().videoFrontImage.texture = sampleTexture;
         }
     }
-
-
 
     public void OnClickVideoAddObject()
     {

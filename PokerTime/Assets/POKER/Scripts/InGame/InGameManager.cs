@@ -563,8 +563,9 @@ public class InGameManager : MonoBehaviour
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
+        Debug.Log("Last All in Bet: " + playerScript.GetLocalBetAmount()/*betAmount*/);
         GameObject gm = Instantiate(betAnimationPrefab,animationLayer) as GameObject;
-        gm.transform.GetChild(0).GetComponent<Text>().text = betAmount;
+        gm.transform.GetChild(0).GetComponent<Text>().text = playerScript.GetLocalBetAmount().ToString()/*betAmount*/;
         gm.transform.position = playerScript.transform.position;
         Vector3 initialScale = gm.transform.localScale;
         gm.transform.localScale = Vector3.zero;
@@ -917,7 +918,9 @@ public class InGameManager : MonoBehaviour
     {
         //DEV_CODE
         if (isRecording)
+        {
             StopRecording();
+        }
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
@@ -1054,7 +1057,9 @@ public class InGameManager : MonoBehaviour
 
                 if (playerObject != null)
                 {
-                    StartCoroutine(WaitAndShowBetAnimation(playerObject,""+ betAmount));
+                    Debug.Log("Current Bet Amount : " + betAmount);
+                    StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
+                    /*StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));*/
                 }
                 else
                 {
@@ -1073,12 +1078,12 @@ public class InGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
         handtype = serverResponse;
-     //   Debug.LogError("hand typessss" + handtype);
+        //   Debug.LogError("hand typessss" + handtype);
 
         //DEV_CODE
-        if(!isRecording)
+        if (!isRecording)
         {
-            StartRecording();            
+            StartRecording();
         }
 
         ShowCommunityCardsAnimation();
@@ -1383,6 +1388,14 @@ public class InGameManager : MonoBehaviour
 
         Debug.Log("Saved Screenshot successfully...");
         isScreenshotCaptured = false;
+
+        //Delete Extra Files
+        DirectoryInfo dirInfo = new DirectoryInfo(Application.persistentDataPath);
+        FileInfo[] fileInfo = dirInfo.GetFiles("*.png");
+        for (int j = 0; j < fileInfo.Length; j++)
+        {
+            File.Delete(fileInfo[j].FullName);
+        }
     }
 }
 

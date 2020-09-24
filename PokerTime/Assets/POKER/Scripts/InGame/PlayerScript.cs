@@ -122,8 +122,9 @@ public class PlayerScript : MonoBehaviour
         lastActionText.text = "";
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
+        Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
         userName.text = playerData.userName.Substring(0, 4) + "...";
-        //      Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
+        
        
         transform.Find("Bg/Dealer").gameObject.SetActive(playerData.isDealer);
         localBetAmount = (int)playerData.totalBet;

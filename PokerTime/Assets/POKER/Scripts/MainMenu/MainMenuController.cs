@@ -25,12 +25,7 @@ public class MainMenuController : MonoBehaviour
 
 	private void Start()
 	{
-		//Create directories to store videos and screenshots
-		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
-			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
-
-		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Screenshots")))
-			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Screenshots"));
+		LoadVideoAndScreenshot();
 
 		GlobalGameManager.IsJoiningPreviousGame = false;
 
@@ -53,6 +48,48 @@ public class MainMenuController : MonoBehaviour
 		}
 	}
 
+	private void LoadVideoAndScreenshot()
+	{
+		DirectoryInfo dir;
+		FileInfo[] info;
+
+		//Create directories to store videos and screenshots
+		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
+			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
+		
+		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Screenshots")))
+			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Screenshots"));
+
+		//Remove Currepted Videos
+		dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Videos"));
+		info = dir.GetFiles("*.mp4");
+
+		for (int j = 0; j < info.Length; j++)
+		{
+			string[] x = info[j].Name.Split('_');
+
+			//Removing currepted files.
+			if (x.Length == 7)
+			{
+				File.Delete(info[j].FullName);
+			}
+		}
+
+		//Remove Currepted Screenshots
+		dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Screenshots"));
+		info = dir.GetFiles("*.png");
+
+		for (int j = 0; j < info.Length; j++)
+		{
+			string[] x = info[j].Name.Split('_');
+
+			//Removing currepted files.
+			if (x.Length == 7)
+			{
+				File.Delete(info[j].FullName);
+			}
+		}
+	}
 
 	public void OnClickOnButton(string eventName)
 	{
