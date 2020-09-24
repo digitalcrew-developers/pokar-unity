@@ -43,8 +43,9 @@ public class ForumCommentPannel : MonoBehaviour
         forumId = forumIdval;
         userId = userIdval;
 
-        string requestData = "{\"forumId\":\"" + forumId + "\"}";
-
+       // string requestData = "{\"forumId\":\"" + forumId + "\"}";
+        string requestData = "{\"forumId\":\"" + forumId + "\"," +
+                                  "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
         if (isShowLoading)
         {
             MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
@@ -58,8 +59,9 @@ public class ForumCommentPannel : MonoBehaviour
 
         
         string requestData = "{\"forumId\":\"" + forumId + "\"," +
-                           "\"userId\":\"" + userId + "\"," +
-                           "\"comment\":\""+iField.text+"\"}";
+                           "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                           "\"comment\":\"" + iField.text + "\"," +
+                           "\"parentCommentID\":\"" +"" +"\"}";
         if (isShowLoading)
         {
             MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
@@ -99,6 +101,12 @@ public class ForumCommentPannel : MonoBehaviour
                     gm1.GetComponent<CommentDetailsManager>().usernameTxt.text = data["data"][i]["userName"].ToString();
                     gm1.GetComponent<CommentDetailsManager>().commentDesprictionTxt.text =data["data"][i]["comment"].ToString();
                     gm1.GetComponent<CommentDetailsManager>().userId = (int)data["data"][i]["userId"];
+                    gm1.GetComponent<CommentDetailsManager>().commentId = (int)data["data"][i]["commentId"];
+                    gm1.GetComponent<CommentDetailsManager>().forumId = forumId;
+                    if (data["data"][i]["isLiked"].ToString().Equals("Yes"))
+                    {
+                        gm1.GetComponent<CommentDetailsManager>().likedImage.gameObject.SetActive(true);
+                    }
                 }
             }
             else
@@ -110,6 +118,8 @@ public class ForumCommentPannel : MonoBehaviour
         {
             Debug.Log("IAKKKKKKKKKKKKKKK");
             iField.text = "";
+            ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().GetComment(true, forumId, userId);
+
         }
-        }
+    }
 }

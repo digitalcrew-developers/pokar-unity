@@ -897,7 +897,7 @@ public class InGameUiManager : MonoBehaviour
 
     public void CallEmojiSocket(int index) {
         emojiIndex = index;
-        Debug.LogError("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
+       // Debug.LogError("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
         SocketController.instance.SentEmoji(otherId, InGameUiManager.instance.emojiIndex);
 
 
@@ -906,7 +906,7 @@ public class InGameUiManager : MonoBehaviour
     public void ShowEmojiOnScreen(string str)
     {
 
-        Debug.LogError("Show Emoji From List on Screen *** " + str);
+        //Debug.LogError("Show Emoji From List on Screen *** " + str);
         GameObject g = null;
         switch (str)
         {

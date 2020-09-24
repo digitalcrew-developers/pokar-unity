@@ -17,6 +17,7 @@ public class EmojiBehaviour : MonoBehaviour
             
         }
         else {
+            if(target!=null)
             this.transform.SetParent(target.transform);
 
         }
@@ -27,9 +28,12 @@ public class EmojiBehaviour : MonoBehaviour
     public float speed;
     void Update()
     {
-        float step = speed * Time.deltaTime*400;
-       // Debug.LogError("$$$$$$$$      UPDATE i S CALLL  "+ step+"       "+ transform.position+"       "+ target.position);
-        transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+        if (target != null)
+        {
+            float step = speed * Time.deltaTime * 400;
+            // Debug.LogError("$$$$$$$$      UPDATE i S CALLL  "+ step+"       "+ transform.position+"       "+ target.position);
+            transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+        }
     }
 
 }

@@ -37,8 +37,20 @@ public class SpinManager : MonoBehaviour
     {
         InGameUiManager.instance.spinWheel.SetActive(true);
         InactiveSpinRotation.SetActive(false);
+        DeductCoinPostServer(10000);
     }
 
+    void DeductCoinPostServer(int val)
+    {
+
+        int amount = val;
+
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                              "\"amount\":\"" + amount + "\"," +
+                              "\"deductFrom\":\"" + "coins" + "\"," +
+                               "\"narration\":\"" + "Spin Wheel" + "\"}";
+        WebServices.instance.SendRequest(RequestType.deductFromWallet, requestData, true, OnServerResponseFound);
+    }
     public void SetSpinWheelWinning(int index)
     {
         int itemid = int.Parse(spinItemList[index].itemID);
@@ -88,6 +100,19 @@ public class SpinManager : MonoBehaviour
             if (data["success"].ToString() == "1")
             {
                 Debug.Log("********SET THE VALUE OF SPIN WHEEL" );
+            }
+            else
+            {
+                MainMenuController.instance.ShowMessage(data["message"].ToString());
+            }
+        }
+        if (requestType == RequestType.deductFromWallet)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+
+            if (data["success"].ToString() == "1")
+            {
+                Debug.Log("*******000000000*SET THE VALUE OF SPIN WHEEL");
             }
             else
             {

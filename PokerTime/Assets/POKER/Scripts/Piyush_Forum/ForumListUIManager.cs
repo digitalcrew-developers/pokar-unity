@@ -91,7 +91,7 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     {
 
         commentPannel.SetActive(false);
-
+        GetAllForumList(true);
     }
 
     public void GetAllForumList(bool isShowLoading)
