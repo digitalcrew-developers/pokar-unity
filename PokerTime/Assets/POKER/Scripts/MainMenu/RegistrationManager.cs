@@ -1,14 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using LitJson;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RegistrationManager : MonoBehaviour
 {
-    public GameObject registrationScreen, loginScreen, signUpScreen;
+    public GameObject registrationScreen, loginScreen;
     public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
+
+    //DEV_CODE
+    public TMP_InputField tmp_registrationUserName, tmp_registrationPassword, tmp_registrationConfirmPassword;
+    public TMP_InputField tmp_loginUserName, tmp_loginPassword;
 
     private void OnEnable()
     {
@@ -16,14 +21,13 @@ public class RegistrationManager : MonoBehaviour
         {
             registrationScreen.SetActive(false);
             loginScreen.SetActive(true);
-            signUpScreen.SetActive(false);
         }
         else {
-            registrationScreen.SetActive(false);
+            registrationScreen.SetActive(true);
             loginScreen.SetActive(false);
-            signUpScreen.SetActive(true);
         }
     }
+
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -44,23 +48,22 @@ public class RegistrationManager : MonoBehaviour
                     {
                         string error;
 
-                        if (!Utility.IsValidUserName(loginUserName.text, out error))
+                        if (!Utility.IsValidUserName(tmp_loginUserName.text, out error))
                         {
                             MainMenuController.instance.ShowMessage(error);
                             return;
                         }
 
-                        if (!Utility.IsValidPassword(loginPassword.text, out error))
+                        if (!Utility.IsValidPassword(tmp_loginPassword.text, out error))
                         {
                             MainMenuController.instance.ShowMessage(error);
                             return;
                         }
 
-                        string requestData = "{\"userName\":\"" + loginUserName.text + "\"," +
-                           "\"userPassword\":\"" + loginPassword.text + "\"," +
+                        string requestData = "{\"userName\":\"" + tmp_loginUserName.text + "\"," +
+                           "\"userPassword\":\"" + tmp_loginPassword.text + "\"," +
                            "\"registrationType\":\"Custom\"," +
                            "\"socialId\":\"\"}";
-
 
                         MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
                         WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
@@ -69,33 +72,32 @@ public class RegistrationManager : MonoBehaviour
                     {
                         string error;
 
-                        if (!Utility.IsValidUserName(registrationUserName.text, out error))
+                        if (!Utility.IsValidUserName(tmp_registrationUserName.text, out error))
                         {
                             MainMenuController.instance.ShowMessage(error);
                             return;
                         }
 
-                        if (!Utility.IsValidPassword(registrationPassword.text, out error))
+                        if (!Utility.IsValidPassword(tmp_registrationPassword.text, out error))
                         {
                             MainMenuController.instance.ShowMessage(error);
                             return;
                         }
 
-                        //if (registrationConfirmPassword.text != registrationPassword.text)
-                        //{
-                        //    MainMenuController.instance.ShowMessage("password does not matched");
-                        //    return;
-                        //}
+                        if (tmp_registrationConfirmPassword.text != tmp_registrationPassword.text)
+                        {
+                            MainMenuController.instance.ShowMessage("password does not matched");
+                            return;
+                        }
 
-                        string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
-                           "\"userPassword\":\"" + registrationPassword.text + "\"," +
+                        string requestData = "{\"userName\":\"" + tmp_registrationUserName.text + "\"," +
+                           "\"userPassword\":\"" + tmp_registrationPassword.text + "\"," +
                            "\"registrationType\":\"Custom\"," +
                            "\"socialId\":\"\"}";
 
 
                         MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
                         WebServices.instance.SendRequest(RequestType.Registration, requestData, true, OnServerResponseFound);
-
                     }
                     else
                     {
@@ -109,18 +111,20 @@ public class RegistrationManager : MonoBehaviour
 
             case "openLogin":
                 {
+                    ResetLoginScreen();
+
                     loginScreen.SetActive(true);
                     registrationScreen.SetActive(false);
-                    signUpScreen.SetActive(false);
                 }
             break;
 
 
             case "openRegistration":
                 {
+                    ResetRegistrationScreen();
+
                     loginScreen.SetActive(false);
                     registrationScreen.SetActive(true);
-                    signUpScreen.SetActive(false);
                 }
                 break;
 
@@ -131,37 +135,17 @@ public class RegistrationManager : MonoBehaviour
         }
     }
 
-
-    public void LoginEyeBtnClick() {
-        if (this.loginPassword != null)
-        {
-            if (this.loginPassword.contentType == InputField.ContentType.Password)
-            {
-                this.loginPassword.contentType = InputField.ContentType.Standard;
-            }
-            else
-            {
-                this.loginPassword.contentType = InputField.ContentType.Password;
-            }
-
-            this.loginPassword.ForceLabelUpdate();
-        }
-    }
-    public void RegisterEyeBtnClick()
+    private void ResetLoginScreen()
     {
-        if (this.registrationPassword != null)
-        {
-            if (this.registrationPassword.contentType == InputField.ContentType.Password)
-            {
-                this.registrationPassword.contentType = InputField.ContentType.Standard;
-            }
-            else
-            {
-                this.registrationPassword.contentType = InputField.ContentType.Password;
-            }
+        tmp_loginUserName.text = "";
+        tmp_loginPassword.text = "";
+    }
 
-            this.registrationPassword.ForceLabelUpdate();
-        }
+    private void ResetRegistrationScreen()
+    {
+        tmp_registrationUserName.text = "";
+        tmp_registrationPassword.text = "";
+        tmp_registrationConfirmPassword.text = "";
     }
 
 
@@ -185,21 +169,30 @@ public class RegistrationManager : MonoBehaviour
 
             Debug.Log("data "+JsonMapper.ToJson(data));
 
+            //Debug.Log("User Success Status:" + data.Count);
+
             if (data["success"].ToString() == "1")
             {
                 MainMenuController.instance.ShowMessage(data["message"].ToString());
-                JsonData parsedObject = JsonMapper.ToObject(data["result"].ToString().Replace(@"\",""));
-
+                
+                //JsonData parsedObject = JsonMapper.ToObject(data["result"].ToString().Replace(@"\",""));
 
                 PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
-                playerData.userId = parsedObject["userId"].ToString();
-                playerData.userName = registrationUserName.text;
-                playerData.password = registrationPassword.text;
+                /*playerData.userId = parsedObject["userId"].ToString();*/
+                playerData.userId = data["result"]["userId"].ToString();
+                playerData.userName = tmp_registrationUserName.text;
+                playerData.password = tmp_registrationPassword.text;
 
                 
                 MainMenuController.instance.ShowMessage(data["message"].ToString());
 
-                /* string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
+                ResetLoginScreen();
+                ResetRegistrationScreen();
+
+                loginScreen.SetActive(true);
+                registrationScreen.SetActive(false);
+
+                /*string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
                          "\"userPassword\":\"" + registrationPassword.text + "\"," +
                          "\"registrationType\":\"Custom\"," +
                          "\"socialId\":\"\"}";
@@ -210,7 +203,10 @@ public class RegistrationManager : MonoBehaviour
             }
             else
             {
+                Debug.Log("Uesr already exist");
                 MainMenuController.instance.ShowMessage(data["message"].ToString());
+                loginScreen.SetActive(true);
+                registrationScreen.SetActive(false);
             }
         }
         else if (requestType == RequestType.Login)
@@ -221,8 +217,8 @@ public class RegistrationManager : MonoBehaviour
             {
                 PlayerGameDetails playerData = Utility.ParsePlayerGameData(data);
 
-                playerData.userName = loginUserName.text;
-                playerData.password = loginPassword.text;
+                playerData.userName = tmp_loginUserName.text;
+                playerData.password = tmp_loginPassword.text;
 
                 PlayerManager.instance.SetPlayerGameData(playerData);
 

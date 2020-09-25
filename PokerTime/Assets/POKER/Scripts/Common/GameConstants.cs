@@ -97,7 +97,8 @@ public class GameConstants : MonoBehaviour
           API_URL+"/redeemCoupon",
           SOCKET_URL+"/userLoginLogs",
           API_URL+"/createForum",
-          SOCKET_URL+"/redeemDailyMission"
+          SOCKET_URL+"/redeemDailyMission",
+          API_URL+"/updateProfile"
     };
     #endregion
 
@@ -157,5 +158,6 @@ public enum RequestType
     redeemCoupon,
     userLoginLogs,
     createForum,
-    redeemDailyMission
+    redeemDailyMission,
+    updateProfile
 }

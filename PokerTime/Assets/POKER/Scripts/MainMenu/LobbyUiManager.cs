@@ -5,10 +5,11 @@ using UnityEngine.UI;
 using LitJson;
 using TMPro;
 using UnityEngine.Networking;
+using System.Runtime.InteropServices;
 
 public class LobbyUiManager: MonoBehaviour
 {
-
+    public static LobbyUiManager instance;
     [SerializeField]
     private LayoutManager layoutManager;
 
@@ -22,15 +23,18 @@ public class LobbyUiManager: MonoBehaviour
     private Button[] gameModeButtons;
 
     [SerializeField]
-    private Text coinsText;
-    [SerializeField]
     private List<List<RoomData>> allRoomData = new List<List<RoomData>>();
 
+    public Text coinsText;
     public Button missionBtn;
     public Button topPlayerBtn;
     public Button shopBtn;
     public Button BagPackBtn;
 
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
@@ -172,6 +176,7 @@ public class LobbyUiManager: MonoBehaviour
             GameObject gm = Instantiate(roomPrefab, container) as GameObject;
 
             loadRoomImage(data.roomIconUrl, gm);
+            //Debug.Log("Room URL: " + data.roomIconUrl);
 
             gm.transform.Find("Name").GetComponent<Text>().text = data.title;
             gm.transform.Find("Blinds").GetComponent<Text>().text = "" + Utility.GetTrimmedAmount("" + data.smallBlind) + "/" + Utility.GetTrimmedAmount("" + data.bigBlind);
