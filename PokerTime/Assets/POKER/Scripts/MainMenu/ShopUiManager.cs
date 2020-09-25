@@ -328,7 +328,8 @@ public class ShopUiManager: MonoBehaviour
                         }
                         else
                         {
-                            //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient coins");
+                            // NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient coins");
+                            MainMenuController.instance.ShowMessage("Insufficient Diamonds");
                         }
                     }
                 break;
@@ -343,7 +344,8 @@ public class ShopUiManager: MonoBehaviour
                         }
                         else
                         {
-                            //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
+                            // NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
+                            MainMenuController.instance.ShowMessage("Insufficient Diamonds");
                         }
                     }
                 break;
@@ -378,6 +380,7 @@ public class ShopUiManager: MonoBehaviour
                         else
                         {
                             //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
+                            MainMenuController.instance.ShowMessage("Insufficient Diamonds");
                         }
                     }
                     break;
@@ -394,6 +397,7 @@ public class ShopUiManager: MonoBehaviour
                         else
                         {
                             //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
+                            MainMenuController.instance.ShowMessage("Insufficient Points");
                         }
                     }
                     break;

@@ -84,18 +84,21 @@ public class MissionsUiManager : MonoBehaviour
             gm1.GetComponent<MissionContentUIManager>().missionDiscriptionTxt.text = data["getData"][i]["missionDesc"].ToString();
             gm1.GetComponent<MissionContentUIManager>().missionValueTxt.text = "X " + data["getData"][i]["missionValue"].ToString();
 
-            gm1.GetComponent<MissionContentUIManager>().collectBtn.transform.GetChild(0).GetComponent<Text>().text = data["getData"][i]["Status"].ToString();
             // gm1.GetComponent<MissionContentUIManager>().collectBtn.GetComponent<Image>().color.a = 1f;
             Image image = gm1.GetComponent<MissionContentUIManager>().collectBtn.GetComponent<Image>();
 
             Color c = image.color;
             if (data["getData"][i]["Status"].ToString().Equals("Active"))
             {
-                c.a = 0;
+                c.a = 1;
+                gm1.GetComponent<MissionContentUIManager>().collectBtn.transform.GetChild(0).GetComponent<Text>().text = data["getData"][i]["Status"].ToString();
+
             }
             else
             {
-                c.a = 1;
+                c.a = 0;
+                gm1.GetComponent<MissionContentUIManager>().collectBtn.transform.GetChild(0).GetComponent<Text>().text = "";
+                gm1.GetComponent<MissionContentUIManager>().collectedBtnImg.SetActive(true);
             }
             image.color = c;
 

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ForumFeedUIManager : MonoBehaviour
 {
 
-
+    public static ForumFeedUIManager instance;
     public int forumId;
     public int userId;
     public string likeStatus;
@@ -28,16 +28,19 @@ public class ForumFeedUIManager : MonoBehaviour
     public GameObject likeIconBtn;
     public GameObject unlikeIconbtn;
 
-    public Button vedioBtn;
-
+    //DEV_CODE
+    public RawImage videoBGImage, videoFrontImage;
 
     //    {
     //	"forumId":1,
     //    "userId":8,
     //    "likeStatus":1
     //}
-
-     void Start()
+    private void Awake()
+    {
+        instance = this;
+    }
+    void Start()
     {
         if (isLike)
         {
@@ -45,7 +48,7 @@ public class ForumFeedUIManager : MonoBehaviour
             unlikeIconbtn.SetActive(false);
         }
 
-        vedioBtn.onClick.AddListener(OnClickVedioBtn);
+        videoBtn.GetComponent<Button>().onClick.AddListener(OnClickVideoBtn);
     }
 
 
@@ -71,13 +74,18 @@ public class ForumFeedUIManager : MonoBehaviour
         
     }
 
-    public void OnClickVedioBtn()
+    public void OnClickVideoBtn()
     {
 
         ForumListUIManager.instance.commentPannel.SetActive(true);
         ForumListUIManager.instance.commentPannelVedioObj.SetActive(true);
         ForumListUIManager.instance.commentPannelCommentObj.SetActive(false);
         ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().GetComment(true, forumId, userId);
+
+        if(ForumListUIManager.instance.isMinePanel)
+        {
+
+        }
     }
 
    
@@ -85,7 +93,8 @@ public class ForumFeedUIManager : MonoBehaviour
     {
 
         string requestData = "{\"forumId\":\"" + forumId + "\"," +
-                           "\"userId\":\"" + userId + "\"," +
+                           "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                           "\"commentId\":\"" + ""+ "\"," +
                            "\"likeStatus\":\"1\"}";
 
         if (isShowLoading)

@@ -4,6 +4,8 @@ using UnityEngine;
 using LitJson;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.IO;
+using UnityEngine.Video;
 
 public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 {
@@ -26,13 +28,14 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     //DEV_CODE
     public GameObject addVideoPanel;
     private bool isAddVideoPanelActive = false;
+    public bool isMinePanel = false;
+
+    public VideoPlayer videoPlayer;
 
     private float width;
     private float height;
 
     public List<GameObject> panels = new List<GameObject>();
-
-
 
     public void Awake()
     {
@@ -73,6 +76,10 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     {
         commentPannelVedioObj.SetActive(true);
         commentPannelCommentObj.SetActive(true);
+
+        //DEV_CODE
+        videoPlayer.source = VideoSource.VideoClip;
+
         //ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().GetComment(true, forumId, userId);
     }
     public void OnClickBackBtnOnVedioObj()
@@ -84,7 +91,7 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     {
 
         commentPannel.SetActive(false);
-
+        GetAllForumList(true);
     }
 
     public void GetAllForumList(bool isShowLoading)
@@ -127,7 +134,7 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 
     public void GetMineForumList(bool isShowLoading)
     {
-
+        isMinePanel = true;
         ChangeBtnFocus(3);
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                              "\"FilterUserID\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
@@ -140,6 +147,13 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 
 
     void ChangeBtnFocus(int focusVal) {
+
+        if (focusVal == 3)
+            isMinePanel = true;
+        else
+            isMinePanel = false;
+
+
         for (int i = 0; i < onfocusImageAry.Length; i++)
         {
             if (i != focusVal)
@@ -207,6 +221,16 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
             gm1.GetComponent<ForumFeedUIManager>().likeCounter.text = data["data"][i]["TotalLikes"].ToString();
             gm1.GetComponent<ForumFeedUIManager>().commentCounter.text = data["data"][i]["TotalComments"].ToString();
 
+            if (isMinePanel)
+            {
+                Debug.Log("Path: " + data["data"][i]["forumName"].ToString().Substring(53));
+                LoadImage(gm1, data["data"][i]["forumName"].ToString().Substring(53));
+
+                if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
+                    Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
+
+                gm1.GetComponent<ForumFeedUIManager>().videoPath = data["data"][i]["forumName"].ToString().Substring(53);
+            }
 
             if (data["data"][i]["isLiked"].ToString().Equals("No"))
             {
@@ -254,6 +278,33 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 
 
     //DEV_CODE
+    public void LoadImage(GameObject obj, string path)
+    {
+        string newPath = "Image";
+
+        string[] x = path.Split('_');
+        for (int i = 1; i < x.Length - 1; i++)
+        {
+            //Debug.Log("Val " + i + " : " + x[i] + " Length: " + x[i].Length);
+            newPath = newPath + "_" + x[i];
+        }
+
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Screenshots")))
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Screenshots"));
+
+        byte[] byteArray = File.ReadAllBytes(Path.Combine(Application.persistentDataPath, "Screenshots", newPath + "_.png"));
+        Texture2D sampleTexture = new Texture2D(2, 2);
+        // the size of the texture will be replaced by image size
+        bool isLoaded = sampleTexture.LoadImage(byteArray);
+
+        // apply this texure as per requirement on image or material
+        if (isLoaded)
+        {
+            obj.GetComponent<ForumFeedUIManager>().videoBGImage.texture = sampleTexture;
+            obj.GetComponent<ForumFeedUIManager>().videoFrontImage.texture = sampleTexture;
+        }
+    }
+
     public void OnClickVideoAddObject()
     {
         if (!isAddVideoPanelActive)
@@ -268,11 +319,13 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
         switch(panelName)
         {
             case "hand":
-                Debug.Log("On Click Hand");
-                GameObject gm = Instantiate(panels[0], MainMenuController.instance.screenLayers[(int)ScreenLayer.LAYER2]) as GameObject;
+                MainMenuController.instance.ShowScreen(MainMenuScreens.HandScreen);
                 break;
 
             case "text":
+                //MainMenuController.instance.ShowScreen(MainMenuScreens.NewPost);
+                //GameObject gm = Instantiate(panels[1], container) as GameObject;
+                //HandPostPanel.instance.isFromForum = true;
                 break;
         }
     }   

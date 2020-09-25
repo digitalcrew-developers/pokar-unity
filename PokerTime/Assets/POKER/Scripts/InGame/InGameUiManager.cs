@@ -61,18 +61,17 @@ public class InGameUiManager : MonoBehaviour
     //DEV_CODE
     public Camera cameraObj;
     public float height, width;
-
-
+    
     private void Awake()
     {
         instance = this;
 
         //DEV_CODE
-        cameraObj = GameObject.Find("VideoRecordingCamera").GetComponent<Camera>();
+        //cameraObj = GameObject.Find("VideoRecordingCamera").GetComponent<Camera>();
 
         Canvas canvas = gameObject.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
-        canvas.worldCamera = cameraObj;
+        canvas.worldCamera = Camera.main;
 
         height = gameObject.GetComponent<RectTransform>().rect.height;
         width = gameObject.GetComponent<RectTransform>().rect.width;
@@ -898,7 +897,7 @@ public class InGameUiManager : MonoBehaviour
 
     public void CallEmojiSocket(int index) {
         emojiIndex = index;
-        Debug.LogError("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
+       // Debug.LogError("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
         SocketController.instance.SentEmoji(otherId, InGameUiManager.instance.emojiIndex);
 
 
@@ -907,7 +906,7 @@ public class InGameUiManager : MonoBehaviour
     public void ShowEmojiOnScreen(string str)
     {
 
-        Debug.LogError("Show Emoji From List on Screen *** " + str);
+        //Debug.LogError("Show Emoji From List on Screen *** " + str);
         GameObject g = null;
         switch (str)
         {

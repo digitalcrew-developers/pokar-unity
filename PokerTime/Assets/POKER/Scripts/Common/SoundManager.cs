@@ -84,6 +84,7 @@ public enum SoundType
     Tip,
     Kiss,
     bigWin,
-    spinWheel
+    spinWheel,
+    Congratulation
 
 }

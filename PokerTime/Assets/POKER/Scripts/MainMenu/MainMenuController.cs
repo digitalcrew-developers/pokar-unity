@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
-
+using System.IO;
 
 public class MainMenuController : MonoBehaviour
 {
 	public static MainMenuController instance;
 
+	public GameObject bottomPanel;
 
 	public GameObject[] screens; // All screens prefab
 	public Transform[] screenLayers; // screen spawn parent
@@ -18,26 +19,77 @@ public class MainMenuController : MonoBehaviour
 
 	private void Awake()
 	{
-		instance = this;
+		instance = this;		
 	}
 
 
 	private void Start()
 	{
+		LoadVideoAndScreenshot();
+
 		GlobalGameManager.IsJoiningPreviousGame = false;
 
 		if (PlayerManager.instance.IsLogedIn())
 		{
-			FetchUserData();
-			//FetchUserLogs();
+			//Activate bottom panel
+			if (!bottomPanel.activeSelf)
+				bottomPanel.SetActive(true);
 
+			FetchUserData();
+			FetchUserLogs();			
 		}
 		else
 		{
-			ShowScreen(MainMenuScreens.Registration);
+			//Deactivate bottom panel
+			if (bottomPanel.activeSelf)
+				bottomPanel.SetActive(false);
+			
+			ShowScreen(MainMenuScreens.Registration);			
 		}
 	}
 
+	private void LoadVideoAndScreenshot()
+	{
+		DirectoryInfo dir;
+		FileInfo[] info;
+
+		//Create directories to store videos and screenshots
+		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
+			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
+		
+		if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Screenshots")))
+			Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Screenshots"));
+
+		//Remove Currepted Videos
+		dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Videos"));
+		info = dir.GetFiles("*.mp4");
+
+		for (int j = 0; j < info.Length; j++)
+		{
+			string[] x = info[j].Name.Split('_');
+
+			//Removing currepted files.
+			if (x.Length == 7)
+			{
+				File.Delete(info[j].FullName);
+			}
+		}
+
+		//Remove Currepted Screenshots
+		dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Screenshots"));
+		info = dir.GetFiles("*.png");
+
+		for (int j = 0; j < info.Length; j++)
+		{
+			string[] x = info[j].Name.Split('_');
+
+			//Removing currepted files.
+			if (x.Length == 7)
+			{
+				File.Delete(info[j].FullName);
+			}
+		}
+	}
 
 	public void OnClickOnButton(string eventName)
 	{
@@ -70,6 +122,11 @@ public class MainMenuController : MonoBehaviour
 					ShowScreen(MainMenuScreens.Forum);
 				}
 				break;
+			case "career":
+				{
+					ShowScreen(MainMenuScreens.Career);
+				}
+				break;
 
 			default:
 #if ERROR_LOG
@@ -100,7 +157,7 @@ public class MainMenuController : MonoBehaviour
 	}
 	private void FetchUserLogs()
 	{
-		string requestData = "{\"userName\":\"" + PlayerManager.instance.GetPlayerGameData().userId +  "\"}";
+		string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId +  "\"}";
 		//{ userId: 2}
 
 		WebServices.instance.SendRequest(RequestType.userLoginLogs, requestData, true, OnServerResponseFound);
@@ -329,6 +386,13 @@ public class MainMenuController : MonoBehaviour
 			case MainMenuScreens.ChangePassword:
 			case MainMenuScreens.RedeemCode:
 			case MainMenuScreens.InGameShop:
+			case MainMenuScreens.Missions:
+			case MainMenuScreens.ConsecutiveLoginReward:
+			case MainMenuScreens.Congratulation:
+			case MainMenuScreens.BackPack:
+			case MainMenuScreens.CareerMenuScreen:
+			case MainMenuScreens.CareerDataScreen:
+			case MainMenuScreens.CareerDefinationScreen:
 
 				return ScreenLayer.LAYER3;
 
@@ -380,12 +444,22 @@ public class MainMenuController : MonoBehaviour
 				playerData.password = PlayerManager.instance.GetPlayerGameData().password;
 				playerData.userName = PlayerManager.instance.GetPlayerGameData().userName;
 				PlayerManager.instance.SetPlayerGameData(playerData);
+
+				//Activate bottom panel
+				if (!bottomPanel.activeSelf)
+					bottomPanel.SetActive(true);
+
 				ShowScreen(MainMenuScreens.MainMenu);
 				/*ShowMessage(data["message"].ToString());*/
 			}
 			else
 			{
 				ShowMessage(data["message"].ToString());
+
+				//Deactivate bottom panel
+				if (!bottomPanel.activeSelf)
+					bottomPanel.SetActive(false);
+
 				ShowScreen(MainMenuScreens.Registration);
 			}
 		}
@@ -461,7 +535,15 @@ public enum MainMenuScreens
 	UnlinkYourEmail,
 	ChangePassword,
 	RedeemCode,
-	InGameShop
+	InGameShop,
+	ConsecutiveLoginReward,
+	Congratulation,
+	BackPack,
+	Career,
+	CareerMenuScreen,
+	CareerDataScreen,
+	CareerDefinationScreen,
+	HandScreen,
 }
 
 

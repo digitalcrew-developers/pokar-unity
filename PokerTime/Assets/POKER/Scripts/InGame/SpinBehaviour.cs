@@ -25,8 +25,8 @@ public class SpinBehaviour : MonoBehaviour
 
     public void StartSpin()
     {
-        InvokeRepeating("RotateSpin", 0.15f, 0.15f);
-        float rand = Random.Range(3.0f, 5.5f);
+        InvokeRepeating("RotateSpin", 0.10f, 0.10f);
+        float rand = Random.Range(2.0f, 3.5f);
         Invoke("StopSpin", rand);
     }
 

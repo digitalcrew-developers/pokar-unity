@@ -57,6 +57,7 @@ public class InGameManager : MonoBehaviour
     public GameObject WinnAnimationpos;
 
     //DEV_CODE
+    Texture2D screenshot;
     public int videoWidth /* = 1280*/;
     public int videoHeight /*= 720*/;
     public bool isRecording = false;
@@ -77,11 +78,11 @@ public class InGameManager : MonoBehaviour
     string balance = "";
 
     bool isCardValueSet = false;
+    bool isScreenshotCaptured = false;
 
     private void Awake()
     {
         instance = this;
-        Debug.Log("Date: " + System.DateTime.Now.ToString("dd/MM/yyyy"));
         //Debug.Log("Time: " + System.DateTime.Now.Hour + System.DateTime.Now.Minute);
     }
 
@@ -577,8 +578,9 @@ public class InGameManager : MonoBehaviour
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
+        Debug.Log("Last All in Bet: " + playerScript.GetLocalBetAmount()/*betAmount*/);
         GameObject gm = Instantiate(betAnimationPrefab,animationLayer) as GameObject;
-        gm.transform.GetChild(0).GetComponent<Text>().text = betAmount;
+        gm.transform.GetChild(0).GetComponent<Text>().text = playerScript.GetLocalBetAmount().ToString()/*betAmount*/;
         gm.transform.position = playerScript.transform.position;
         Vector3 initialScale = gm.transform.localScale;
         gm.transform.localScale = Vector3.zero;
@@ -810,10 +812,8 @@ public class InGameManager : MonoBehaviour
 
     public void SendEmoji(string serverResponse)
     {
-        Debug.LogError("SendEmoji serverResponse  ---**$$$$$$$$$$$$$$$$$$$$$$**-->" + serverResponse);
-        // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
-        InGameUiManager.instance.OnGetEmoji(serverResponse);
-        Debug.LogError(" ---**$$$$$i am here $$$$$$$$$$$$$$$$$**-->" + serverResponse);
+         InGameUiManager.instance.OnGetEmoji(serverResponse);
+       
     }
     public void TipToDealer(string serverResponse)
     {
@@ -881,6 +881,25 @@ public class InGameManager : MonoBehaviour
         InGameUiManager.instance.ToggleActionButton(false);
         InGameUiManager.instance.ToggleSuggestionButton(false);
 
+        //DEV_CODE
+        if (!isScreenshotCaptured)
+        {
+            //Taking Screenshot
+            RenderTexture renderTexture = new RenderTexture(videoWidth, videoHeight, 24);
+            Camera.main.targetTexture = renderTexture;
+
+            screenshot = new Texture2D(videoWidth, videoHeight, TextureFormat.RGB24, false);
+            Camera.main.Render();
+            RenderTexture.active = renderTexture;
+            Rect rect = new Rect(0, 0, videoWidth, videoHeight);
+            screenshot.ReadPixels(rect, 0, 0);
+
+            Camera.main.targetTexture = null;
+            RenderTexture.active = null;
+            Destroy(renderTexture);
+        }
+        isScreenshotCaptured = true;
+
         JsonData data = JsonMapper.ToObject(serverResponse);
         
         if (data[0].Count > 0)
@@ -923,7 +942,9 @@ public class InGameManager : MonoBehaviour
     {
         //DEV_CODE
         if (isRecording)
+        {
             StopRecording();
+        }
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
@@ -1050,7 +1071,6 @@ public class InGameManager : MonoBehaviour
                 }
                 userID = GetMyPlayerObject().GetPlayerData().userId;
             }
-
             isCardValueSet = true;
 
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
@@ -1061,7 +1081,9 @@ public class InGameManager : MonoBehaviour
 
                 if (playerObject != null)
                 {
-                    StartCoroutine(WaitAndShowBetAnimation(playerObject,""+ betAmount));
+                    Debug.Log("Current Bet Amount : " + betAmount);
+                    StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
+                    /*StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));*/
                 }
                 else
                 {
@@ -1080,10 +1102,10 @@ public class InGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
         handtype = serverResponse;
-     //   Debug.LogError("hand typessss" + handtype);
+        //   Debug.LogError("hand typessss" + handtype);
 
         //DEV_CODE
-        if(!isRecording)
+        if (!isRecording)
         {
             //StartRecording();
         }
@@ -1381,7 +1403,7 @@ public class InGameManager : MonoBehaviour
         recorder = new MP4Recorder(videoWidth, videoHeight, frameRate);
         var clock = new RealtimeClock();
         // And use a `CameraInput` to record the main game camera
-        cameraInput = new CameraInput(recorder, clock, InGameUiManager.instance.cameraObj/*Camera.main*/);
+        cameraInput = new CameraInput(recorder, clock, /*InGameUiManager.instance.cameraObj*/Camera.main);
 
         tableValue = GlobalGameManager.instance.GetRoomData().smallBlind.ToString() + "_" + GlobalGameManager.instance.GetRoomData().bigBlind.ToString();
         date = System.DateTime.Now.ToString("dd-MM-yyyy");
@@ -1398,18 +1420,17 @@ public class InGameManager : MonoBehaviour
 
         /*balance = GetMyPlayerObject().GetPlayerData().totalBet.ToString();*/
 
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Video")))
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Video"));
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
 
         //For PC to move file
 #if UNITY_EDITOR
-        FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        SaveScreenshot();
 #elif UNITY_ANDROID
-        File.Move(path, Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        File.Move(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
+        SaveScreenshot();
 #endif
-
-        //To Upload Video
-        StartCoroutine(UploadVideo(Path.Combine(Application.persistentDataPath, "Video", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4")));
 
         cardValue = "";
         isCardValueSet = false;
@@ -1426,54 +1447,25 @@ public class InGameManager : MonoBehaviour
         //InGameUiManager.instance.ShowMessage(path);
     }
 
-    IEnumerator UploadVideo(string path)
+    void SaveScreenshot()
     {
-        Debug.Log("Started Uploading Vide..." + path);
-        byte[] videoByte = File.ReadAllBytes(path);
-        WWWForm formData = new WWWForm();
-        //List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
-        formData.AddField("userId", userID/*new MultipartFormDataSection(userID)*/);
-        formData.AddField("description","hello"/*new MultipartFormDataSection("Uploading")*/);
-        formData.AddBinaryData("forumImage",videoByte, path, "video/mp4"/*new MultipartFormFileSection(videoByte)*/);
+        //Taking Screenshot
+        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Screenshots")))
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Screenshots"));
 
-        UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/createForum", formData);
-        
-        Debug.Log("Uploading !!!!!!");
-        yield return www.SendWebRequest();
+        byte[] byteArray = screenshot.EncodeToPNG();
+        File.WriteAllBytes(Path.Combine(Application.persistentDataPath , "Screenshots", "Image_" + tableValue + "_" + cardValue + date + "_" + time + ".png"), byteArray);
 
-        Debug.Log("Upload Success...");
+        Debug.Log("Saved Screenshot successfully...");
+        isScreenshotCaptured = false;
 
-        if (www.isNetworkError || www.isHttpError)
+        //Delete Extra Files
+        DirectoryInfo dirInfo = new DirectoryInfo(Application.persistentDataPath);
+        FileInfo[] fileInfo = dirInfo.GetFiles("*.png");
+        for (int j = 0; j < fileInfo.Length; j++)
         {
-            Debug.Log(www.error);
+            File.Delete(fileInfo[j].FullName);
         }
-        else
-        {
-            Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
-        }
-
-
-
-        //TYPE - 2
-
-        /*WWW localFile = new WWW(path);
-        yield return localFile;
-        WWWForm postForm = new WWWForm();
-        postForm.AddField("userId", userID *//*new MultipartFormDataSection(userID)*//*);
-        postForm.AddField("description", "hello" *//*new MultipartFormDataSection("Uploading")*//*);
-        postForm.AddBinaryData("forumImage", localFile.bytes, path, "video/mp4");
-        WWW upload = new WWW("http://18.191.15.121:3000/createForum", postForm);
-        yield return upload;
-        if (upload.error == null)
-        {
-            Debug.Log("Upload Success !!!" + upload.text);
-        }
-        else
-        {
-            Debug.Log("Error during upload: " + upload.error);
-        }*/
-
-
     }
 }
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class ProfileModification : MonoBehaviour
@@ -15,6 +16,10 @@ public class ProfileModification : MonoBehaviour
     public InputField NickNameinputField;
     public string countrycode;
     public int frameId,avtarid;
+
+    //DEV_CODE
+    public string profileImagePath;
+    public Text pathText;
    
     public void Start()
     {
@@ -69,18 +74,59 @@ public class ProfileModification : MonoBehaviour
     }
     public void OnClickConfirmbtn()
     {
+        UploadProfileImage();
+
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                              "\"soundToggle\":\"" + "1" + "\"," +
-                              "\"nickName\":\"" + NickNameinputField.text+ "\"," +
+                              "\"nickName\":\"" + NickNameinputField.text + "\"," +
                                "\"countryCode\":\"" + countrycode + "\"," +
                              "\"frameID\":\"" + "1" + "\"," +
                               "\"avatarID\":\"" + avtarid + "\"}";
-        
-        WebServices.instance.SendRequest(RequestType.UpdateUserSettings, requestData, true,OnServerResponseFound);
-       
-        //PlayerManager.instance.GetPlayerGameData().userName
 
+        WebServices.instance.SendRequest(RequestType.UpdateUserSettings, requestData, true, OnServerResponseFound);
     }
+
+    public void UploadProfileImage()
+    {
+        StartCoroutine(UploadImage());
+    }
+
+    private IEnumerator UploadImage()
+    {
+        Texture2D newTexture = new Texture2D(profileImage.mainTexture.width, profileImage.mainTexture.height);
+        newTexture.LoadRawTextureData(newTexture.GetRawTextureData());
+        newTexture.Apply();
+
+        byte[] bytes = newTexture.EncodeToJPG();
+        Destroy(newTexture);
+
+        var form = new WWWForm();
+        form.AddField("userId", PlayerManager.instance.GetPlayerGameData().userId);
+        form.AddField("userName", PlayerManager.instance.GetPlayerGameData().userName);
+        form.AddField("language", "hindi");
+        form.AddBinaryData("profileImage", bytes, profileImagePath, "image/jpg");
+
+        UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/updateProfile", form);
+
+        pathText.text ="Uploading!!!";
+        Debug.Log("Uploading !!!!!!");
+        yield return www.SendWebRequest();
+
+        pathText.text = "Upload Success....";
+        Debug.Log("Upload Success...");
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            pathText.text = www.error.ToString();
+            Debug.Log(www.error);
+        }
+        else
+        {
+            pathText.text = www.downloadHandler.text;
+            //Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
+        }
+    }
+
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {    
         if (errorMessage.Length > 0)

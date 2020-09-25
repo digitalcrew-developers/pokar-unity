@@ -639,7 +639,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5316368774203067158}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -713,7 +713,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5316368774203067158}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -866,10 +866,10 @@ RectTransform:
   m_Children:
   - {fileID: 5316368775816476443}
   - {fileID: 8923778698884754748}
-  - {fileID: 8127025234117858543}
   - {fileID: 4424540529058693215}
   - {fileID: 6132333033213243641}
   - {fileID: 8127025233759047332}
+  - {fileID: 8127025234117858543}
   - {fileID: 2876853890750399894}
   m_Father: {fileID: 5316368774095357553}
   m_RootOrder: 0
@@ -951,6 +951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81b9b33cefae546a394f09b4517ddad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bottomPanel: {fileID: 8127025234117858542}
   screens:
   - {fileID: 1416099914288367429, guid: 66afa91091bf348afa64d92be7234170, type: 3}
   - {fileID: 6761220551110279028, guid: 998fdcc3b479c428bb60eef10146cafc, type: 3}
@@ -985,6 +986,14 @@ MonoBehaviour:
   - {fileID: 4123329521495660163, guid: 816450649a7a5554d8bc4b93a6beb0fc, type: 3}
   - {fileID: 4123329521495660163, guid: 916c1b29d3d355e4085b5b807e473860, type: 3}
   - {fileID: 767225038319493612, guid: 4b3df061e5b79485da65615597f46d6c, type: 3}
+  - {fileID: 6639907042484046584, guid: 88d66b00a92f32e4f9278453e7bf2650, type: 3}
+  - {fileID: 6639907042484046584, guid: 34ef939dff29cce45bf2866f328ea3e3, type: 3}
+  - {fileID: 6745031552395860838, guid: e00c969df056fe54c95648073aeeafe2, type: 3}
+  - {fileID: 6745031552395860838, guid: d48720e157fe07b4fb95c84f88533787, type: 3}
+  - {fileID: 6745031552395860838, guid: d197437451e36d04fb2369b93ae8ada5, type: 3}
+  - {fileID: 6745031552395860838, guid: 30ce638998f15ff448d0b4c8c7e2ee7c, type: 3}
+  - {fileID: 6745031552395860838, guid: 7fbf18c908744114a96c74d8a192691d, type: 3}
+  - {fileID: 1245795184206029318, guid: 05e035ba43a6de346a951e43dc2777df, type: 3}
   screenLayers:
   - {fileID: 8923778698884754748}
   - {fileID: 4424540529058693215}
@@ -1386,7 +1395,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8127025233373101350}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5316368774203067159}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: career
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8127025233759047335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,7 +1437,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5316368774203067158}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1760,7 +1780,7 @@ RectTransform:
   - {fileID: 1323600688}
   - {fileID: 1493181845}
   m_Father: {fileID: 5316368774203067158}
-  m_RootOrder: 2
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}

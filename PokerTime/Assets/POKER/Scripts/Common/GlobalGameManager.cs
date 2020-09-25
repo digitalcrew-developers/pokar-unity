@@ -156,6 +156,9 @@ public class RoomData
     public int players;
     public float commision;
 
+    //DEV_CODE
+    public string roomIconUrl;
+
     public float smallBlind;
     public float bigBlind;
     public float minBuyIn;

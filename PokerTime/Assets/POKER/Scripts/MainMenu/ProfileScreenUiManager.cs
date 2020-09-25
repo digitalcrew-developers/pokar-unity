@@ -8,6 +8,7 @@ public class ProfileScreenUiManager : MonoBehaviour
 {
     public static ProfileScreenUiManager instance;
     public Image avtar, frame;
+    public RawImage avatar;
     public string countrycode, countryname;
     public string avtarurl, flagurl, frameurl;
     public int avtarid;
@@ -109,7 +110,7 @@ public class ProfileScreenUiManager : MonoBehaviour
         switch (eventName)
         {
             case "hand":
-                GameObject gm = Instantiate(panels[0], MainMenuController.instance.screenLayers[(int)ScreenLayer.LAYER2]) as GameObject;
+                MainMenuController.instance.ShowScreen(MainMenuScreens.HandScreen);
                 break;
 
             case "coinShop":
