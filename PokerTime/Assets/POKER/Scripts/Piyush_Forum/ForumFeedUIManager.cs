@@ -1,12 +1,14 @@
 ﻿using LitJson;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class ForumFeedUIManager : MonoBehaviour
 {
-
+//origi
     public static ForumFeedUIManager instance;
     public int forumId;
     public int userId;
@@ -30,6 +32,15 @@ public class ForumFeedUIManager : MonoBehaviour
 
     //DEV_CODE
     public RawImage videoBGImage, videoFrontImage;
+
+    public RawImage videoObject;
+
+    public string videoPath;
+
+    private Slider tracking;
+    private VideoSource videoSource;
+
+    private AudioSource audioSource;
 
     //    {
     //	"forumId":1,
@@ -84,11 +95,68 @@ public class ForumFeedUIManager : MonoBehaviour
 
         if(ForumListUIManager.instance.isMinePanel)
         {
-
+            StartCoroutine(PlayVideo(videoPath));
         }
     }
 
-   
+    IEnumerator PlayVideo(string vn)
+    {
+        if (!ForumListUIManager.instance.videoPlayer.GetComponent<VideoPlayer>() && !ForumListUIManager.instance.videoPlayer.GetComponent<AudioSource>())
+        {
+            ForumListUIManager.instance.videoPlayer = ForumListUIManager.instance.videoPlayer.gameObject.AddComponent<VideoPlayer>();
+            //ForumListUIManager.instance.audioSource = ForumListUIManager.instance.videoPlayer.gameObject.AddComponent<AudioSource>();
+        }
+
+        ForumListUIManager.instance.videoPlayer.playOnAwake = false;
+        //ForumListUIManager.instance.audioSource.playOnAwake = false;
+        //audioSource.Pause();
+
+        ForumListUIManager.instance.videoPlayer.source = VideoSource.Url;
+        ForumListUIManager.instance.videoPlayer.url = Path.Combine(Application.persistentDataPath, "Videos", vn);
+
+        ForumListUIManager.instance.videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+        //Assign the Audio from Video to AudioSource to be played
+        ForumListUIManager.instance.videoPlayer.EnableAudioTrack(0, true);
+        ForumListUIManager.instance.videoPlayer.SetTargetAudioSource(0, audioSource);
+
+        //Set video To Play then prepare Audio to prevent Buffering
+        //videoPlayer.clip = videoToPlay;
+        ForumListUIManager.instance.videoPlayer.Prepare();
+
+        //Wait until video is prepared
+        WaitForSeconds waitTime = new WaitForSeconds(1);
+        while (!ForumListUIManager.instance.videoPlayer.isPrepared)
+        {
+            /*Debug.Log("Preparing Video");*/
+            //Prepare/Wait for 5 sceonds only
+            yield return waitTime;
+            //Break out of the while loop after 5 seconds wait
+            break;
+        }
+
+        /*Debug.Log("Done Preparing Video");*/
+
+        //Assign the Texture from Video to RawImage to be displayed
+        //videoObject.texture = videoPlayer.texture;
+
+        //Play Video
+        ForumListUIManager.instance.videoPlayer.Play();
+
+        //Play Sound
+        //audioSource.Play();
+
+        /*Debug.Log("Playing Video");*/
+        /*while (videoPlayer.isPlaying)
+        {
+            //Debug.Log("Video Time: " + Mathf.FloorToInt((float)videoPlayer.time));
+
+            tracking.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
+
+            yield return null;
+        }*/
+        /*Debug.Log("Done Playing Video");*/
+    }
+
     public void PostLike(bool isShowLoading = true)
     {
 

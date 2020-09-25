@@ -97,6 +97,15 @@ public class GameConstants : MonoBehaviour
           API_URL+"/redeemCoupon",
           SOCKET_URL+"/userLoginLogs",
           API_URL+"/createForum",
+          API_URL+"/sendOut",
+          API_URL+"/claimBack",
+          API_URL+"/getTradeHistory",
+          API_URL+"/updateSleepMode",
+          API_URL+"/addTicket",
+          API_URL+"/getTickets",
+          API_URL+"/sendTicket",
+          API_URL+"/convertTicket",
+          API_URL+"/sendVIP",
           SOCKET_URL+"/redeemDailyMission",
           API_URL+"/updateProfile"
     };
@@ -158,6 +167,15 @@ public enum RequestType
     redeemCoupon,
     userLoginLogs,
     createForum,
+    SendChipsOut,
+    ClaimBackChips,
+    GetTradeHistory,
+    UpdateSleepMode,
+    AddTicket,
+    GetTickets,
+    SendTickets,
+    ConvertTicket,
+    SendVIP,
     redeemDailyMission,
     updateProfile
 }
