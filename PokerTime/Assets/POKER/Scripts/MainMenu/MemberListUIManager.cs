@@ -19,25 +19,46 @@ public class MemberListUIManager : MonoBehaviour
     private List<ClubMemberDetails> newMembersList = new List<ClubMemberDetails>();
     private List<ClubMemberDetails> oldMembersList = new List<ClubMemberDetails>();
 
+    public List<FilterButtonState> ClubMemberFilterButtons = new List<FilterButtonState>();
+    public Text CurrentMemberListFilterName;
+    public Image CurrentMemberListFilterImage;
 
+    public Button MemberFilter;
+    public GameObject MemberFilterPanel;
 
     private void Awake()
     {
         instance = this;
     }
 
-
     private void Start()
     {
         FetchMembersList();
+
+        MemberFilter.onClick.RemoveAllListeners();
+        MemberFilter.onClick.AddListener(ToggleOpenMemberListFilter);
+
+        for (int i = 0; i < ClubMemberFilterButtons.Count; i++)
+        {
+            ClubMemberFilterButtons[i].OnStateChange += MemberListUIManager_OnStateChange;
+        }
     }
 
     public void FetchMembersList()
     {
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+        int limit = 0;
+        string pendingUserRequestData = "{\"limit\":\"" +  limit.ToString() + "\"," + "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+
+        Debug.LogWarning("CLUB DETAILS CLUB ID-" + ClubDetailsUIManager.instance.GetClubId());
+        Debug.LogWarning("CLUB DETAILS UNIQUE CLUB ID-" + ClubDetailsUIManager.instance.GetClubUniqueId());
+
 
         MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        //old member list
         WebServices.instance.SendRequest(RequestType.GetClubMemberList, requestData, true, OnServerResponseFound);
+        //new member list
+        WebServices.instance.SendRequest(RequestType.GetPendingClubJoinRequest, pendingUserRequestData, true, OnServerResponseFound);
     }
 
     public void ToggleScreen(bool isShow)
@@ -67,7 +88,7 @@ public class MemberListUIManager : MonoBehaviour
                     Color c1 = new Color(1, 1, 1, 0);
                     oldMemberButton.GetComponent<Image>().color = c1;
 
-                    //ShowMemberDetails(true);
+                    ShowMemberDetails(true);
                 }
                 break;
 
@@ -108,11 +129,17 @@ public class MemberListUIManager : MonoBehaviour
                 ClubMemberDetails memberDetails = newMembersList[i];
 
                 GameObject gm = Instantiate(newMemberPrefab,container) as GameObject;
-                gm.transform.Find("Name").GetComponent<Text>().text = memberDetails.userName;
-                gm.transform.Find("Id").GetComponent<Text>().text = "ID : " + memberDetails.userId;
+                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = memberDetails.userName + " (" + "ID: " + memberDetails.userId + ")";
+                gm.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "Referral ID : None ";
+                gm.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + memberDetails.nickName;
+                string initial = memberDetails.userName.ToUpper();
+                initial = initial.Substring(0, 2);
+                gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
+
                 gm.transform.Find("Reject").GetComponent<Button>().onClick.AddListener(()=> ChangeUserRole(gm,true, memberDetails));
                 gm.transform.Find("Approve").GetComponent<Button>().onClick.AddListener(() => ChangeUserRole(gm,false, memberDetails));
             }
+            MemberCountText.text = "Members : " + newMembersList.Count;
         }
         else
         {
@@ -132,7 +159,6 @@ public class MemberListUIManager : MonoBehaviour
                 gm.GetComponent<Button>().onClick.RemoveAllListeners();
                 Debug.Log("Debug i value :" + i);
                 gm.GetComponent<Button>().onClick.AddListener(() => OpenMemberDetailsPanel(i));
-
             }
             MemberCountText.text = "Members : " + oldMembersList.Count;
         }
@@ -175,6 +201,7 @@ public class MemberListUIManager : MonoBehaviour
                 {
                     Destroy(gm);
                     newMembersList.Remove(memberDetails);
+                    MemberCountText.text = "Members : " + newMembersList.Count;
                 }
                 else
                 {
@@ -212,6 +239,7 @@ public class MemberListUIManager : MonoBehaviour
                 {
                     Destroy(gm);
                     newMembersList.Remove(memberDetails);
+                    MemberCountText.text = "Members : " + newMembersList.Count;
 
                     memberDetails.memberRole = roleToAssign;
                     oldMembersList.Add(memberDetails);
@@ -227,26 +255,38 @@ public class MemberListUIManager : MonoBehaviour
         
     }
 
+    private ClubMemberDetails clubOwner;
 
+    public ClubMemberDetails GetClubOwnerObject()
+    {
+        return clubOwner;
+    }
 
-
-    private void ShowMemberDetails(JsonData data)
+    private void ShowMemberDetails(JsonData data, bool newMembers = false)
     {
         for (int i = 0; i < data["data"].Count; i++)
         {
             ClubMemberDetails clubMemberDetails = new ClubMemberDetails();
             clubMemberDetails.userId = data["data"][i]["requestUserId"].ToString();
             clubMemberDetails.userName = data["data"][i]["requestUserName"].ToString();
-            clubMemberDetails.nickName = data["data"][i]["nickName"].ToString();
             clubMemberDetails.clubRequestId = data["data"][i]["clubRequestId"].ToString();
             clubMemberDetails.ptChips = data["data"][i]["ptChips"].ToString();
 
+            if (!newMembers)
+            {
+                clubMemberDetails.nickName = data["data"][i]["nickName"].ToString();
+            }
+            else
+            {
+
+            }
 
             switch (data["data"][i]["assignRole"].ToString())
             {
                 case "Creater":
                     {
                         clubMemberDetails.memberRole = ClubMemberRole.Owner;
+                        clubOwner = clubMemberDetails;
                     }
                     break;
 
@@ -287,10 +327,7 @@ public class MemberListUIManager : MonoBehaviour
             OnClickOnButton("oldMember");
         }
     }
-
-
-
-
+    
 
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -307,6 +344,19 @@ public class MemberListUIManager : MonoBehaviour
             return;
         }
 
+        if(requestType == RequestType.GetPendingClubJoinRequest)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+            if (data["status"].Equals(true))
+            {
+                ShowMemberDetails(data,true);
+            }
+            else
+            {
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
+            }
+        }
+        else
         if (requestType == RequestType.GetClubMemberList)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
@@ -317,7 +367,7 @@ public class MemberListUIManager : MonoBehaviour
             }
             else
             {
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
             }
         }
         else
@@ -328,8 +378,66 @@ public class MemberListUIManager : MonoBehaviour
 #endif
 
         }
-
     }
+
+    private void ToggleOpenMemberListFilter()
+    {
+        if (MemberFilterPanel.activeInHierarchy)
+        {
+            MemberFilterPanel.SetActive(false);
+        }
+        else
+        {
+            MemberFilterPanel.SetActive(true);
+        }
+    }
+
+    private void MemberListUIManager_OnStateChange(FilterState stateType, string stateName)
+    {
+        CurrentMemberListFilterName.text = stateName;
+        if(stateType == FilterState.Ascending)
+        {
+            CurrentMemberListFilterImage.transform.localScale = new Vector3(1, 1, 1);
+        }
+        else
+        {
+            CurrentMemberListFilterImage.transform.localScale = new Vector3(1, -1, 1);
+        }
+
+        for (int i = 0; i < ClubMemberFilterButtons.Count; i++)
+        {
+            string name = ClubMemberFilterButtons[i].GetStateName();
+            if(stateName != name)
+            {
+                ClubMemberFilterButtons[i].UpdateState(FilterState.None);
+            }
+            else
+            {
+                ClubMemberFilterButtons[i].UpdateState(stateType);            
+            }
+        }
+
+        //sort based on statename and type
+        switch (stateName)
+        {
+            case "Fee":
+                break;
+            case "SpinUp Buy-In":
+                break;
+            case "Winnings":
+                break;
+            case "Hand":
+                break;
+            case "LastLogin":
+                break;
+            case "LastPlayed":
+                break;
+            default:
+                break;
+        }
+        MemberFilterPanel.SetActive(false);
+    }
+
 }
 
 [System.Serializable]
