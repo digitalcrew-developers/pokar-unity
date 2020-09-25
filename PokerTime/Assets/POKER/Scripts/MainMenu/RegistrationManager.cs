@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class RegistrationManager : MonoBehaviour
 {
-    public GameObject registrationScreen, loginScreen;
+    public GameObject registrationScreen, loginScreen, signUpScreen;
     public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
 
@@ -16,10 +16,12 @@ public class RegistrationManager : MonoBehaviour
         {
             registrationScreen.SetActive(false);
             loginScreen.SetActive(true);
+            signUpScreen.SetActive(false);
         }
         else {
-            registrationScreen.SetActive(true);
+            registrationScreen.SetActive(false);
             loginScreen.SetActive(false);
+            signUpScreen.SetActive(true);
         }
     }
     public void OnClickOnButton(string eventName)
@@ -79,11 +81,11 @@ public class RegistrationManager : MonoBehaviour
                             return;
                         }
 
-                        if (registrationConfirmPassword.text != registrationPassword.text)
-                        {
-                            MainMenuController.instance.ShowMessage("password does not matched");
-                            return;
-                        }
+                        //if (registrationConfirmPassword.text != registrationPassword.text)
+                        //{
+                        //    MainMenuController.instance.ShowMessage("password does not matched");
+                        //    return;
+                        //}
 
                         string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
                            "\"userPassword\":\"" + registrationPassword.text + "\"," +
@@ -109,6 +111,7 @@ public class RegistrationManager : MonoBehaviour
                 {
                     loginScreen.SetActive(true);
                     registrationScreen.SetActive(false);
+                    signUpScreen.SetActive(false);
                 }
             break;
 
@@ -117,6 +120,7 @@ public class RegistrationManager : MonoBehaviour
                 {
                     loginScreen.SetActive(false);
                     registrationScreen.SetActive(true);
+                    signUpScreen.SetActive(false);
                 }
                 break;
 
@@ -127,6 +131,38 @@ public class RegistrationManager : MonoBehaviour
         }
     }
 
+
+    public void LoginEyeBtnClick() {
+        if (this.loginPassword != null)
+        {
+            if (this.loginPassword.contentType == InputField.ContentType.Password)
+            {
+                this.loginPassword.contentType = InputField.ContentType.Standard;
+            }
+            else
+            {
+                this.loginPassword.contentType = InputField.ContentType.Password;
+            }
+
+            this.loginPassword.ForceLabelUpdate();
+        }
+    }
+    public void RegisterEyeBtnClick()
+    {
+        if (this.registrationPassword != null)
+        {
+            if (this.registrationPassword.contentType == InputField.ContentType.Password)
+            {
+                this.registrationPassword.contentType = InputField.ContentType.Standard;
+            }
+            else
+            {
+                this.registrationPassword.contentType = InputField.ContentType.Password;
+            }
+
+            this.registrationPassword.ForceLabelUpdate();
+        }
+    }
 
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
