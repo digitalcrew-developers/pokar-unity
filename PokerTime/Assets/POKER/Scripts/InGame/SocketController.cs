@@ -53,7 +53,7 @@ public class SocketController : MonoBehaviour
 
     private void OnDestroy()
     {
-        SendLeaveMatchRequest();
+    //    SendLeaveMatchRequest();
     }
 
 
@@ -225,9 +225,10 @@ public class SocketController : MonoBehaviour
                     InGameManager.instance.OnNextMatchCountDownFound(responseObject.data);
                     break;
 
-                //case SocketEvetns.ON_GAME_OVER_TIMER_FOUND:
-                ////InGameManagerScript.instance.OnGameOverCountDownFound(responseObject.data);
-                //break;
+                case SocketEvetns.ON_GAME_OVER_TIMER_FOUND:
+                    Debug.LogError("Game Over - " + responseObject.data);
+                    //InGameManager.instance.OnGameOverCountDownFound(responseObject.data);
+                    break;
 
                 case SocketEvetns.ON_CALL_TIMER_FOUND:
                     InGameManager.instance.OnTurnCountDownFound(responseObject.data);
@@ -1117,6 +1118,7 @@ public class SocketController : MonoBehaviour
         requestData.tableId = TABLE_ID;
 
         string requestStringData = JsonMapper.ToJson(requestData);
+        Debug.LogError("[SOCKET EVENT] - leaveMatch" + "[Params]  " + requestStringData);
         object requestObjectData = Json.Decode(requestStringData);
 
         SocketRequest request = new SocketRequest();
