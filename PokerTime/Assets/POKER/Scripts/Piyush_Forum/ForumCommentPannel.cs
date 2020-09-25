@@ -116,7 +116,7 @@ public class ForumCommentPannel : MonoBehaviour
         }
         if (requestType == RequestType.PostComment)
         {
-            Debug.Log("IAKKKKKKKKKKKKKKK");
+            //Debug.Log("IAKKKKKKKKKKKKKKK");
             iField.text = "";
             ForumListUIManager.instance.commentPannel.GetComponent<ForumCommentPannel>().GetComment(true, forumId, userId);
 
