@@ -202,8 +202,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     public void OnClickBtnClose()
     {
-        //MainMenuController.instance.DestroyScreen(ScreenLayer.LAYER2);
-        Destroy(gameObject);
+        MainMenuController.instance.DestroyScreen(MainMenuScreens.HandScreen);        
     }
 
     public void GetAllVideoList(bool isShowLoading)
