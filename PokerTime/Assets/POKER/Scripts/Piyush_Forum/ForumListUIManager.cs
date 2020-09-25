@@ -229,7 +229,7 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
                 if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
                     Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
 
-                gm1.GetComponent<ForumFeedUIManager>().videoPath = data["data"][i]["forumName"].ToString().Substring(53);
+                //gm1.GetComponent<ForumFeedUIManager>().videoPath = data["data"][i]["forumName"].ToString().Substring(53);
             }
 
             if (data["data"][i]["isLiked"].ToString().Equals("No"))

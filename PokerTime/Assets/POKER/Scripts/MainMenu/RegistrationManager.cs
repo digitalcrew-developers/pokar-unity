@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class RegistrationManager : MonoBehaviour
 {
-    public GameObject registrationScreen, loginScreen;
+    public GameObject registrationScreen, loginScreen,signUpScreen;
     public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
 
@@ -21,10 +21,12 @@ public class RegistrationManager : MonoBehaviour
         {
             registrationScreen.SetActive(false);
             loginScreen.SetActive(true);
+            signUpScreen.SetActive(false);
         }
         else {
-            registrationScreen.SetActive(true);
+            registrationScreen.SetActive(false);
             loginScreen.SetActive(false);
+            signUpScreen.SetActive(true);
         }
     }
 
@@ -115,6 +117,7 @@ public class RegistrationManager : MonoBehaviour
 
                     loginScreen.SetActive(true);
                     registrationScreen.SetActive(false);
+                    signUpScreen.SetActive(false);
                 }
             break;
 
@@ -125,6 +128,7 @@ public class RegistrationManager : MonoBehaviour
 
                     loginScreen.SetActive(false);
                     registrationScreen.SetActive(true);
+                    signUpScreen.SetActive(false);
                 }
                 break;
 
@@ -148,7 +152,36 @@ public class RegistrationManager : MonoBehaviour
         tmp_registrationConfirmPassword.text = "";
     }
 
+    public void RegisterEyeClick() {
+        if (this.tmp_registrationPassword != null)
+        {
+            if (this.tmp_registrationPassword.contentType== TMP_InputField.ContentType.Password)
+            {
+                this.tmp_registrationPassword.contentType = TMP_InputField.ContentType.Standard;
+            }
+            else
+            {
+                this.tmp_registrationPassword.contentType = TMP_InputField.ContentType.Password;
+            }
 
+            this.tmp_registrationPassword.ForceLabelUpdate();
+        }
+    }
+    public void LoginEyeClick() {
+        if (this.tmp_loginPassword != null)
+        {
+            if (this.tmp_loginPassword.contentType == TMP_InputField.ContentType.Password)
+            {
+                this.tmp_loginPassword.contentType = TMP_InputField.ContentType.Standard;
+            }
+            else
+            {
+                this.tmp_loginPassword.contentType = TMP_InputField.ContentType.Password;
+            }
+
+            this.tmp_loginPassword.ForceLabelUpdate();
+        }
+    }
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
