@@ -153,6 +153,10 @@ public class PreviousGameChecker: MonoBehaviour
                     SendLeaveMatchRequest();
                 });
             }
+            else if(data[0]["message"].ToString().Contains("Match is ended"))
+            {
+                Debug.LogWarning("Match has ended for previous game.");
+            }
             else
             {
                 DisconnectSocket();

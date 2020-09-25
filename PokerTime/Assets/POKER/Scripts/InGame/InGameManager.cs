@@ -89,6 +89,8 @@ public class InGameManager : MonoBehaviour
 
     private void Start()
     {
+        gameExitCalled = false;
+
         //DEV_CODE
         videoHeight = (int)InGameUiManager.instance.height;
         videoWidth = (int)InGameUiManager.instance.width;
@@ -217,8 +219,15 @@ public class InGameManager : MonoBehaviour
         {
             onlinePlayersScript[i].ResetTurn();
         }
+    }
 
-
+    public void ResetAllDataForPlayers()
+    {
+        for (int i = 0; i < onlinePlayersScript.Length; i++)
+        {
+            onlinePlayersScript[i].ResetAllData();
+            onlinePlayersScript[i].ResetTurn();
+        }
     }
 
     private void SwitchTurn(PlayerScript playerScript,bool isCheckAvailable)
@@ -332,10 +341,11 @@ public class InGameManager : MonoBehaviour
     }
 
 
-
+    private bool gameExitCalled = false;
 
     public void LoadMainMenu()
     {
+        gameExitCalled = true;
         InGameUiManager.instance.ShowScreen(InGameScreens.Loading);
         StartCoroutine(WaitAndSendLeaveRequest());
     }
@@ -344,6 +354,8 @@ public class InGameManager : MonoBehaviour
 
     private IEnumerator WaitAndSendLeaveRequest()
     {
+        Debug.LogError("WaitAndSendLeaveRequest");
+        yield return new WaitForEndOfFrame();
         SocketController.instance.SendLeaveMatchRequest();
         yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
         SocketController.instance.ResetConnection();
@@ -403,7 +415,7 @@ public class InGameManager : MonoBehaviour
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
-                Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
+                //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
                 if (isMatchStarted)
                 {
                     playerDataObject.isFold = data[0][i]["isBlocked"].Equals(true);
@@ -436,6 +448,7 @@ public class InGameManager : MonoBehaviour
                 {
                     allPlayersObject[i].TogglePlayerUI(true);
                     allPlayersObject[i].ShowDetailsAsNewPlayer(playerData[index]);
+                    allPlayersObject[i].ResetRealtimeResult();
                     ++index;
                 }
             }
@@ -450,11 +463,13 @@ public class InGameManager : MonoBehaviour
                 {
                     allPlayersObject[0].TogglePlayerUI(true);
                     allPlayersObject[0].ShowDetailsAsNewPlayer(playerData[i]);
+                    allPlayersObject[0].ResetRealtimeResult();
                 }
                 else
                 {
                     allPlayersObject[index].TogglePlayerUI(true);
                     allPlayersObject[index].ShowDetailsAsNewPlayer(playerData[i]);
+                    allPlayersObject[index].ResetRealtimeResult();
                 }
 
                 ++index;
@@ -577,8 +592,11 @@ public class InGameManager : MonoBehaviour
         Destroy(gm);
     }
 
+    private bool winnerAnimationFound = false;
+
     private IEnumerator WaitAndShowWinnersAnimation(PlayerScript playerScript, string betAmount,GameObject amount)
     {
+        winnerAnimationFound = true;
         yield return new WaitForSeconds(.6f);
         GameObject gm = Instantiate(chipscoine,WinnAnimationpos.transform) as GameObject;
     //    gm.GetComponent<Text>().text = betAmount;
@@ -592,6 +610,13 @@ public class InGameManager : MonoBehaviour
         yield return new WaitForSeconds(.6f);
         Destroy(gm);
         amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        yield return new WaitForSeconds(3f);
+        winnerAnimationFound = false;
+        if (resetGame)
+        {
+            resetGame = false;
+            GlobalGameManager.instance.LoadScene(Scenes.InGame);
+        }
     }
     public float GetPotAmount()
     {
@@ -844,11 +869,12 @@ public class InGameManager : MonoBehaviour
 
     public void OnResultResponseFound(string serverResponse)
     {
-
         if (winnersObject.Count > 0)
         {
             return;
         }
+
+        Debug.LogError("OnResultSuccessFound :" + serverResponse);
 
         MATCH_ROUND = 10; // ToShow all cards
         ShowCommunityCardsAnimation();
@@ -1081,7 +1107,7 @@ public class InGameManager : MonoBehaviour
         //DEV_CODE
         if (!isRecording)
         {
-            StartRecording();
+            //StartRecording();
         }
 
         ShowCommunityCardsAnimation();
@@ -1106,6 +1132,7 @@ public class InGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
 
         int remainingTime = (int)float.Parse(data[0].ToString());
+        Debug.Log("Game Start serverResponse => " + serverResponse);
         Debug.Log("Game Start in => " + remainingTime);
      /*   if (remainingTime < 30)
         {*/
@@ -1126,9 +1153,28 @@ public class InGameManager : MonoBehaviour
         }*/
     }
 
+    private bool resetGame = false;
+
+    float currCountdownValue;
+
+    public IEnumerator StartWaitingCountdown(int countdownValue = 4)
+    {
+        int counter = countdownValue;
+        while (counter > 0)
+        {
+            yield return new WaitForSeconds(1);
+            counter--;
+        }
+        resetGame = false;
+        GlobalGameManager.instance.LoadScene(Scenes.InGame);
+    }
+
+
     public void OnPlayerObjectFound(string serverResponse)
     {
-        
+        if (gameExitCalled) { return; }
+        Debug.Log("**[OnPlayerObjectFound] _ 0" + serverResponse);
+
         if (serverResponse.Length < 20)
         {
             Debug.LogError("Invalid playerObject response found = " + serverResponse);
@@ -1139,10 +1185,29 @@ public class InGameManager : MonoBehaviour
         
         if (data[0].Count > 0)
         {
-           
             //AdjustAllPlayersOnTable(data[0].Count);
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
+            Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
+
             ShowNewPlayersOnTable(data, isMatchStarted);
+
+            if (data[0].Count == 1)
+            {
+                Debug.LogWarning("ONE PLAYER-" + serverResponse);
+                //if "userData": "" then game has not started
+                if (data[0][0]["userData"].Keys.Count > 0)
+                {
+                    //Debug.LogWarning("ONE PLAYER- userData exists");
+                    //ResetMatchData();
+                    //InGameManager.instance.Pot.SetActive(false);
+                    //ResetAllDataForPlayers();
+                    //InGameUiManager.instance.ToggleActionButton(false);
+                    //ShowNewPlayersOnTable(data, false);
+                    resetGame = true;
+                    StartCoroutine(StartWaitingCountdown());
+                    return;
+                }
+            }
 
             if (SocketController.instance.GetSocketState() == SocketState.WaitingForOpponent)
             {
@@ -1151,6 +1216,8 @@ public class InGameManager : MonoBehaviour
 
                 if (isMatchStarted) // Match is started
                 {
+                    Debug.Log("isMatchStarted" + isMatchStarted);
+
                     List<MatchMakingPlayerData> matchMakingPlayerData = new List<MatchMakingPlayerData>();
 
                     SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
@@ -1210,6 +1277,9 @@ public class InGameManager : MonoBehaviour
             }
             else if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
             {
+                Debug.Log("Game not started" + isMatchStarted);
+
+
                 PlayerScript playerWhosTurn = null;
                 bool isCheckAvailable = false;
 
@@ -1220,7 +1290,7 @@ public class InGameManager : MonoBehaviour
                     if (playerObject != null)
                     {
                         PlayerData playerData = new PlayerData();
-                    //    Debug.LogError("************************************************************");
+                        //Debug.LogError("************************************************************");
                         playerData.isFold = data[0][i]["isBlocked"].Equals(true);
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
@@ -1247,6 +1317,8 @@ public class InGameManager : MonoBehaviour
 
                 if (playerWhosTurn != null)
                 {
+                    Debug.Log("Switching turn");
+
                     SwitchTurn(playerWhosTurn, isCheckAvailable);
                 }
                 else
