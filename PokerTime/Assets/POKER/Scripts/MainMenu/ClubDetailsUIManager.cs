@@ -16,6 +16,10 @@ public class ClubDetailsUIManager : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
+
+		//Deactivate Bottom Panel
+		if (MainMenuController.instance.bottomPanel.activeSelf)
+			MainMenuController.instance.bottomPanel.SetActive(false);
 	}
 
 	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub)
@@ -35,60 +39,63 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 		switch (eventName)
 		{
-		case "back":
+			case "back":
 			{
+				//Activate Bottom Panel
+				if (!MainMenuController.instance.bottomPanel.activeSelf)
+					MainMenuController.instance.bottomPanel.SetActive(true);
 				MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
 			}
 			break;
 
-		case "members":
+			case "members":
 			{
 				MemberListUIManager.instance.ToggleScreen(true);
 			}
 			break;
 
-		case "play1":
+			case "play1":
 			{
-					if (PlayerManager.instance.GetPlayerGameData().coins < 1000)
-					{
-						MainMenuController.instance.ShowMessage("You dont have sufficient coins to play, please purchase coins to continue", () => {
-							MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
-						}, () => {
-						}, "Shop", "Cancel");
+				if (PlayerManager.instance.GetPlayerGameData().coins < 1000)
+				{
+					MainMenuController.instance.ShowMessage("You dont have sufficient coins to play, please purchase coins to continue", () => {
+						MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+					}, () => {
+					}, "Shop", "Cancel");
 
-						return;
-					}
+					return;
+				}
 
 
-					GlobalGameManager.instance.GetRoomData().isLobbyRoom = false;
-                    GlobalGameManager.instance.LoadScene(Scenes.InGame);
+				GlobalGameManager.instance.GetRoomData().isLobbyRoom = false;
+                GlobalGameManager.instance.LoadScene(Scenes.InGame);
 			}
 			break;
 
-		case "play2":
+			case "play2":
 			{
 
-					if (PlayerManager.instance.GetPlayerGameData().coins < 1000)
-					{
-						MainMenuController.instance.ShowMessage("You dont have sufficient coins to play, please purchase coins to continue", () => {
-							MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
-						}, () => {
-						}, "Shop", "Cancel");
+				if (PlayerManager.instance.GetPlayerGameData().coins < 1000)
+				{
+					MainMenuController.instance.ShowMessage("You dont have sufficient coins to play, please purchase coins to continue", () => {
+						MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+					}, () => {
+					}, "Shop", "Cancel");
 
-						return;
-					}
+					return;
+				}
 
 
-					GlobalGameManager.instance.GetRoomData().isLobbyRoom = false;
-					GlobalGameManager.instance.LoadScene(Scenes.InGame);
+				GlobalGameManager.instance.GetRoomData().isLobbyRoom = false;
+				GlobalGameManager.instance.LoadScene(Scenes.InGame);
 			}
 			break;
 
-		default:
-			#if ERROR_LOG
-			Debug.LogError("Unhandled eventName found in ClubDetailsUiManager = "+eventName);
-			#endif
-			break;
+			default:
+				#if ERROR_LOG
+				Debug.LogError("Unhandled eventName found in ClubDetailsUiManager = "+eventName);
+				#endif
+				break;
 		}
 
 	}

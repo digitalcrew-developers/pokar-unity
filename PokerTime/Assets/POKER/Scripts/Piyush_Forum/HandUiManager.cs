@@ -54,6 +54,10 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     private void DisableAllPanels()
     {
+        //Disable Bottom Panel
+        if (MainMenuController.instance.bottomPanel.activeSelf)
+            MainMenuController.instance.bottomPanel.SetActive(false);
+
         noRecordImage.gameObject.SetActive(false);
         popUpText.gameObject.SetActive(false);
         commentPanel.SetActive(false);
@@ -202,6 +206,10 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     public void OnClickBtnClose()
     {
+        //Enable bottom panel
+        if (!MainMenuController.instance.bottomPanel.activeSelf)
+            MainMenuController.instance.bottomPanel.SetActive(true);
+
         MainMenuController.instance.DestroyScreen(MainMenuScreens.HandScreen);        
     }
 
@@ -234,7 +242,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         }
 
         //Set Hand Review Text
-        handReviewText.text = "Latest 100 hands records";
+        handReviewText.text = "Latest 200 hands records";
 
         dir = new DirectoryInfo(Path.Combine(Application.persistentDataPath, "Videos"));
         info = dir.GetFiles("*.mp4");
@@ -488,7 +496,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         {
             PlayerPrefs.SetInt("CollectionVideoCount", PlayerPrefs.GetInt("CollectionVideoCount") + 1);
             PlayerPrefs.SetString(name, name);
-            StartCoroutine(MsgForVideo("Saved into collection", 2.0f));
+            StartCoroutine(MsgForVideo("Saved into collection", 1.5f));
             LoadAllVideosFromDevice();
         }
         else
@@ -502,7 +510,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
                     PlayerPrefs.DeleteKey(name);
                     PlayerPrefs.SetInt("CollectionVideoCount", PlayerPrefs.GetInt("CollectionVideoCount") - 1);
-                    StartCoroutine(MsgForVideo("Delete from collection", 2.0f));
+                    StartCoroutine(MsgForVideo("Delete from collection", 1.5f));
                     LoadAllVideosFromDevice();
                 }
             }
@@ -511,7 +519,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             {
                 PlayerPrefs.SetInt("CollectionVideoCount", PlayerPrefs.GetInt("CollectionVideoCount") + 1);
                 PlayerPrefs.SetString(name, name);
-                StartCoroutine(MsgForVideo("Saved into collection", 2.0f));
+                StartCoroutine(MsgForVideo("Saved into collection", 1.5f));
                 LoadAllVideosFromDevice();
             }
         }        
@@ -528,7 +536,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     private void OnClickOnRemoveVideoFromCollection(string name)
     {
         deletePopUp.SetActive(true);
-        deletePopUp.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => OnClickRemoveVideo(name));        
+        deletePopUp.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => OnClickRemoveVideo(name));        
     }
 
     public void OnClickRemoveVideo(string name)
@@ -538,7 +546,7 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         {
             PlayerPrefs.DeleteKey(name);
             PlayerPrefs.SetInt("CollectionVideoCount", PlayerPrefs.GetInt("CollectionVideoCount") - 1);
-            StartCoroutine(MsgForVideo("Delete from collection", 2.0f));
+            StartCoroutine(MsgForVideo("Delete from collection", 1.5f));
             deletePopUp.SetActive(false);
         }
         LoadAllCollectionVideos();

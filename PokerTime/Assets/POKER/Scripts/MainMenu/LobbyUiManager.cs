@@ -38,7 +38,11 @@ public class LobbyUiManager: MonoBehaviour
 
     private void Start()
     {
-      for (int i = 0; i < 3; i++)
+        //Deactivate Bottom Panel
+        if (MainMenuController.instance.bottomPanel.activeSelf)
+            MainMenuController.instance.bottomPanel.SetActive(false);
+
+        for (int i = 0; i < 3; i++)
         {
             List<RoomData> dummyList = new List<RoomData>();
             allRoomData.Add(dummyList);
@@ -88,12 +92,20 @@ public class LobbyUiManager: MonoBehaviour
         {
             case "back":
                 {
+                    //Activate Bottom Panel
+                    if (!MainMenuController.instance.bottomPanel.activeSelf)
+                        MainMenuController.instance.bottomPanel.SetActive(true);
+
                     MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
                 }
                 break;
 
             case "coinsShop":
-                {
+                { 
+                    //Activate Bottom Panel
+                    if (!MainMenuController.instance.bottomPanel.activeSelf)
+                        MainMenuController.instance.bottomPanel.SetActive(true);
+
                     MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
                 }
                 break;
@@ -343,7 +355,3 @@ public class LobbyUiManager: MonoBehaviour
 
     }
 }
-
-
-
-

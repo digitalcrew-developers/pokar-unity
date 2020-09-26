@@ -1107,7 +1107,7 @@ public class InGameManager : MonoBehaviour
         //DEV_CODE
         if (!isRecording)
         {
-            //StartRecording();
+            StartRecording();
         }
 
         ShowCommunityCardsAnimation();
@@ -1414,6 +1414,7 @@ public class InGameManager : MonoBehaviour
 
     public async void StopRecording()
     {
+        Debug.Log("Inside Stopped Recording");
         isRecording = false;
         cameraInput.Dispose();
         var path = await recorder.FinishWriting();
@@ -1425,12 +1426,14 @@ public class InGameManager : MonoBehaviour
 
         //For PC to move file
 #if UNITY_EDITOR
+        Debug.Log("Moving video to folder...");
         FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
         SaveScreenshot();
 #elif UNITY_ANDROID
         File.Move(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
         SaveScreenshot();
 #endif
+        Debug.Log("Recording Stopped ...");
 
         cardValue = "";
         isCardValueSet = false;
@@ -1441,10 +1444,9 @@ public class InGameManager : MonoBehaviour
         for (int j = 0; j < fileInfo.Length; j++)
         {
             File.Delete(fileInfo[j].FullName);
-        }        
-
-        Debug.Log("Recording Stopped ..." + Path.GetDirectoryName(path));
-        //InGameUiManager.instance.ShowMessage(path);
+        }
+        Debug.Log("Deleted Extra files at persistent Data Path..");
+        
     }
 
     void SaveScreenshot()
