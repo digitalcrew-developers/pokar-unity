@@ -13,6 +13,8 @@ public class ClubDetailsUIManager : MonoBehaviour
     private string layout = "Listed";
     private bool isJackpotOn = false;
 
+	private GameObject bottom;
+
 	private void Awake()
 	{
 		instance = this;
@@ -28,8 +30,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 		uniqueClubIdText.text = "Club Id : "+clubUniqueId;
 		clubId = idOfClub;
 		uniqueClubId = clubUniqueId;
-
-        //to-do... get layout from server for this club and update in local string
+		//to-do... get layout from server for this club and update in local string
 	}
 
 
