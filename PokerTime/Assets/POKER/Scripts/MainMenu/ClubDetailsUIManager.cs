@@ -13,20 +13,23 @@ public class ClubDetailsUIManager : MonoBehaviour
     private string layout = "Listed";
     private bool isJackpotOn = false;
 
+    private GameObject bottom;
+
 	private void Awake()
 	{
 		instance = this;
 	}
 
-	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub)
+	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub, GameObject _bottom)
 	{
 		clubNameText.text = "Club Name : "+nameOfClub;
 		uniqueClubIdText.text = "Club Id : "+clubUniqueId;
 		clubId = idOfClub;
 		uniqueClubId = clubUniqueId;
-
+        bottom = _bottom;
+        bottom.SetActive(false);
         //to-do... get layout from server for this club and update in local string
-	}
+    }
 
 
 	public void OnClickOnButton(string eventName)
@@ -37,7 +40,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 		{
 		case "back":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+                    bottom.SetActive(true);
+                    MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
 			}
 			break;
 
