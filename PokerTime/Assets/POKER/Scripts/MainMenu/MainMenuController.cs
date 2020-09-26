@@ -249,8 +249,7 @@ public class MainMenuController : MonoBehaviour
 			switch (screenName)
 			{
 				case MainMenuScreens.ClubDetails:
-                    GameObject bottom = transform.Find("Bottom").gameObject;
-					gm.GetComponent<ClubDetailsUIManager>().Initialize((string)parameter[0], (string)parameter[1], (string)parameter[2], bottom);
+					gm.GetComponent<ClubDetailsUIManager>().Initialize((string)parameter[0], (string)parameter[1], (string)parameter[2]);
 					break;
 
 
