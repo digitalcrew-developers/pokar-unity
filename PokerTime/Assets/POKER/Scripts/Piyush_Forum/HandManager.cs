@@ -8,8 +8,9 @@ public class HandManager : MonoBehaviour
     public static HandManager instance;
 
     public Image[] cards;
+    public Sprite collectionSprite;
     public Text dateAndTime, roomData, chipsData, betData;
-    public Button shareButton, collectionButton, removeFromCollectionButton;
+    public Button shareButton, collectionButton, removeFromCollectionButton;    
 
     private void Awake()
     {

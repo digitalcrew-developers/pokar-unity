@@ -288,7 +288,8 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
             if (PlayerPrefs.HasKey(f.Name))
             {
-                handObject.GetComponent<HandManager>().collectionButton.image.color = Color.white;
+                //handObject.GetComponent<HandManager>().collectionButton.image.color = Color.white;
+                handObject.GetComponent<HandManager>().collectionButton.image.sprite = handObject.GetComponent<HandManager>().collectionSprite;
             }
         }        
     }
