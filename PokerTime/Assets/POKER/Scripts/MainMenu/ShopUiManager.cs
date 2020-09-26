@@ -161,6 +161,8 @@ public class ShopUiManager: MonoBehaviour
                         {
                             gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                         }
+                        ShopItem itemData = shopList[i];
+                        gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
                     }
 
                     break;
