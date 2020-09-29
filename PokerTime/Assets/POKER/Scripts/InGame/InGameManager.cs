@@ -937,6 +937,7 @@ public class InGameManager : MonoBehaviour
         }
     }
 
+    const float EPSILON = 0.5f;
 
     public void OnNextMatchCountDownFound(string serverResponse)
     {
@@ -969,16 +970,24 @@ public class InGameManager : MonoBehaviour
                     }
                     else
                     {
-                        int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn - (int)availableBalance;
+                        //int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn - (int)availableBalance;
+                        //float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
+
+                        //now we are adding balance if userbalance is 0.
+                        int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn;
                         float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
-
-                        if (userMainBalance >= balanceToAdd)
+                        Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance);
+                        //if (userMainBalance >= balanceToAdd)
+                        if (userMainBalance < EPSILON)
                         {
-                            SocketController.instance.SendReMatchRequest("Yes", "" + balanceToAdd);
+                            SocketController.instance.SendReMatchRequest("Yes", "0");
+                            //send topup request with the below api.. for clarification contact Pradeep - Digital Crew
+                            SocketController.instance.SendTopUpRequest(balanceToAdd);
 
-                            userMainBalance -= balanceToAdd;
+                            //userMainBalance -= balanceToAdd;
                             PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
-                            playerData.coins = userMainBalance;
+                            //playerData.coins = userMainBalance;
+                            playerData.coins = balanceToAdd;
                             PlayerManager.instance.SetPlayerGameData(playerData);
                         }
                         else
@@ -1311,6 +1320,11 @@ public class InGameManager : MonoBehaviour
                         else
                         {
                             playerObject. UpdateDetails(playerData,"",0,-1);
+                        }
+                        //update balance from playerObject
+                        if(playerObject.playerData.userId == PlayerManager.instance.GetPlayerGameData().userId)
+                        {
+                            PlayerManager.instance.GetPlayerGameData().coins = playerObject.playerData.balance;
                         }
                     }
                 }
