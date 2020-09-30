@@ -65,12 +65,28 @@ public class ForumFeedUIManager : MonoBehaviour
 
     public void ClickLikeIcon()
     {
+        /*if (isLike)
+        {
+            likeIconBtn.SetActive(false);
+            unlikeIconbtn.SetActive(true);
+            isLike = false;
+
+            ForumListUIManager.instance.GetAllForumList(false);
+        }
+        else
+        {
+            likeIconBtn.SetActive(true);
+            unlikeIconbtn.SetActive(false);
+
+            PostLike();
+        }*/
 
         likeIconBtn.SetActive(true);
         unlikeIconbtn.SetActive(false);
 
+
         if (!isLike)
-        {
+        {   
             PostLike();
         }
 
@@ -159,7 +175,6 @@ public class ForumFeedUIManager : MonoBehaviour
 
     public void PostLike(bool isShowLoading = true)
     {
-
         string requestData = "{\"forumId\":\"" + forumId + "\"," +
                            "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                            "\"commentId\":\"" + ""+ "\"," +
@@ -193,7 +208,7 @@ public class ForumFeedUIManager : MonoBehaviour
         if (requestType == RequestType.PostLike)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
-
+            
             if (data["success"].ToString() == "0")
             {
                 if (data["message"].ToString() == "Like data added successfully")

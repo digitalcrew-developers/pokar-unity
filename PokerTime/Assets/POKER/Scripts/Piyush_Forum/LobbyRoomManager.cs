@@ -88,7 +88,7 @@ public class LobbyRoomManager : MonoBehaviour
 
     public void OnShopBtnClick()
     {
-          MainMenuController.instance.ShowScreen(MainMenuScreens.InGameShop);
+          MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
          
     }
 }

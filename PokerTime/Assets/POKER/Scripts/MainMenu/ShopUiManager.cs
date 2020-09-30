@@ -22,6 +22,12 @@ public class ShopUiManager: MonoBehaviour
     private string screenToShow = "";
 
 
+    private void Awake()
+    {
+        if (!MainMenuController.instance.bottomPanel.activeSelf)
+            MainMenuController.instance.bottomPanel.SetActive(true);
+    }
+
 
     public void ShowScreen(string screenName = "")
     {
