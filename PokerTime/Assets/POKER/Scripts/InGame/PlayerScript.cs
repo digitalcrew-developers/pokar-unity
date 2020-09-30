@@ -66,7 +66,7 @@ public class PlayerScript : MonoBehaviour
                     string frame_url = (data["getData"][i]["frameURL"].ToString());
                     StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
                     StartCoroutine(loadSpriteImageFromUrl(flag_url, flag));
-                    StartCoroutine(loadSpriteImageFromUrl(frame_url, frame));
+                    //StartCoroutine(loadSpriteImageFromUrl(frame_url, frame));
                 }
             }
             else
