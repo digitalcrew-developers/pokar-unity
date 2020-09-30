@@ -171,11 +171,12 @@ public class PrefsManager: MonoBehaviour
 
             if (data.Keys.Contains("coins") && data["coins"].ToString() != null && data["coins"].ToString().Length > 0)
             {
-                playerData.coins = float.Parse(data["coins"].ToString());
+                float.TryParse(data["coins"].ToString(), out playerData.coins);
+                // playerData.coins = float.Parse(data["coins"].ToString());
             }
             else
             {
-                playerData.coins = 0;
+                playerData.coins = 0f;
             }
 
 
@@ -229,7 +230,7 @@ public class PrefsManager: MonoBehaviour
         {
             playerData.userName = playerData.password = playerData.userId = "";
 
-            playerData.coins = playerData.diamonds = playerData.points = 0;
+            playerData.coins = playerData.diamonds = playerData.points = 0f;
             playerData.rabit = playerData.emoji = playerData.time = 0;
         }
 

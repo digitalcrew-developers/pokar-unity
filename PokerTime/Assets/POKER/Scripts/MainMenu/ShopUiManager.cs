@@ -331,6 +331,7 @@ public class ShopUiManager: MonoBehaviour
                         if (playerData.coins >= float.Parse(itemData.purchaseValue))
                         {
                             playerData.coins -= purchaseValue;
+                            if (playerData.coins < 0f) { playerData.coins = 0f; }
                             playerData.diamonds += float.Parse(itemData.getValue);
                             isChangesMade = true;
                         }
