@@ -922,6 +922,7 @@ public class SocketController : MonoBehaviour
         requestData.tableId = TABLE_ID;
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.isStatndOut = 1;
+
         //Debug.LogError(requestData.userId + "  <Stand up User ID table id >" + TABLE_ID);
 
         string requestStringData = JsonMapper.ToJson(requestData);
@@ -938,8 +939,13 @@ public class SocketController : MonoBehaviour
 
     public void SendTopUpRequest(int coinsToAdd)
     {
+        string roomId = GlobalGameManager.instance.GetRoomData().roomId;
+
+
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
      "\"tableId\":\"" + TABLE_ID + "\"," +
+     "\"roomId\":\"" + roomId + "\"," +
+     "\"playerType\":\"" + "Real" + "\"," +
      "\"coins\":\"" + coinsToAdd + "\"}";
 
 
