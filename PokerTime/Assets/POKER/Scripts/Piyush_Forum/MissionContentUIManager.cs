@@ -12,6 +12,8 @@ public class MissionContentUIManager : MonoBehaviour
     public Button collectBtn;
     public GameObject collectedBtnImg;
 
+    //DEV_CODE
+    public Sprite collectBtnNewImage;
 
 
     public void OnCollectBtnClick(Transform btn) {

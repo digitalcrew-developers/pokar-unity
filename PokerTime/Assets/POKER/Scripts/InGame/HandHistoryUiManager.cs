@@ -17,6 +17,9 @@ public class HandHistoryUiManager : MonoBehaviour
     public GameObject handdetailsBtn;
     public GameObject handsummaryBtn;
 
+    //DEV_CODE
+    public Sprite[] playerHeadingSprites;
+
 
     [SerializeField]
     private List<MatcHistoryData> matchHistoryData = new List<MatcHistoryData>();
@@ -44,11 +47,13 @@ public class HandHistoryUiManager : MonoBehaviour
 
     public void handDetailClik() {
         handdetailsBtn.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-        handsummaryBtn.GetComponent<Image>().color = new Color32(160, 160, 160, 255);
+        handsummaryBtn.GetComponent<Image>().color = new Color32(160, 160, 160, 0);
+        //handsummaryBtn.GetComponent<Image>().gameObject.SetActive(false);
     }
     public void handDetailSummary() {
-        handdetailsBtn.GetComponent<Image>().color = new Color32(160, 160, 160, 255);
+        handdetailsBtn.GetComponent<Image>().color = new Color32(160, 160, 160, 0);
         handsummaryBtn.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+        //handdetailsBtn.GetComponent<Image>().gameObject.SetActive(false);
     }
 
 
