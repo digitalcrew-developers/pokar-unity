@@ -396,12 +396,15 @@ public class MainMenuController : MonoBehaviour
 
 				return ScreenLayer.LAYER3;
 
-			case MainMenuScreens.Loading:
+			/*case MainMenuScreens.Loading:*/
 			case MainMenuScreens.ChangeFrame:
 			case MainMenuScreens.SelectRegion:
 			case MainMenuScreens.ChangeProfileIcon:
 			
 				 return ScreenLayer.LAYER4;
+
+			case MainMenuScreens.Loading:
+				return ScreenLayer.LAYER5; 
 
 			default:
 				return ScreenLayer.LAYER2;
@@ -552,5 +555,6 @@ public enum ScreenLayer
 	LAYER1,
 	LAYER2,
 	LAYER3,
-	LAYER4
+	LAYER4,
+	LAYER5
 }
