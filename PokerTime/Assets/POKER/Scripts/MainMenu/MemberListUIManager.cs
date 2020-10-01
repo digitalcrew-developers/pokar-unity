@@ -432,6 +432,11 @@ public class MemberListUIManager : MonoBehaviour
                 break;
             case "LastPlayed":
                 break;
+            case "OldMember":
+                break;
+            case "NewMember":
+                break;
+            case "ActiveMember":
             default:
                 break;
         }
