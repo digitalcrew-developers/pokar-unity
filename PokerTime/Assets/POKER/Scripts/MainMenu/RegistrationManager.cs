@@ -206,7 +206,7 @@ public class RegistrationManager : MonoBehaviour
 
             if (data["success"].ToString() == "1")
             {
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
                 
                 //JsonData parsedObject = JsonMapper.ToObject(data["result"].ToString().Replace(@"\",""));
 
@@ -217,7 +217,7 @@ public class RegistrationManager : MonoBehaviour
                 playerData.password = tmp_registrationPassword.text;
 
                 
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
 
                 ResetLoginScreen();
                 ResetRegistrationScreen();
@@ -236,8 +236,8 @@ public class RegistrationManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Uesr already exist");
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                //Debug.Log("Uesr already exist");
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
                 loginScreen.SetActive(true);
                 registrationScreen.SetActive(false);
             }
@@ -260,12 +260,12 @@ public class RegistrationManager : MonoBehaviour
                     MainMenuController.instance.bottomPanel.SetActive(true);
 
                 MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
                 // GlobalGameManager.instance.SendFirebaseToken(FireBaseAnalyticsIntegration.TOKEN);
             }
             else
             {
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
             }
         }
         else

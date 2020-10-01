@@ -592,9 +592,12 @@ public class VIPPrivilege
 [System.Serializable]
 public enum VIPCard
 {
-    Bronze,  
+    Bronze,
     Silver,
     Platinum
+    /*Silver,
+    Black,
+    Golds*/
 }
 
 [System.Serializable]

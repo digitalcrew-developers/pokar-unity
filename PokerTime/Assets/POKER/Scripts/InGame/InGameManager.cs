@@ -944,7 +944,7 @@ public class InGameManager : MonoBehaviour
         //DEV_CODE
         if (isRecording)
         {
-            StopRecording();
+            //StopRecording();
         }
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
@@ -1116,7 +1116,7 @@ public class InGameManager : MonoBehaviour
         //DEV_CODE
         if (!isRecording)
         {
-            StartRecording();
+            //StartRecording();
         }
 
         ShowCommunityCardsAnimation();

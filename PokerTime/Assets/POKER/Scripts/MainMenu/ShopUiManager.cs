@@ -146,7 +146,17 @@ public class ShopUiManager: MonoBehaviour
                     {
                         GameObject gm = Instantiate(vipCardPrefab, container) as GameObject;
                         gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
-                        gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard;
+
+                        if(shopList[i].vipCard.ToString().Equals("Bronze"))
+                            gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Silver Card";
+
+                        if (shopList[i].vipCard.ToString().Equals("Silver"))
+                            gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Black Card";
+
+                        if (shopList[i].vipCard.ToString().Equals("Platinum"))
+                            gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Gold Card";
+
+                        /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
                         gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity+" Days";
 
                         if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
