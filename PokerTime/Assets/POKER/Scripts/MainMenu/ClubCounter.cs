@@ -25,6 +25,12 @@ public class ClubCounter : MonoBehaviour
     public List<TMPro.TextMeshProUGUI> MemberCountTexts;
     public TextMeshProUGUI ClubChipsCount, ClubOwnerChipCount, RestMemberChipCount;
 
+    public List<FilterButtonState> ClubMemberFilterButtons = new List<FilterButtonState>();
+    public Text CurrentMemberListFilterName;
+    public Image CurrentMemberListFilterImage;
+    public Button MemberFilter;
+    public GameObject MemberFilterPanel;
+
     private void Awake()
     {
         if (null == instance)
@@ -57,9 +63,81 @@ public class ClubCounter : MonoBehaviour
 
         ConfirmChipsSendButton.onClick.RemoveAllListeners();
         ConfirmChipsSendButton.onClick.AddListener(SendChipsAPIRequest);
+
+        MemberFilter.onClick.RemoveAllListeners();
+        MemberFilter.onClick.AddListener(ToggleOpenMemberListFilter);
+
+        for (int i = 0; i < ClubMemberFilterButtons.Count; i++)
+        {
+            ClubMemberFilterButtons[i].OnStateChange += MemberListUIManager_OnStateChange;
+        }
     }
 
-    
+    private void ToggleOpenMemberListFilter()
+    {
+        if (MemberFilterPanel.activeInHierarchy)
+        {
+            MemberFilterPanel.SetActive(false);
+        }
+        else
+        {
+            MemberFilterPanel.SetActive(true);
+        }
+    }
+
+    private void MemberListUIManager_OnStateChange(FilterState stateType, string stateName)
+    {
+        CurrentMemberListFilterName.text = stateName;
+        if (stateType == FilterState.Ascending)
+        {
+            CurrentMemberListFilterImage.transform.localScale = new Vector3(1, 1, 1);
+        }
+        else
+        {
+            CurrentMemberListFilterImage.transform.localScale = new Vector3(1, -1, 1);
+        }
+
+        for (int i = 0; i < ClubMemberFilterButtons.Count; i++)
+        {
+            string name = ClubMemberFilterButtons[i].GetStateName();
+            if (stateName != name)
+            {
+                ClubMemberFilterButtons[i].UpdateState(FilterState.None);
+            }
+            else
+            {
+                ClubMemberFilterButtons[i].UpdateState(stateType);
+            }
+        }
+
+        //sort based on statename and type
+        switch (stateName)
+        {
+            case "Fee":
+                break;
+            case "SpinUp Buy-In":
+                break;
+            case "Winnings":
+                break;
+            case "Hand":
+                break;
+            case "LastLogin":
+                break;
+            case "LastPlayed":
+                break;
+            case "OldMember":
+                break;
+            case "NewMember":
+                break;
+            case "ActiveMember":
+                break;
+            default:
+                break;
+        }
+        MemberFilterPanel.SetActive(false);
+    }
+
+
 
     private void GetMembersListFromServer()
     {

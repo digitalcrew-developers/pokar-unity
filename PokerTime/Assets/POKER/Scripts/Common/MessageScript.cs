@@ -12,6 +12,17 @@ public class MessageScript : MonoBehaviour
     private Action defaultCallBackMethod;
     private Action okButtonCallBackMethod, noButtonCallBackMethod, yesButtonCallBackMethod;
 
+    private void Start()
+    {
+        okButton.GetComponent<Button>().onClick.AddListener(ClosePopup);
+        noButton.GetComponent<Button>().onClick.AddListener(ClosePopup);
+        yesButton.GetComponent<Button>().onClick.AddListener(ClosePopup);
+    }
+
+    private void ClosePopup()
+    {
+        gameObject.SetActive(false);
+    }
 
     public void ShowSingleButtonPopUp(string messageToShow,Action callBack = null,string buttonText = "Ok")
     {
