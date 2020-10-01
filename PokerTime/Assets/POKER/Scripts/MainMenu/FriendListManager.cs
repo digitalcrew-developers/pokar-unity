@@ -129,7 +129,7 @@ public class FriendListManager : MonoBehaviour
                 }
                 else
                 {
-                    emptylistmsg.text = "No message";
+                    emptylistmsg.text = "No Friend Request";
                 }
             }
         }
