@@ -61,7 +61,9 @@ public class InGameUiManager : MonoBehaviour
     //DEV_CODE
     public Camera cameraObj;
     public float height, width;
-    
+
+    public List<GameObject> TableImages = new List<GameObject>();
+
     private void Awake()
     {
         instance = this;
@@ -95,10 +97,28 @@ public class InGameUiManager : MonoBehaviour
         tableInfoText.text = "Blinds " + GlobalGameManager.instance.GetRoomData().smallBlind + "/" + GlobalGameManager.instance.GetRoomData().bigBlind + " Ante";
         ToggleActionButton(false);
         ToggleSuggestionButton(false);
+
+        int counter = PlayerPrefs.GetInt("TableCount");
+        SwitchTables(counter);
     }
+
+    private void SwitchTables(int counter)
+    {
+        Debug.LogError("counter is " + counter);
+        PlayerPrefs.SetInt("TableCount", counter);
+
+        foreach (GameObject g in TableImages)
+        {
+            g.SetActive(false);
+        }
+        TableImages[counter].SetActive(true);
+    }
+
     public void CallDectuct(int val) {
         DeductCoinPostServer(val);
     }
+
+
     void DeductCoinPostServer(int val)
     {
 
@@ -729,15 +749,7 @@ public class InGameUiManager : MonoBehaviour
             availableCallAmount = callAmount;
         }
     }
-
-
-
-
-
-
-
-
-
+    
 
     public void ShowScreen(InGameScreens screenName, object[] parameter = null)
     {
@@ -770,6 +782,11 @@ public class InGameUiManager : MonoBehaviour
                 case InGameScreens.EmojiScreen:
                     {
                         gm.GetComponent<EmojiUIScreenManager>().containerVal = emojiContainerVal;
+                    }
+                    break;
+                case InGameScreens.SwitchTable:
+                    {
+                        gm.GetComponent<SwitchTable>().TableImages = TableImages;
                     }
                     break;
                 default:
@@ -1091,7 +1108,8 @@ public enum InGameScreens
     PointEarnMsg,
     Tips,
     SpinWheelScreen,
-    DealerImageScreen
+    DealerImageScreen,
+    SwitchTable
 }
 
 public enum PlayerAction

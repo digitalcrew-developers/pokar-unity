@@ -25,13 +25,14 @@ public class FilterButtonState : MonoBehaviour
     private FilterState state;
     public Image Up, Down;
     public string FilterName;
+    public string PanelName;
 
     private string hexDisableColorString = "#646464";
     private string hexEnableColorString = "#1dffec";
 
     private Color EnableColor, DisableColor;
 
-    public delegate void FilterButtonStateUpdate(FilterState stateType, string stateName);
+    public delegate void FilterButtonStateUpdate(FilterState stateType, string stateName, string PanelName);
     public event FilterButtonStateUpdate OnStateChange;
 
 
@@ -56,7 +57,7 @@ public class FilterButtonState : MonoBehaviour
         {
             UpdateState(FilterState.Ascending);
         }
-        OnStateChange?.Invoke(state, FilterName);
+        OnStateChange?.Invoke(state, FilterName, PanelName);
     }
 
     public void UpdateState(FilterState _state)
