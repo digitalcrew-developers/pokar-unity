@@ -25,11 +25,26 @@ public class ClubCounter : MonoBehaviour
     public List<TMPro.TextMeshProUGUI> MemberCountTexts;
     public TextMeshProUGUI ClubChipsCount, ClubOwnerChipCount, RestMemberChipCount;
 
-    public List<FilterButtonState> ClubMemberFilterButtons = new List<FilterButtonState>();
-    public Text CurrentMemberListFilterName;
-    public Image CurrentMemberListFilterImage;
-    public Button MemberFilter;
-    public GameObject MemberFilterPanel;
+    [Header("TRADE FILTERS")]
+    public List<FilterButtonState> TradeFilterButtons = new List<FilterButtonState>();
+    public Text TradeListFilterName;
+    public Image TradeListFilterImage;
+    public Button TradeFilterBtn;
+    public GameObject TradeFilterPanel;
+
+    [Header("SLEEP FILTERS")]
+    public List<FilterButtonState> SleepButtons = new List<FilterButtonState>();
+    public Text SleepFilterName;
+    public Image SleepFilterImage;
+    public Button SleepFilterBtn;
+    public GameObject SleepFilterPanel;
+
+    [Header("VIP FILTERS")]
+    public List<FilterButtonState> VIPButtons = new List<FilterButtonState>();
+    public Text VIPFilterName;
+    public Image VIPFilterImage;
+    public Button VIPFilterBtn;
+    public GameObject VIPFilterPanel;
 
     private void Awake()
     {
@@ -64,51 +79,152 @@ public class ClubCounter : MonoBehaviour
         ConfirmChipsSendButton.onClick.RemoveAllListeners();
         ConfirmChipsSendButton.onClick.AddListener(SendChipsAPIRequest);
 
-        MemberFilter.onClick.RemoveAllListeners();
-        MemberFilter.onClick.AddListener(ToggleOpenMemberListFilter);
+        TradeFilterBtn.onClick.RemoveAllListeners();
+        TradeFilterBtn.onClick.AddListener(ToggleOpenTradeListFilter);
 
-        for (int i = 0; i < ClubMemberFilterButtons.Count; i++)
+        for (int i = 0; i < TradeFilterButtons.Count; i++)
         {
-            ClubMemberFilterButtons[i].OnStateChange += MemberListUIManager_OnStateChange;
+            TradeFilterButtons[i].OnStateChange += Filter_OnStateChange;
+        }
+
+        SleepFilterBtn.onClick.RemoveAllListeners();
+        SleepFilterBtn.onClick.AddListener(ToggleOpenSleepFilter);
+
+        for (int i = 0; i < SleepButtons.Count; i++)
+        {
+            SleepButtons[i].OnStateChange += Filter_OnStateChange;
+        }
+
+
+        VIPFilterBtn.onClick.RemoveAllListeners();
+        VIPFilterBtn.onClick.AddListener(ToggleOpenVIPFIlter);
+
+        for (int i = 0; i < TradeFilterButtons.Count; i++)
+        {
+            VIPButtons[i].OnStateChange += Filter_OnStateChange;
         }
     }
 
-    private void ToggleOpenMemberListFilter()
+    private void ToggleOpenTradeListFilter()
     {
-        if (MemberFilterPanel.activeInHierarchy)
+        if (TradeFilterPanel.activeInHierarchy)
         {
-            MemberFilterPanel.SetActive(false);
+            TradeFilterPanel.SetActive(false);
         }
         else
         {
-            MemberFilterPanel.SetActive(true);
+            TradeFilterPanel.SetActive(true);
         }
     }
 
-    private void MemberListUIManager_OnStateChange(FilterState stateType, string stateName)
+    private void ToggleOpenSleepFilter()
     {
-        CurrentMemberListFilterName.text = stateName;
-        if (stateType == FilterState.Ascending)
+        if (SleepFilterPanel.activeInHierarchy)
         {
-            CurrentMemberListFilterImage.transform.localScale = new Vector3(1, 1, 1);
+            SleepFilterPanel.SetActive(false);
         }
         else
         {
-            CurrentMemberListFilterImage.transform.localScale = new Vector3(1, -1, 1);
+            SleepFilterPanel.SetActive(true);
+        }
+    }
+
+    private void ToggleOpenVIPFIlter()
+    {
+        if (VIPFilterPanel.activeInHierarchy)
+        {
+            VIPFilterPanel.SetActive(false);
+        }
+        else
+        {
+            VIPFilterPanel.SetActive(true);
+        }
+    }
+
+    private void Filter_OnStateChange(FilterState stateType, string stateName,string PanelName)
+    {
+        //to-do. do filtering based on PanelName.
+        switch (PanelName)
+        {
+            case "Trade":
+                TradeListFilterName.text = stateName;
+                if (stateType == FilterState.Ascending)
+                {
+                    TradeListFilterImage.transform.localScale = new Vector3(1, 1, 1);
+                }
+                else
+                {
+                    TradeListFilterImage.transform.localScale = new Vector3(1, -1, 1);
+                }
+
+                for (int i = 0; i < TradeFilterButtons.Count; i++)
+                {
+                    string name = TradeFilterButtons[i].GetStateName();
+                    if (stateName != name)
+                    {
+                        TradeFilterButtons[i].UpdateState(FilterState.None);
+                    }
+                    else
+                    {
+                        TradeFilterButtons[i].UpdateState(stateType);
+                    }
+                }
+                TradeFilterPanel.SetActive(false);
+                break;
+            case "Sleep":
+                SleepFilterName.text = stateName;
+                if (stateType == FilterState.Ascending)
+                {
+                    SleepFilterImage.transform.localScale = new Vector3(1, 1, 1);
+                }
+                else
+                {
+                    SleepFilterImage.transform.localScale = new Vector3(1, -1, 1);
+                }
+
+                for (int i = 0; i < SleepButtons.Count; i++)
+                {
+                    string name = SleepButtons[i].GetStateName();
+                    if (stateName != name)
+                    {
+                        SleepButtons[i].UpdateState(FilterState.None);
+                    }
+                    else
+                    {
+                        SleepButtons[i].UpdateState(stateType);
+                    }
+                }
+                SleepFilterPanel.SetActive(false);
+                break;
+            case "VIP":
+                VIPFilterName.text = stateName;
+                if (stateType == FilterState.Ascending)
+                {
+                    VIPFilterImage.transform.localScale = new Vector3(1, 1, 1);
+                }
+                else
+                {
+                    VIPFilterImage.transform.localScale = new Vector3(1, -1, 1);
+                }
+
+                for (int i = 0; i < VIPButtons.Count; i++)
+                {
+                    string name = VIPButtons[i].GetStateName();
+                    if (stateName != name)
+                    {
+                        VIPButtons[i].UpdateState(FilterState.None);
+                    }
+                    else
+                    {
+                        VIPButtons[i].UpdateState(stateType);
+                    }
+                }
+                VIPFilterPanel.SetActive(false);
+                break;
+            default:
+                break;
         }
 
-        for (int i = 0; i < ClubMemberFilterButtons.Count; i++)
-        {
-            string name = ClubMemberFilterButtons[i].GetStateName();
-            if (stateName != name)
-            {
-                ClubMemberFilterButtons[i].UpdateState(FilterState.None);
-            }
-            else
-            {
-                ClubMemberFilterButtons[i].UpdateState(stateType);
-            }
-        }
 
         //sort based on statename and type
         switch (stateName)
@@ -134,7 +250,7 @@ public class ClubCounter : MonoBehaviour
             default:
                 break;
         }
-        MemberFilterPanel.SetActive(false);
+        TradeFilterPanel.SetActive(false);
     }
 
 
