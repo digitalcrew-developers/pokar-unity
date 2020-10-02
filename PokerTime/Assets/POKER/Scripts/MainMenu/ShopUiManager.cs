@@ -9,11 +9,26 @@ public class ShopUiManager: MonoBehaviour
 {
     public Button itemButton, diamondButton, pointButton;
     public Text coinsText, diamondText, pointText;
-    public Transform container;
-    public GameObject coinsPrefab, vipCardPrefab;
+    public Transform container, itemContainer, hotPickContainer, vipCardContainer, goldContainer;
+
+    //DEV_CODE
+    public GameObject detailsTextBtn, recordsTextBtn;
+
+    public GameObject vipCardPrefab;
+    public GameObject[] coinsPrefab;
     public GameObject[] diamondPrefab;
     public GameObject[] featuredItemsPrefab;
     public Sprite[] vipCardSprites, purchaseCurrencySprite;
+
+
+    [Header("HotPick")]
+    public GameObject hotPickObj;
+    
+    [Header("VIP Card")]
+    public GameObject vipCardObj;
+
+    [Header("Gold")]
+    public GameObject goldObj;
 
 
     private ShopData shopData = new ShopData();
@@ -26,6 +41,9 @@ public class ShopUiManager: MonoBehaviour
     {
         if (!MainMenuController.instance.bottomPanel.activeSelf)
             MainMenuController.instance.bottomPanel.SetActive(true);
+
+        detailsTextBtn.SetActive(false);
+        recordsTextBtn.SetActive(false);
     }
 
 
@@ -76,18 +94,30 @@ public class ShopUiManager: MonoBehaviour
 
             case "item":
                 {
+                    detailsTextBtn.SetActive(false);
+                    recordsTextBtn.SetActive(false);
+                    container.parent.gameObject.SetActive(false);
+                    itemContainer.parent.gameObject.SetActive(true);
                     SpawnShopItems(ShopCategory.Item);
                 }
                 break;
 
             case "diamond":
                 {
+                    detailsTextBtn.SetActive(false);
+                    recordsTextBtn.SetActive(false);
+                    itemContainer.parent.gameObject.SetActive(false);
+                    container.parent.gameObject.SetActive(true);
                     SpawnShopItems(ShopCategory.Diamond);
                 }
                 break;
 
             case "point":
                 {
+                    detailsTextBtn.SetActive(true);
+                    recordsTextBtn.SetActive(true);
+                    itemContainer.parent.gameObject.SetActive(false);
+                    container.parent.gameObject.SetActive(true);
                     SpawnShopItems(ShopCategory.Point);
                 }
                 break;
@@ -106,6 +136,26 @@ public class ShopUiManager: MonoBehaviour
         for (int i = 0; i < container.childCount; i++)
         {
             Destroy(container.GetChild(i).gameObject);
+        }
+
+        for (int i = 3; i < itemContainer.childCount; i++)
+        {
+            Destroy(itemContainer.GetChild(i).gameObject);            
+        }
+
+        for (int i = 0; i < hotPickContainer.childCount; i++)
+        {
+            Destroy(hotPickContainer.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < vipCardContainer.childCount; i++)
+        {
+            Destroy(vipCardContainer.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < goldContainer.childCount; i++)
+        {
+            Destroy(goldContainer.GetChild(i).gameObject);
         }
 
         itemButton.interactable = true;
@@ -137,184 +187,887 @@ public class ShopUiManager: MonoBehaviour
             return;
         }
 
+        if (shopCategory == ShopCategory.Item)
+        {
+            LoadShopItemData(shopList);
+        }
+        else if(shopCategory == ShopCategory.Diamond)
+        {
+            LoadDiamondData(shopList);
+        }
+        else
+        {
+            LoadPointData(shopList);
+        }
+
+        /*else
+        {
+            if (shopCategory == ShopCategory.Diamond)
+                container.GetComponent<GridLayoutGroup>().padding.top = 0;
+
+            if (shopCategory == ShopCategory.Point)
+                container.GetComponent<GridLayoutGroup>().padding.top = 40;
+
+            for (int i = 0; i < shopList.Count; i++)
+            {
+                switch (shopList[i].purchaseItem)
+                {
+                    case PurchaseItem.Card:
+                        {
+                            GameObject gm = Instantiate(vipCardPrefab, container) as GameObject;
+                            gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
+
+                            if (shopList[i].vipCard.ToString().Equals("Bronze"))
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Silver Card";
+
+                            if (shopList[i].vipCard.ToString().Equals("Silver"))
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Black Card";
+
+                            if (shopList[i].vipCard.ToString().Equals("Platinum"))
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Gold Card";
+
+                            *//*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*//*
+                            gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
+
+                            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                            {
+                                gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                            }
+                            else
+                            {
+                                gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                            }
+
+
+                            gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                            if (shopList[i].isOffer)
+                            {
+                                gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                            }
+                            ShopItem itemData = shopList[i];
+                            gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+                        }
+
+                        break;
+
+
+
+                    case PurchaseItem.Diamond:
+                        {
+                            int index = 0;
+
+                            if (float.Parse(shopList[i].getValue) > 2000)
+                            {
+                                index = 3;
+                            }
+
+                            if (float.Parse(shopList[i].getValue) > 1000)
+                            {
+                                index = 2;
+                            }
+
+                            if (float.Parse(shopList[i].getValue) > 500)
+                            {
+                                index = 1;
+                            }
+
+
+                            GameObject gm = Instantiate(diamondPrefab[index], container) as GameObject;
+                            gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+                            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                            {
+                                gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                            }
+                            else
+                            {
+                                gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                            }
+
+
+                            gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                            if (shopList[i].isOffer)
+                            {
+                                gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                            }
+
+                            ShopItem itemData = shopList[i];
+                            gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+
+
+                        }
+                        break;
+
+                    case PurchaseItem.Coins:
+                        {
+                            GameObject gm = Instantiate(coinsPrefab, container) as GameObject;
+                            gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+                            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                            {
+                                gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                            }
+                            else
+                            {
+                                gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                            }
+
+
+                            gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                            if (shopList[i].isOffer)
+                            {
+                                gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                            }
+
+                            ShopItem itemData = shopList[i];
+                            gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+
+                        }
+                        break;
+
+
+                    case PurchaseItem.Other:
+                        {
+                            GameObject gm = Instantiate(featuredItemsPrefab[(int)shopList[i].featureItem], container) as GameObject;
+                            gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].featureItem;
+
+                            if (shopList[i].featureItem == ShopFeaturedItem.Rabit)
+                            {
+                                gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
+                            }
+                            else
+                            {
+                                gm.transform.Find("Validity").GetComponent<Text>().text = "X" + shopList[i].getValue;
+                            }
+
+
+
+                            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                            {
+                                gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                            }
+                            else
+                            {
+                                gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                            }
+
+
+                            gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                            if (shopList[i].isOffer)
+                            {
+                                gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                            }
+                        }
+                        break;
+
+                    default:
+                        {
+#if ERROR_LOG
+                            Debug.LogError("Unhandled case found in shop = " + shopList[i].purchaseItem);
+#endif
+                        }
+                        break;
+                }
+            }
+        }*/
+    }
+
+
+    private void LoadShopItemData(List<ShopItem> shopList)
+    {
+        int coinPrefabCounter = 0;
+        for (int i = 0; i < shopList.Count; i++)
+        {
+            if(i==0)
+            {
+                GameObject gm = Instantiate(hotPickObj, itemContainer) as GameObject;
+            }
+            else if(i==3)
+            {
+                GameObject gm = Instantiate(vipCardObj, itemContainer) as GameObject;
+            }
+            else if(i==6)
+            {
+                GameObject gm = Instantiate(goldObj, itemContainer) as GameObject;
+            }
+        }
 
         for (int i = 0; i < shopList.Count; i++)
         {
-            switch (shopList[i].purchaseItem)
+            switch (i)
             {
-                case PurchaseItem.Card:
+                //Cases for Hot Picks
+                case 0:
+                case 1:
+                case 2:
+                    switch (shopList[i].purchaseItem)
                     {
-                        GameObject gm = Instantiate(vipCardPrefab, container) as GameObject;
-                        gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
+                        case PurchaseItem.Card:
+                            {
+                                GameObject gm = Instantiate(vipCardPrefab, hotPickContainer) as GameObject;
+                                gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
 
-                        if(shopList[i].vipCard.ToString().Equals("Bronze"))
-                            gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Silver Card";
+                                if (shopList[i].vipCard.ToString().Equals("Bronze"))
+                                    gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Silver Card";
 
-                        if (shopList[i].vipCard.ToString().Equals("Silver"))
-                            gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Black Card";
+                                if (shopList[i].vipCard.ToString().Equals("Silver"))
+                                    gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Black Card";
 
-                        if (shopList[i].vipCard.ToString().Equals("Platinum"))
-                            gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Gold Card";
+                                if (shopList[i].vipCard.ToString().Equals("Platinum"))
+                                    gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Gold Card";
 
-                        /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
-                        gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity+" Days";
+                                /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
+                                gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
 
-                        if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
-                        {
-                            gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
-                            gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
-                        }
-                        else
-                        {
-                            gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
-                            gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
-                            gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
-                        }
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
 
 
-                        gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
-                        if (shopList[i].isOffer)
-                        {
-                            gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
-                        }
-                        ShopItem itemData = shopList[i];
-                        gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+                                ShopItem itemData = shopList[i];
+                                gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+                            }
+
+                            break;
+
+
+
+                        case PurchaseItem.Diamond:
+                            {
+                                int index = 0;
+
+                                if (float.Parse(shopList[i].getValue) > 2000)
+                                {
+                                    index = 3;
+                                }
+
+                                if (float.Parse(shopList[i].getValue) > 1000)
+                                {
+                                    index = 2;
+                                }
+
+                                if (float.Parse(shopList[i].getValue) > 500)
+                                {
+                                    index = 1;
+                                }
+
+
+                                GameObject gm = Instantiate(diamondPrefab[index], hotPickContainer) as GameObject;
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+
+                                ShopItem itemData = shopList[i];
+                                gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+
+
+                            }
+                            break;
+
+                        case PurchaseItem.Coins:
+                            {
+                                GameObject gm = Instantiate(coinsPrefab[coinPrefabCounter], hotPickContainer) as GameObject;
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+
+                                ShopItem itemData = shopList[i];
+                                gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+
+                                if(coinPrefabCounter<3)
+                                    coinPrefabCounter++;
+                            }
+                            break;
+
+
+                        case PurchaseItem.Other:
+                            {
+                                GameObject gm = Instantiate(featuredItemsPrefab[(int)shopList[i].featureItem], hotPickContainer) as GameObject;
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].featureItem;
+
+                                if (shopList[i].featureItem == ShopFeaturedItem.Rabit)
+                                {
+                                    gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Validity").GetComponent<Text>().text = "X" + shopList[i].getValue;
+                                }
+
+
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+                            }
+                            break;
+
+                        default:
+                            {
+#if ERROR_LOG
+                                Debug.LogError("Unhandled case found in shop = " + shopList[i].purchaseItem);
+#endif
+                            }
+                            break;
                     }
-
                     break;
 
 
-
-                case PurchaseItem.Diamond:
+                //Cases for VIP Cards
+                case 3:
+                case 4:
+                case 5:
+                    switch (shopList[i].purchaseItem)
                     {
-                        int index = 0;
+                        case PurchaseItem.Card:
+                            {
+                                GameObject gm = Instantiate(vipCardPrefab, vipCardContainer) as GameObject;
+                                gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
 
-                        if (float.Parse(shopList[i].getValue) > 2000)
-                        {
-                            index = 3;
-                        }
+                                if (shopList[i].vipCard.ToString().Equals("Bronze"))
+                                    gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Silver Card";
 
-                        if (float.Parse(shopList[i].getValue) > 1000)
-                        {
-                            index = 2;
-                        }
+                                if (shopList[i].vipCard.ToString().Equals("Silver"))
+                                    gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Black Card";
 
-                        if (float.Parse(shopList[i].getValue) > 500)
-                        {
-                            index = 1;
-                        }
+                                if (shopList[i].vipCard.ToString().Equals("Platinum"))
+                                    gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Gold Card";
 
+                                /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
+                                gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
 
-                        GameObject gm = Instantiate(diamondPrefab[index], container) as GameObject;
-                        gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
-
-                        if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
-                        {
-                            gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
-                            gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
-                        }
-                        else
-                        {
-                            gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
-                            gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
-                            gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
-                        }
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
 
 
-                        gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
-                        if (shopList[i].isOffer)
-                        {
-                            gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
-                        }
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+                                ShopItem itemData = shopList[i];
+                                gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+                            }
 
-                        ShopItem itemData = shopList[i];
-                        gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
-
-
-                    }
-                    break;
-
-                case PurchaseItem.Coins:
-                    {
-                        GameObject gm = Instantiate(coinsPrefab, container) as GameObject;
-                        gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
-
-                        if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
-                        {
-                            gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
-                            gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
-                        }
-                        else
-                        {
-                            gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
-                            gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
-                            gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
-                        }
+                            break;
 
 
-                        gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
-                        if (shopList[i].isOffer)
-                        {
-                            gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
-                        }
 
-                        ShopItem itemData = shopList[i];
-                        gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+                        case PurchaseItem.Diamond:
+                            {
+                                int index = 0;
 
-                    }
-                    break;
+                                if (float.Parse(shopList[i].getValue) > 2000)
+                                {
+                                    index = 3;
+                                }
 
+                                if (float.Parse(shopList[i].getValue) > 1000)
+                                {
+                                    index = 2;
+                                }
 
-                case PurchaseItem.Other:
-                    {
-                        GameObject gm = Instantiate(featuredItemsPrefab[(int)shopList[i].featureItem], container) as GameObject;
-                        gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].featureItem;
-
-                        if (shopList[i].featureItem == ShopFeaturedItem.Rabit)
-                        {
-                            gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
-                        }
-                        else
-                        {
-                            gm.transform.Find("Validity").GetComponent<Text>().text = "X" + shopList[i].getValue;
-                        }
-
-                        
-
-                        if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
-                        {
-                            gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
-                            gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
-                        }
-                        else
-                        {
-                            gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
-                            gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
-                            gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
-                        }
+                                if (float.Parse(shopList[i].getValue) > 500)
+                                {
+                                    index = 1;
+                                }
 
 
-                        gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
-                        if (shopList[i].isOffer)
-                        {
-                            gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
-                        }
+                                GameObject gm = Instantiate(diamondPrefab[index], vipCardContainer) as GameObject;
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+
+                                ShopItem itemData = shopList[i];
+                                gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+
+
+                            }
+                            break;
+
+                        case PurchaseItem.Coins:
+                            {
+                                GameObject gm = Instantiate(coinsPrefab[0], vipCardContainer) as GameObject;
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+
+                                ShopItem itemData = shopList[i];
+                                gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+
+                            }
+                            break;
+
+
+                        case PurchaseItem.Other:
+                            {
+                                GameObject gm = Instantiate(featuredItemsPrefab[(int)shopList[i].featureItem], vipCardContainer) as GameObject;
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].featureItem;
+
+                                if (shopList[i].featureItem == ShopFeaturedItem.Rabit)
+                                {
+                                    gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Validity").GetComponent<Text>().text = "X" + shopList[i].getValue;
+                                }
+
+
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+                            }
+                            break;
+
+                        default:
+                            {
+#if ERROR_LOG
+                                Debug.LogError("Unhandled case found in shop = " + shopList[i].purchaseItem);
+#endif
+                            }
+                            break;
                     }
                     break;
 
                 default:
+                    switch (shopList[i].purchaseItem)
                     {
+                        case PurchaseItem.Card:
+                            {
+                                GameObject gm = Instantiate(vipCardPrefab, goldContainer) as GameObject;
+                                gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
+
+                                if (shopList[i].vipCard.ToString().Equals("Bronze"))
+                                    gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Silver Card";
+
+                                if (shopList[i].vipCard.ToString().Equals("Silver"))
+                                    gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Black Card";
+
+                                if (shopList[i].vipCard.ToString().Equals("Platinum"))
+                                    gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Gold Card";
+
+                                /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
+                                gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+                                ShopItem itemData = shopList[i];
+                                gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+                            }
+
+                            break;
+
+
+
+                        case PurchaseItem.Diamond:
+                            {
+                                int index = 0;
+
+                                if (float.Parse(shopList[i].getValue) > 2000)
+                                {
+                                    index = 3;
+                                }
+
+                                if (float.Parse(shopList[i].getValue) > 1000)
+                                {
+                                    index = 2;
+                                }
+
+                                if (float.Parse(shopList[i].getValue) > 500)
+                                {
+                                    index = 1;
+                                }
+
+
+                                GameObject gm = Instantiate(diamondPrefab[index], goldContainer) as GameObject;
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+
+                                ShopItem itemData = shopList[i];
+                                gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+
+
+                            }
+                            break;
+
+                        case PurchaseItem.Coins:
+                            {
+                                GameObject gm = Instantiate(coinsPrefab[0], goldContainer) as GameObject;
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+
+                                ShopItem itemData = shopList[i];
+                                gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+
+                            }
+                            break;
+
+
+                        case PurchaseItem.Other:
+                            {
+                                GameObject gm = Instantiate(featuredItemsPrefab[(int)shopList[i].featureItem], goldContainer) as GameObject;
+                                gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].featureItem;
+
+                                if (shopList[i].featureItem == ShopFeaturedItem.Rabit)
+                                {
+                                    gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Validity").GetComponent<Text>().text = "X" + shopList[i].getValue;
+                                }
+
+
+
+                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+                                else
+                                {
+                                    gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                                    gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                                    gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+                                }
+
+
+                                gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+                                if (shopList[i].isOffer)
+                                {
+                                    gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+                                }
+                            }
+                            break;
+
+                        default:
+                            {
 #if ERROR_LOG
-                        Debug.LogError("Unhandled case found in shop = " + shopList[i].purchaseItem);
+                                Debug.LogError("Unhandled case found in shop = " + shopList[i].purchaseItem);
 #endif
+                            }
+                            break;
                     }
                     break;
             }
         }
-
-
     }
 
+    private void LoadDiamondData(List<ShopItem> shopList)
+    {
+        container.GetComponent<GridLayoutGroup>().padding.top = 0;
+
+        /*container.GetComponent<GridLayoutGroup>().padding.top = 40;*/
+        GameObject gm;
+        for (int i = 0; i < shopList.Count; i++)
+        {
+            int index = 0;
+
+            if (float.Parse(shopList[i].getValue) > 2000)
+            {
+                index = 3;
+            }
+
+            if (float.Parse(shopList[i].getValue) > 1000)
+            {
+                index = 2;
+            }
+
+            if (float.Parse(shopList[i].getValue) > 500)
+            {
+                index = 1;
+            }
+
+            gm = Instantiate(diamondPrefab[i], container) as GameObject;
+            gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+            {
+                gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+            }
+            else
+            {
+                gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+            }
+
+
+            gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+            if (shopList[i].isOffer)
+            {
+                gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+            }
+
+            ShopItem itemData = shopList[i];
+            gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+
+        }
+        
+    }
+
+    private void LoadPointData(List<ShopItem> shopList)
+    {
+        Debug.Log("Total Items for Points:" + shopList.Count);
+        container.GetComponent<GridLayoutGroup>().padding.top = 40;
+
+        GameObject gm;
+
+        for (int i = 0; i < 3; i++)
+        {
+            gm = Instantiate(coinsPrefab[i], container) as GameObject;
+            gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
+
+            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+            {
+                gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+            }
+            else
+            {
+                gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+            }
+
+
+            gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+            if (shopList[i].isOffer)
+            {
+                gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+            }
+
+            ShopItem itemData = shopList[i];
+            gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+        }
+
+        for (int i = 3; i < shopList.Count; i++)
+        {
+            gm = Instantiate(vipCardPrefab, container) as GameObject;
+            gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
+
+            if (shopList[i].vipCard.ToString().Equals("Bronze"))
+                gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Silver Card";
+
+            if (shopList[i].vipCard.ToString().Equals("Silver"))
+                gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Black Card";
+
+            if (shopList[i].vipCard.ToString().Equals("Platinum"))
+                gm.transform.Find("Prize").GetComponent<Text>().text = "" + "Gold Card";
+
+            /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
+            gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
+
+            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+            {
+                gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
+                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
+            }
+            else
+            {
+                gm.transform.Find("Buy/Icon").gameObject.SetActive(true);
+                gm.transform.Find("Buy/Icon").gameObject.GetComponent<Image>().sprite = purchaseCurrencySprite[(int)shopList[i].purchaseCurrency];
+                gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = GetTrimmedAmount(shopList[i].purchaseValue);
+            }
+
+
+            gm.transform.Find("Offer").gameObject.SetActive(shopList[i].isOffer);
+            if (shopList[i].isOffer)
+            {
+                gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
+            }
+            ShopItem itemData = shopList[i];
+            gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
+        }
+
+    }
 
     private void OnClickOnBuyButton(ShopItem itemData)
     {
@@ -771,9 +1524,6 @@ public enum PurchaseItem
     Card,
     Other
 }
-
-
-
 
 
 [System.Serializable]
