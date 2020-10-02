@@ -392,7 +392,7 @@ public class MemberListUIManager : MonoBehaviour
         }
     }
 
-    private void MemberListUIManager_OnStateChange(FilterState stateType, string stateName)
+    private void MemberListUIManager_OnStateChange(FilterState stateType, string stateName, string PanelName)
     {
         CurrentMemberListFilterName.text = stateName;
         if(stateType == FilterState.Ascending)
