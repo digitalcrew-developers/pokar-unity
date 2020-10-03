@@ -13,10 +13,11 @@ public class CareerMnuScreenManager : MonoBehaviour
         Debug.Log("selectedIndex---------------   " + CareerManager.instance.selectedIndex_CareerMenuScreen);
         for (int i = 0; i < btnList.Count; i++)
         {
-            btnList[i].GetComponent<Image>().color = new Color32(42, 42, 42, 255);
+            //btnList[i].GetComponent<Image>().color = new Color32(42, 42, 42, 255);
             if (CareerManager.instance.selectedIndex_CareerMenuScreen == i)
             {
-                btnList[i].GetComponent<Image>().color = new Color32(80, 180, 80, 255);
+                /*btnList[i].GetComponent<Image>().color = new Color32(80, 180, 80, 255);*/
+                /*btnList[i].GetComponent<Button>().pre*/
                 CareerManager.instance.headingTxt.text = btnList[i].transform.GetChild(0).GetComponent<Text>().text;
             }
         }
