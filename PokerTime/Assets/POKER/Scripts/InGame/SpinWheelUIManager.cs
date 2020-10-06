@@ -152,16 +152,57 @@ public class SpinWheelUIManager : MonoBehaviour
         else if (requestType == RequestType.deductFromWallet)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
+
             if (data["success"].ToString() == "1")
             {
                 //ShowSpinWheelContent(data);
-
+                Debug.Log("Successfully deduct amount");
             }
             else
             {
                 MainMenuController.instance.ShowMessage(data["message"].ToString());
             }
         }
+    }
+
+    public void UpdateUserBalance(PlayerGameDetails updatedData)
+    {
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"silver\":\"0\"," +
+            "\"coins\":\"" + (int)updatedData.coins + "\"," +
+            "\"points\":\"" + (int)updatedData.points + "\"," +
+            "\"diamond\":\"" + (int)updatedData.diamonds + "\"," +
+
+            "\"rabbit\":\"0\"," +
+            "\"emoji\":\"0\"," +
+            "\"time\":\"0\"," +
+            "\"day\":\"0\"," +
+            "\"playerProgress\":\"\"}";
+
+        //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+
+        WebServices.instance.SendRequest(RequestType.UpdateUserBalance, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
+        {
+            //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+
+            if (errorMessage.Length > 0)
+            {
+                //MainMenuController.instance.ShowMessage(errorMessage);
+            }
+            else
+            {
+                JsonData data = JsonMapper.ToObject(serverResponse);
+                if (data["status"].Equals(true))
+                {
+                    PlayerManager.instance.SetPlayerGameData(updatedData);
+                    //UpdateAlltext(updatedData);
+                }
+                else
+                {
+                    //MainMenuController.instance.ShowMessage(data["message"].ToString());
+                }
+            }
+        });
     }
 
 
@@ -226,7 +267,8 @@ public class SpinWheelUIManager : MonoBehaviour
                     {
                         spinWheel.SetActive(true);
                     }
-                    else {
+                    else 
+                    {
                         InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
 
                         InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
@@ -262,11 +304,15 @@ public class SpinWheelUIManager : MonoBehaviour
     void DeductCoinPostServer(int val) {
 
         int amount = val;
-       
+
+        PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
+        playerData.coins -= amount;
+        UpdateUserBalance(playerData);
+
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                               "\"amount\":\"" + amount + "\"," +
                               "\"deductFrom\":\"" + "coins" + "\"," +
                                "\"narration\":\"" + "Spin Wheel"+ "\"}";
-        WebServices.instance.SendRequest(RequestType.deductFromWallet, requestData, true, OnServerResponseFound);
+        WebServices.instance.SendRequest(RequestType.deductFromWallet, requestData, true, OnServerResponseFound);        
     }
 }

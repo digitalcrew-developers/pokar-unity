@@ -776,6 +776,7 @@ public class InGameUiManager : MonoBehaviour
             {
                 case InGameScreens.TopUp:
                     {
+                        Debug.Log("Init topUp screen");
                         gm.GetComponent<TopUpScript>().Init((float)parameter[0]);
                     }
                     break;

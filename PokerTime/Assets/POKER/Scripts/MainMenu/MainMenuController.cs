@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
 using System.IO;
+using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class MainMenuController : MonoBehaviour
 
 	public GameObject[] screens; // All screens prefab
 	public Transform[] screenLayers; // screen spawn parent
+
+	//DEV_CODE
+	public GameObject[] bottomMenus;
+
 	private List<MainMenuActiveScreen> mainMenuActiveScreens = new List<MainMenuActiveScreen>();
 	private NotificationDetails notificationDetails = new NotificationDetails();
 
@@ -26,6 +31,7 @@ public class MainMenuController : MonoBehaviour
 	private void Start()
 	{
 		LoadVideoAndScreenshot();
+		MenuSelection(4);
 
 		GlobalGameManager.IsJoiningPreviousGame = false;
 
@@ -101,6 +107,7 @@ public class MainMenuController : MonoBehaviour
 
 			case "menu":
 				{
+					MenuSelection(4);
 					ShowScreen(MainMenuScreens.MainMenu);
 				}
 				break;
@@ -108,22 +115,26 @@ public class MainMenuController : MonoBehaviour
 
 			case "profile":
 				{
+					MenuSelection(3);
 					ShowScreen(MainMenuScreens.Profile);
 				}
 				break;
 
 			case "shop":
 				{
+					MenuSelection(0);
 					ShowScreen(MainMenuScreens.Shop);
 				}
 				break;
 			case "Forum":
 				{
+					MenuSelection(1);
 					ShowScreen(MainMenuScreens.Forum);
 				}
 				break;
 			case "career":
 				{
+					MenuSelection(2);
 					ShowScreen(MainMenuScreens.Career);
 				}
 				break;
@@ -138,7 +149,22 @@ public class MainMenuController : MonoBehaviour
 	}
 
 
-
+	private void MenuSelection(int index)
+	{
+        for (int i = 0; i < bottomMenus.Length; i++)
+        {
+			if (i == index)
+			{
+				bottomMenus[i].GetComponent<Image>().enabled = true;
+				bottomMenus[i].transform.Find("Buttons").gameObject.SetActive(true);
+			}
+			else
+			{
+				bottomMenus[i].GetComponent<Image>().enabled = false;
+				bottomMenus[i].transform.Find("Buttons").gameObject.SetActive(false);
+			}
+        }
+	}
 
 
 
