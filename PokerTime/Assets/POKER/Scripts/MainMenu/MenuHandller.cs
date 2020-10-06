@@ -12,7 +12,8 @@ public class MenuHandller : MonoBehaviour
 
 	public Text coinsText, diamondsText, pointsText,notificationText;
 	public GameObject createClubPopUp,joinClubPopUp,notificationIcon;
-	public InputField createClubField, joinClubField, agentField;
+
+    public TMPro.TMP_InputField TMP_CreateClubField, TMP_JoinClubField, TMP_AgentField;
 
     //temp. club item until we call club list api
     [SerializeField]
@@ -102,29 +103,29 @@ public class MenuHandller : MonoBehaviour
 				{
 					string error = "";
 
-					if (!Utility.IsValidClubName(createClubField.text, out error))
+					if (!Utility.IsValidClubName(TMP_CreateClubField.text, out error))
 					{
 						MainMenuController.instance.ShowMessage(error);
 						return;
 					}
 
 					string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-						"\"clubName\":\"" + createClubField.text + "\"}";
+						"\"clubName\":\"" + TMP_CreateClubField.text + "\"}";
 
 					MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
 					WebServices.instance.SendRequest(RequestType.CreateClub, requestData, true, OnServerResponseFound);
 				}
 				else
 				{
-					if (joinClubField.text.Length <= 0)
+					if (TMP_JoinClubField.text.Length <= 0)
 					{
 						MainMenuController.instance.ShowMessage("Please enter clubId");
 						return;
 					}
 
 					string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-						"\"uniqueClubId\":\"" + joinClubField.text + "\","+
-						"\"agentId\":\"" + agentField.text + "\"}";
+						"\"uniqueClubId\":\"" + TMP_JoinClubField.text + "\","+
+						"\"agentId\":\"" + TMP_AgentField.text + "\"}";
 
 					MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
 					WebServices.instance.SendRequest(RequestType.SendClubJoinRequest, requestData, true, OnServerResponseFound);

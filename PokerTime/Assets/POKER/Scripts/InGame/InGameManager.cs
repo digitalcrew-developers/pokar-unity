@@ -112,8 +112,6 @@ public class InGameManager : MonoBehaviour
         }
 
         AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
-
-
     }
 
 
