@@ -107,7 +107,8 @@ public class GameConstants : MonoBehaviour
           API_URL+"/convertTicket",
           API_URL+"/sendVIP",
           SOCKET_URL+"/redeemDailyMission",
-          API_URL+"/updateProfile"
+          API_URL+"/updateProfile",
+          API_URL+"/getClubDetails"
     };
     #endregion
 
@@ -177,5 +178,6 @@ public enum RequestType
     ConvertTicket,
     SendVIP,
     redeemDailyMission,
-    updateProfile
+    updateProfile,
+    GetClubDetails
 }

@@ -23,7 +23,7 @@ public class SelectAvatarFrom : MonoBehaviour
 #if UNITY_ANDROID
         AndroidPicker.BrowseImage(false);
 #elif UNITY_EDITOR
-        path = EditorUtility.OpenFilePanel("Ovrewrite with jpg", "", "");
+        string path = EditorUtility.OpenFilePanel("Ovrewrite with jpg", "", "");
         if (path != null)
         {
             WWW www = new WWW("" + path);

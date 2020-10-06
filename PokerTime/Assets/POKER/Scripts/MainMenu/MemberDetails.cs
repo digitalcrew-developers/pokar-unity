@@ -26,6 +26,8 @@ public class MemberDetails : MonoBehaviour
     private float halfHeight = 678f;
     private float fullWidth = 637.2f;
 
+    private GameObject ListObject;
+
     private void Awake()
     {
         if(null== instance)
@@ -38,11 +40,11 @@ public class MemberDetails : MonoBehaviour
     /// Initialise needs to be called for each time member
     /// screen is opened
     /// </summary>
-    public void Initialise(ClubMemberDetails _clubMemberDetails)
+    public void Initialise(ClubMemberDetails _clubMemberDetails, GameObject ListObject)
     {
         //fill general details from previously present data 
         clubMemberDetails = _clubMemberDetails;
-
+        UserName.text = _clubMemberDetails.userName;
         UserID.text = "ID: " + clubMemberDetails.userId + " | " + "Nickname " + clubMemberDetails.nickName;
 
         //call api and fill rest details
@@ -79,6 +81,9 @@ public class MemberDetails : MonoBehaviour
             }
         }
         */
+
+        DeleteMemberBtn.onClick.RemoveAllListeners();
+        DeleteMemberBtn.onClick.AddListener(DeleteMember);
     }
 
     private void ManagerToogleValueChanged(object classicToogle)
@@ -98,7 +103,12 @@ public class MemberDetails : MonoBehaviour
 
     private void CallUpdatePlayer(ClubMemberRole clubMemberRole)
     {
+        MemberListUIManager.instance.ChangeUserRole(ListObject,false, clubMemberDetails, clubMemberRole);
+    }
 
+    private void DeleteMember()
+    {
+        MemberListUIManager.instance.ChangeUserRole(ListObject, true, clubMemberDetails, ClubMemberRole.Member);
     }
 
     private void EnableTab(string tab)

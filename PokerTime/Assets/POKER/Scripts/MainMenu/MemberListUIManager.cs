@@ -145,6 +145,8 @@ public class MemberListUIManager : MonoBehaviour
         {
             for (int i = 0; i < oldMembersList.Count; i++)
             {
+                int x = i;
+
                 GameObject gm = Instantiate(oldMemberPrefab, container) as GameObject;
                 gm.SetActive(true);
 
@@ -158,7 +160,7 @@ public class MemberListUIManager : MonoBehaviour
 
                 gm.GetComponent<Button>().onClick.RemoveAllListeners();
                 Debug.Log("Debug i value :" + i);
-                gm.GetComponent<Button>().onClick.AddListener(() => OpenMemberDetailsPanel(i));
+                gm.GetComponent<Button>().onClick.AddListener(() => OpenMemberDetailsPanel(x, gm));
             }
             MemberCountText.text = "Members : " + oldMembersList.Count;
         }
@@ -166,48 +168,56 @@ public class MemberListUIManager : MonoBehaviour
         //layoutManager.UpdateLayout();
     }
 
-    private void OpenMemberDetailsPanel(int i)
+    private void OpenMemberDetailsPanel(int i, GameObject gm)
     {
         MemberDetailsPanel.SetActive(true);
         Debug.Log(oldMembersList.Count);
         Debug.Log("i is"  + i);
-        //MemberDetails.instance.Initialise(oldMembersList[i]);
+        MemberDetails.instance.Initialise(oldMembersList[i], gm);
     }
 
     public void ChangeUserRole(GameObject gm,bool isDeleteRequest, ClubMemberDetails memberDetails,ClubMemberRole roleToAssign = ClubMemberRole.Member)
     {
         if (isDeleteRequest)
         {
-            string requestData = "{\"clubRequestId\":\"" + memberDetails.clubRequestId + "\"}";
+            string requestData = "{\"requestUserId\":\"" + memberDetails.userId + "\"," +
+                    "\"assignRole\":\"" + roleToAssign + "\"," +
+                    "\"requestStatus\":\"Deleted\"," +
+                    "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"}";
 
-            MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-            WebServices.instance.SendRequest(RequestType.DeleteUserJoinRequest, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
-            {
-                MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
-                if (errorMessage.Length > 0)
-                {
-                    if (isShowErrorMessage)
-                    {
-                        MainMenuController.instance.ShowMessage(errorMessage);
-                    }
+            WebServices.instance.SendRequest(RequestType.ChangePlayerRoleInClub, requestData, true, OnServerResponseFound);
 
-                    return;
-                }
+            //string requestData = "{\"clubRequestId\":\"" + memberDetails.clubRequestId + "\"}";
 
-                JsonData data = JsonMapper.ToObject(serverResponse);
+            //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+            //WebServices.instance.SendRequest(RequestType.DeleteUserJoinRequest, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
+            //{
+            //    MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
-                if (data["success"].ToString() == "1")
-                {
-                    Destroy(gm);
-                    newMembersList.Remove(memberDetails);
-                    MemberCountText.text = "Members : " + newMembersList.Count;
-                }
-                else
-                {
-                    MainMenuController.instance.ShowMessage(data["message"].ToString());
-                }
-            });
+            //    if (errorMessage.Length > 0)
+            //    {
+            //        if (isShowErrorMessage)
+            //        {
+            //            MainMenuController.instance.ShowMessage(errorMessage);
+            //        }
+
+            //        return;
+            //    }
+
+            //    JsonData data = JsonMapper.ToObject(serverResponse);
+
+            //    if (data["success"].ToString() == "1")
+            //    {
+            //        Destroy(gm);
+            //        newMembersList.Remove(memberDetails);
+            //        MemberCountText.text = "Members : " + newMembersList.Count;
+            //    }
+            //    else
+            //    {
+            //        MainMenuController.instance.ShowMessage(data["message"].ToString());
+            //    }
+            //});
         }
         else
         {
@@ -215,10 +225,8 @@ public class MemberListUIManager : MonoBehaviour
             "\"assignRole\":\"" + roleToAssign + "\"," +
             "\"requestStatus\":\"Approved\","+
             "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"}";
-
             
-
-            MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+            //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
             WebServices.instance.SendRequest(RequestType.ChangePlayerRoleInClub, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
             {
                 MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
@@ -342,6 +350,11 @@ public class MemberListUIManager : MonoBehaviour
             }
 
             return;
+        }
+
+        if(requestType == RequestType.ChangePlayerRoleInClub)
+        {
+            UnityEngine.Debug.Log(serverResponse);
         }
 
         if(requestType == RequestType.GetPendingClubJoinRequest)
