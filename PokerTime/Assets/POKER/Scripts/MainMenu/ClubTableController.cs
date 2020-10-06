@@ -13,6 +13,9 @@ public class ClubTableController : MonoBehaviour
     public Button MTTGameTabButton_NLH;
     public GameObject RingGamePanel_NLH, SNGamePanel_NLH, MTTGamePanel_NLH;
 
+    public Toggle EVChop;
+    public GameObject EVChopValueField;
+
     private void Awake()
     {
         if (null == instance)
@@ -36,7 +39,24 @@ public class ClubTableController : MonoBehaviour
         RingGameTabButton_NLH.onClick.AddListener(() => OpenScreen("Ring"));
         SNGGameTabButton_NLH.onClick.AddListener(() => OpenScreen("SNG"));
         MTTGameTabButton_NLH.onClick.AddListener(() => OpenScreen("MTT"));
+
+        EVChop.onValueChanged.AddListener(delegate {
+            ToggleValueChanged(EVChop);
+        });
     }
+
+    void ToggleValueChanged(Toggle change)
+    {
+        if (change.isOn)
+        {
+            EVChopValueField.SetActive(true);
+        }
+        else
+        {
+            EVChopValueField.SetActive(false);
+        }
+    }
+
 
     private void OpenScreen(string screenName)
     {
