@@ -12,6 +12,9 @@ public class ClubListUiManager : MonoBehaviour
 	public GameObject clubListPrefab;
 	public Transform container;
 
+    public GameObject MiddleButtons;
+    public GameObject TopButtonJoin, TopButtonCreate;
+
 	void Awake()
 	{
 		instance = this;
@@ -42,13 +45,14 @@ public class ClubListUiManager : MonoBehaviour
 		MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
 	}
 
+    public Text DebugText;
+
 	private void ShowClubList(JsonData data)
 	{
 		for (int i = 0; i < container.childCount; i++)
 		{
 			Destroy(container.GetChild(i).gameObject);
 		}
-
 
 		for (int i = 0; i < data["data"].Count; i++)
 		{
@@ -119,13 +123,19 @@ public class ClubListUiManager : MonoBehaviour
 			JsonData data = JsonMapper.ToObject(serverResponse);
 
 			if (data["success"].ToString() == "1")
-			{
-				ShowClubList(data);
+            {
+                MiddleButtons.SetActive(false);
+                TopButtonJoin.SetActive(true);
+                TopButtonCreate.SetActive(true);
+                ShowClubList(data);
 			}
 			else
 			{
-				//MainMenuController.instance.ShowMessage(data["message"].ToString());
-			}
+                MiddleButtons.SetActive(true);
+                TopButtonJoin.SetActive(false);
+                TopButtonCreate.SetActive(false);
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
+            }
 		}
 	}
 
