@@ -20,11 +20,15 @@ public class PreviousGameChecker: MonoBehaviour
 
     private void Start()
     {
-        roomData = PrefsManager.GetRoomData();
+        //instead of checking local data
+        //hit an api to check if user can join previous game.
+        //disabling below code.
+
+        //roomData = PrefsManager.GetRoomData();
 
         Debug.Log("is lobby in script = "+roomData.isLobbyRoom);
 
-        if (!string.IsNullOrEmpty(roomData.socketTableId))
+        if (null!=roomData && !string.IsNullOrEmpty(roomData.socketTableId))
         {
             ToggleLoadingScreen(true);
             Connect();

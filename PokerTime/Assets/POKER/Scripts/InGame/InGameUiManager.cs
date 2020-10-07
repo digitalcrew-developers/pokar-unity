@@ -1110,7 +1110,8 @@ public enum InGameScreens
     Tips,
     SpinWheelScreen,
     DealerImageScreen,
-    SwitchTable
+    SwitchTable,
+    GameDisplay
 }
 
 public enum PlayerAction

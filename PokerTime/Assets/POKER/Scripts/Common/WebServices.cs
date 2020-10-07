@@ -113,7 +113,7 @@ public class WebServices : MonoBehaviour
 			{
 				errorMessage = "Server response not found, please check your internet connection is working properly";
 			}
-			//Debug.Log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$   " + www.text);
+			Debug.LogWarning("Request was:" + request.url + " " + request.requestCode +" Response   " + www.text);
 			request.callbackMethod(request.requestCode, www.text, request.isShowErrorMessage, errorMessage);
 		}
 
