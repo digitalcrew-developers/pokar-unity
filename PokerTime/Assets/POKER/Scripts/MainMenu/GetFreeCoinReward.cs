@@ -73,6 +73,7 @@ public class GetFreeCoinReward : MonoBehaviour
         }
 
         string lastRewardTimeStr = PlayerPrefs.GetString(TIMED_REWARDS_TIME);
+        Debug.Log("lastRewardTimeStr" + lastRewardTimeStr);
         if (!string.IsNullOrEmpty(lastRewardTimeStr))
         {
             lastRewardTime = DateTime.ParseExact(lastRewardTimeStr, FMT, CultureInfo.InvariantCulture);

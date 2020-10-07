@@ -25,9 +25,14 @@ public class MenuScript : MonoBehaviour
                 }
                 break;
 
+            case "GameDisplay":
+                {
+                    InGameUiManager.instance.ShowScreen(InGameScreens.GameDisplay);
+                }
+                break;
+
             case "SwitchTable":
                 {
-                    InGameUiManager.instance.ShowScreen(InGameScreens.SwitchTable);
                 }
                 break;
             case "tableSettings":

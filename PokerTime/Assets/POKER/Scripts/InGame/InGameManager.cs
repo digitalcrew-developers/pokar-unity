@@ -1384,7 +1384,7 @@ public class InGameManager : MonoBehaviour
         onlinePlayersScript = new PlayerScript[0];
     }
 
- 
+
     /*void OnApplicationFocus(bool focus)
       {
           if (!focus)
@@ -1404,6 +1404,14 @@ public class InGameManager : MonoBehaviour
 
       }*/
 
+    void OnApplicationQuit()
+    {
+
+        Debug.LogError("OnApplicationQuitOnApplicationQuitOnApplicationQuit");
+        SocketController.instance.SendLeaveMatchRequest();
+        // StartCoroutine(WaitAndSendLeaveRequest());
+//        LoadMainMenu();  
+    }
 
     //DEV_CODE
     public void StartRecording()
