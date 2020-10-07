@@ -18,7 +18,6 @@ public class PrefsManager: MonoBehaviour
         string stringData = PlayerPrefs.GetString(""+PrefsKey.RoomData);
 
         Debug.Log("parsing room = " + stringData);
-
         
 
         if (!string.IsNullOrEmpty(stringData))

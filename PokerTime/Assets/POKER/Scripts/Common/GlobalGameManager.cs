@@ -98,9 +98,9 @@ public class GlobalGameManager : MonoBehaviour
     }
 
     private void SaveAllData()
-    {
+    { 
         PrefsManager.SetPlayerGameData(PlayerManager.instance.GetPlayerGameData());
-        //FireBaseAnalyticsIntegration.SharedInstance.LogEvent(FireBaseEvents.Game_Close);
+        //FireBaseAnalyticsIntegration.SharedInstance.LogEvent(FireBaseEvents.Game_Close);        
     }
 
     public void SetRoomData(RoomData data)

@@ -88,7 +88,7 @@ public class ClubListUiManager : MonoBehaviour
 			}			
 		}
 
-		layoutManager.UpdateLayout();
+		//layoutManager.UpdateLayout();
 	}
 
 	private void OnClickOnClub(string clubName,string uniqueClubId,string clubId)

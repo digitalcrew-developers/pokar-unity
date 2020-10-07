@@ -4,6 +4,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using LitJson;
+using System;
+using UnityEngine.Networking;
 
 public class ExchangeChips : MonoBehaviour
 {
@@ -68,16 +70,24 @@ public class ExchangeChips : MonoBehaviour
 
     private void GetChips()
     {
-        string request = "{\"userId\":\"" + MemberListUIManager.instance.GetClubOwnerObject().userId + "\"," +
-                        "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+        int id = 1;
+        string userId = MemberListUIManager.instance.GetClubOwnerObject().userId;
+        int userIdInt = 0;
+
+        int.TryParse(userId, out userIdInt);
+
+        string clubID = ClubDetailsUIManager.instance.GetClubId();
+        int clubIdInt = 0;
+
+        int.TryParse(clubID, out clubIdInt);
+
+        string request = "{\"userId\":\"" + userIdInt + "\"," +
+                        "\"clubId\":\"" + clubIdInt + "\"," +
                         "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
-                        "\"clubStatus\":\"" + "1" + "\"}";
+                        "\"clubStatus\":\"" + id + "\"}";
 
-        UnityEngine.Debug.Log("data :" + request);
-
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-        WebServices.instance.SendRequest(RequestType.CreateClub, request, true, OnServerResponseFound);
-    }
+        WebServices.instance.SendRequest(RequestType.GetClubDetails, request, true, OnServerResponseFound);
+    }    
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
@@ -99,6 +109,8 @@ public class ExchangeChips : MonoBehaviour
             case RequestType.GetClubDetails:
                 {
                     JsonData data = JsonMapper.ToObject(serverResponse);
+                    string chipsText = data["data"][0]["ptChips"].ToString();
+                    ChipsCount.text = chipsText;
                 }
                 break;
             default:
@@ -108,4 +120,13 @@ public class ExchangeChips : MonoBehaviour
                 break;
         }
     }
+}
+
+[Serializable]
+public class ClubDetailsAPI
+{
+    public int userId;
+    public int clubId;
+    public string uniqueClubId;
+    public int clubStatus;
 }

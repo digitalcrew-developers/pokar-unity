@@ -186,7 +186,7 @@ public class MainMenuController : MonoBehaviour
 		string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId +  "\"}";
 		//{ userId: 2}
 
-		WebServices.instance.SendRequest(RequestType.userLoginLogs, requestData, true, OnServerResponseFound);
+		//WebServices.instance.SendRequest(RequestType.userLoginLogs, requestData, true, OnServerResponseFound);
 
 	
 	}
