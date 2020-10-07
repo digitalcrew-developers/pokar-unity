@@ -67,7 +67,7 @@ public class LobbyUiManager: MonoBehaviour
         BagPackBtn.onClick.AddListener(() => ShowBackPackScreen());
         ChangeTextColor(0);
     }
-    void ShowMissonScreen()
+    public void ShowMissonScreen()
     {
         Debug.Log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         MainMenuController.instance.ShowScreen(MainMenuScreens.Missions);

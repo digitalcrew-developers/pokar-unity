@@ -1605,7 +1605,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 28.6, y: 0}
+  m_AnchoredPosition: {x: 28.599976, y: 0}
   m_SizeDelta: {x: -57.161316, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6769990576755092204
@@ -3099,7 +3099,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 28.6, y: 0}
+  m_AnchoredPosition: {x: 28.599976, y: 0}
   m_SizeDelta: {x: -57.161316, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6416633248714253716
@@ -5390,7 +5390,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -52.037903}
+  m_AnchoredPosition: {x: 0, y: -52.03784}
   m_SizeDelta: {x: 10, y: -104.076416}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6993404091038750630
@@ -6083,7 +6083,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6761220550616410854}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2879811822647892075}
+        m_MethodName: OnMissoinBtnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6761220551002418904
 GameObject:
   m_ObjectHideFlags: 0
@@ -6443,6 +6454,7 @@ MonoBehaviour:
   createClubPopUp: {fileID: 1896931826103014444}
   joinClubPopUp: {fileID: 2601753290401050913}
   notificationIcon: {fileID: 1890501329362945021}
+  MissionIcon: {fileID: 6761220550616410849}
   TMP_CreateClubField: {fileID: 2207020454594617990}
   TMP_JoinClubField: {fileID: 6270742468803109311}
   TMP_AgentField: {fileID: 566000928089905373}
@@ -8120,7 +8132,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 28.6, y: 0}
+  m_AnchoredPosition: {x: 28.599976, y: 0}
   m_SizeDelta: {x: -57.161316, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4956299970669090156

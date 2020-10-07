@@ -54,6 +54,11 @@ public class MenuHandller : MonoBehaviour
 	}
 
 
+	public void OnMissoinBtnClick()
+	{
+		MainMenuController.instance.ShowScreen(MainMenuScreens.Missions);
+	}
+
 	private void UpdateAllText()
 	{
 		PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();

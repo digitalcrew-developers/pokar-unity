@@ -26,6 +26,11 @@ public class CareerManager : MonoBehaviour
         MainMenuController.instance.ShowScreen(MainMenuScreens.CareerDataScreen);
     }
 
+    public void OnClickVIP()
+    {
+        MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
+    }
+
     public void OnDMY_BtnClick(string val) {
         for (int i = 0; i < DMY_objList.Length; i++)
         {

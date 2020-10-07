@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ProfileScreenUiManager : MonoBehaviour
 {
     public static ProfileScreenUiManager instance;
-    public Image avtar, frame;
+    public Image avtar, frame, flag;
     public RawImage avatar;
     public string countrycode, countryname;
     public string avtarurl, flagurl, frameurl;
@@ -57,7 +57,7 @@ public class ProfileScreenUiManager : MonoBehaviour
                 for (int i = 0; i < data["getData"].Count; i++)
                 {
 
-                    loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString());
+                    loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString(), data["getData"][i]["countryFlag"].ToString());
                     userLevel.text = "Lvl. " + data["getData"][i]["userLevel"].ToString() + ">>";
                     userName.text = data["getData"][i]["userName"].ToString();
                     userId.text = "UserID:" + data["getData"][i]["userId"].ToString();
@@ -76,9 +76,10 @@ public class ProfileScreenUiManager : MonoBehaviour
             }
         }
     }
-    public void loadImages(string urlAvtar,string urlframe)
+    public void loadImages(string urlAvtar,string urlframe,string urlflag)
     {
-     //   Debug.Log("Success data send");
+        //   Debug.Log("Success data send");
+        StartCoroutine(loadSpriteImageFromUrl(urlflag, flag));
         StartCoroutine(loadSpriteImageFromUrl(urlAvtar, avtar));
         StartCoroutine(loadSpriteImageFromUrl(urlframe, frame));
     }
