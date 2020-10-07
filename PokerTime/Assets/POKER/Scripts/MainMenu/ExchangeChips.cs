@@ -35,11 +35,31 @@ public class ExchangeChips : MonoBehaviour
 
     public void Init()
     {
+        Diamonds.text = PlayerManager.instance.GetPlayerGameData().diamonds.ToString();
+        Diamonds.enabled = false;
+        
         GetChips();
         DiamondTabButton.onClick.RemoveAllListeners();
         PTChipsTabButton.onClick.RemoveAllListeners();
         PTChipsTabButton.onClick.AddListener(() => OpenScreen("PTChips"));
         DiamondTabButton.onClick.AddListener(() => OpenScreen("Diamond"));
+
+        ConfirmButton.onClick.RemoveAllListeners();
+        ConfirmButton.onClick.AddListener(AddPTChips);
+    }
+
+    private void AddPTChips()
+    {
+        string userID = PlayerManager.instance.GetPlayerGameData().userId;
+        string clubID = ClubDetailsUIManager.instance.GetClubId();
+        string chipsCount = PPChips.text;
+
+        string request = "{\"userId\":\"" + userID + "\"," +
+                        "\"clubId\":\"" + clubID + "\"," +
+                        "\"chips\":\"" + chipsCount + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.AddPTChips, request, true, OnServerResponseFound);
+
     }
 
     private void OpenScreen(string screenName)
@@ -111,6 +131,13 @@ public class ExchangeChips : MonoBehaviour
                     JsonData data = JsonMapper.ToObject(serverResponse);
                     string chipsText = data["data"][0]["ptChips"].ToString();
                     ChipsCount.text = chipsText;
+                }
+                break;
+            case RequestType.AddPTChips:
+                {
+                    GetChips();
+                    ClubDetailsUIManager.instance.GetChips();
+                    gameObject.SetActive(false);
                 }
                 break;
             default:
