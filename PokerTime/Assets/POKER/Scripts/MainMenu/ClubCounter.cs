@@ -255,7 +255,7 @@ public class ClubCounter : MonoBehaviour
 
 
 
-    private void GetMembersListFromServer()
+    public void GetMembersListFromServer()
     {
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
         //old member list
@@ -282,6 +282,7 @@ public class ClubCounter : MonoBehaviour
             JsonData data = JsonMapper.ToObject(serverResponse);
             if (data["success"].Equals(1))
             {
+                GetMembersListFromServer();
                 CloseSendOutPanel();
             }
             else
@@ -293,7 +294,7 @@ public class ClubCounter : MonoBehaviour
         if (requestType == RequestType.GetClubMemberList)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
-
+            Debug.LogWarning("Club memeber list counter :" + serverResponse);
             if (data["status"].Equals(true))
             {
                 AddToAllLists(data);
@@ -468,6 +469,10 @@ public class ClubCounter : MonoBehaviour
 
     private void OpenSendOut()
     {
+        selectedSendPlayerCount = 0;
+
+        PlayerSelected.text = string.Empty;
+
         AmountToSendInputField.onValueChanged.RemoveAllListeners();
         AmountToSendInputField.onValueChanged.AddListener(UpdateUIForSendAmount);
 
@@ -494,6 +499,11 @@ public class ClubCounter : MonoBehaviour
                 AddToSelectedUsersForSendOut(tardeItem.transform.Find("Toggle").GetComponent<Toggle>(), clubMemberDetails);
             });
 
+
+            selectedSendPlayerCount++;
+
+            PlayerSelected.text = "x" + selectedSendPlayerCount;
+            selectedMembers += "{\"userId\":\"" + clubMemberDetails.userId + "\"},";
         }
     }
 
@@ -522,6 +532,7 @@ public class ClubCounter : MonoBehaviour
         if (t.isOn)
         {
             selectedSendPlayerCount++;
+            selectedMembers += "{\"userId\":\"" + clubMemberDetails.userId + "\"},";
         }
         else
         {
@@ -531,17 +542,19 @@ public class ClubCounter : MonoBehaviour
         if (selectedSendPlayerCount < 0) { selectedSendPlayerCount = 0; }
 
         PlayerSelected.text = "x" + selectedSendPlayerCount;
-        selectedMembers += "{\"userId\":\"" + clubMemberDetails.userId + "\"},";
     }
 
     private void SendChipsAPIRequest()
     {
-        float amount = CalculateSenAmountBasedOnPercentage();
+        int amount = 0;
+        int.TryParse(AmountToSendInputField.text, out amount);
+
+        selectedMembers = selectedMembers.Remove(selectedMembers.Length-1, 1);
 
         string request = "{\"userId\":\"" + MemberListUIManager.instance.GetClubOwnerObject().userId + "\"," +
             "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
             "\"amount\":\"" + amount.ToString() + "\"," +
-            "\"membersArray\":\"" + "[" + selectedMembers + "]" + "\"}";
+            "\"membersArray\":[" + selectedMembers + "]}";
 
         Debug.Log("request is - " + request);
         WebServices.instance.SendRequest(RequestType.SendChipsOut, request, true, OnServerResponseFound);

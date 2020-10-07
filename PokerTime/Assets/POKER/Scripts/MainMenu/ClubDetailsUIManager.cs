@@ -35,7 +35,7 @@ public class ClubDetailsUIManager : MonoBehaviour
         //to-do... get layout from server for this club and update in local string
     }
 
-    private void GetChips()
+    public void GetChips()
     {
         int id = 1;
         string userId = PlayerManager.instance.GetPlayerGameData().userId;
