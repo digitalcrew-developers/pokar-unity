@@ -1040,16 +1040,24 @@ public class InGameManager : MonoBehaviour
 
                 if (currentPlayer.IsMe())
                 {
+
                     int endTime = (int)(GameConstants.TURN_TIME * 0.25f);
 
                     if (remainingTime == endTime)
                     {
                         SoundManager.instance.PlaySound(SoundType.TurnEnd);
                     }
+                    currentPlayer.ShowRemainingTime(remainingTime);
+                }
+
+                else if(!currentPlayer.IsMe())
+                {
+                    Debug.LogError("Timer runs Here");
+                    currentPlayer.ShowRemainingTime(remainingTime);
                 }
                 //   Debug.Log("^^^^^^^^^^^^^^^^^^^   end time " + remainingTime);
 
-                currentPlayer.ShowRemainingTime(remainingTime);
+                
 
             }
             else
