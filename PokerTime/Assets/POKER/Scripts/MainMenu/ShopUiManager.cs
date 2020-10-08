@@ -122,6 +122,10 @@ public class ShopUiManager: MonoBehaviour
                 }
                 break;
 
+            case "vip":
+                MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
+                break;
+
             default:
 #if ERROR_LOG
             Debug.LogError("unhdnled eventName found in LobbyUiManager = " + eventName);

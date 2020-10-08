@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GlobalGameManager : MonoBehaviour
 {
@@ -158,6 +159,7 @@ public class RoomData
 
     //DEV_CODE
     public string roomIconUrl;
+    public Image roomBG;
 
     public float smallBlind;
     public float bigBlind;

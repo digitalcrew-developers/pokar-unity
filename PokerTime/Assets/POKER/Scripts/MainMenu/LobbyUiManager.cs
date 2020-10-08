@@ -190,6 +190,12 @@ public class LobbyUiManager: MonoBehaviour
             loadRoomImage(data.roomIconUrl, gm);
             //Debug.Log("Room URL: " + data.roomIconUrl);
 
+            //Set BG Image for Room
+            /*var text = data.roomBG
+            Sprite sprite = Sprite.Create(text, new Rect(0, 0, text.width, text.height), Vector2.zero);*/
+
+            /*gm.transform.Find("BG").GetComponent<Image>().sprite = sprite;*/
+
             gm.transform.Find("Name").GetComponent<Text>().text = data.title;
             gm.transform.Find("Blinds").GetComponent<Text>().text = "" + Utility.GetTrimmedAmount("" + data.smallBlind) + "/" + Utility.GetTrimmedAmount("" + data.bigBlind);
             gm.transform.Find("BuyIn").transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "" + Utility.GetTrimmedAmount("" + data.minBuyIn);
