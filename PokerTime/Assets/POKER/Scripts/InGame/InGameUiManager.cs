@@ -785,7 +785,7 @@ public class InGameUiManager : MonoBehaviour
                         gm.GetComponent<EmojiUIScreenManager>().containerVal = emojiContainerVal;
                     }
                     break;
-                case InGameScreens.SwitchTable:
+                case InGameScreens.GameDisplay:
                     {
                         gm.GetComponent<SwitchTable>().TableImages = TableImages;
                     }
