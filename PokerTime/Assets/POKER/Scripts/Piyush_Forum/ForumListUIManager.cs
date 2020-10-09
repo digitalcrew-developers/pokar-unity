@@ -312,6 +312,11 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
             addVideoPanel.SetActive(true);
             isAddVideoPanelActive = true;
         }
+        else
+        {
+            addVideoPanel.SetActive(false);
+            isAddVideoPanelActive = false;
+        }
     }
 
     public void OnClickOpenPanel(string panelName)

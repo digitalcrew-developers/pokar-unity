@@ -188,13 +188,7 @@ public class LobbyUiManager: MonoBehaviour
             GameObject gm = Instantiate(roomPrefab, container) as GameObject;
 
             loadRoomImage(data.roomIconUrl, gm);
-            //Debug.Log("Room URL: " + data.roomIconUrl);
-
-            //Set BG Image for Room
-            /*var text = data.roomBG
-            Sprite sprite = Sprite.Create(text, new Rect(0, 0, text.width, text.height), Vector2.zero);*/
-
-            /*gm.transform.Find("BG").GetComponent<Image>().sprite = sprite;*/
+            LoadRoomBG(data.roomBG, gm);
 
             gm.transform.Find("Name").GetComponent<Text>().text = data.title;
             gm.transform.Find("Blinds").GetComponent<Text>().text = "" + Utility.GetTrimmedAmount("" + data.smallBlind) + "/" + Utility.GetTrimmedAmount("" + data.bigBlind);
@@ -210,13 +204,36 @@ public class LobbyUiManager: MonoBehaviour
 
     }
 
+    private void LoadRoomBG(string url, GameObject obj)
+    {
+        StartCoroutine(loadRoomBGSpriteFromUrl(url, obj));
+    }
+    IEnumerator loadRoomBGSpriteFromUrl(string URL, GameObject obj)
+    {
+        UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
+        yield return unityWebRequest.SendWebRequest();
+
+        if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+        {
+            Debug.LogError("Download failed");
+        }
+        else
+        {
+            //  image.sprite = null;
+            var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
+            Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
+
+            obj.transform.Find("BG").GetComponent<Image>().sprite = sprite;            
+        }
+    }
+
     public void loadRoomImage(string url, GameObject obj)
     {
         //   Debug.Log("Success data send");
-        StartCoroutine(loadSpriteImageFromUrl(url, obj));
+        StartCoroutine(loadRoomSpriteImageFromUrl(url, obj));
     }
     
-    IEnumerator loadSpriteImageFromUrl(string URL, GameObject obj)
+    IEnumerator loadRoomSpriteImageFromUrl(string URL, GameObject obj)
     {
         UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
         yield return unityWebRequest.SendWebRequest();
@@ -296,9 +313,9 @@ public class LobbyUiManager: MonoBehaviour
             roomData.maxBuyIn = float.Parse(data["data"][i]["maxBet"].ToString());
 
             //DEV_CODE
-            roomData.totalActivePlayers = int.Parse(data["data"][i]["totalActivePlayer"].ToString());
-
+            roomData.roomBG = data["data"][i]["backgroundImg"].ToString();
             roomData.roomIconUrl = data["data"][i]["iconBaseUrl"].ToString();
+            roomData.totalActivePlayers = int.Parse(data["data"][i]["totalActivePlayer"].ToString());            
 
             switch (data["data"][i]["gameType"].ToString())
             {
