@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LitJson;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -12,12 +13,16 @@ public class ClubAdminManager : MonoBehaviour
 
     #region JackpotSettings variables
     [Header("JACKPOT")]
+    public TMPro.TextMeshProUGUI ChipsAvailableText;
+    public TMPro.TMP_InputField JackpotAmountInputField;
+    public Button JackpotTopUpConfimButton;
     public ToggleController JackpotToggleController;
     public GameObject JackpotTopUpPopup, JackpotExplanationPanel, JackpotPayoutPanel, TopUpPanel, TopRecordPanel;
     public Button JackpotExplanationButton, JackpotPayoutButton, TopUpButton,TopupTabButton,TopupRecordTabButton;
     private bool isExplanationScreenOpen = true;
     public bool IsJackpotEnabled { get => IsJackpotEnabled; }
     private bool isJackpotEnabled { get; set; }
+    public GameObject JackpotPanel;
     #endregion
 
     [Space(10)]
@@ -41,6 +46,7 @@ public class ClubAdminManager : MonoBehaviour
     public Button NotificationEditButton, NotificationHelpButton;
     public Button NotificationTextTabButton, NotificationImageTabButton;
     public TMP_InputField NotificationText;
+    public TextMeshProUGUI OldNotificationText;
     public RawImage NotificationImage;
     public Button SendNotificationButton;
     #endregion
@@ -52,6 +58,7 @@ public class ClubAdminManager : MonoBehaviour
     public TMP_InputField ClubIdInputField;
     public Button DisbandClubConfirmButton;
     public Text DisbandClubIdText;
+    public GameObject DisbandClub;
     #endregion
 
     [Space(10)]
@@ -60,6 +67,10 @@ public class ClubAdminManager : MonoBehaviour
     [Header("PREFERENCES")]
     public Toggle ListedToogle;
     public Toggle ClassicToogle;
+    public GameObject FilterOnPosition, FilterOffPosition, FilterPanel, TogglePanel;
+    public ToggleController PreferencesFilterToggle;
+    public GameObject ClubDashboardFilterPanel;
+    public GameObject PreferencesPanel;
     #endregion
 
     private void Awake()
@@ -192,6 +203,19 @@ public class ClubAdminManager : MonoBehaviour
         TopupRecordTabButton.onClick.AddListener(OpenTopRecordPanel);
 
         JackpotToggleController.ToggleValueChanged += JackpotToggleController_ToggleValueChanged;
+
+        JackpotTopUpConfimButton.onClick.RemoveAllListeners();
+        JackpotTopUpConfimButton.onClick.AddListener(SendTopUpJackpotRequest);
+
+        ChipsAvailableText.text = ClubDetailsUIManager.instance.CLubChips.text;
+    }
+
+    private void SendTopUpJackpotRequest()
+    {
+        int amount = 0;
+        int.TryParse(JackpotAmountInputField.text, out amount);
+
+        //need api
     }
 
     private void JackpotToggleController_ToggleValueChanged(bool val)
@@ -281,21 +305,16 @@ public class ClubAdminManager : MonoBehaviour
         //and instantiate in a loop
         //until then manually instantiate each item.
 
-        //Fill Stars        
-        int rating = 5;//temp 
-        foreach (GameObject g in Stars) { g.SetActive(true); };
-        if (rating > 0)
-        {
-            for(int i = 0; i < rating; i++)
-            {
-                Stars[i].SetActive(false);
-            }
-        }
-        //Fill Level
-        LevelText.text = "Lv." + rating.ToString();
+        string clubRatingRequest = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+            "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
+            "\"clubStatus\":\"" + "1"
+            + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.GetClubDetails, clubRatingRequest, true, OnServerResponseFound);        
 
         //Fill Diamonds available
-        DiamondsCountText.text = "0"; //temp value
+        DiamondsCountText.text = PlayerManager.instance.GetPlayerGameData().diamonds.ToString();
 
         if (ClubRatingScrollParent.transform.childCount > 0)
         {
@@ -352,7 +371,9 @@ public class ClubAdminManager : MonoBehaviour
     {
         //To-Do.. when opening notification screen. get data from server for existing notification sent
         //allow edit of existing text, image notification
-       
+        
+        OldNotificationText.text = ""; 
+        
         //NotificationClubImage.sprite = ClubDetailsUIManager.instance.GetClubImage();
         //NotificationClubName.text = ClubDetailsUIManager.instance.GetClubName();
 
@@ -363,6 +384,7 @@ public class ClubAdminManager : MonoBehaviour
         NotificationImageTabButton.onClick.RemoveAllListeners();
 
         SendNotificationButton.onClick.RemoveAllListeners();
+        SendNotificationButton.onClick.AddListener(SendNotification);
 
         NotificationEditButton.onClick.AddListener(OpenNotificationPanel);
         //NotificationHelpButton.onClick.AddListener(OpenHelpPopup); 
@@ -401,8 +423,7 @@ public class ClubAdminManager : MonoBehaviour
     }
 
     private void OpenNotificationPanel()
-    {   //to-do
-        //if existing notification data is available. fill it.
+    {   
         NotificationPanel.SetActive(true);
     }
 
@@ -447,6 +468,23 @@ public class ClubAdminManager : MonoBehaviour
         ClassicToogle.onValueChanged.AddListener(delegate {
             ClassicToogleValueChanged(ClassicToogle);
         });
+
+        PreferencesFilterToggle.ToggleValueChanged += PreferencesFilterToggle_ToggleValueChanged;
+    }
+
+    private void PreferencesFilterToggle_ToggleValueChanged(bool val)
+    {
+        if (val) {
+            FilterPanel.SetActive(true);
+            ClubDashboardFilterPanel.SetActive(true);
+            TogglePanel.transform.position = FilterOnPosition.transform.position;
+        }
+        else
+        {
+            FilterPanel.SetActive(false);
+            ClubDashboardFilterPanel.SetActive(false);
+            TogglePanel.transform.position = FilterOffPosition.transform.position;
+        }
     }
 
     private void ListedToogleValueChanged(Toggle change)
@@ -501,6 +539,7 @@ public class ClubAdminManager : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        Debug.Log("server response club admin : " + serverResponse);
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
@@ -518,13 +557,64 @@ public class ClubAdminManager : MonoBehaviour
 
             case RequestType.PostNotification:
                 {
+                    NotificationText.text = string.Empty;
+                    NotificationPanel.SetActive(false);
                     MainMenuController.instance.ShowMessage("Notification sent to all members");
                 }
                 break;
 
             case RequestType.UpdateClub:
                 {
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    if(data["message"].ToString() == "Success")
+                    {
+                        if (DisbandClub.activeInHierarchy)//api response is for disband club
+                        {
+                            MainMenuController.instance.ShowMessage("Club has been disbanded", () => {
+                                ClubDetailsUIManager.instance.OnClickOnButton("back");
+                                ClubListUiManager.instance.FetchList(true);
+                            });
+                        }
+                        if (PreferencesPanel.activeInHierarchy)//api response is for preferences
+                        {
 
+                        }
+                        if (JackpotPanel.activeInHierarchy)//api response is for jackpot
+                        {
+                            
+                        }
+
+                    }
+                    else
+                    {
+                        MainMenuController.instance.ShowMessage(data["message"].ToString());
+                    }
+                }
+                break;
+
+            case RequestType.GetClubDetails:
+                {
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    if (data["message"].ToString() == "Success")
+                    {
+                        int rating = 2;//temp 
+
+                        string stars = data["data"][0]["rating"].ToString();
+                        Debug.Log("stars on club :" + stars);
+                        int.TryParse(stars, out rating);
+
+                        //Fill Stars        
+                        foreach (GameObject g in Stars) { g.SetActive(true); };
+                        if (rating > 0)
+                        {
+                            for (int i = 0; i < rating; i++)
+                            {
+                                Stars[i].SetActive(false);
+                            }
+                        }
+                        //Fill Level
+                        LevelText.text = "Lv." + rating.ToString();
+                    }
                 }
                 break;
 
