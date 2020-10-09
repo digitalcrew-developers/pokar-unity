@@ -159,7 +159,7 @@ public class RoomData
 
     //DEV_CODE
     public string roomIconUrl;
-    public Image roomBG;
+    public string roomBG;
 
     public float smallBlind;
     public float bigBlind;
