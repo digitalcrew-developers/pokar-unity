@@ -48,9 +48,11 @@ public class ClubRatingItem : MonoBehaviour
         //TipPopConfirmButton.onClick.RemoveAllListeners();
         //TipPopConfirmButton.onClick.AddListener(() => OnConfirm(_diamonds));
 
-        MainMenuController.instance.ShowMessage("You are purchasing a " + title + "for 30 days", () => {
+        MainMenuController.instance.ShowMessage("You are purchasing a " + title + " for 30 days", () =>
+        {
             OnConfirm(_diamonds);
-        }, () => {
+        }, () =>
+        {
         }, "Confirm", "Cancel");
     }
 
@@ -58,7 +60,42 @@ public class ClubRatingItem : MonoBehaviour
     {
         Debug.Log("Buying for diamonds :" + diamonds);
 
-        //to-do. call api to update club rating
+        string clubRatingRequest = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId()
+                + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.RateClub, clubRatingRequest, true, OnServerResponseFound);
     }
 
+    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    {
+        Debug.Log("server response club rating : " + serverResponse);
+        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+
+        if (errorMessage.Length > 0)
+        {
+            if (isShowErrorMessage)
+            {
+                MainMenuController.instance.ShowMessage(errorMessage);
+            }
+
+            return;
+        }
+
+        switch (requestType)
+        {
+            case RequestType.RateClub:
+                {
+
+                }
+                break;
+
+            default:
+#if ERROR_LOG
+                Debug.LogError("Unhandled requestType found in  MenuHandller = " + requestType);
+#endif
+                break;
+        }
+
+    }
 }
