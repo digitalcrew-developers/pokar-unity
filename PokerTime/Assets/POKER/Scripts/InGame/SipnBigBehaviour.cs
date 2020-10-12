@@ -26,10 +26,18 @@ public class SipnBigBehaviour : MonoBehaviour
     {
         InvokeRepeating("RotateSpin", 0.01f, 0.06f);
 
-        SpinWheelUIManager.instance.oneXBtn.GetComponent<Image>().color = new Color32(120, 120, 120, 255);
-        SpinWheelUIManager.instance.oneXBtn.GetComponent<Button>().enabled = false;
-        SpinWheelUIManager.instance.fiveXBtn.GetComponent<Image>().color = new Color32(120, 120, 120, 255);
-        SpinWheelUIManager.instance.fiveXBtn.GetComponent<Button>().enabled = false;
+        //Restarting...
+        SpinWheelUIManager.instance.spinWheelImage.sprite = SpinWheelUIManager.instance.spinWheelSprites[0];
+        SpinWheelUIManager.instance.spinWheelImage.transform.GetChild(0).gameObject.SetActive(true);
+        SpinWheelUIManager.instance.spinWheelImage.transform.GetChild(1).gameObject.SetActive(true);
+
+        SpinWheelUIManager.instance.oneXBtn.GetComponent<Image>().sprite = SpinWheelUIManager.instance.drawButtonSprites[0];
+        SpinWheelUIManager.instance.fiveXBtn.GetComponent<Image>().sprite = SpinWheelUIManager.instance.drawButtonSprites[1];
+
+        //SpinWheelUIManager.instance.oneXBtn.GetComponent<Image>().color = new Color32(120, 120, 120, 255);
+        /*SpinWheelUIManager.instance.oneXBtn.GetComponent<Button>().enabled = false;*/
+        //SpinWheelUIManager.instance.fiveXBtn.GetComponent<Image>().color = new Color32(120, 120, 120, 255);
+        /*SpinWheelUIManager.instance.fiveXBtn.GetComponent<Button>().enabled = false;*/
 
         float rand = 0;
         switch (SpinWheelUIManager.instance.eventValue)
@@ -82,6 +90,13 @@ public class SipnBigBehaviour : MonoBehaviour
                     SpinWheelUIManager.instance.draw5xOutputImg[j].sprite = img2.sprite;
                     SpinWheelUIManager.instance.draw5xOutputText[j].text = "+ " + SpinManager.instance.spinItemList[prevValue[j]].itemValue;
 
+                    SpinWheelUIManager.instance.spinWheelImage.sprite = SpinWheelUIManager.instance.spinWheelSprites[0];
+                    SpinWheelUIManager.instance.spinWheelImage.transform.GetChild(0).gameObject.SetActive(true);
+                    SpinWheelUIManager.instance.spinWheelImage.transform.GetChild(1).gameObject.SetActive(true);
+
+                    SpinWheelUIManager.instance.oneXBtn.GetComponent<Image>().sprite = SpinWheelUIManager.instance.drawButtonSprites[0];
+                    SpinWheelUIManager.instance.fiveXBtn.GetComponent<Image>().sprite = SpinWheelUIManager.instance.drawButtonSprites[1];
+
                 }
 
                 for (int i = counter+1; i < SpinWheelUIManager.instance.draw5xOutputImg.Length; i++)
@@ -121,10 +136,18 @@ public class SipnBigBehaviour : MonoBehaviour
                 counter += 1;
                 break;
         }
-        SpinWheelUIManager.instance.oneXBtn.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-        SpinWheelUIManager.instance.oneXBtn.GetComponent<Button>().enabled = true;
-        SpinWheelUIManager.instance.fiveXBtn.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-        SpinWheelUIManager.instance.fiveXBtn.GetComponent<Button>().enabled = true;
+
+        SpinWheelUIManager.instance.spinWheelImage.sprite = SpinWheelUIManager.instance.spinWheelSprites[1];
+        SpinWheelUIManager.instance.spinWheelImage.transform.GetChild(0).gameObject.SetActive(false);
+        SpinWheelUIManager.instance.spinWheelImage.transform.GetChild(1).gameObject.SetActive(false);
+
+        SpinWheelUIManager.instance.oneXBtn.GetComponent<Image>().sprite = SpinWheelUIManager.instance.drawButtonSprites[2];
+        SpinWheelUIManager.instance.fiveXBtn.GetComponent<Image>().sprite = SpinWheelUIManager.instance.drawButtonSprites[3];
+
+        /*SpinWheelUIManager.instance.oneXBtn.GetComponent<Image>().color = new Color32(255, 255, 255, 255);*/
+        /*SpinWheelUIManager.instance.oneXBtn.GetComponent<Button>().enabled = true;*/
+        /*SpinWheelUIManager.instance.fiveXBtn.GetComponent<Image>().color = new Color32(255, 255, 255, 255);*/
+        /*SpinWheelUIManager.instance.fiveXBtn.GetComponent<Button>().enabled = true;*/
 
     }
 

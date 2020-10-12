@@ -129,6 +129,8 @@ public class ProfileScreenUiManager : MonoBehaviour
             case "vip":
                 {
                     //TODO Show VIP cards Screen
+                    MainMenuController.instance.isVIPFromProfile = true;
+                    MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
                 }
                 break;
             case "profilemodificataion":

@@ -19,6 +19,10 @@ public class SpinWheelUIManager : MonoBehaviour
     public Image[] draw5xOutputImg;
     public Text[] draw5xOutputText;
 
+    public Image spinWheelImage;
+    public Sprite[] spinWheelSprites;
+    public Sprite[] drawButtonSprites;
+
     public Text winnerListFirstTxt;
     public Text winnerListSecondTxt;
     public GameObject winnerListItemPrefabs;
@@ -32,6 +36,10 @@ public class SpinWheelUIManager : MonoBehaviour
     }
     void Start()
     {
+        spinWheelImage.sprite = spinWheelSprites[1];
+        spinWheelImage.transform.GetChild(0).gameObject.SetActive(false);
+        spinWheelImage.transform.GetChild(1).gameObject.SetActive(false);
+
         GetLuckyDrawAvatars(); 
         GetTextItemsList();
 

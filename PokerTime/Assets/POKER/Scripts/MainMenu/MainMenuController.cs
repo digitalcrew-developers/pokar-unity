@@ -18,6 +18,9 @@ public class MainMenuController : MonoBehaviour
 	//DEV_CODE
 	public GameObject[] bottomMenus;
 
+	public bool isVIPFromShop = false;
+	public bool isVIPFromProfile = false;
+
 	private List<MainMenuActiveScreen> mainMenuActiveScreens = new List<MainMenuActiveScreen>();
 	private NotificationDetails notificationDetails = new NotificationDetails();
 
