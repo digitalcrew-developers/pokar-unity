@@ -11,17 +11,12 @@ public class RegistrationManager : MonoBehaviour
     public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
 
-    public Text popUpText, wrongPasswordText;
-
     //DEV_CODE
     public TMP_InputField tmp_registrationUserName, tmp_registrationPassword, tmp_registrationConfirmPassword;
     public TMP_InputField tmp_loginUserName, tmp_loginPassword;
 
     private void OnEnable()
     {
-        popUpText.gameObject.SetActive(false);
-        wrongPasswordText.gameObject.SetActive(false);
-
         if (GlobalGameManager.instance.isLoginShow)
         {
             registrationScreen.SetActive(false);
@@ -57,30 +52,23 @@ public class RegistrationManager : MonoBehaviour
 
                         if (!Utility.IsValidUserName(/*tmp_loginUserName*/loginUserName.text, out error))
                         {
-                            /*wrongPasswordText.gameObject.SetActive(true);*/
-                            StartCoroutine(MsgForVideo(error, 1.5f));
-                            /*MainMenuController.instance.ShowMessage(error);*/
-                            /*return;*/
-                            break;
+                            MainMenuController.instance.ShowMessage(error);
+                            return;
                         }
-                        else if (!Utility.IsValidPassword(/*tmp_loginPassword*/loginPassword.text, out error))
-                        {
-                            /*wrongPasswordText.gameObject.SetActive(true);*/
-                            StartCoroutine(MsgForVideo(error, 1.5f));
-                            /*MainMenuController.instance.ShowMessage(error);*/
-                            /*return;*/
-                            break;
-                        }
-                        else
-                        {
-                            string requestData = "{\"userName\":\"" + /*tmp_loginUserName.text*/loginUserName.text + "\"," +
-                               "\"userPassword\":\"" + /*tmp_loginPassword*/loginPassword.text + "\"," +
-                               "\"registrationType\":\"Custom\"," +
-                               "\"socialId\":\"\"}";
 
-                            MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-                            WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
+                        if (!Utility.IsValidPassword(/*tmp_loginPassword*/loginPassword.text, out error))
+                        {
+                            MainMenuController.instance.ShowMessage(error);
+                            return;
                         }
+
+                        string requestData = "{\"userName\":\"" + /*tmp_loginUserName.text*/loginUserName.text + "\"," +
+                           "\"userPassword\":\"" + /*tmp_loginPassword*/loginPassword.text + "\"," +
+                           "\"registrationType\":\"Custom\"," +
+                           "\"socialId\":\"\"}";
+
+                        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+                        WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
                     }
                     else if (registrationScreen.activeInHierarchy)
                     {
@@ -88,35 +76,30 @@ public class RegistrationManager : MonoBehaviour
 
                         if (!Utility.IsValidUserName(/*tmp_registrationUserName*/registrationUserName.text, out error))
                         {
-                            StartCoroutine(MsgForVideo(error, 1.5f));
-                            /*MainMenuController.instance.ShowMessage(error);*/
-                            /*return;*/
-                            break;
+                            MainMenuController.instance.ShowMessage(error);
+                            return;
                         }
-                        else if (!Utility.IsValidPassword(/*tmp_registrationPassword*/registrationPassword.text, out error))
+
+                        if (!Utility.IsValidPassword(/*tmp_registrationPassword*/registrationPassword.text, out error))
                         {
-                            StartCoroutine(MsgForVideo(error, 1.5f));
-                            /*MainMenuController.instance.ShowMessage(error);*/
-                            /*return;*/
-                            break;
+                            MainMenuController.instance.ShowMessage(error);
+                            return;
                         }
-                        else if (/*tmp_registrationConfirmPassword*/registrationConfirmPassword.text != /*tmp_registrationPassword*/registrationPassword.text)
+
+                        if (/*tmp_registrationConfirmPassword*/registrationConfirmPassword.text != /*tmp_registrationPassword*/registrationPassword.text)
                         {
-                            StartCoroutine(MsgForVideo("password does not matched", 1.5f));
-                            /*MainMenuController.instance.ShowMessage("password does not matched");*/
-                            /*return;*/
-                            break;
+                            MainMenuController.instance.ShowMessage("password does not matched");
+                            return;
                         }
-                        else
-                        {
-                            string requestData = "{\"userName\":\"" + /*tmp_registrationUserName*/registrationUserName.text + "\"," +
+
+                        string requestData = "{\"userName\":\"" + /*tmp_registrationUserName*/registrationUserName.text + "\"," +
                            "\"userPassword\":\"" + /*tmp_registrationPassword*/registrationPassword.text + "\"," +
                            "\"registrationType\":\"Custom\"," +
                            "\"socialId\":\"\"}";
 
-                            MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-                            WebServices.instance.SendRequest(RequestType.Registration, requestData, true, OnServerResponseFound);
-                        }
+
+                        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+                        WebServices.instance.SendRequest(RequestType.Registration, requestData, true, OnServerResponseFound);
                     }
                     else
                     {
@@ -241,8 +224,6 @@ public class RegistrationManager : MonoBehaviour
                 ResetLoginScreen();
                 ResetRegistrationScreen();
 
-                StartCoroutine(MsgForVideo("Registered Successfully", 1.5f));
-
                 loginScreen.SetActive(true);
                 registrationScreen.SetActive(false);
 
@@ -287,8 +268,6 @@ public class RegistrationManager : MonoBehaviour
             else
             {
                 //MainMenuController.instance.ShowMessage(data["message"].ToString());
-                wrongPasswordText.gameObject.SetActive(true);
-                StartCoroutine(MsgForVideo("Incorrect password or username does not exist", 1.5f));
             }
         }
         else
@@ -316,12 +295,4 @@ public class RegistrationManager : MonoBehaviour
         }
     }
 
-    IEnumerator MsgForVideo(string msg, float delay)
-    {
-        popUpText.gameObject.SetActive(true);
-        popUpText.text = msg;
-        yield return new WaitForSeconds(delay);
-        popUpText.gameObject.SetActive(false);
-        wrongPasswordText.gameObject.SetActive(false);
-    }
 }

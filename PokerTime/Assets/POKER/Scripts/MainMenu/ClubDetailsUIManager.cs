@@ -35,8 +35,16 @@ public class ClubDetailsUIManager : MonoBehaviour
         //to-do... get layout from server for this club and update in local string
     }
 
+
+    private void OnEnable()
+    {
+        
+    }
+
     public void GetChips()
     {
+        GetTemplate();
+        AddUpdateTables();
         int id = 1;
         string userId = PlayerManager.instance.GetPlayerGameData().userId;
         int userIdInt = 0;
@@ -71,6 +79,8 @@ public class ClubDetailsUIManager : MonoBehaviour
             return;
         }
 
+        
+
         switch (requestType)
         {
             case RequestType.GetClubDetails:
@@ -78,6 +88,20 @@ public class ClubDetailsUIManager : MonoBehaviour
                     JsonData data = JsonMapper.ToObject(serverResponse);
                     string chipsText = data["data"][0]["ptChips"].ToString();
                     CLubChips.text = chipsText;
+                }
+                break;
+
+            case RequestType.GetTemplates:
+                {
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    Debug.LogError("Data is : " + data.ToJson());
+                }
+                break;
+
+            case RequestType.PublishTemplate:
+                {
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    Debug.LogError("Data is : " + data.ToJson());
                 }
                 break;
             default:
@@ -191,6 +215,60 @@ public class ClubDetailsUIManager : MonoBehaviour
     {
         return isJackpotOn;
     }
+
+
+    public void GetTemplate()
+    {
+        string requestData = "{\"clubId\":\"" + "17" + "\"," +
+                             "\"tableId\":\"" + "Me" + "\"," +
+                            "\"status\":\"" + "Saved" + "\"," +
+                            "\"settingData\":" + "[{" +
+                            "\"templateSubType\":\"" + "Regular Mode" + "\"," +
+                            "\"memberCount\":\"" + "6" + "\"," +
+                            "\"actionTime\":\"" + "15" + "\"," +
+                            "\"exclusiveTable\":\"" + "Off" + "\"," +
+                            "\"blinds\":\"" + "1/2" + "\"," +
+                            "\"buyInMin\":\"" + "10" + "\"," +
+                            "\"buyInMax\":\"" + "100" + "\"," +
+                            "\"minVPIP\":\"" + "0%" + "\"," +
+                            "\"VPIPLevel\":\"" + "0%" + "\"," +
+                            "\"handsThreshold\":\"" + "" + "\"," +
+                            "\"autoStart\":\"" + "Yes" + "\"," +
+                            "\"autoStartWith\":\"" + "1" + "\"," +
+                            "\"autoExtension\":\"" + "5" + "\"," +
+                            "\"autoExtensionTimes\":\"" + "10" + "\"," +
+                            "\"autoOpen\":\"" + "Yes" + "\"," +
+                            "\"riskManagement\":\"" + "No" + "\"," +
+                            "\"fee\":\"" + "5" + "\"," +
+                            "\"cap\":\"" + "10" + "\"," +
+                            "\"calltime\":\"" + "2" + "\"," +
+                            "\"authorizedBuyIn\":\"" + "On" + "\"," +
+                            "\"GPSRestriction\":\"" + "On" + "\"," +
+                            "\"IPRestriction\":\"" + "On" + "\"," +
+                            "\"banChatting\":\"" + "On" + "\"," +
+                            "\"hours\":\"" + "5" +
+
+                           "\"}]}";
+
+        WebServices.instance.SendRequest(RequestType.GetTemplates, requestData, true, OnServerResponseFound);
+    }
+
+
+    public void AddUpdateTables()
+    {
+        string requestData = "{\"clubId\":\"" + "17" + "\"," +
+                            "\"status\":\"" + "Published" + "\"," +
+                            "\"tableIds\":" + "[" +
+                            "\"1" + "\"," +
+                            "\"2\"" +
+                           
+
+                           "]}";
+
+        WebServices.instance.SendRequest(RequestType.PublishTemplate, requestData, true, OnServerResponseFound);
+    }
+
+
 
 }
 

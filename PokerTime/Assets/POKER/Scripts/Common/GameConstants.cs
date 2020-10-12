@@ -109,7 +109,10 @@ public class GameConstants : MonoBehaviour
           SOCKET_URL+"/redeemDailyMission",
           API_URL+"/updateProfile",
           API_URL+"/getClubDetails",
-          API_URL+"/addPTchips"
+          API_URL+"/addPTchips",
+          API_URL+"/createTemplate",
+          API_URL+"/updateTemplateStatus",
+          API_URL+"/getTemplates"
     };
     #endregion
 
@@ -181,5 +184,8 @@ public enum RequestType
     redeemDailyMission,
     updateProfile,
     GetClubDetails,
-    AddPTChips
+    AddPTChips,
+    CreateTemplate,
+    PublishTemplate,
+    GetTemplates
 }

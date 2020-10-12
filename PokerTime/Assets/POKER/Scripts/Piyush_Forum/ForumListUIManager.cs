@@ -146,14 +146,7 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     }
 
 
-    void ChangeBtnFocus(int focusVal)
-    {
-        //To Disable Hand/Text Panel
-        if (addVideoPanel.activeSelf)
-        {  
-            addVideoPanel.SetActive(false);
-            isAddVideoPanelActive = false;
-        }
+    void ChangeBtnFocus(int focusVal) {
 
         if (focusVal == 3)
             isMinePanel = true;
@@ -165,23 +158,14 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
         {
             if (i != focusVal)
             {
-                //Color temp = onfocusImageAry[i].color;
-                //temp.a = 0.01f;
-                //onfocusImageAry[i].color = temp;
-
-                Color temp = Color.gray;
-                onfocusImageAry[i].transform.GetChild(0).GetComponent<Text>().color = temp;
-                onfocusImageAry[i].transform.GetChild(1).gameObject.SetActive(false);
+                Color temp = onfocusImageAry[i].color;
+                temp.a = 0.01f;
+                onfocusImageAry[i].color = temp;
             }
-            else 
-            {
-                //Color temp = onfocusImageAry[i].color;
-                //temp.a = 1f;
-                //onfocusImageAry[i].color = temp;
-
-                Color temp = onfocusImageAry[i].transform.GetChild(1).GetComponent<Image>().color;
-                onfocusImageAry[i].transform.GetChild(0).GetComponent<Text>().color = temp;
-                onfocusImageAry[i].transform.GetChild(1).gameObject.SetActive(true);
+            else {
+                Color temp = onfocusImageAry[i].color;
+                temp.a = 1f;
+                onfocusImageAry[i].color = temp;
             }
         }
 
@@ -327,11 +311,6 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
         {
             addVideoPanel.SetActive(true);
             isAddVideoPanelActive = true;
-        }
-        else
-        {
-            addVideoPanel.SetActive(false);
-            isAddVideoPanelActive = false;
         }
     }
 

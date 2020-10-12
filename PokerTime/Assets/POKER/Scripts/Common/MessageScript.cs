@@ -17,10 +17,6 @@ public class MessageScript : MonoBehaviour
         okButton.GetComponent<Button>().onClick.AddListener(ClosePopup);
         noButton.GetComponent<Button>().onClick.AddListener(ClosePopup);
         yesButton.GetComponent<Button>().onClick.AddListener(ClosePopup);
-
-        okButton.GetComponent<Button>().onClick.AddListener(OnClickOnOk);
-        noButton.GetComponent<Button>().onClick.AddListener(OnClickOnNo);
-        yesButton.GetComponent<Button>().onClick.AddListener(OnClickOnYes);
     }
 
     private void ClosePopup()

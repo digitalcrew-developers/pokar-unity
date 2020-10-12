@@ -188,7 +188,7 @@ public class LobbyUiManager: MonoBehaviour
             GameObject gm = Instantiate(roomPrefab, container) as GameObject;
 
             loadRoomImage(data.roomIconUrl, gm);
-            LoadRoomBG(data.roomBG, gm);
+            //Debug.Log("Room URL: " + data.roomIconUrl);
 
             gm.transform.Find("Name").GetComponent<Text>().text = data.title;
             gm.transform.Find("Blinds").GetComponent<Text>().text = "" + Utility.GetTrimmedAmount("" + data.smallBlind) + "/" + Utility.GetTrimmedAmount("" + data.bigBlind);
@@ -204,36 +204,13 @@ public class LobbyUiManager: MonoBehaviour
 
     }
 
-    private void LoadRoomBG(string url, GameObject obj)
-    {
-        StartCoroutine(loadRoomBGSpriteFromUrl(url, obj));
-    }
-    IEnumerator loadRoomBGSpriteFromUrl(string URL, GameObject obj)
-    {
-        UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
-        yield return unityWebRequest.SendWebRequest();
-
-        if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
-        {
-            Debug.LogError("Download failed");
-        }
-        else
-        {
-            //  image.sprite = null;
-            var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
-            Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
-
-            obj.transform.Find("BG").GetComponent<Image>().sprite = sprite;            
-        }
-    }
-
     public void loadRoomImage(string url, GameObject obj)
     {
         //   Debug.Log("Success data send");
-        StartCoroutine(loadRoomSpriteImageFromUrl(url, obj));
+        StartCoroutine(loadSpriteImageFromUrl(url, obj));
     }
     
-    IEnumerator loadRoomSpriteImageFromUrl(string URL, GameObject obj)
+    IEnumerator loadSpriteImageFromUrl(string URL, GameObject obj)
     {
         UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
         yield return unityWebRequest.SendWebRequest();
@@ -313,9 +290,9 @@ public class LobbyUiManager: MonoBehaviour
             roomData.maxBuyIn = float.Parse(data["data"][i]["maxBet"].ToString());
 
             //DEV_CODE
-            roomData.roomBG = data["data"][i]["backgroundImg"].ToString();
+            roomData.totalActivePlayers = int.Parse(data["data"][i]["totalActivePlayer"].ToString());
+
             roomData.roomIconUrl = data["data"][i]["iconBaseUrl"].ToString();
-            roomData.totalActivePlayers = int.Parse(data["data"][i]["totalActivePlayer"].ToString());            
 
             switch (data["data"][i]["gameType"].ToString())
             {

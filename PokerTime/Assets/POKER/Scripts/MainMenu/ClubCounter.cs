@@ -21,7 +21,6 @@ public class ClubCounter : MonoBehaviour
 
     public GameObject SendOutPanel;
     public Button ConfirmChipsSendButton;
-    public Button ConfirmChipsClaimBackButton;
 
     public List<TMPro.TextMeshProUGUI> MemberCountTexts;
     public TextMeshProUGUI ClubChipsCount, ClubOwnerChipCount, RestMemberChipCount;
@@ -46,9 +45,6 @@ public class ClubCounter : MonoBehaviour
     public Image VIPFilterImage;
     public Button VIPFilterBtn;
     public GameObject VIPFilterPanel;
-    public GameObject SelectVIPCardPanel;
-    private string selectedUserIDForVIP;
-    public Button OpenVIPButton;
 
     private void Awake()
     {
@@ -61,7 +57,7 @@ public class ClubCounter : MonoBehaviour
     private void Start()
     {
         Initialise();
-    } 
+    }
 
     private void Initialise()
     {
@@ -78,11 +74,10 @@ public class ClubCounter : MonoBehaviour
         GetMembersListFromServer();
 
         SendOutBtn.onClick.RemoveAllListeners();
-        SendOutBtn.onClick.AddListener(() => OpenSendOutPanel(false));
+        SendOutBtn.onClick.AddListener(OpenSendOutPanel);
 
-        ClaimBackBtn.onClick.RemoveAllListeners();
-        ClaimBackBtn.onClick.AddListener(() => OpenSendOutPanel(true));
-        
+        ConfirmChipsSendButton.onClick.RemoveAllListeners();
+        ConfirmChipsSendButton.onClick.AddListener(SendChipsAPIRequest);
 
         TradeFilterBtn.onClick.RemoveAllListeners();
         TradeFilterBtn.onClick.AddListener(ToggleOpenTradeListFilter);
@@ -108,10 +103,6 @@ public class ClubCounter : MonoBehaviour
         {
             VIPButtons[i].OnStateChange += Filter_OnStateChange;
         }
-
-        ClubChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
-        OpenVIPButton.onClick.RemoveAllListeners();
-        OpenVIPButton.onClick.AddListener(OpenVIPPanel);
     }
 
     private void ToggleOpenTradeListFilter()
@@ -286,135 +277,41 @@ public class ClubCounter : MonoBehaviour
             return;
         }
 
-        switch (requestType)
+        if(requestType == RequestType.SendChipsOut)
         {
-            case RequestType.SendChipsOut:
-                {
-                    JsonData data1 = JsonMapper.ToObject(serverResponse);
-                    if (data1["success"].Equals(1))
-                    {
-                        MainMenuController.instance.ShowMessage(serverResponse, () =>
-                        {
-                            GetMembersListFromServer();
-                            CloseSendOutPanel();
-                        });
-                    }
-                    else
-                    {
-                        MainMenuController.instance.ShowMessage(data1["message"].ToString());
-                    }
-                }
-                break;
-            case RequestType.ClaimBackChips:
-                JsonData data2 = JsonMapper.ToObject(serverResponse);
-                if (data2["success"].Equals(1))
-                {
-                    MainMenuController.instance.ShowMessage(serverResponse, () =>
-                    {
-                        GetMembersListFromServer();
-                        CloseSendOutPanel();
-                    });
-                }
-                else
-                {
-                    MainMenuController.instance.ShowMessage(data2["message"].ToString());
-                }
-                break;
-            case RequestType.GetClubMemberList:
-                {
-                    JsonData data3 = JsonMapper.ToObject(serverResponse);
-                    Debug.LogWarning("Club memeber list counter :" + serverResponse);
-                    if (data3["status"].Equals(true))
-                    {
-                        AddToAllLists(data3);
-                    }
-                    else
-                    {
-                        //MainMenuController.instance.ShowMessage(data["message"].ToString());
-                    }
-                }
-                break;
-            case RequestType.SendVIP:
-                {
-                    JsonData data4 = JsonMapper.ToObject(serverResponse);
-                    Debug.LogWarning("Club memeber SendVIP :" + serverResponse);
-                    if (data4["status"].Equals(true))
-                    {
-                        MainMenuController.instance.ShowMessage("Successfully sent VIP to" + LastSelectedVIPMember.userName + " with hardcoded value of shopId 13", () =>
-                        {
-                            LastSelectedVIPMember = null;
-                            selectedUserIDForVIP = string.Empty;
-                            SelectVIPCardPanel.SetActive(false);
-                        });
-                    }
-                }
-                break;
-            default:
-                Debug.LogError("Unhandled server requestType found  " + requestType);
-                break;
+            JsonData data = JsonMapper.ToObject(serverResponse);
+            if (data["success"].Equals(1))
+            {
+                GetMembersListFromServer();
+                CloseSendOutPanel();
+            }
+            else
+            {
+                MainMenuController.instance.ShowMessage(data["message"].ToString());
+            }
         }
 
-        //if(requestType == RequestType.SendChipsOut)
-        //{
-        //    JsonData data = JsonMapper.ToObject(serverResponse);
-        //    if (data["success"].Equals(1))
-        //    {
-        //        GetMembersListFromServer();
-        //        CloseSendOutPanel();
-        //    }
-        //    else
-        //    {
-        //        MainMenuController.instance.ShowMessage(data["message"].ToString());
-        //    }
-        //}
-        //if(requestType == RequestType.ClaimBackChips)
-        //{
-        //    JsonData data = JsonMapper.ToObject(serverResponse);
-        //    if (data["success"].Equals(1))
-        //    {
-        //        GetMembersListFromServer();
-        //        CloseSendOutPanel();
-        //    }
-        //    else
-        //    {
-        //        MainMenuController.instance.ShowMessage(data["message"].ToString());
-        //    }
-        //}
-        //if (requestType == RequestType.GetClubMemberList)
-        //{
-        //    JsonData data = JsonMapper.ToObject(serverResponse);
-        //    Debug.LogWarning("Club memeber list counter :" + serverResponse);
-        //    if (data["status"].Equals(true))
-        //    {
-        //        AddToAllLists(data);
-        //    }
-        //    else
-        //    {
-        //        //MainMenuController.instance.ShowMessage(data["message"].ToString());
-        //    }
-        //}
-//        if(requestType == RequestType.SendVIP)
-//        {
-//            JsonData data = JsonMapper.ToObject(serverResponse);
-//            Debug.LogWarning("Club memeber SendVIP :" + serverResponse);
-//            if (data["status"].Equals(true))
-//            {
-//                MainMenuController.instance.ShowMessage("Successfully sent VIP to" + LastSelectedVIPMember.userName +" with hardcoded value of shopId 13", ()=>
-//                {
-//                    LastSelectedVIPMember = null;
-//                    selectedUserIDForVIP = string.Empty;
-//                    SelectVIPCardPanel.SetActive(false);
-//                });
-//            }
-//        }
-//        else
-//        {
+        if (requestType == RequestType.GetClubMemberList)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+            Debug.LogWarning("Club memeber list counter :" + serverResponse);
+            if (data["status"].Equals(true))
+            {
+                AddToAllLists(data);
+            }
+            else
+            {
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
+            }
+        }
+        else
+        {
 
-//#if ERROR_LOG
-//            Debug.LogError("Unhandled server requestType found  " + requestType);
-//#endif
+#if ERROR_LOG
+            Debug.LogError("Unhandled server requestType found  " + requestType);
+#endif
 
-//        }
+        }
     }
 
     private List<ClubMemberDetails> SelectedTradeMembers = new List<ClubMemberDetails>();
@@ -445,12 +342,11 @@ public class ClubCounter : MonoBehaviour
 
         for (int i = 0; i < data["data"].Count; i++)
         {
-            int x = i;
             ClubMemberDetails clubMemberDetails = new ClubMemberDetails();
-            clubMemberDetails.userId = data["data"][x]["requestUserId"].ToString();
-            clubMemberDetails.userName = data["data"][x]["requestUserName"].ToString();
-            clubMemberDetails.clubRequestId = data["data"][x]["clubRequestId"].ToString();
-            clubMemberDetails.ptChips = data["data"][x]["ptChips"].ToString();
+            clubMemberDetails.userId = data["data"][i]["requestUserId"].ToString();
+            clubMemberDetails.userName = data["data"][i]["requestUserName"].ToString();
+            clubMemberDetails.clubRequestId = data["data"][i]["clubRequestId"].ToString();
+            clubMemberDetails.ptChips = data["data"][i]["ptChips"].ToString();
 
             string initial = clubMemberDetails.userName.ToUpper();
             initial = initial.Substring(0, 2);
@@ -536,51 +432,17 @@ public class ClubCounter : MonoBehaviour
         }
     }
 
-    private void OpenVIPPanel()
-    {
-        if (string.IsNullOrEmpty(selectedUserIDForVIP))
-        {
-            MainMenuController.instance.ShowMessage("Please select a member");
-        }
-        SelectVIPCardPanel.SetActive(true);
-    }
-
-    public void SendVIPCardRequest()
-    {
-        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-                   "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-                   "\"shopId\":\"" + "13" + "\"," +
-                   "\"toUserId\":\"" + selectedUserIDForVIP
-                   + "\"}";
-
-        Debug.Log("sending vip for user id :" + requestData + " username :" + LastSelectedVIPMember);
-
-        WebServices.instance.SendRequest(RequestType.SendVIP, requestData, true, OnServerResponseFound);
-
-    }
-
     private void ToggleValueChangedVIP(Toggle vipItem, ClubMemberDetails clubMemberDetails)
     {
         if (vipItem.isOn)
         {
             LastSelectedVIPMember = clubMemberDetails;
-            selectedUserIDForVIP = clubMemberDetails.userId;
         }
 
     }
 
-    private void OpenSendOutPanel(bool claim = false)
+    private void OpenSendOutPanel()
     {
-        ConfirmChipsSendButton.onClick.RemoveAllListeners();
-        if (!claim)
-        {
-            ConfirmChipsSendButton.onClick.AddListener(SendChipsAPIRequest);
-        }
-        else
-        {
-            ConfirmChipsSendButton.onClick.AddListener(ClaimChipsAPIRequest);
-        }
-
         SendOutPanel.SetActive(true);
         OpenSendOut();
     }
@@ -679,22 +541,6 @@ public class ClubCounter : MonoBehaviour
         if (selectedSendPlayerCount < 0) { selectedSendPlayerCount = 0; }
 
         PlayerSelected.text = "x" + selectedSendPlayerCount;
-    }
-
-    private void ClaimChipsAPIRequest()
-    {
-        int amount = 0;
-        int.TryParse(AmountToSendInputField.text, out amount);
-
-        selectedMembers = selectedMembers.Remove(selectedMembers.Length - 1, 1);
-
-        string request = "{\"userId\":\"" + MemberListUIManager.instance.GetClubOwnerObject().userId + "\"," +
-            "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-            "\"amount\":\"" + amount.ToString() + "\"," +
-            "\"membersArray\":[" + selectedMembers + "]}";
-
-        Debug.Log("request is - " + request);
-        WebServices.instance.SendRequest(RequestType.ClaimBackChips, request, true, OnServerResponseFound);
     }
 
     private void SendChipsAPIRequest()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using LitJson;
 
 public class ClubTableController : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class ClubTableController : MonoBehaviour
     public Toggle EVChop;
     public GameObject EVChopValueField;
 
+    
+
     private void Awake()
     {
         if (null == instance)
@@ -28,6 +31,8 @@ public class ClubTableController : MonoBehaviour
     {
         Initialise();
     }
+
+
 
     private void Initialise()
     {
@@ -43,6 +48,8 @@ public class ClubTableController : MonoBehaviour
         EVChop.onValueChanged.AddListener(delegate {
             ToggleValueChanged(EVChop);
         });
+
+      
     }
 
     void ToggleValueChanged(Toggle change)
@@ -55,6 +62,98 @@ public class ClubTableController : MonoBehaviour
         {
             EVChopValueField.SetActive(false);
         }
+    }
+
+
+    public void CreateTemplate()
+    {
+
+        string requestData = "{\"clubId\":\"" + "17" + "\"," +
+                            "\"gameType\":\"" + "NLH" + "\"," +
+                            "\"templateType\":\"" + "Ring Game" + "\"," +
+                            "\"status\":\"" + "Saved" + "\"," +
+                            "\"tableId\":\"" + "Me" + "\"," +
+                            "\"settingData\":" + "[{" +
+                            "\"templateSubType\":\"" + "Regular Mode" + "\"," +
+                            "\"memberCount\":\"" + "6" + "\"," +
+                            "\"actionTime\":\"" + "15" + "\"," +
+                            "\"exclusiveTable\":\"" + "Off" + "\"," +
+                            "\"blinds\":\"" + "1/2" + "\"," +
+                            "\"buyInMin\":\"" + "10" + "\"," +
+                            "\"buyInMax\":\"" + "100" + "\"," +
+                            "\"minVPIP\":\"" + "0%" + "\"," +
+                            "\"VPIPLevel\":\"" + "0%" + "\"," +
+                            "\"handsThreshold\":\"" + "" + "\"," +
+                            "\"autoStart\":\"" + "Yes" + "\"," +
+                            "\"autoStartWith\":\"" + "1" + "\"," +
+                            "\"autoExtension\":\"" + "5" + "\"," +
+                            "\"autoExtensionTimes\":\"" + "10" + "\"," +
+                            "\"autoOpen\":\"" + "Yes" + "\"," +
+                            "\"riskManagement\":\"" + "No" + "\"," +
+                            "\"fee\":\"" + "5" + "\"," +
+                            "\"cap\":\"" + "10" + "\"," +
+
+                            "\"calltime\":\"" + "2" + "\"," +
+                            "\"authorizedBuyIn\":\"" + "On" + "\"," +
+                            "\"GPSRestriction\":\"" + "On" + "\"," +
+                            "\"IPRestriction\":\"" + "On" + "\"," +
+                            "\"banChatting\":\"" + "On" + "\"," +
+                            "\"hours\":\"" + "5"  +
+
+                           "\"}]}";
+
+        WebServices.instance.SendRequest(RequestType.CreateTemplate, requestData, true, OnServerResponseFound);
+    }
+
+
+
+
+
+    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    {
+        if (errorMessage.Length > 0)
+        {
+            if (isShowErrorMessage)
+            {
+                //  Debug.LogError("111111111111111111111111111111");
+                MainMenuController.instance.ShowMessage(errorMessage);
+            }
+            return;
+        }
+        if (requestType == RequestType.CreateTemplate)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+
+            Debug.LogError("Data is : " + data.ToJson());
+
+
+            MainMenuController.instance.ShowMessage(data["message"].ToJson());
+
+            //if (data["success"].ToString() == "1")
+            //{
+            //    for (int i = 0; i < data["getData"].Count; i++)
+            //    {
+
+            //        loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString(), data["getData"][i]["countryFlag"].ToString());
+            //        userLevel.text = "Lvl. " + data["getData"][i]["userLevel"].ToString() + ">>";
+            //        userName.text = data["getData"][i]["userName"].ToString();
+            //        userId.text = "UserID:" + data["getData"][i]["userId"].ToString();
+            //        countrycode = data["getData"][i]["countryCode"].ToString();
+            //        countryname = data["getData"][i]["countryName"].ToString();
+            //        avtarurl = data["getData"][i]["profileImage"].ToString();
+            //        frameurl = data["getData"][i]["frameURL"].ToString();
+            //        flagurl = data["getData"][i]["countryFlag"].ToString();
+            //        avtarid = int.Parse(data["getData"][i]["avatarID"].ToString());
+            //    }
+            //    MainMenuController.instance.OnClickOnButton("profile");
+            //}
+            //else
+            //{
+            //    MainMenuController.instance.ShowMessage(data["message"].ToString());
+            //}
+        }
+
+      
     }
 
 
