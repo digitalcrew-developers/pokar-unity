@@ -123,6 +123,7 @@ public class ShopUiManager: MonoBehaviour
                 break;
 
             case "vip":
+                MainMenuController.instance.isVIPFromShop = true;
                 MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
                 break;
 

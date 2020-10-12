@@ -117,11 +117,11 @@ public class VIPScreenUiManager : MonoBehaviour
             {
                 if (privilegeCounter >= (int)VIP_Priillage.ExlusiveEmoji)
                 {
-                    privileges[privilegeCounter].transform.GetChild(cardCounter).GetComponent<Text>().text = "" + vipPrivilegeData[cardCounter][dayIndex].vipPrivilege[privilegeCounter].counterValue;
+                    privileges[privilegeCounter].transform.GetChild(cardCounter+1).GetChild(0).GetComponent<Text>().text = "" + vipPrivilegeData[cardCounter][dayIndex].vipPrivilege[privilegeCounter].counterValue;
                 }
                 else
                 {
-                    privileges[privilegeCounter].transform.GetChild(cardCounter).gameObject.SetActive(vipPrivilegeData[cardCounter][dayIndex].vipPrivilege[privilegeCounter].isAvailable);
+                    privileges[privilegeCounter].transform.GetChild(cardCounter+1).gameObject.SetActive(vipPrivilegeData[cardCounter][dayIndex].vipPrivilege[privilegeCounter].isAvailable);
                 }
             }
         }
@@ -566,7 +566,20 @@ public class VIPScreenUiManager : MonoBehaviour
         }
         else
         {
-            MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+            if (MainMenuController.instance.isVIPFromShop)
+            {
+                MainMenuController.instance.isVIPFromShop = false;
+                MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+            }
+            else if (MainMenuController.instance.isVIPFromProfile)
+            {
+                MainMenuController.instance.isVIPFromProfile = false;
+                MainMenuController.instance.ShowScreen(MainMenuScreens.Profile);
+            }
+            else
+            {
+                MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+            }
         }
         
     }
