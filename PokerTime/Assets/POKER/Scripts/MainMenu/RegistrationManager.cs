@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class RegistrationManager : MonoBehaviour
 {
-    public GameObject registrationScreen, loginScreen,signUpScreen;
+    public GameObject registrationScreen, loginScreen,signUpScreen, forgotPassword;
     public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
 
@@ -21,6 +21,7 @@ public class RegistrationManager : MonoBehaviour
     {
         popUpText.gameObject.SetActive(false);
         wrongPasswordText.gameObject.SetActive(false);
+        forgotPassword.SetActive(false);
 
         if (GlobalGameManager.instance.isLoginShow)
         {
@@ -149,11 +150,39 @@ public class RegistrationManager : MonoBehaviour
                 }
                 break;
 
+            case "forgotpwd":
+                {
+                    forgotPassword.SetActive(true);
+                }
+                break;
 
             default:
             Debug.LogError("Unhandled eventName found = "+eventName);
             break;
         }
+    }
+
+    public void SubmitEmailForForgotPassword()
+    {
+
+        bool hasAt = forgotPassword.transform.Find("Email").GetComponent<InputField>().text.IndexOf('@') > 0;
+        if (hasAt)
+        {
+            forgotPassword.transform.Find("WrongEmail").gameObject.SetActive(false);
+            FetchUserData();
+        }
+        else
+        {
+            forgotPassword.transform.Find("WrongEmail").gameObject.SetActive(true);
+        }
+    }
+
+    void FetchUserData()
+    {
+        string requestData = "{\"email\":\"" + forgotPassword.transform.Find("Email").GetComponent<InputField>().text + "\"}";
+
+        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        WebServices.instance.SendRequest(RequestType.ForgotPassword, requestData, true, OnServerResponseFound);
     }
 
     private void ResetLoginScreen()
@@ -219,14 +248,14 @@ public class RegistrationManager : MonoBehaviour
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
 
-            Debug.Log("data "+JsonMapper.ToJson(data));
+            Debug.Log("data " + JsonMapper.ToJson(data));
 
             //Debug.Log("User Success Status:" + data.Count);
 
             if (data["success"].ToString() == "1")
             {
                 //MainMenuController.instance.ShowMessage(data["message"].ToString());
-                
+
                 //JsonData parsedObject = JsonMapper.ToObject(data["result"].ToString().Replace(@"\",""));
 
                 PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
@@ -235,7 +264,7 @@ public class RegistrationManager : MonoBehaviour
                 playerData.userName = /*tmp_registrationUserName*/registrationUserName.text;
                 playerData.password = /*tmp_registrationPassword*/registrationPassword.text;
 
-                
+
                 //MainMenuController.instance.ShowMessage(data["message"].ToString());
 
                 ResetLoginScreen();
@@ -291,11 +320,28 @@ public class RegistrationManager : MonoBehaviour
                 StartCoroutine(MsgForVideo("Incorrect password or username does not exist", 1.5f));
             }
         }
+        else if (requestType == RequestType.ForgotPassword)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+            if (data["success"].ToString() == "1")
+            {
+                MainMenuController.instance.ShowMessage(data["response"].ToString());
+                ResetLoginScreen();
+                forgotPassword.SetActive(false);
+            }
+            else
+            {
+                MainMenuController.instance.ShowMessage(data["response"].ToString());
+                ResetLoginScreen();
+                forgotPassword.SetActive(false);
+                Debug.Log("Unable to process");
+            }
+        }
         else
         {
 
 #if ERROR_LOG
-            Debug.LogError("Unhandled server requestType found  "+requestType);
+            Debug.LogError("Unhandled server requestType found  " + requestType);
 #endif
         }
 

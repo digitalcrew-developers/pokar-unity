@@ -69,6 +69,7 @@ public class CareerMnuScreenManager : MonoBehaviour
             if (data["status"].Equals(true))
             {
                 MainMenuController.instance.ShowMessage(data["response"].ToString());
+                requestedUserID.text = "";
             }
             else
             {
@@ -83,7 +84,7 @@ public class CareerMnuScreenManager : MonoBehaviour
 
             if (data["status"].Equals(true))
             {
-                for (int i = 0; i < 4/*data["getData"].Count*/; i++)
+                for (int i = 0; i < data["getData"].Count; i++)
                 {
                     GameObject gm = Instantiate(multiAccountBtn, multiAccountList.transform) as GameObject;
                     gm.transform.GetChild(0).GetComponent<Text>().text = "PLAYER ID: 1234567";

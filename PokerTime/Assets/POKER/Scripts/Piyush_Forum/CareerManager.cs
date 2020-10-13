@@ -11,6 +11,8 @@ public class CareerManager : MonoBehaviour
 
     //DEV_CODE
     public GameObject requestObj;
+    public List<RequestData> requestDataList = new List<RequestData>();
+    public static int requestCounter = -1;
 
     public Text headingTxt;
     public GameObject[] DMY_objList;
@@ -61,11 +63,11 @@ public class CareerManager : MonoBehaviour
         }
     }
 
-    public void OnClickOnRequestStatus(string status)
+    public void OnClickOnRequestStatus(string id, string status)
     {
         Debug.Log("My Player ID For Requests (Accept/Deny):" + PlayerManager.instance.GetPlayerGameData().userId);
 
-        string requestData = "{\"id\":\"" + 1 +
+        string requestData = "{\"id\":\"" + id + "\"," +
                                "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                                "\"status\":\"" + status + "\"}";
 
@@ -80,9 +82,22 @@ public class CareerManager : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.GetMultiAccountPendingRequests, requestData, true, OnServerResponseFound);
     }
 
+    private void ShowRequestList()
+    {
+        /*for (int i = 0; i < data.Count; i++)
+        {*/
+        requestObj.transform.GetChild(0).GetComponent<Text>().text = "Player " + requestDataList[requestCounter].byUserId + " is requesting your career data.";
+        requestObj.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => OnClickOnRequestStatus(requestDataList[requestCounter].requestId, "Approved"));
+        requestObj.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => OnClickOnRequestStatus(requestDataList[requestCounter].requestId, "Rejected"));
+        requestObj.SetActive(true);
+        
+        requestDataList.RemoveAt(requestCounter);
+        requestCounter--;
+        /*}*/
+    }
+
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
@@ -101,26 +116,53 @@ public class CareerManager : MonoBehaviour
             if (data["status"].Equals(true))
             {
                 MainMenuController.instance.ShowMessage(data["response"].ToString());
-                requestObj.SetActive(false);
+                //requestObj.SetActive(false);
+
+                //Debug.Log("Req Counter:" + requestCounter);
+                if (requestDataList.Count > 0)
+                {
+                    ShowRequestList();
+                }
+                else
+                {
+                    requestObj.SetActive(false);
+                }
             }
             else
             {
                 MainMenuController.instance.ShowMessage("Unable to update request..");
             }
         }
-        else if (requestType == RequestType.GetMultiAccountPendingRequests)
+        
+        if (requestType == RequestType.GetMultiAccountPendingRequests)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
             Debug.Log("Get Request List: " + data.ToString());
 
             if (data["status"].Equals(true))
             {
-                MainMenuController.instance.ShowMessage(data["response"].ToString());
+                //MainMenuController.instance.ShowMessage(data["response"].ToString());
                 for (int i = 0; i < data["getData"].Count; i++)
                 {
-                    requestObj.SetActive(true);
-                    requestObj.transform.GetChild(0).GetComponent<Text>().text = "Player " + data["getData"][i]["byUserId"] + " is requesting your career data.";
+                    Debug.Log("Request No:" + i);
+                    RequestData reqData = new RequestData();
+                    reqData.requestId = data["getData"][i]["requestId"].ToString();
+                    reqData.byUserId = data["getData"][i]["byUserId"].ToString();
+                    reqData.toUserId = data["getData"][i]["toUserId"].ToString();
+
+                    requestDataList.Add(reqData);
+                    requestCounter++;
+
+                    /*Debug.Log("Request ID:" + reqData.requestId);
+                    Debug.Log("By ID:" + reqData.byUserId);
+                    Debug.Log("To ID:" + reqData.toUserId);*/
+
+                    /*requestObj.SetActive(true);
+                    requestObj.transform.GetChild(0).GetComponent<Text>().text = "Player " + data["getData"][i]["byUserId"] + " is requesting your career data.";*/
                 }
+
+                if(requestDataList.Count > 0)
+                    ShowRequestList();
             }
             else
             {
@@ -136,4 +178,9 @@ public class CareerManager : MonoBehaviour
         }
 
     }
+}
+
+public class RequestData
+{
+    public string requestId, byUserId, toUserId;
 }

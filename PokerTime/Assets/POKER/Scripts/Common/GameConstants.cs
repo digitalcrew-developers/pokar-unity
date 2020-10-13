@@ -113,7 +113,8 @@ public class GameConstants : MonoBehaviour
         API_URL+"/addMultiAccountConnectRequest",
         API_URL+"/getMultiAccountPendingRequests",
         API_URL+"/updateMultiAccountRequestStatus",
-        API_URL+"/getMyConnectedAccounts"
+        API_URL+"/getMyConnectedAccounts",
+        API_URL+"/forgotPassword"
     };
     #endregion
 
@@ -189,5 +190,6 @@ public enum RequestType
     AddMultiAccountConnectRequest,
     GetMultiAccountPendingRequests,
     UpdateMultiAccountRequestStatus,
-    GetMyConnectedAccounts
+    GetMyConnectedAccounts,
+    ForgotPassword
 }
