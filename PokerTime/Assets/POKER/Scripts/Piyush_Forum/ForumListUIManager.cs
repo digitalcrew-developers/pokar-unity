@@ -57,11 +57,11 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData a)
     {
-        if (addVideoPanel.activeSelf)
-        {
-            addVideoPanel.SetActive(false);
-            isAddVideoPanelActive = false;
-        }
+        //if (addVideoPanel.activeSelf)
+        //{
+        //    addVideoPanel.SetActive(false);
+        //    isAddVideoPanelActive = false;
+        //}
     }
 
     public void ClickBackBtn() {
@@ -149,11 +149,11 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     void ChangeBtnFocus(int focusVal)
     {
         //To Disable Hand/Text Panel
-        if (addVideoPanel.activeSelf)
-        {  
-            addVideoPanel.SetActive(false);
-            isAddVideoPanelActive = false;
-        }
+        //if (addVideoPanel.activeSelf)
+        //{  
+        //    addVideoPanel.SetActive(false);
+        //    isAddVideoPanelActive = false;
+        //}
 
         if (focusVal == 3)
             isMinePanel = true;
@@ -323,16 +323,17 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 
     public void OnClickVideoAddObject()
     {
-        if (!isAddVideoPanelActive)
-        {
-            addVideoPanel.SetActive(true);
-            isAddVideoPanelActive = true;
-        }
-        else
-        {
-            addVideoPanel.SetActive(false);
-            isAddVideoPanelActive = false;
-        }
+        MainMenuController.instance.ShowScreen(MainMenuScreens.HandScreen);
+        //if (!isAddVideoPanelActive)
+        //{
+        //    addVideoPanel.SetActive(true);
+        //    isAddVideoPanelActive = true;
+        //}
+        //else
+        //{
+        //    addVideoPanel.SetActive(false);
+        //    isAddVideoPanelActive = false;
+        //}
     }
 
     public void OnClickOpenPanel(string panelName)

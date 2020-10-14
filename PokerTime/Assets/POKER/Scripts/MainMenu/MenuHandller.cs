@@ -36,6 +36,9 @@ public class MenuHandller : MonoBehaviour
 		createClubPopUp.SetActive(false);
 		joinClubPopUp.SetActive(false);
 
+		if (!MainMenuController.instance.bottomPanel.activeSelf)
+			MainMenuController.instance.bottomPanel.SetActive(true);
+
 		UpdateAllText();
 		UpdateNotificationData(MainMenuController.instance.GetNotificationDetails().unreadMessageCount);
     }

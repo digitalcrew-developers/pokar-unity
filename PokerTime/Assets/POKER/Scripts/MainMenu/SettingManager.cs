@@ -64,6 +64,7 @@ public class SettingManager : MonoBehaviour
         if(MainMenuController.instance.bottomPanel.activeSelf)
             MainMenuController.instance.bottomPanel.SetActive(false);
 
+        MainMenuController.instance.DestroyScreen(MainMenuScreens.Profile);
         MainMenuController.instance.ShowScreen(MainMenuScreens.Registration);
     }
 

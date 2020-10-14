@@ -820,7 +820,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentPwd: {fileID: 5014515596511670009}
   newPwd: {fileID: 3897610338808887886}
-  confrimPwd: {fileID: 6549565155020966001}
+  confirmPwd: {fileID: 6549565155020966001}
+  confirmBtn: {fileID: 2068023215669142862}
 --- !u!1 &4208596718056717106
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,7 +1090,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cd6e396f85c1f6a4abe69fa8224e5272, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 30be279a5ce03ff4387d06c7eca31549, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1117,7 +1118,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1130,7 +1131,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: cd6e396f85c1f6a4abe69fa8224e5272, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -1306,7 +1307,7 @@ GameObject:
   - component: {fileID: 4163081557933189646}
   - component: {fileID: 6549565155020966001}
   m_Layer: 5
-  m_Name: InputFieldconfrim
+  m_Name: InputFieldconfirm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

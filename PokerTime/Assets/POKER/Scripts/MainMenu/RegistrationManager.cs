@@ -309,7 +309,10 @@ public class RegistrationManager : MonoBehaviour
                 if (!MainMenuController.instance.bottomPanel.activeSelf)
                     MainMenuController.instance.bottomPanel.SetActive(true);
 
-                MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.Shop);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.Profile);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.Lobby);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
                 //MainMenuController.instance.ShowMessage(data["message"].ToString());
                 // GlobalGameManager.instance.SendFirebaseToken(FireBaseAnalyticsIntegration.TOKEN);
             }

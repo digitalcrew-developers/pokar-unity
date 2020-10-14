@@ -10,7 +10,7 @@ public class CareerManager : MonoBehaviour
     public int selectedIndex_CareerMenuScreen = 0;
 
     //DEV_CODE
-    public GameObject requestObj;
+    public GameObject requestObj, dataObj;
     public List<RequestData> requestDataList = new List<RequestData>();
     public static int requestCounter = -1;
 
@@ -121,11 +121,13 @@ public class CareerManager : MonoBehaviour
                 //Debug.Log("Req Counter:" + requestCounter);
                 if (requestDataList.Count > 0)
                 {
+                    dataObj.transform.localPosition = new Vector3(0, 0, 0);
                     ShowRequestList();
                 }
                 else
                 {
                     requestObj.SetActive(false);
+                    dataObj.transform.localPosition = new Vector3(0, 80, 0);
                 }
             }
             else

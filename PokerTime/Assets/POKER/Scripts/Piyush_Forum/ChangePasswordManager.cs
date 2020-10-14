@@ -8,33 +8,46 @@ public class ChangePasswordManager : MonoBehaviour
 {
     public InputField currentPwd;
     public InputField newPwd;
-    public InputField confrimPwd;
+    public InputField confirmPwd;
+
+    public Button confirmBtn;
+   
+    private void OnEnable()
+    {
+        confirmBtn.interactable = false;
+    }
+
+    void Update()
+    {
+        //Check if the Input Field is in focus and able to alter
+        if (newPwd.text.Length > 0 || confirmPwd.text.Length > 0 || currentPwd.text.Length > 0)
+        {
+            confirmBtn.interactable = true;
+        }
+        else
+        {
+            confirmBtn.interactable = false;
+        }
+    }
 
 
     public void OnCloseBtnClick()
     {
         SoundManager.instance.PlaySound(SoundType.Click);
         MainMenuController.instance.DestroyScreen(MainMenuScreens.ChangePassword);
-
-
     }
 
     public void OnConfirmBtnClick() {
         SoundManager.instance.PlaySound(SoundType.Click);
         FetchUserData();
-
-
     }
-
-
-
 
     private void FetchUserData()
     {
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
              "\"currentPassword\":\"" + currentPwd.text + "\"," +
              "\"newPassword\":\"" + newPwd.text + "\"," +
-              "\"confirmPassword\":\"" + confrimPwd.text + "\"}";
+              "\"confirmPassword\":\"" + confirmPwd.text + "\"}";
         
         MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
         WebServices.instance.SendRequest(RequestType.changePassword, requestData, true, OnServerResponseFound);

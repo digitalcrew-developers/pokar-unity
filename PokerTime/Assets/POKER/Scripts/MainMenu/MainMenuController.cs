@@ -5,6 +5,7 @@ using UnityEngine;
 using LitJson;
 using System.IO;
 using UnityEngine.UI;
+using System.Linq;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class MainMenuController : MonoBehaviour
 
 	private List<MainMenuActiveScreen> mainMenuActiveScreens = new List<MainMenuActiveScreen>();
 	private NotificationDetails notificationDetails = new NotificationDetails();
+
+	private Dictionary<MainMenuScreens, GameObject> availableScreens = new Dictionary<MainMenuScreens, GameObject>();
 
 
 	private void Awake()
@@ -111,7 +114,7 @@ public class MainMenuController : MonoBehaviour
 			case "menu":
 				{
 					MenuSelection(4);
-					ShowScreen(MainMenuScreens.MainMenu);
+					_ShowScreen(MainMenuScreens.MainMenu);
 				}
 				break;
 
@@ -119,14 +122,14 @@ public class MainMenuController : MonoBehaviour
 			case "profile":
 				{
 					MenuSelection(3);
-					ShowScreen(MainMenuScreens.Profile);
+					_ShowScreen(MainMenuScreens.Profile);
 				}
 				break;
 
 			case "shop":
 				{
 					MenuSelection(0);
-					ShowScreen(MainMenuScreens.Shop);
+					_ShowScreen(MainMenuScreens.Shop);
 				}
 				break;
 			case "Forum":
@@ -253,7 +256,52 @@ public class MainMenuController : MonoBehaviour
 		return notificationDetails;
 	}
 
+	public void _ShowScreen(MainMenuScreens screenName, object[] parameter = null)
+	{
+		List<GameObject> screenList = availableScreens.Values.ToList();
 
+		for (int i = 0; i < screenList.Count; i++)
+		{
+			//Debug.Log("Disabling Screen: " + screenList[i].name);
+			screenList[i].SetActive(false);
+		}
+
+		if (availableScreens.ContainsKey(screenName))
+		{
+			GameObject screen = availableScreens[screenName];
+			screen.SetActive(true);
+		}
+		else
+		{
+			MainMenuActiveScreen mainMenuScreen = new MainMenuActiveScreen();
+			mainMenuScreen.screenName = screenName;
+			mainMenuScreen.screenLayer = GetScreenLayer(screenName);
+
+			GameObject gm = Instantiate(screens[(int)screenName], screenLayers[/*(int)mainMenuScreen.screenLayer*/0]) as GameObject;
+			//mainMenuScreen.screenObject = gm;
+			availableScreens.Add(screenName, gm);
+
+			switch (screenName)
+			{
+				case MainMenuScreens.Shop:
+					{
+						if (parameter != null)
+						{
+							gm.GetComponent<ShopUiManager>().ShowScreen((string)parameter[0]);
+						}
+						else
+						{
+							gm.GetComponent<ShopUiManager>().ShowScreen();
+						}
+					}
+					break;
+
+				default:
+					break;
+			}
+		}
+		
+	}
 
 	public void ShowScreen(MainMenuScreens screenName, object[] parameter = null)
 	{
@@ -399,9 +447,6 @@ public class MainMenuController : MonoBehaviour
 			case MainMenuScreens.Shop:
 			case MainMenuScreens.Profile:
 			case MainMenuScreens.Forum:
-
-				return ScreenLayer.LAYER1;
-
 			case MainMenuScreens.Message:
 			case MainMenuScreens.SelectFrom:
 			case MainMenuScreens.FairGaming:
@@ -422,21 +467,58 @@ public class MainMenuController : MonoBehaviour
 			case MainMenuScreens.CareerMenuScreen:
 			case MainMenuScreens.CareerDataScreen:
 			case MainMenuScreens.CareerDefinationScreen:
-
-				return ScreenLayer.LAYER3;
-
-			/*case MainMenuScreens.Loading:*/
 			case MainMenuScreens.ChangeFrame:
 			case MainMenuScreens.SelectRegion:
 			case MainMenuScreens.ChangeProfileIcon:
-			
-				 return ScreenLayer.LAYER4;
-
 			case MainMenuScreens.Loading:
-				return ScreenLayer.LAYER5; 
+				return ScreenLayer.LAYER1;
 
 			default:
-				return ScreenLayer.LAYER2;
+				return ScreenLayer.LAYER1;
+
+
+			//case MainMenuScreens.MainMenu:
+			//case MainMenuScreens.Shop:
+			//case MainMenuScreens.Profile:
+			//case MainMenuScreens.Forum:
+
+			//	return ScreenLayer.LAYER1;
+
+			//case MainMenuScreens.Message:
+			//case MainMenuScreens.SelectFrom:
+			//case MainMenuScreens.FairGaming:
+			//case MainMenuScreens.Compliance:
+			//case MainMenuScreens.Contact:
+			//case MainMenuScreens.FriendList:
+			//case MainMenuScreens.Language:
+			//case MainMenuScreens.LinkYourEmail:
+			//case MainMenuScreens.LinkingSucessfull:
+			//case MainMenuScreens.UnlinkYourEmail:
+			//case MainMenuScreens.ChangePassword:
+			//case MainMenuScreens.RedeemCode:
+			//case MainMenuScreens.InGameShop:
+			//case MainMenuScreens.Missions:
+			//case MainMenuScreens.ConsecutiveLoginReward:
+			//case MainMenuScreens.Congratulation:
+			//case MainMenuScreens.BackPack:
+			//case MainMenuScreens.CareerMenuScreen:
+			//case MainMenuScreens.CareerDataScreen:
+			//case MainMenuScreens.CareerDefinationScreen:
+
+			//	return ScreenLayer.LAYER3;
+
+			///*case MainMenuScreens.Loading:*/
+			//case MainMenuScreens.ChangeFrame:
+			//case MainMenuScreens.SelectRegion:
+			//case MainMenuScreens.ChangeProfileIcon:
+
+			//	return ScreenLayer.LAYER4;
+
+			//case MainMenuScreens.Loading:
+			//	return ScreenLayer.LAYER5;
+
+			//default:
+			//	return ScreenLayer.LAYER2;
 		}
 	}
 

@@ -21,6 +21,10 @@ public class LinkYourEmailManager : MonoBehaviour
     private bool isColorBtnLinkEmail;
     private Image colorImgBtnLinkEmail;
 
+    private float timer = 1;
+    private bool isVerifiedEmail = false;
+    private string otp;
+
     [Header("Already LINK EMAIL")]
     public GameObject AlreaLinkEmail;
     public Text emailAlreadyTxt;
@@ -33,32 +37,56 @@ public class LinkYourEmailManager : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log("Helloooo");
+
         if (!PlayerPrefs.HasKey("USER_EMAIL"))
         {
             forLinkEmail.SetActive(true);
             AlreaLinkEmail.SetActive(false);
         }
-        else {
+        else
+        {
+            Debug.Log("Already Exist");
             forLinkEmail.SetActive(false);
             AlreaLinkEmail.SetActive(true);
             emailAlreadyTxt.text = PlayerPrefs.GetString("USER_EMAIL");
         }
-       
     }
 
     private void Start()
     {
-        colorImgBtnLinkEmail = btnLinkEmail.GetComponent<Image>();
-        colorImgBtnLinkEmail.color = new Color32(140, 140, 140, 255);
-        btnLinkEmail.GetComponent<Button>().enabled = false;
+        btnLinkEmail.transform.GetComponent<Button>().interactable = false;        
+        //OLD CODE TO ENABLE/DISABLE LINK BUTTON
+        //colorImgBtnLinkEmail = btnLinkEmail.GetComponent<Image>();
+        //colorImgBtnLinkEmail.color = new Color32(140, 140, 140, 255);
+        //btnLinkEmail.GetComponent<Button>().enabled = false;
     }
+
     private void FixedUpdate()
     {
-        if (verificationCodeInputField.text.Length > 0)
+        if(timer > 1)
         {
-             isColorBtnLinkEmail = true;
-            colorImgBtnLinkEmail.color = new Color32(52, 140, 52, 255);
-            btnLinkEmail.GetComponent<Button>().enabled = true;
+            timer -= Time.deltaTime;
+            btnVerificationCode.transform.GetChild(0).GetComponent<Text>().text = "Resend After " + timer.ToString("f0") + "s";
+        }
+        else if(timer < 1)
+        {
+            btnVerificationCode.transform.GetComponent<Button>().interactable = true;
+            btnVerificationCode.transform.GetChild(0).GetComponent<Text>().text = "Resend";
+            btnVerificationCode.transform.GetChild(0).GetComponent<Text>().color = new Color32(140, 224, 240, 255);
+        }
+        
+        if (verificationCodeInputField.text.Length > 0 && emailInputField.text.Length > 0)
+        {
+            btnLinkEmail.transform.GetComponent<Button>().interactable = true;
+            //OLD CODE TO ENABLE/DISABLE LINK BUTTON
+            //isColorBtnLinkEmail = true;
+            //colorImgBtnLinkEmail.color = new Color32(52, 140, 52, 255);
+            //btnLinkEmail.GetComponent<Button>().enabled = true;
+        }
+        else
+        {
+            btnLinkEmail.transform.GetComponent<Button>().interactable = false;
         }
     }
 
@@ -70,13 +98,16 @@ public class LinkYourEmailManager : MonoBehaviour
     }
 
 
-    public void OnClickVerifyCode() {
+    public void OnClickVerifyCode() 
+    {
         SoundManager.instance.PlaySound(SoundType.Click);
 
         bool hasAt = emailInputField.text.IndexOf('@') > 0;
         if (hasAt)
         {
-             wrongEmail.SetActive(false);
+            isVerifiedEmail = false;
+            wrongEmail.SetActive(false);
+            FetchUserData();
         }
         else
         {
@@ -91,8 +122,8 @@ public class LinkYourEmailManager : MonoBehaviour
         bool hasAt = emailInputField.text.IndexOf('@') > 0;
         if (hasAt)
         {
-             wrongEmail.SetActive(false);
-            FetchUserData();
+            wrongEmail.SetActive(false);
+            FetchUserDataWithOtp();
         }
         else
         {
@@ -115,14 +146,20 @@ public class LinkYourEmailManager : MonoBehaviour
     {
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
              "\"email\":\"" + emailInputField.text + "\"," +
-              "\"otp\":\"" + ""+ "\"}";
+              "\"otp\":\"" + "" + "\"}";
       
+        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        WebServices.instance.SendRequest(RequestType.emailVerified, requestData, true, OnServerResponseFound);       
+    }
 
+    private void FetchUserDataWithOtp()
+    {
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+             "\"email\":\"" + emailInputField.text + "\"," +
+              "\"otp\":\"" + otp + "\"}";
 
         MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
         WebServices.instance.SendRequest(RequestType.emailVerified, requestData, true, OnServerResponseFound);
-
-       
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -157,10 +194,21 @@ public class LinkYourEmailManager : MonoBehaviour
 
             if (data["success"].ToString()== "1")
             {
-                Debug.Log("uhuidhuhfdabuuuuuuuu");
-                MainMenuController.instance.DestroyScreen(MainMenuScreens.LinkYourEmail);
-                MainMenuController.instance.ShowScreen(MainMenuScreens.LinkingSucessfull);
-                PlayerPrefs.SetString("USER_EMAIL", emailInputField.text);
+                if (!isVerifiedEmail)
+                {
+                    Debug.Log("OTP: " + data["otp"].ToString());
+                    otp = data["otp"].ToString();
+                    timer = 60;
+                    isVerifiedEmail = true;
+                    btnVerificationCode.transform.GetComponent<Button>().interactable = false;
+                }
+                else
+                {
+                    Debug.Log("Email Successfully Verified");
+                    MainMenuController.instance.DestroyScreen(MainMenuScreens.LinkYourEmail);
+                    MainMenuController.instance.ShowScreen(MainMenuScreens.LinkingSucessfull);
+                    PlayerPrefs.SetString("USER_EMAIL", emailInputField.text);
+                }
             }
             else
             {
