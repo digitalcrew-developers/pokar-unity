@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class ProfileScreenUiManager : MonoBehaviour
@@ -57,7 +58,7 @@ public class ProfileScreenUiManager : MonoBehaviour
                 for (int i = 0; i < data["getData"].Count; i++)
                 {
 
-                    loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString(), data["getData"][i]["countryFlag"].ToString());
+                    //loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString(), data["getData"][i]["countryFlag"].ToString());
                     userLevel.text = "Lvl. " + data["getData"][i]["userLevel"].ToString() + ">>";
                     userName.text = data["getData"][i]["userName"].ToString();
                     userId.text = "UserID:" + data["getData"][i]["userId"].ToString();
@@ -67,6 +68,7 @@ public class ProfileScreenUiManager : MonoBehaviour
                     frameurl = data["getData"][i]["frameURL"].ToString();
                     flagurl = data["getData"][i]["countryFlag"].ToString();
                     avtarid = int.Parse(data["getData"][i]["avatarID"].ToString());
+                    LoadImages(avtarurl, frameurl, flagurl);
                 }
                 MainMenuController.instance.OnClickOnButton("profile");
             }
@@ -76,32 +78,49 @@ public class ProfileScreenUiManager : MonoBehaviour
             }
         }
     }
-    public void loadImages(string urlAvtar,string urlframe,string urlflag)
+    public void LoadImages(string urlAvtar,string urlframe,string urlflag)
     {
         //   Debug.Log("Success data send");
-        StartCoroutine(loadSpriteImageFromUrl(urlflag, flag));
-        StartCoroutine(loadSpriteImageFromUrl(urlAvtar, avtar));
-        StartCoroutine(loadSpriteImageFromUrl(urlframe, frame));
+        StartCoroutine(LoadSpriteImageFromUrl(urlflag, flag));
+        StartCoroutine(LoadSpriteImageFromUrl(urlAvtar, avtar));
+        StartCoroutine(LoadSpriteImageFromUrl(urlframe, frame));
     }
-    IEnumerator loadSpriteImageFromUrl(string URL, Image image)
+    IEnumerator LoadSpriteImageFromUrl(string URL, Image image)
     {
-        WWW www = new WWW(URL);
-        while (!www.isDone)
+        UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
+        yield return unityWebRequest.SendWebRequest();
+
+        if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
         {
-            yield return null;
-        }
-        if (!string.IsNullOrEmpty(www.error))
-        {
-            Debug.Log("Download failed" + image.gameObject.name);
+            Debug.LogError("Download failed");
         }
         else
         {
-      //  Debug.Log("Success222222222 data send");
-            Texture2D texture = new Texture2D(1, 1);
-            www.LoadImageIntoTexture(texture);
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
+            Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
             image.sprite = sprite;
+            
+            Debug.Log("Successfully Set Player Profile");
         }
+
+
+        //  WWW www = new WWW(URL);
+        //  while (!www.isDone)
+        //  {
+        //      yield return null;
+        //  }
+        //  if (!string.IsNullOrEmpty(www.error))
+        //  {
+        //      Debug.Log("Download failed" + image.gameObject.name);
+        //  }
+        //  else
+        //  {
+        ////  Debug.Log("Success222222222 data send");
+        //      Texture2D texture = new Texture2D(1, 1);
+        //      www.LoadImageIntoTexture(texture);
+        //      Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+        //      image.sprite = sprite;
+        //  }
     }
 
     public void OnClickOnButton(string eventName)
