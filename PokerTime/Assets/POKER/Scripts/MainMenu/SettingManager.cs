@@ -65,7 +65,7 @@ public class SettingManager : MonoBehaviour
             MainMenuController.instance.bottomPanel.SetActive(false);
 
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Profile);
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Registration);
+        MainMenuController.instance._ShowScreen(MainMenuScreens.Registration);
     }
 
 

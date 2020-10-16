@@ -96,7 +96,7 @@ public class LobbyUiManager: MonoBehaviour
                     if (!MainMenuController.instance.bottomPanel.activeSelf)
                         MainMenuController.instance.bottomPanel.SetActive(true);
 
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+                    MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
                 }
                 break;
 
@@ -106,7 +106,7 @@ public class LobbyUiManager: MonoBehaviour
                     if (!MainMenuController.instance.bottomPanel.activeSelf)
                         MainMenuController.instance.bottomPanel.SetActive(true);
 
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+                    MainMenuController.instance._ShowScreen(MainMenuScreens.Shop);
                 }
                 break;
 

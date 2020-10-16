@@ -48,8 +48,8 @@ public class MainMenuController : MonoBehaviour
 				bottomPanel.SetActive(true);
 
 			FetchUserData();
-			FetchUserLogs();			
-		}
+			FetchUserLogs();
+        }
 		else
 		{
 			//Deactivate bottom panel
@@ -135,13 +135,13 @@ public class MainMenuController : MonoBehaviour
 			case "Forum":
 				{
 					MenuSelection(1);
-					ShowScreen(MainMenuScreens.Forum);
+					_ShowScreen(MainMenuScreens.Forum);
 				}
 				break;
 			case "career":
 				{
 					MenuSelection(2);
-					ShowScreen(MainMenuScreens.Career);
+					_ShowScreen(MainMenuScreens.Career);
 				}
 				break;
 
@@ -184,8 +184,7 @@ public class MainMenuController : MonoBehaviour
 
 		ShowScreen(MainMenuScreens.Loading);
 		WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
-
-		DownloadNotificationMessage();
+        DownloadNotificationMessage();
 	}
 	private void FetchUserLogs()
 	{
@@ -563,7 +562,7 @@ public class MainMenuController : MonoBehaviour
 				if (!bottomPanel.activeSelf)
 					bottomPanel.SetActive(true);
 
-				ShowScreen(MainMenuScreens.MainMenu);
+				_ShowScreen(MainMenuScreens.MainMenu);
 				/*ShowMessage(data["message"].ToString());*/
 			}
 			else

@@ -321,8 +321,9 @@ public class RegistrationManager : MonoBehaviour
                     MainMenuController.instance.bottomPanel.SetActive(true);
 
                 MainMenuController.instance._ShowScreen(MainMenuScreens.Shop);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.Career);
                 MainMenuController.instance._ShowScreen(MainMenuScreens.Profile);
-                MainMenuController.instance._ShowScreen(MainMenuScreens.Lobby);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.Forum);
                 MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
                 //MainMenuController.instance.ShowMessage(data["message"].ToString());
                 // GlobalGameManager.instance.SendFirebaseToken(FireBaseAnalyticsIntegration.TOKEN);

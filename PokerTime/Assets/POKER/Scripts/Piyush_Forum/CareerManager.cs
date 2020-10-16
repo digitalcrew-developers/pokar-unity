@@ -98,6 +98,7 @@ public class CareerManager : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        Debug.Log(errorMessage);
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
