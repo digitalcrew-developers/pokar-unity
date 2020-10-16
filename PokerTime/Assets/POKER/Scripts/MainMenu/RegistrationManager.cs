@@ -153,6 +153,10 @@ public class RegistrationManager : MonoBehaviour
             case "forgotpwd":
                 {
                     forgotPassword.SetActive(true);
+
+                    loginScreen.SetActive(false);
+                    registrationScreen.SetActive(false);
+                    signUpScreen.SetActive(false);
                 }
                 break;
 
@@ -200,15 +204,20 @@ public class RegistrationManager : MonoBehaviour
         /*tmp_registrationConfirmPassword*/registrationConfirmPassword.text = "";
     }
 
+    public Sprite EyeOff, EyeOn;
+    public Image RegisterPasswordEye, LoginPasswordEye;
+
     public void RegisterEyeClick() {
         if (this./*tmp_registrationPassword*/registrationPassword != null)
         {
             if (this./*tmp_registrationPassword*/registrationPassword.contentType== /*TMP_InputField.ContentType.Password*/InputField.ContentType.Password)
             {
+                RegisterPasswordEye.sprite = EyeOn;
                 this./*tmp_registrationPassword*/registrationPassword.contentType = /*TMP_InputField.ContentType.Standard*/InputField.ContentType.Standard;
             }
             else
             {
+                RegisterPasswordEye.sprite = EyeOff;
                 this./*tmp_registrationPassword*/registrationPassword.contentType = /*TMP_InputField.ContentType.Password*/InputField.ContentType.Password;
             }
 
@@ -220,10 +229,12 @@ public class RegistrationManager : MonoBehaviour
         {
             if (this./*tmp_loginPassword*/loginPassword.contentType == /*TMP_InputField.ContentType.Password*/InputField.ContentType.Password)
             {
+                LoginPasswordEye.sprite = EyeOn;
                 this./*tmp_loginPassword*/loginPassword.contentType = /*TMP_InputField.ContentType.Standard*/InputField.ContentType.Standard;
             }
             else
             {
+                LoginPasswordEye.sprite = EyeOff;
                 this./*tmp_loginPassword*/loginPassword.contentType = /*TMP_InputField.ContentType.Password*/InputField.ContentType.Password;
             }
 
