@@ -33,7 +33,8 @@ public class UnlinkYourEmailManager : MonoBehaviour
     {
         SoundManager.instance.PlaySound(SoundType.Click);
 
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.UnlinkYourEmail);
+        gameObject.SetActive(false);
+        //MainMenuController.instance.DestroyScreen(MainMenuScreens.UnlinkYourEmail);
     }
     public void OnClickNextBtn()
     {
@@ -50,7 +51,7 @@ public class UnlinkYourEmailManager : MonoBehaviour
         //string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
         //      "\"email\":\"" + PlayerPrefs.GetString("USER_EMAIL") + "\"}";
 
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
         WebServices.instance.SendRequest(RequestType.unlinkEmail, requestData, true, OnServerResponseFound);
 
     }
@@ -86,8 +87,8 @@ public class UnlinkYourEmailManager : MonoBehaviour
             if (data["success"].ToString() == "1")
             {
                 PlayerPrefs.DeleteKey("USER_EMAIL");
-                MainMenuController.instance.DestroyScreen(MainMenuScreens.UnlinkYourEmail);
-                MainMenuController.instance.ShowScreen(MainMenuScreens.LinkYourEmail);
+                //MainMenuController.instance.DestroyScreen(MainMenuScreens.UnlinkYourEmail);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.LinkYourEmail);
                 
             }
             else

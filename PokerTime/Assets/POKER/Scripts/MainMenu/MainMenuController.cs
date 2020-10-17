@@ -257,6 +257,7 @@ public class MainMenuController : MonoBehaviour
 
 	public void _ShowScreen(MainMenuScreens screenName, object[] parameter = null)
 	{
+		GameObject activeScreen;
 		List<GameObject> screenList = availableScreens.Values.ToList();
 
 		for (int i = 0; i < screenList.Count; i++)
@@ -269,6 +270,10 @@ public class MainMenuController : MonoBehaviour
 		{
 			GameObject screen = availableScreens[screenName];
 			screen.SetActive(true);
+			
+			MainMenuActiveScreen mainMenuScreen = new MainMenuActiveScreen();
+			mainMenuScreen.screenName = screenName;
+			mainMenuScreen.screenLayer = GetScreenLayer(screenName);
 		}
 		else
 		{
@@ -276,21 +281,38 @@ public class MainMenuController : MonoBehaviour
 			mainMenuScreen.screenName = screenName;
 			mainMenuScreen.screenLayer = GetScreenLayer(screenName);
 
-			GameObject gm = Instantiate(screens[(int)screenName], screenLayers[/*(int)mainMenuScreen.screenLayer*/0]) as GameObject;
-			//mainMenuScreen.screenObject = gm;
-			availableScreens.Add(screenName, gm);
+			activeScreen = Instantiate(screens[(int)screenName], screenLayers[/*(int)mainMenuScreen.screenLayer*/0]) as GameObject;
+			mainMenuScreen.screenObject = activeScreen;
+			availableScreens.Add(screenName, activeScreen);
 
 			switch (screenName)
 			{
+				case MainMenuScreens.ClubDetails:
+					activeScreen.GetComponent<ClubDetailsUIManager>().Initialize((string)parameter[0], (string)parameter[1], (string)parameter[2]);
+					break;
+
+				case MainMenuScreens.GlobalTournament:
+					{
+						if (parameter != null)
+						{
+							activeScreen.GetComponent<GlobalTournamentListUiManager>().ShowScreen((string)parameter[0]);
+						}
+						else
+						{
+							activeScreen.GetComponent<GlobalTournamentListUiManager>().ShowScreen();
+						}
+					}
+					break;
+
 				case MainMenuScreens.Shop:
 					{
 						if (parameter != null)
 						{
-							gm.GetComponent<ShopUiManager>().ShowScreen((string)parameter[0]);
+							activeScreen.GetComponent<ShopUiManager>().ShowScreen((string)parameter[0]);
 						}
 						else
 						{
-							gm.GetComponent<ShopUiManager>().ShowScreen();
+							activeScreen.GetComponent<ShopUiManager>().ShowScreen();
 						}
 					}
 					break;
@@ -573,7 +595,7 @@ public class MainMenuController : MonoBehaviour
 				if (!bottomPanel.activeSelf)
 					bottomPanel.SetActive(false);
 
-				ShowScreen(MainMenuScreens.Registration);
+				_ShowScreen(MainMenuScreens.Registration);
 			}
 		}
 		else if (requestType == RequestType.GetNotificationMessage)

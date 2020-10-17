@@ -569,16 +569,16 @@ public class VIPScreenUiManager : MonoBehaviour
             if (MainMenuController.instance.isVIPFromShop)
             {
                 MainMenuController.instance.isVIPFromShop = false;
-                MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.Shop);
             }
             else if (MainMenuController.instance.isVIPFromProfile)
             {
                 MainMenuController.instance.isVIPFromProfile = false;
-                MainMenuController.instance.ShowScreen(MainMenuScreens.Profile);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.Profile);
             }
             else
             {
-                MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+                MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
             }
         }
         

@@ -22,9 +22,7 @@ public class LinkYourEmailManager : MonoBehaviour
     private Image colorImgBtnLinkEmail;
 
     private float timer = 1;
-    private bool isVerifiedEmail = false;
-    private string otp;
-
+   
     [Header("Already LINK EMAIL")]
     public GameObject AlreaLinkEmail;
     public Text emailAlreadyTxt;
@@ -55,7 +53,8 @@ public class LinkYourEmailManager : MonoBehaviour
 
     private void Start()
     {
-        btnLinkEmail.transform.GetComponent<Button>().interactable = false;        
+        btnLinkEmail.transform.GetComponent<Button>().interactable = false;
+        verificationCodeInputField.interactable = false;
         //OLD CODE TO ENABLE/DISABLE LINK BUTTON
         //colorImgBtnLinkEmail = btnLinkEmail.GetComponent<Image>();
         //colorImgBtnLinkEmail.color = new Color32(140, 140, 140, 255);
@@ -66,6 +65,7 @@ public class LinkYourEmailManager : MonoBehaviour
     {
         if(timer > 1)
         {
+            verificationCodeInputField.interactable = true;
             timer -= Time.deltaTime;
             btnVerificationCode.transform.GetChild(0).GetComponent<Text>().text = "Resend After " + timer.ToString("f0") + "s";
         }
@@ -94,7 +94,8 @@ public class LinkYourEmailManager : MonoBehaviour
     {
         SoundManager.instance.PlaySound(SoundType.Click);
 
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.LinkYourEmail);
+        gameObject.SetActive(false);
+        //MainMenuController.instance.DestroyScreen(MainMenuScreens.LinkYourEmail);
     }
 
 
@@ -105,7 +106,6 @@ public class LinkYourEmailManager : MonoBehaviour
         bool hasAt = emailInputField.text.IndexOf('@') > 0;
         if (hasAt)
         {
-            isVerifiedEmail = false;
             wrongEmail.SetActive(false);
             FetchUserData();
         }
@@ -133,11 +133,11 @@ public class LinkYourEmailManager : MonoBehaviour
     }
 
 
-    public void UnlinkBtnClick() {
+    public void UnlinkBtnClick() 
+    {
         SoundManager.instance.PlaySound(SoundType.Click);
 
-        MainMenuController.instance.ShowScreen(MainMenuScreens.UnlinkYourEmail);
-
+        MainMenuController.instance._ShowScreen(MainMenuScreens.UnlinkYourEmail);
     }
 
 
@@ -148,7 +148,7 @@ public class LinkYourEmailManager : MonoBehaviour
              "\"email\":\"" + emailInputField.text + "\"," +
               "\"otp\":\"" + "" + "\"}";
       
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
         WebServices.instance.SendRequest(RequestType.emailVerified, requestData, true, OnServerResponseFound);       
     }
 
@@ -156,15 +156,15 @@ public class LinkYourEmailManager : MonoBehaviour
     {
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
              "\"email\":\"" + emailInputField.text + "\"," +
-              "\"otp\":\"" + otp + "\"}";
+              "\"otp\":\"" + verificationCodeInputField.text + "\"}";
 
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
         WebServices.instance.SendRequest(RequestType.emailVerified, requestData, true, OnServerResponseFound);
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
         {
@@ -194,19 +194,17 @@ public class LinkYourEmailManager : MonoBehaviour
 
             if (data["success"].ToString()== "1")
             {
-                if (!isVerifiedEmail)
+                if (data["response"].ToString().Equals("Otp sent to your email successfully"))
                 {
                     Debug.Log("OTP: " + data["otp"].ToString());
-                    otp = data["otp"].ToString();
                     timer = 60;
-                    isVerifiedEmail = true;
                     btnVerificationCode.transform.GetComponent<Button>().interactable = false;
                 }
                 else
                 {
                     Debug.Log("Email Successfully Verified");
-                    MainMenuController.instance.DestroyScreen(MainMenuScreens.LinkYourEmail);
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.LinkingSucessfull);
+                    //MainMenuController.instance.DestroyScreen(MainMenuScreens.LinkYourEmail);
+                    MainMenuController.instance._ShowScreen(MainMenuScreens.LinkingSucessfull);
                     PlayerPrefs.SetString("USER_EMAIL", emailInputField.text);
                 }
             }

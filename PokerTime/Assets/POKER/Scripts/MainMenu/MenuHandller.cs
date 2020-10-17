@@ -151,43 +151,43 @@ public class MenuHandller : MonoBehaviour
 
 		case "spinUp":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.GlobalTournament,new object[] {"spinUp"});
+				MainMenuController.instance._ShowScreen(MainMenuScreens.GlobalTournament,new object[] {"spinUp"});
 			}
 			break;
 
 		case "globalTournament":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.GlobalTournament);
+				MainMenuController.instance._ShowScreen(MainMenuScreens.GlobalTournament);
 			}
 			break;
 
 		case "coinShop":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.Shop, new object[] { "item" });
+				MainMenuController.instance._ShowScreen(MainMenuScreens.Shop, new object[] { "item" });
 			}
 			break;
 
 		case "diamondShop":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.Shop,new object[] {"diamond"});
+				MainMenuController.instance._ShowScreen(MainMenuScreens.Shop,new object[] {"diamond"});
 			}
 			break;
 
 		case "vip":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
+				MainMenuController.instance._ShowScreen(MainMenuScreens.VIP_Privilege);
 			}
 			break;
 
 		case "notification":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.Notification);
+				MainMenuController.instance._ShowScreen(MainMenuScreens.Notification);
 			}
 			break;
 
 		case "missions":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.Missions);
+				MainMenuController.instance._ShowScreen(MainMenuScreens.Missions);
 			}
 			break;
                 

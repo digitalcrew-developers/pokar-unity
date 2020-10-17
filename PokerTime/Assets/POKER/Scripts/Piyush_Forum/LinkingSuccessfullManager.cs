@@ -13,7 +13,7 @@ public class LinkingSuccessfullManager : MonoBehaviour
     }
     public void OnClose()
     {
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.LinkingSucessfull);
+        gameObject.SetActive(false);
+        //MainMenuController.instance.DestroyScreen(MainMenuScreens.LinkingSucessfull);
     }
-
 }

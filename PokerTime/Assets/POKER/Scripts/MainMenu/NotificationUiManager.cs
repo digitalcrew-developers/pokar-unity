@@ -85,7 +85,8 @@ public class NotificationUiManager : MonoBehaviour
         }
         else
         {
-            MainMenuController.instance.DestroyScreen(MainMenuScreens.Notification);
+            gameObject.SetActive(false);
+            //MainMenuController.instance.DestroyScreen(MainMenuScreens.Notification);
         }
     }
 }

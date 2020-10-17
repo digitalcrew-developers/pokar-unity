@@ -42,7 +42,7 @@ public class ClubListUiManager : MonoBehaviour
 	{
 		SoundManager.instance.PlaySound(SoundType.Click);
 
-		MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+		MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
 	}
 
     public Text DebugText;
@@ -101,7 +101,7 @@ public class ClubListUiManager : MonoBehaviour
 		parameters[2] = clubId;
 
 
-		MainMenuController.instance.ShowScreen(MainMenuScreens.ClubDetails, parameters);
+		MainMenuController.instance._ShowScreen(MainMenuScreens.ClubDetails, parameters);
 	}
 
 	public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
