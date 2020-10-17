@@ -145,7 +145,7 @@ public class MenuHandller : MonoBehaviour
 		case "lobby":
 			{
 			//		Debug.Log("I am here---------");
-				MainMenuController.instance._ShowScreen(MainMenuScreens.Lobby);
+				MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
 			}
 			break;
 

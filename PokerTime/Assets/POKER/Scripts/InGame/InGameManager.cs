@@ -1114,6 +1114,7 @@ public class InGameManager : MonoBehaviour
     string handtype;
     public void OnRoundDataFound(string serverResponse)
     {
+        UnityEngine.Debug.LogWarning("Round Data :- " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
         handtype = serverResponse;
@@ -1131,6 +1132,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnOpenCardsDataFound(string serverResponse)
     {
+        Debug.LogWarning("OpenCardDataFound : " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         openCards = new CardData[data[0].Count];
 

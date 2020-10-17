@@ -26,8 +26,6 @@ public class PreviousGameChecker: MonoBehaviour
 
         //roomData = PrefsManager.GetRoomData();
 
-        Debug.Log("is lobby in script = "+roomData.isLobbyRoom);
-
         if (null!=roomData && !string.IsNullOrEmpty(roomData.socketTableId))
         {
             ToggleLoadingScreen(true);

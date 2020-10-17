@@ -169,7 +169,8 @@ public class CareerManager : MonoBehaviour
             }
             else
             {
-                MainMenuController.instance.ShowMessage("Unable to send request");
+                Debug.Log("Unable to send request GetMultiAccountPendingRequests");
+                //MainMenuController.instance.ShowMessage("Unable to send request GetMultiAccountPendingRequests");
             }            
         }
         else

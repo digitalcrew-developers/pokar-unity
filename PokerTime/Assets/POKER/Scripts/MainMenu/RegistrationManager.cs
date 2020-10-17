@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class RegistrationManager : MonoBehaviour
 {
+    public static RegistrationManager instance = null;
+
     public GameObject registrationScreen, loginScreen,signUpScreen, forgotPassword;
     public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
@@ -16,6 +18,14 @@ public class RegistrationManager : MonoBehaviour
     //DEV_CODE
     public TMP_InputField tmp_registrationUserName, tmp_registrationPassword, tmp_registrationConfirmPassword;
     public TMP_InputField tmp_loginUserName, tmp_loginPassword;
+
+    private void Awake()
+    {
+        if (null== instance)
+        {
+            instance = this;
+        }
+    }
 
     private void OnEnable()
     {
@@ -243,6 +253,7 @@ public class RegistrationManager : MonoBehaviour
     }
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        Debug.LogWarning("SERVER RESPONSE :" + serverResponse);
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
@@ -317,20 +328,13 @@ public class RegistrationManager : MonoBehaviour
                 PlayerManager.instance.SetPlayerGameData(playerData);
 
                 //Activate bottom panel
-                if (!MainMenuController.instance.bottomPanel.activeSelf)
-                    MainMenuController.instance.bottomPanel.SetActive(true);
+                MainMenuController.instance.bottomPanel.SetActive(true);
 
-                MainMenuController.instance._ShowScreen(MainMenuScreens.Shop);
-                MainMenuController.instance._ShowScreen(MainMenuScreens.Career);
-                MainMenuController.instance._ShowScreen(MainMenuScreens.Profile);
-                MainMenuController.instance._ShowScreen(MainMenuScreens.Forum);
-                MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
-                //MainMenuController.instance.ShowMessage(data["message"].ToString());
-                // GlobalGameManager.instance.SendFirebaseToken(FireBaseAnalyticsIntegration.TOKEN);
+
+                MainMenuController.instance.SwitchToMainMenu();
             }
             else
             {
-                //MainMenuController.instance.ShowMessage(data["message"].ToString());
                 wrongPasswordText.gameObject.SetActive(true);
                 StartCoroutine(MsgForVideo("Incorrect password or username does not exist", 1.5f));
             }

@@ -51,6 +51,7 @@ public class ProfileScreenUiManager : MonoBehaviour
         }
         if (requestType == RequestType.GetUserDetails)
         {
+            Debug.Log("profile :" + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["success"].ToString() == "1")
@@ -67,7 +68,7 @@ public class ProfileScreenUiManager : MonoBehaviour
                     avtarurl = data["getData"][i]["profileImage"].ToString();
                     frameurl = data["getData"][i]["frameURL"].ToString();
                     flagurl = data["getData"][i]["countryFlag"].ToString();
-                    avtarid = int.Parse(data["getData"][i]["avatarID"].ToString());
+                    avtarid = int.Parse(data["getData"][i]["avatarID"].ToString()); //this is not coming in data
                     LoadImages(avtarurl, frameurl, flagurl);
                 }
                 MainMenuController.instance.OnClickOnButton("profile");
