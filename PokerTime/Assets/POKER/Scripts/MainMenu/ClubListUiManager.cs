@@ -21,8 +21,11 @@ public class ClubListUiManager : MonoBehaviour
 	}
 
 	void Start()
-	{
-		FetchList();
+    {
+        if (PlayerManager.instance.IsLogedIn())
+        {
+            FetchList();
+        }
 	}
 
 	public void FetchList(bool isShowLoading = true)
@@ -32,7 +35,7 @@ public class ClubListUiManager : MonoBehaviour
 
 		if (isShowLoading)
 		{
-			MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+			//MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
 		}
 		
 		WebServices.instance.SendRequest(RequestType.GetClubList, requestData, true, OnServerResponseFound);

@@ -163,13 +163,14 @@ public class MenuHandller : MonoBehaviour
 
 		case "coinShop":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.Shop, new object[] { "item" });
+                
+				MainMenuController.instance.OpenShopPage("item");
 			}
 			break;
 
 		case "diamondShop":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.Shop,new object[] {"diamond"});
+				MainMenuController.instance.OpenShopPage("diamond");
 			}
 			break;
 

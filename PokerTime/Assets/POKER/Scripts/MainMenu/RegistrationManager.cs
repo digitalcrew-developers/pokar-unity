@@ -317,7 +317,7 @@ public class RegistrationManager : MonoBehaviour
         else if (requestType == RequestType.Login)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
-
+            Debug.LogWarning(serverResponse);
             if (data["success"].ToString() == "1")
             {
                 PlayerGameDetails playerData = Utility.ParsePlayerGameData(data);
@@ -326,11 +326,7 @@ public class RegistrationManager : MonoBehaviour
                 playerData.password = /*tmp_loginPassword*/loginPassword.text;
 
                 PlayerManager.instance.SetPlayerGameData(playerData);
-
-                //Activate bottom panel
-                MainMenuController.instance.bottomPanel.SetActive(true);
-
-
+                
                 MainMenuController.instance.SwitchToMainMenu();
             }
             else

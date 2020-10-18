@@ -57,12 +57,10 @@ public class SettingManager : MonoBehaviour
     {
         Debug.Log("*********You CLICK ON LOG OUT");
         SoundManager.instance.PlaySound(SoundType.Click);
+        PrefsManager.DeletePlayerData();
+        PlayerManager.instance.DeletePlayerGameData();
         PlayerPrefs.DeleteAll();
         GlobalGameManager.instance.isLoginShow = false;
-
-        //Deactivate bottom panel
-        if(MainMenuController.instance.bottomPanel.activeSelf)
-            MainMenuController.instance.bottomPanel.SetActive(false);
 
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Profile);
         MainMenuController.instance.ShowScreen(MainMenuScreens.Registration);

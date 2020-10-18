@@ -85,8 +85,6 @@ public class GlobalGameManager : MonoBehaviour
         System.GC.Collect();
     }
 
-
-
     private void OnApplicationQuit()
     {
         SaveAllData();
@@ -99,8 +97,12 @@ public class GlobalGameManager : MonoBehaviour
     }
 
     private void SaveAllData()
-    { 
-        PrefsManager.SetPlayerGameData(PlayerManager.instance.GetPlayerGameData());
+    {
+        if (null != PlayerManager.instance)
+        {
+            PlayerGameDetails playerGame = PlayerManager.instance.GetPlayerGameData();
+            PrefsManager.SetPlayerGameData(PlayerManager.instance.GetPlayerGameData());
+        }
         //FireBaseAnalyticsIntegration.SharedInstance.LogEvent(FireBaseEvents.Game_Close);        
     }
 

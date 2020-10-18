@@ -34,29 +34,19 @@ public class MainMenuController : MonoBehaviour
 
     private void Start()
     {
-        LoadVideoAndScreenshot();
-        //MenuSelection(4);
-
         GlobalGameManager.IsJoiningPreviousGame = false;
 
         if (PlayerManager.instance.IsLogedIn())
         {
-            //Activate bottom panel
-            if (!bottomPanel.activeInHierarchy)
-                bottomPanel.SetActive(true);
-
-            FetchUserData();
-            FetchUserLogs();
             SwitchToMainMenu();
         }
         else
-        {
-            //Deactivate bottom panel
-
-            bottomPanel.SetActive(false);
-            
+        {            
             ShowScreen(MainMenuScreens.Registration);
+            bottomPanel.GetComponent<PaginationManager>().DisableScreens();
         }
+        LoadVideoAndScreenshot();
+        bottomPanel.GetComponent<PaginationManager>().PageToggleClickEvent += MainMenuController_PageToggleClickEvent;
     }
 
     private void LoadVideoAndScreenshot()
@@ -116,19 +106,92 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    public void SwitchToMainMenu()
+    public void OpenShopPage(string shopPanel)
     {
+        int layer = (int)GetScreenLayer(MainMenuScreens.MainMenu);
+        for (int i = layer + 1; i < screenLayers.Length; i++)
+        {
+            DestroyScreen((ScreenLayer)i);
+        }
+        bottomPanel.SetActive(true);
+        bottomPanel.GetComponent<PaginationManager>().GoToScreen(0);
+        ShopUiManager.instance.ShowScreen(shopPanel);
+    }
+
+    public void SwitchToMainMenu(bool playAnimation = false)
+    {
+        bottomPanel.SetActive(true);
         bottomPanel.GetComponent<PaginationManager>().GetScreen(0).SetActive(false);
         bottomPanel.GetComponent<PaginationManager>().GoToScreen(2);
+
+        if (mainMenuActiveScreens.Count > 0)
+        {
+            int layer = (int)GetScreenLayer(MainMenuScreens.MainMenu);
+            for (int i = layer + 1; i < screenLayers.Length; i++)
+            {
+                DestroyScreen((ScreenLayer)i);
+            }
+        }
 
         //if registration screen is acive, destory
         if (null != RegistrationManager.instance)
         {
             Destroy(RegistrationManager.instance.gameObject);
         }
+        bottomPanel.GetComponent<PaginationManager>().EnableScreens();
+        bottomPanel.SetActive(true);
+        bottomPanel.GetComponent<PaginationManager>().GetScreen(0).SetActive(false);
+        bottomPanel.GetComponent<PaginationManager>().GoToScreen(2);
+
         //make sure all screens are initialised.
         //shop
         ShopUiManager.instance.ShowScreen();
+        ////career
+        //CareerManager.instance.GetRequestList();
+        ////profile
+        //FetchUserData();
+        //FetchUserLogs();
+        ////forum
+        //ForumListUIManager.instance.InitialiseForum();
+        ////club list
+        //ClubListUiManager.instance.FetchList(false);
+        ////ProfileScreen
+        //ProfileScreenUiManager.instance.InitialiseProfileScreen();
+
+        bottomPanel.transform.GetChild(2).GetComponent<Toggle>().isOn = true;
+        if (playAnimation) { PlayMainMenuAnimations(); }
+    }
+
+    private void MainMenuController_PageToggleClickEvent(int pageNo)
+    {
+        switch (pageNo)
+        {
+            case 0:
+                //shop
+                ShopUiManager.instance.ShowScreen();
+                break;
+            case 1:
+                //forum
+                ForumListUIManager.instance.InitialiseForum();
+                break;
+            case 2:
+                //club list
+                ClubListUiManager.instance.FetchList(false);
+                break;
+            case 3:
+                //career
+                CareerManager.instance.GetRequestList();
+                break;
+            case 4:
+                //profile
+                FetchUserData();
+                FetchUserLogs();
+                //ProfileScreen
+                ProfileScreenUiManager.instance.InitialiseProfileScreen();
+                break;
+            default:
+                break;
+        }
     }
 
     public void OnClickOnButton(string eventName)
@@ -210,7 +273,7 @@ public class MainMenuController : MonoBehaviour
               "\"socialId\":\"" + PlayerManager.instance.GetPlayerGameData().password + "\"}";
 
 
-        ShowScreen(MainMenuScreens.Loading);
+        //ShowScreen(MainMenuScreens.Loading);
         WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
 
         DownloadNotificationMessage();
@@ -284,10 +347,14 @@ public class MainMenuController : MonoBehaviour
         return notificationDetails;
     }
 
-
-
     public void ShowScreen(MainMenuScreens screenName, object[] parameter = null)
     {
+        if(screenName == MainMenuScreens.MainMenu)
+        {
+            SwitchToMainMenu(true);
+            return;
+        }
+
         int layer = (int)GetScreenLayer(screenName);
         for (int i = layer + 1; i < screenLayers.Length; i++)
         {
@@ -507,18 +574,11 @@ public class MainMenuController : MonoBehaviour
                 playerData.userName = PlayerManager.instance.GetPlayerGameData().userName;
                 PlayerManager.instance.SetPlayerGameData(playerData);
 
-                //Activate bottom panel
-                //bottomPanel.SetActive(true);
-                SwitchToMainMenu();
-                //ShowScreen(MainMenuScreens.MainMenu);
-                /*ShowMessage(data["message"].ToString());*/
+                //SwitchToMainMenu();
             }
             else
             {
                 ShowMessage(data["message"].ToString());
-
-                //Deactivate bottom panel
-                //bottomPanel.SetActive(false);
 
                 ShowScreen(MainMenuScreens.Registration);
             }

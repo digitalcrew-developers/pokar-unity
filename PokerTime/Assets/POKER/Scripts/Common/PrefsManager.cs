@@ -153,6 +153,10 @@ public class PrefsManager: MonoBehaviour
         PlayerPrefs.SetString("" + PrefsKey.PlayerGameData, JsonUtility.ToJson(dataToAssign));
     }
 
+    public static void DeletePlayerData()
+    {
+        PlayerPrefs.DeleteKey("" + PrefsKey.PlayerGameData);
+    }
 
     public static PlayerGameDetails GetPlayerData()
     {

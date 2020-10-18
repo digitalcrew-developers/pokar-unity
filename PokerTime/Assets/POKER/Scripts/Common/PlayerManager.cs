@@ -21,6 +21,10 @@ public class PlayerManager : MonoBehaviour
         playerGameData = PrefsManager.GetPlayerData();
     }
 
+    public void DeletePlayerGameData()
+    {
+        playerGameData = null;
+    }
 
     public PlayerGameDetails GetPlayerGameData()
     {
@@ -37,6 +41,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (playerGameData.userId.Length > 0)
         {
+            UnityEngine.Debug.Log("playerGameData.userId :" + playerGameData.userId);
             return true;
         }
 

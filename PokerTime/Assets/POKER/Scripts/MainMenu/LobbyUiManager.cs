@@ -92,11 +92,7 @@ public class LobbyUiManager: MonoBehaviour
         {
             case "back":
                 {
-                    //Activate Bottom Panel
-                    if (!MainMenuController.instance.bottomPanel.activeSelf)
-                        MainMenuController.instance.bottomPanel.SetActive(true);
-
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+                    MainMenuController.instance.SwitchToMainMenu(true);
                 }
                 break;
 

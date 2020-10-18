@@ -24,6 +24,16 @@ namespace UnityEngine.UI.Extensions
         protected PaginationManager()
         { }
 
+        public void DisableScreens()
+        {
+            scrollSnap.gameObject.SetActive(false);
+        }
+
+        public void EnableScreens()
+        {
+            scrollSnap.GoToScreen(2);
+            scrollSnap.gameObject.SetActive(true);
+        }
 
         public GameObject GetScreen(int i)
         {
@@ -73,9 +83,12 @@ namespace UnityEngine.UI.Extensions
         /// <param name="pageNo"></param>
         public void GoToScreen(int pageNo)
         {
+            Debug.Log("GO TO SCREEN");
             scrollSnap.GoToScreen(pageNo);
         }
 
+        public delegate void PageToggleClick(int pageNo);
+        public event PageToggleClick PageToggleClickEvent;
 
         /// <summary>
         /// Calls GoToScreen() based on the index of toggle that was pressed
@@ -85,8 +98,9 @@ namespace UnityEngine.UI.Extensions
         {
             if (!target.isOn)
             {
+                int pageNo = m_PaginationChildren.IndexOf(target);
                 isAClick = true;
-                GoToScreen(m_PaginationChildren.IndexOf(target));
+                GoToScreen(pageNo);
             }
 
         }
@@ -99,6 +113,7 @@ namespace UnityEngine.UI.Extensions
                 {
                     if (m_PaginationChildren[i].isOn)
                     {
+                        PageToggleClickEvent?.Invoke(i);
                         GoToScreen(i);
                         break;
                     }
