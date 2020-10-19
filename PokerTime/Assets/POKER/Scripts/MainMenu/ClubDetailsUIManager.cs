@@ -11,9 +11,24 @@ public class ClubDetailsUIManager : MonoBehaviour
 	public Text clubNameText, uniqueClubIdText;
 	private string clubId = "", uniqueClubId = "";
     public Text CLubChips;
-    private string layout = "Listed";
-    private bool isJackpotOn = false;
 
+	//DEV_CODE
+	[Header("Gameobject")]
+	public GameObject clubProfile;
+	public GameObject editClubProfile;
+	public GameObject selectFrom;
+
+	[Header("Images")]
+	public Image clubProfileImg;
+	public Image editClubProfileImg;
+
+	[Header("Text/InputField")]
+	public Text clubName;
+	public InputField editProfileClubName;
+	public InputField editProfileClubNotice;
+
+	private string layout = "Listed";
+    private bool isJackpotOn = false;
 	private GameObject bottom;
 
 	private void Awake()
@@ -23,6 +38,10 @@ public class ClubDetailsUIManager : MonoBehaviour
 		//Deactivate Bottom Panel
 		if (MainMenuController.instance.bottomPanel.activeSelf)
 			MainMenuController.instance.bottomPanel.SetActive(false);
+
+		clubProfile.SetActive(false);
+		editClubProfile.SetActive(false);
+		selectFrom.SetActive(false);
 	}
 
 	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub)
@@ -31,7 +50,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 		uniqueClubIdText.text = "Club Id : "+clubUniqueId;
 		clubId = idOfClub;
 		uniqueClubId = clubUniqueId;
-        GetChips();
+
+		//DEV_CODE
+		//Debug.Log("Club name: " + nameOfClub);
+		//clubName.text = nameOfClub;
+		//editProfileClubName.text = nameOfClub;
+
+		GetChips();
         //to-do... get layout from server for this club and update in local string
     }
 
@@ -59,7 +84,7 @@ public class ClubDetailsUIManager : MonoBehaviour
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         Debug.Log(serverResponse);
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
         {
@@ -99,7 +124,47 @@ public class ClubDetailsUIManager : MonoBehaviour
 				//Activate Bottom Panel
 				if (!MainMenuController.instance.bottomPanel.activeSelf)
 					MainMenuController.instance.bottomPanel.SetActive(true);
+
 				MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+			}
+			break;
+
+			case "close_clubProfile":
+			{
+				clubProfile.SetActive(false);
+			}
+			break;
+
+			case "close_editClubProfile":
+			{
+				editClubProfile.SetActive(false);
+				clubProfile.SetActive(true);
+			}
+			break;
+
+			case "close_selectFrom":
+			{
+				selectFrom.SetActive(false);
+			}
+			break;
+
+			case "profile":
+			{
+				clubProfile.SetActive(true);
+			}
+			break;
+
+			case "editClubProfile":
+			{
+				clubProfile.SetActive(false);
+				editClubProfile.SetActive(true);
+				selectFrom.SetActive(false);
+			}
+			break;
+
+			case "changeClubProfilePic":
+			{
+				selectFrom.SetActive(true);
 			}
 			break;
 
@@ -155,7 +220,17 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	}
 
-    public Sprite GetClubImage()
+	public void OnClickSaveBtn()
+	{
+		Debug.Log("Clicked on Save Button...");
+	}
+
+	public void OnClickAlbumBtn()
+	{
+		Debug.Log("Clicked on Album Button...");
+	}
+
+	public Sprite GetClubImage()
     {
         return null;
     }

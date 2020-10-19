@@ -30,10 +30,10 @@ public class ClubListUiManager : MonoBehaviour
         Debug.LogError("user id is :" + PlayerManager.instance.GetPlayerGameData().userId);
 		string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
 
-		if (isShowLoading)
-		{
-			MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-		}
+		//if (isShowLoading)
+		//{
+		//	MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+		//}
 		
 		WebServices.instance.SendRequest(RequestType.GetClubList, requestData, true, OnServerResponseFound);
 	}
@@ -49,10 +49,10 @@ public class ClubListUiManager : MonoBehaviour
 
 	private void ShowClubList(JsonData data)
 	{
-		for (int i = 0; i < container.childCount; i++)
-		{
-			Destroy(container.GetChild(i).gameObject);
-		}
+		//for (int i = 0; i < container.childCount; i++)
+		//{
+		//	Destroy(container.GetChild(i).gameObject);
+		//}
 
 		for (int i = 0; i < data["data"].Count; i++)
 		{
@@ -124,6 +124,7 @@ public class ClubListUiManager : MonoBehaviour
 
 			if (data["success"].ToString() == "1")
             {
+				Debug.Log("Club List: " + data["data"].Count.ToString());
                 MiddleButtons.SetActive(false);
                 TopButtonJoin.SetActive(true);
                 TopButtonCreate.SetActive(true);
