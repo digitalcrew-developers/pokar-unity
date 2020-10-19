@@ -1052,12 +1052,9 @@ public class InGameManager : MonoBehaviour
 
                 else if(!currentPlayer.IsMe())
                 {
-                    Debug.LogError("Timer runs Here");
                     currentPlayer.ShowRemainingTime(remainingTime);
                 }
-                //   Debug.Log("^^^^^^^^^^^^^^^^^^^   end time " + remainingTime);
-
-                
+             
 
             }
             else
@@ -1138,6 +1135,14 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < data[0].Count; i++)
         {
+            //if (string.IsNullOrEmpty(data[0][i].ToString()))
+            //{
+            //    openCards[i] = CardsManager.instance.GetEmptyCardData();
+            //}
+            //else
+            //{
+            //    openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
+            //}
             openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
         }
     }

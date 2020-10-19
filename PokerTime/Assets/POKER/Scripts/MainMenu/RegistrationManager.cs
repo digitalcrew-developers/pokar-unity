@@ -111,13 +111,14 @@ public class RegistrationManager : MonoBehaviour
                             /*return;*/
                             break;
                         }
-                        else if (/*tmp_registrationConfirmPassword*/registrationConfirmPassword.text != /*tmp_registrationPassword*/registrationPassword.text)
-                        {
-                            StartCoroutine(MsgForVideo("password does not matched", 1.5f));
-                            /*MainMenuController.instance.ShowMessage("password does not matched");*/
-                            /*return;*/
-                            break;
-                        }
+                        //no confirm password in register anymore
+                        //else if (/*tmp_registrationConfirmPassword*/registrationConfirmPassword.text != /*tmp_registrationPassword*/registrationPassword.text)
+                        //{
+                        //    StartCoroutine(MsgForVideo("password does not matched", 1.5f));
+                        //    /*MainMenuController.instance.ShowMessage("password does not matched");*/
+                        //    /*return;*/
+                        //    break;
+                        //}
                         else
                         {
                             string requestData = "{\"userName\":\"" + /*tmp_registrationUserName*/registrationUserName.text + "\"," +

@@ -402,6 +402,15 @@ public class CardsManager: MonoBehaviour
 
     #endregion
 
+    public CardData GetEmptyCardData()
+    {
+        CardData data = new CardData();
+        data.cardNumber = CardNumber.NONE;
+        data.cardIcon = CardIcon.NONE;
+        data.cardsSprite = null;
+
+        return data;
+    }
 
 
     public CardData GetCardData(string serverGivenCardName)
@@ -498,6 +507,7 @@ public class CardOccurrenceData
 [System.Serializable]
 public enum CardIcon
 {
+    NONE,
     CLUB,
     SPADES,
     DIAMOND,
@@ -507,7 +517,7 @@ public enum CardIcon
 
 [System.Serializable]
 public enum CardNumber
-{
+{   NONE,
     TWO,
     THREE,
     FOUR,
@@ -527,6 +537,7 @@ public enum CardNumber
 [System.Serializable]
 public enum CardSequence
 {
+    NONE,
     Royal_Flush,
     Straight_Flush,
     Four_of_a_Kind,
