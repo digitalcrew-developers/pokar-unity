@@ -47,6 +47,14 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     // Start is called before the first frame update
     void Start()
     {
+        if (PlayerManager.instance.IsLogedIn())
+        {
+            InitialiseForum();
+        }
+    }
+
+    public void InitialiseForum()
+    {
         backButton.onClick.AddListener(ClickBackBtn);
         GetAllForumList(true);
         commentPannel.SetActive(false);
@@ -102,7 +110,7 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
 
         if (isShowLoading)
         {
-            MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+            //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
         }
 
         WebServices.instance.SendRequest(RequestType.GetForum, requestData, true, OnServerResponseFound);

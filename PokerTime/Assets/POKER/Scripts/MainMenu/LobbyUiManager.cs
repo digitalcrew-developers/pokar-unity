@@ -93,11 +93,7 @@ public class LobbyUiManager: MonoBehaviour
         {
             case "back":
                 {
-                    //Activate Bottom Panel
-                    if (!MainMenuController.instance.bottomPanel.activeSelf)
-                        MainMenuController.instance.bottomPanel.SetActive(true);
-
-                    MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
+                    MainMenuController.instance.SwitchToMainMenu(true);
                 }
                 break;
 
@@ -107,7 +103,7 @@ public class LobbyUiManager: MonoBehaviour
                     if (!MainMenuController.instance.bottomPanel.activeSelf)
                         MainMenuController.instance.bottomPanel.SetActive(true);
 
-                    MainMenuController.instance._ShowScreen(MainMenuScreens.Shop);
+                    MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
                 }
                 break;
 

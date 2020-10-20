@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-
     public static SoundManager instance;
 
     [SerializeField]
@@ -31,8 +30,6 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-
-
     void Start()
     {
         soundLength = new float[soundPrefabs.Length];
@@ -52,7 +49,6 @@ public class SoundManager : MonoBehaviour
     public void SoundCheck()
     {
         string soundsCheck = PlayerPrefs.GetString("issound");
-            Debug.LogError("SOUND chec-----> " +soundsCheck);
         if (soundsCheck == "1")
         {
             sound = true;

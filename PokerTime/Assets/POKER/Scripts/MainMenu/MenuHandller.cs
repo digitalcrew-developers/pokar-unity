@@ -19,16 +19,11 @@ public class MenuHandller : MonoBehaviour
     [SerializeField]
     private Button tempClubItem;
 
-
-	private void OnEnable()
-	{
-		if (!MainMenuController.instance.bottomPanel.activeSelf)
-			MainMenuController.instance.bottomPanel.SetActive(true);
-	}
-
-	private void Awake()
+    private void Awake()
     {
 		instance = this;
+
+		/*Debug.Log("Current Date and time:" + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));*/		
 	}
 
     private void OnDestroy()
@@ -40,6 +35,9 @@ public class MenuHandller : MonoBehaviour
 	{
 		createClubPopUp.SetActive(false);
 		joinClubPopUp.SetActive(false);
+
+		if (!MainMenuController.instance.bottomPanel.activeSelf)
+			MainMenuController.instance.bottomPanel.SetActive(true);
 
 		UpdateAllText();
 		UpdateNotificationData(MainMenuController.instance.GetNotificationDetails().unreadMessageCount);
@@ -147,49 +145,50 @@ public class MenuHandller : MonoBehaviour
 		case "lobby":
 			{
 			//		Debug.Log("I am here---------");
-				MainMenuController.instance._ShowScreen(MainMenuScreens.Lobby);
+				MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
 			}
 			break;
 
 		case "spinUp":
 			{
-				MainMenuController.instance._ShowScreen(MainMenuScreens.GlobalTournament,new object[] {"spinUp"});
+				MainMenuController.instance.ShowScreen(MainMenuScreens.GlobalTournament,new object[] {"spinUp"});
 			}
 			break;
 
 		case "globalTournament":
 			{
-				MainMenuController.instance._ShowScreen(MainMenuScreens.GlobalTournament);
+				MainMenuController.instance.ShowScreen(MainMenuScreens.GlobalTournament);
 			}
 			break;
 
 		case "coinShop":
 			{
-				MainMenuController.instance._ShowScreen(MainMenuScreens.Shop, new object[] { "item" });
+                
+				MainMenuController.instance.OpenShopPage("item");
 			}
 			break;
 
 		case "diamondShop":
 			{
-				MainMenuController.instance._ShowScreen(MainMenuScreens.Shop,new object[] {"diamond"});
+				MainMenuController.instance.OpenShopPage("diamond");
 			}
 			break;
 
 		case "vip":
 			{
-				MainMenuController.instance._ShowScreen(MainMenuScreens.VIP_Privilege);
+				MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
 			}
 			break;
 
 		case "notification":
 			{
-				MainMenuController.instance._ShowScreen(MainMenuScreens.Notification);
+				MainMenuController.instance.ShowScreen(MainMenuScreens.Notification);
 			}
 			break;
 
 		case "missions":
 			{
-				MainMenuController.instance._ShowScreen(MainMenuScreens.Missions);
+				MainMenuController.instance.ShowScreen(MainMenuScreens.Missions);
 			}
 			break;
                 

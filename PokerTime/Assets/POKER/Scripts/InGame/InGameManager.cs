@@ -1052,12 +1052,9 @@ public class InGameManager : MonoBehaviour
 
                 else if(!currentPlayer.IsMe())
                 {
-                    Debug.LogError("Timer runs Here");
                     currentPlayer.ShowRemainingTime(remainingTime);
                 }
-                //   Debug.Log("^^^^^^^^^^^^^^^^^^^   end time " + remainingTime);
-
-                
+             
 
             }
             else
@@ -1114,6 +1111,7 @@ public class InGameManager : MonoBehaviour
     string handtype;
     public void OnRoundDataFound(string serverResponse)
     {
+        UnityEngine.Debug.LogWarning("Round Data :- " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
         handtype = serverResponse;
@@ -1131,11 +1129,20 @@ public class InGameManager : MonoBehaviour
 
     public void OnOpenCardsDataFound(string serverResponse)
     {
+        Debug.LogWarning("OpenCardDataFound : " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         openCards = new CardData[data[0].Count];
 
         for (int i = 0; i < data[0].Count; i++)
         {
+            //if (string.IsNullOrEmpty(data[0][i].ToString()))
+            //{
+            //    openCards[i] = CardsManager.instance.GetEmptyCardData();
+            //}
+            //else
+            //{
+            //    openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
+            //}
             openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
         }
     }

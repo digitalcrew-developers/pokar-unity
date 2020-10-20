@@ -88,7 +88,7 @@ public class UnlinkYourEmailManager : MonoBehaviour
             {
                 PlayerPrefs.DeleteKey("USER_EMAIL");
                 //MainMenuController.instance.DestroyScreen(MainMenuScreens.UnlinkYourEmail);
-                MainMenuController.instance._ShowScreen(MainMenuScreens.LinkYourEmail);
+                MainMenuController.instance.ShowScreen(MainMenuScreens.LinkYourEmail);
                 
             }
             else

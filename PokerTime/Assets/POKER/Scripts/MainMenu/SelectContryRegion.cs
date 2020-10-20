@@ -1,6 +1,8 @@
 ﻿using LitJson;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,12 +20,37 @@ public class SelectContryRegion : MonoBehaviour
     private List<GetCountry> allCountries;
     public GameObject CountryPrefeb, prefebParent;
 
+    public InputField countryNameInputField;
+
     public void Start()
     {
         WebServices.instance.SendRequest(RequestType.GetCountryList, "", true, OnServerResponseFound);
 
-
+        countryNameInputField.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
     }
+
+    private void ValueChangeCheck()
+    {
+        for(int i=0; i< AllCountries.Count; i++)
+        {
+            if (string.IsNullOrEmpty(countryNameInputField.text))
+            {
+                AllCountries[i].SetActive(true);
+            }
+            else
+            {
+                AllCountries[i].SetActive(false);
+            }
+        }
+        IEnumerable<GameObject> results = AllCountries.Where(s => s.name.ToLower().Contains(countryNameInputField.text));
+        var ls = results.ToList();
+
+        for (int i = 0; i < ls.Count; i++)
+        {
+            ls[i].SetActive(true);
+        }
+    }
+
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
@@ -63,6 +90,8 @@ public class SelectContryRegion : MonoBehaviour
         }
 
     }
+
+    private List<GameObject> AllCountries = new List<GameObject>();
     private void ReadAllCountries(JsonData data)
     {
        
@@ -75,10 +104,12 @@ public class SelectContryRegion : MonoBehaviour
             getCountry.countryFlag = data["getData"][i]["countryFlag"].ToString();
 
             GameObject sc = Instantiate(CountryPrefeb, prefebParent.transform);
+            sc.name = getCountry.CountryName;
             sc.GetComponent<SelectCountry>().countryName.text = getCountry.CountryName;
             sc.GetComponent<SelectCountry>().countryURL = getCountry.countryFlag;
             sc.GetComponent<SelectCountry>().countryID = data["getData"][i]["countryCode"].ToString();
             allCountries.Add(getCountry);
+            AllCountries.Add(sc);
         }
        
     }

@@ -21,8 +21,11 @@ public class ClubListUiManager : MonoBehaviour
 	}
 
 	void Start()
-	{
-		FetchList();
+    {
+        if (PlayerManager.instance.IsLogedIn())
+        {
+            FetchList();
+        }
 	}
 
 	public void FetchList(bool isShowLoading = true)
@@ -30,10 +33,10 @@ public class ClubListUiManager : MonoBehaviour
         Debug.LogError("user id is :" + PlayerManager.instance.GetPlayerGameData().userId);
 		string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
 
-		//if (isShowLoading)
-		//{
-		//	MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-		//}
+		if (isShowLoading)
+		{
+			//MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+		}
 		
 		WebServices.instance.SendRequest(RequestType.GetClubList, requestData, true, OnServerResponseFound);
 	}
@@ -42,17 +45,17 @@ public class ClubListUiManager : MonoBehaviour
 	{
 		SoundManager.instance.PlaySound(SoundType.Click);
 
-		MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
+		MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
 	}
 
     public Text DebugText;
 
 	private void ShowClubList(JsonData data)
 	{
-		//for (int i = 0; i < container.childCount; i++)
-		//{
-		//	Destroy(container.GetChild(i).gameObject);
-		//}
+		for (int i = 0; i < container.childCount; i++)
+		{
+			Destroy(container.GetChild(i).gameObject);
+		}
 
 		for (int i = 0; i < data["data"].Count; i++)
 		{
@@ -101,7 +104,7 @@ public class ClubListUiManager : MonoBehaviour
 		parameters[2] = clubId;
 
 
-		MainMenuController.instance._ShowScreen(MainMenuScreens.ClubDetails, parameters);
+		MainMenuController.instance.ShowScreen(MainMenuScreens.ClubDetails, parameters);
 	}
 
 	public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -124,7 +127,6 @@ public class ClubListUiManager : MonoBehaviour
 
 			if (data["success"].ToString() == "1")
             {
-				Debug.Log("Club List: " + data["data"].Count.ToString());
                 MiddleButtons.SetActive(false);
                 TopButtonJoin.SetActive(true);
                 TopButtonCreate.SetActive(true);

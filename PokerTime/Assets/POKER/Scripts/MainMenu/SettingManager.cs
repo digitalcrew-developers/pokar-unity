@@ -19,6 +19,7 @@ public class SettingManager : MonoBehaviour
             soundon.SetActive(false);
         }
         issound = SoundManager.instance.sound;
+        //transform.GetChild(0).GetComponent<PopupBounce>().PlayMainMenuAnimations();
     }
     public void OnCloseSetting()
     {
@@ -57,15 +58,13 @@ public class SettingManager : MonoBehaviour
     {
         Debug.Log("*********You CLICK ON LOG OUT");
         SoundManager.instance.PlaySound(SoundType.Click);
+        PrefsManager.DeletePlayerData();
+        PlayerManager.instance.DeletePlayerGameData();
         PlayerPrefs.DeleteAll();
         GlobalGameManager.instance.isLoginShow = false;
 
-        //Deactivate bottom panel
-        if(MainMenuController.instance.bottomPanel.activeSelf)
-            MainMenuController.instance.bottomPanel.SetActive(false);
-
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Profile);
-        MainMenuController.instance._ShowScreen(MainMenuScreens.Registration);
+        MainMenuController.instance.ShowScreen(MainMenuScreens.Registration);
     }
 
 

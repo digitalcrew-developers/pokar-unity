@@ -32,6 +32,8 @@ public class SocketController : MonoBehaviour
 
     void Start()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 30;
         if (GlobalGameManager.IsJoiningPreviousGame)
         {
             TABLE_ID = GlobalGameManager.instance.GetRoomData().socketTableId;

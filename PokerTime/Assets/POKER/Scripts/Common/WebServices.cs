@@ -97,7 +97,7 @@ public class WebServices : MonoBehaviour
 		StopCoroutine(request.timerMethod);
 
 #if DEBUG_LOG
-		Debug.Log("Response requestCode ---> " + request.requestCode + "    data ---> " + www.text);
+		//Debug.Log("Response requestCode ---> " + request.requestCode + "    data ---> " + www.text);
 #endif
 
 
@@ -113,7 +113,7 @@ public class WebServices : MonoBehaviour
 			{
 				errorMessage = "Server response not found, please check your internet connection is working properly";
 			}
-			Debug.LogWarning("Request was:" + request.url + " " + request.requestCode +" Response   " + www.text);
+			//Debug.LogWarning("Request was:" + request.url + " " + request.requestCode +" Response   " + www.text);
 			request.callbackMethod(request.requestCode, www.text, request.isShowErrorMessage, errorMessage);
 		}
 

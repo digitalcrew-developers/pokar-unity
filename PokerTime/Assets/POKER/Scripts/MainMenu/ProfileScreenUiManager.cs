@@ -25,6 +25,14 @@ public class ProfileScreenUiManager : MonoBehaviour
 
     void Start()
     {
+        if (PlayerManager.instance.IsLogedIn())
+        {
+            InitialiseProfileScreen();
+        }
+    }
+
+    public void InitialiseProfileScreen()
+    {
         PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
         coinsText.text = Utility.GetTrimmedAmount("" + playerData.coins);
         diamondsText.text = Utility.GetTrimmedAmount("" + playerData.diamonds);
@@ -33,6 +41,7 @@ public class ProfileScreenUiManager : MonoBehaviour
 
         GetProfileURLs(playerData.userId);
     }
+
     public void GetProfileURLs(string playerid)
     {
         WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + playerid + "\"}", true, OnServerResponseFound);
@@ -51,6 +60,7 @@ public class ProfileScreenUiManager : MonoBehaviour
         }
         if (requestType == RequestType.GetUserDetails)
         {
+            Debug.Log("profile :" + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["success"].ToString() == "1")
@@ -67,7 +77,7 @@ public class ProfileScreenUiManager : MonoBehaviour
                     avtarurl = data["getData"][i]["profileImage"].ToString();
                     frameurl = data["getData"][i]["frameURL"].ToString();
                     flagurl = data["getData"][i]["countryFlag"].ToString();
-                    avtarid = int.Parse(data["getData"][i]["avatarID"].ToString());
+                    //avtarid = int.Parse(data["getData"][i]["avatarID"].ToString()); //this is not coming in data
                     LoadImages(avtarurl, frameurl, flagurl);
                 }
                 MainMenuController.instance.OnClickOnButton("profile");

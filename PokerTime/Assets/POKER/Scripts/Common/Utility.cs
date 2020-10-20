@@ -76,7 +76,10 @@ public class Utility : MonoBehaviour
     public static PlayerGameDetails ParsePlayerGameData(JsonData jsonObject)
     {
         PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
-
+        if(null== playerData)
+        {
+            playerData = new PlayerGameDetails();
+        }
 
         JsonData data = jsonObject["data"][0];
 

@@ -7,6 +7,8 @@ using System.Linq;
 
 public class ShopUiManager: MonoBehaviour
 {
+    public static ShopUiManager instance = null;
+
     public Button itemButton, diamondButton, pointButton;
     public Text coinsText, diamondText, pointText;
     public Transform container, itemContainer, hotPickContainer, vipCardContainer, goldContainer;
@@ -39,6 +41,11 @@ public class ShopUiManager: MonoBehaviour
 
     private void OnEnable()
     {
+        if(null== instance)
+        {
+            instance = this;
+        }
+
         if (!MainMenuController.instance.bottomPanel.activeSelf)
             MainMenuController.instance.bottomPanel.SetActive(true);
     }

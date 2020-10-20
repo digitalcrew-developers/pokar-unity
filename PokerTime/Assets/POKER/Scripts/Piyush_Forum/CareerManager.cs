@@ -22,7 +22,10 @@ public class CareerManager : MonoBehaviour
     {
         instance = this;
         requestObj.SetActive(false);
-        GetRequestList();
+        if (PlayerManager.instance.IsLogedIn())
+        {
+            GetRequestList();
+        }
     }
     public void OnMenuBtnClick()
     {
@@ -74,7 +77,7 @@ public class CareerManager : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.UpdateMultiAccountRequestStatus, requestData, true, OnServerResponseFound);
     }
 
-    private void GetRequestList()
+    public void GetRequestList()
     {
         Debug.Log("My Player ID for Requests:" + PlayerManager.instance.GetPlayerGameData().userId);
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
@@ -169,7 +172,8 @@ public class CareerManager : MonoBehaviour
             }
             else
             {
-                MainMenuController.instance.ShowMessage("Unable to send request");
+                Debug.Log("Unable to send request GetMultiAccountPendingRequests");
+                //MainMenuController.instance.ShowMessage("Unable to send request GetMultiAccountPendingRequests");
             }            
         }
         else

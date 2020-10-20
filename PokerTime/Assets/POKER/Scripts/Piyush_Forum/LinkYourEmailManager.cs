@@ -137,7 +137,7 @@ public class LinkYourEmailManager : MonoBehaviour
     {
         SoundManager.instance.PlaySound(SoundType.Click);
 
-        MainMenuController.instance._ShowScreen(MainMenuScreens.UnlinkYourEmail);
+        MainMenuController.instance.ShowScreen(MainMenuScreens.UnlinkYourEmail);
     }
 
 
@@ -204,7 +204,7 @@ public class LinkYourEmailManager : MonoBehaviour
                 {
                     Debug.Log("Email Successfully Verified");
                     //MainMenuController.instance.DestroyScreen(MainMenuScreens.LinkYourEmail);
-                    MainMenuController.instance._ShowScreen(MainMenuScreens.LinkingSucessfull);
+                    MainMenuController.instance.ShowScreen(MainMenuScreens.LinkingSucessfull);
                     PlayerPrefs.SetString("USER_EMAIL", emailInputField.text);
                 }
             }

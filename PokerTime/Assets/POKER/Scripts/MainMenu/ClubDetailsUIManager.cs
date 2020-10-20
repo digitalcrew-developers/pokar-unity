@@ -151,8 +151,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 				if (!MainMenuController.instance.bottomPanel.activeSelf)
 					MainMenuController.instance.bottomPanel.SetActive(true);
 
-				MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
-			}
+                    MainMenuController.instance.SwitchToMainMenu(true);
+            }
 			break;
 
 			case "members":
@@ -166,8 +166,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 				if (PlayerManager.instance.GetPlayerGameData().coins < 1000)
 				{
 					MainMenuController.instance.ShowMessage("You dont have sufficient coins to play, please purchase coins to continue", () => {
-						MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
-					}, () => {
+                        MainMenuController.instance.SwitchToMainMenu(true,0);
+                    }, () => {
 					}, "Shop", "Cancel");
 
 					return;
@@ -185,8 +185,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 				if (PlayerManager.instance.GetPlayerGameData().coins < 1000)
 				{
 					MainMenuController.instance.ShowMessage("You dont have sufficient coins to play, please purchase coins to continue", () => {
-						MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
-					}, () => {
+                        MainMenuController.instance.SwitchToMainMenu(true, 0);
+                    }, () => {
 					}, "Shop", "Cancel");
 
 					return;
