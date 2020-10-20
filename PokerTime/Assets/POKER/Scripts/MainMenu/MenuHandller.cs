@@ -19,11 +19,16 @@ public class MenuHandller : MonoBehaviour
     [SerializeField]
     private Button tempClubItem;
 
-    private void Awake()
+
+	private void OnEnable()
+	{
+		if (!MainMenuController.instance.bottomPanel.activeSelf)
+			MainMenuController.instance.bottomPanel.SetActive(true);
+	}
+
+	private void Awake()
     {
 		instance = this;
-
-		/*Debug.Log("Current Date and time:" + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));*/		
 	}
 
     private void OnDestroy()
@@ -35,9 +40,6 @@ public class MenuHandller : MonoBehaviour
 	{
 		createClubPopUp.SetActive(false);
 		joinClubPopUp.SetActive(false);
-
-		if (!MainMenuController.instance.bottomPanel.activeSelf)
-			MainMenuController.instance.bottomPanel.SetActive(true);
 
 		UpdateAllText();
 		UpdateNotificationData(MainMenuController.instance.GetNotificationDetails().unreadMessageCount);

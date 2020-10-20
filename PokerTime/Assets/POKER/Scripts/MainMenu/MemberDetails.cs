@@ -20,6 +20,9 @@ public class MemberDetails : MonoBehaviour
     public Toggle Manager, Agent, Member;
     public List<GameObject> AdditionalObjects;
 
+    //DEV_CODE
+    public TMP_InputField editMemberName, editMemberNote;
+
     private ClubMemberDetails clubMemberDetails;
 
     private float fullHeight = 978.8948f;
@@ -42,6 +45,9 @@ public class MemberDetails : MonoBehaviour
     /// </summary>
     public void Initialise(ClubMemberDetails _clubMemberDetails, GameObject ListObject)
     {
+        //DEV_CODE
+        editMemberName.text = _clubMemberDetails.userName;
+
         //fill general details from previously present data 
         clubMemberDetails = _clubMemberDetails;
         UserName.text = _clubMemberDetails.userName;

@@ -1,7 +1,9 @@
-﻿using LitJson;
+﻿using ImageAndVideoPicker;
+using LitJson;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 
@@ -17,10 +19,14 @@ public class ClubDetailsUIManager : MonoBehaviour
 	public GameObject clubProfile;
 	public GameObject editClubProfile;
 	public GameObject selectFrom;
+	public GameObject clubEmail;
+	public GameObject clubNotice;
+	
 
 	[Header("Images")]
 	public Image clubProfileImg;
 	public Image editClubProfileImg;
+	public Image clubNoticeImg;
 
 	[Header("Text/InputField")]
 	public Text clubName;
@@ -31,17 +37,28 @@ public class ClubDetailsUIManager : MonoBehaviour
     private bool isJackpotOn = false;
 	private GameObject bottom;
 
+	private string path;
+	public Text pathText;
+
 	private void Awake()
 	{
-		instance = this;
+		instance = this;	
+	}
 
+	private void OnEnable()
+	{
 		//Deactivate Bottom Panel
 		if (MainMenuController.instance.bottomPanel.activeSelf)
 			MainMenuController.instance.bottomPanel.SetActive(false);
 
-		clubProfile.SetActive(false);
-		editClubProfile.SetActive(false);
-		selectFrom.SetActive(false);
+		PickerEventListener.onImageSelect += OnImageSelect;
+		PickerEventListener.onImageLoad += OnImageLoad;
+		PickerEventListener.onError += OnError;
+		PickerEventListener.onCancel += OnCancel;
+
+#if UNITY_ANDROID
+		AndroidPicker.CheckPermissions();
+#endif
 	}
 
 	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub)
@@ -53,12 +70,21 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 		//DEV_CODE
 		//Debug.Log("Club name: " + nameOfClub);
-		//clubName.text = nameOfClub;
-		//editProfileClubName.text = nameOfClub;
+		clubName.text = nameOfClub;
+		editProfileClubName.text = nameOfClub;
 
 		GetChips();
         //to-do... get layout from server for this club and update in local string
     }
+
+	private void DisableAllScreens()
+	{
+		clubProfile.SetActive(false);
+		editClubProfile.SetActive(false);
+		selectFrom.SetActive(false);
+		clubEmail.SetActive(false);
+		clubNotice.SetActive(false);		
+	}
 
     public void GetChips()
     {
@@ -125,46 +151,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 				if (!MainMenuController.instance.bottomPanel.activeSelf)
 					MainMenuController.instance.bottomPanel.SetActive(true);
 
-				MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
-			}
-			break;
-
-			case "close_clubProfile":
-			{
-				clubProfile.SetActive(false);
-			}
-			break;
-
-			case "close_editClubProfile":
-			{
-				editClubProfile.SetActive(false);
-				clubProfile.SetActive(true);
-			}
-			break;
-
-			case "close_selectFrom":
-			{
-				selectFrom.SetActive(false);
-			}
-			break;
-
-			case "profile":
-			{
-				clubProfile.SetActive(true);
-			}
-			break;
-
-			case "editClubProfile":
-			{
-				clubProfile.SetActive(false);
-				editClubProfile.SetActive(true);
-				selectFrom.SetActive(false);
-			}
-			break;
-
-			case "changeClubProfilePic":
-			{
-				selectFrom.SetActive(true);
+				MainMenuController.instance._ShowScreen(MainMenuScreens.MainMenu);
 			}
 			break;
 
@@ -223,12 +210,51 @@ public class ClubDetailsUIManager : MonoBehaviour
 	public void OnClickSaveBtn()
 	{
 		Debug.Log("Clicked on Save Button...");
+		UploadProfileImage();	
 	}
 
-	public void OnClickAlbumBtn()
+	public void UploadProfileImage()
 	{
-		Debug.Log("Clicked on Album Button...");
+		StartCoroutine(UploadImage());
 	}
+
+	private IEnumerator UploadImage()
+	{
+		Texture2D newTexture = new Texture2D(editClubProfileImg.mainTexture.width, editClubProfileImg.mainTexture.height);
+		newTexture.LoadRawTextureData(newTexture.GetRawTextureData());
+		newTexture.Apply();
+
+		byte[] bytes = newTexture.EncodeToJPG();
+		Destroy(newTexture);
+
+		var form = new WWWForm();
+		form.AddField("uniqueClubId", GetClubUniqueId());
+		form.AddField("clubName", GetClubName());
+		form.AddField("clubStatus", "1");
+		//form.AddField("jackpotToggle", GetJackpotStatus().ToString());
+		//form.AddField("layout", GetLayout());
+		form.AddBinaryData("clubImage", bytes, path, "image/jpg");
+
+		UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/updateClub", form);
+
+		pathText.text = "Uploading!!!";
+		Debug.Log("Uploading !!!!!!");
+		yield return www.SendWebRequest();
+
+		pathText.text = "Upload Success....";
+		Debug.Log("Upload Success...");
+
+		if (www.isNetworkError || www.isHttpError)
+		{
+			pathText.text = www.error.ToString();
+			Debug.Log(www.error);
+		}
+		else
+		{
+			pathText.text = www.downloadHandler.text;
+			Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
+		}
+	}	
 
 	public Sprite GetClubImage()
     {
@@ -266,6 +292,66 @@ public class ClubDetailsUIManager : MonoBehaviour
     {
         return isJackpotOn;
     }
+
+
+	public void OpenGallery()
+	{
+#if UNITY_ANDROID
+		AndroidPicker.BrowseImage(false);
+#elif UNITY_EDITOR
+        string path = EditorUtility.OpenFilePanel("Ovrewrite with jpg", "", "");
+        if (path != null)
+        {
+            WWW www = new WWW("" + path);
+            Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), Vector2.zero);
+            editClubProfileImg.sprite = sprite;
+            
+            /*ProfileImage.texture = www.texture;*/
+        }
+#endif
+	}
+
+	#region Image Picking Methods
+	void OnDisable()
+	{
+		PickerEventListener.onImageSelect -= OnImageSelect;
+		PickerEventListener.onImageLoad -= OnImageLoad;
+		PickerEventListener.onError -= OnError;
+		PickerEventListener.onCancel -= OnCancel;
+	}
+
+	void OnImageSelect(string imgPath, ImageAndVideoPicker.ImageOrientation imgOrientation)
+	{
+		//Debug.Log("Image Location : " + imgPath);        
+	}
+
+	void OnImageLoad(string imgPath, Texture2D tex, ImageAndVideoPicker.ImageOrientation imgOrientation)
+	{
+		//Debug.Log("Image Location : " + imgPath);
+
+		//ProfileModification.instance.profileImagePath = imgPath;
+		//ProfileModification.instance.pathText.text = imgPath;
+		pathText.text = imgPath;
+		path = imgPath;
+
+		Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
+		editClubProfileImg.sprite = sprite;
+
+		//OnCloseSelectFrom();
+
+		selectFrom.SetActive(false);
+	}
+
+	void OnError(string errorMsg)
+	{
+		Debug.Log("Error : " + errorMsg);
+	}
+
+	void OnCancel()
+	{
+		Debug.Log("Cancel by user");
+	}
+	#endregion
 
 }
 

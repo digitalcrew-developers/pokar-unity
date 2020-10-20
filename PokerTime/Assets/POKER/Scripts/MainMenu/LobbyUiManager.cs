@@ -31,6 +31,19 @@ public class LobbyUiManager: MonoBehaviour
     public Button shopBtn;
     public Button BagPackBtn;
 
+    private void OnEnable()
+    {
+        //Deactivate Bottom Panel
+        if (MainMenuController.instance.bottomPanel.activeSelf)
+            MainMenuController.instance.bottomPanel.SetActive(false);
+
+        missionBtn.onClick.AddListener(() => ShowMissonScreen());
+        topPlayerBtn.onClick.AddListener(() => ShowTopPlayerScreen());
+        shopBtn.onClick.AddListener(() => ShowShopScreen());
+        BagPackBtn.onClick.AddListener(() => ShowBackPackScreen());
+        ChangeTextColor(0);
+    }
+
     private void Awake()
     {
         instance = this;
@@ -38,10 +51,6 @@ public class LobbyUiManager: MonoBehaviour
 
     private void Start()
     {
-        //Deactivate Bottom Panel
-        if (MainMenuController.instance.bottomPanel.activeSelf)
-            MainMenuController.instance.bottomPanel.SetActive(false);
-
         for (int i = 0; i < 3; i++)
         {
             List<RoomData> dummyList = new List<RoomData>();
@@ -59,14 +68,6 @@ public class LobbyUiManager: MonoBehaviour
         WebServices.instance.SendRequest(RequestType.GetLobbyRooms, "{}", true, OnServerResponseFound);
     }
 
-    private void OnEnable()
-    {
-        missionBtn.onClick.AddListener(() => ShowMissonScreen());
-        topPlayerBtn.onClick.AddListener(() => ShowTopPlayerScreen());
-        shopBtn.onClick.AddListener(() => ShowShopScreen());
-        BagPackBtn.onClick.AddListener(() => ShowBackPackScreen());
-        ChangeTextColor(0);
-    }
     public void ShowMissonScreen()
     {
         Debug.Log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");

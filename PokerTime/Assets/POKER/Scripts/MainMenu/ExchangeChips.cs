@@ -91,7 +91,8 @@ public class ExchangeChips : MonoBehaviour
     private void GetChips()
     {
         int id = 1;
-        string userId = MemberListUIManager.instance.GetClubOwnerObject().userId;
+        //string userId = MemberListUIManager.instance.GetClubOwnerObject().userId;
+        string userId = PlayerManager.instance.GetPlayerGameData().userId;
         int userIdInt = 0;
 
         int.TryParse(userId, out userIdInt);

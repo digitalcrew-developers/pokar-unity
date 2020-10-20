@@ -37,11 +37,14 @@ public class ShopUiManager: MonoBehaviour
     private string screenToShow = "";
 
 
-    private void Awake()
+    private void OnEnable()
     {
         if (!MainMenuController.instance.bottomPanel.activeSelf)
             MainMenuController.instance.bottomPanel.SetActive(true);
+    }
 
+    private void Awake()
+    {
         detailsTextBtn.SetActive(false);
         recordsTextBtn.SetActive(false);
     }
