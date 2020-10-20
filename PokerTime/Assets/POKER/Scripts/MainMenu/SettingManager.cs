@@ -19,6 +19,7 @@ public class SettingManager : MonoBehaviour
             soundon.SetActive(false);
         }
         issound = SoundManager.instance.sound;
+        //transform.GetChild(0).GetComponent<PopupBounce>().PlayMainMenuAnimations();
     }
     public void OnCloseSetting()
     {
