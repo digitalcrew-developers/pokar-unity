@@ -114,7 +114,10 @@ public class GameConstants : MonoBehaviour
         API_URL+"/getMultiAccountPendingRequests",
         API_URL+"/updateMultiAccountRequestStatus",
         API_URL+"/getMyConnectedAccounts",
-        API_URL+"/forgotPassword"
+        API_URL+"/forgotPassword",
+        API_URL+"/updateTemplateStatus",
+        API_URL+"/createTemplate",
+        API_URL+"/getTemplates",
     };
     #endregion
 
@@ -191,5 +194,8 @@ public enum RequestType
     GetMultiAccountPendingRequests,
     UpdateMultiAccountRequestStatus,
     GetMyConnectedAccounts,
-    ForgotPassword
+    ForgotPassword,
+    UpdateTemplateStatus,
+    CreateTemplate,
+    GetTemplates
 }
