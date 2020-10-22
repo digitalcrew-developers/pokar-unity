@@ -56,7 +56,6 @@ public class ShopUiManager: MonoBehaviour
         recordsTextBtn.SetActive(false);
     }
 
-
     public void ShowScreen(string screenName = "")
     {
         screenToShow = screenName;
@@ -81,14 +80,12 @@ public class ShopUiManager: MonoBehaviour
         }
     }
 
-
     private void UpdateAlltext(PlayerGameDetails playerData)
     {
         coinsText.text = Utility.GetTrimmedAmount("" + playerData.coins);
         diamondText.text = Utility.GetTrimmedAmount("" + playerData.diamonds);
         pointText.text = Utility.GetTrimmedAmount("" + playerData.points);
     }
-
 
     public void OnClickOnButton(string eventName)
     {
@@ -104,30 +101,33 @@ public class ShopUiManager: MonoBehaviour
 
             case "item":
                 {
+                    container.parent.parent.gameObject.SetActive(false);
+                    itemContainer.parent.parent.gameObject.SetActive(true);
+
                     detailsTextBtn.SetActive(false);
                     recordsTextBtn.SetActive(false);
-                    container.parent.gameObject.SetActive(false);
-                    itemContainer.parent.gameObject.SetActive(true);
                     SpawnShopItems(ShopCategory.Item);
                 }
                 break;
 
             case "diamond":
                 {
+                    itemContainer.parent.parent.gameObject.SetActive(false);
+                    container.parent.parent.gameObject.SetActive(true);
+
                     detailsTextBtn.SetActive(false);
                     recordsTextBtn.SetActive(false);
-                    itemContainer.parent.gameObject.SetActive(false);
-                    container.parent.gameObject.SetActive(true);
                     SpawnShopItems(ShopCategory.Diamond);
                 }
                 break;
 
             case "point":
                 {
+                    itemContainer.parent.parent.gameObject.SetActive(false);
+                    container.parent.parent.gameObject.SetActive(true);
+
                     detailsTextBtn.SetActive(true);
                     recordsTextBtn.SetActive(true);
-                    itemContainer.parent.gameObject.SetActive(false);
-                    container.parent.gameObject.SetActive(true);
                     SpawnShopItems(ShopCategory.Point);
                 }
                 break;
@@ -144,7 +144,6 @@ public class ShopUiManager: MonoBehaviour
             break;
         }
     }
-
 
     private void SpawnShopItems(ShopCategory shopCategory)
     {
@@ -399,25 +398,9 @@ public class ShopUiManager: MonoBehaviour
         }*/
     }
 
-
     private void LoadShopItemData(List<ShopItem> shopList)
     {
         int coinPrefabCounter = 0;
-        for (int i = 0; i < shopList.Count; i++)
-        {
-            if(i==0)
-            {
-                GameObject gm = Instantiate(hotPickObj, itemContainer) as GameObject;
-            }
-            else if(i==3)
-            {
-                GameObject gm = Instantiate(vipCardObj, itemContainer) as GameObject;
-            }
-            else if(i==6)
-            {
-                GameObject gm = Instantiate(goldObj, itemContainer) as GameObject;
-            }
-        }
 
         for (int i = 0; i < shopList.Count; i++)
         {
@@ -1200,9 +1183,6 @@ public class ShopUiManager: MonoBehaviour
         }
     }
 
-
-
-
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
@@ -1433,11 +1413,6 @@ public class ShopUiManager: MonoBehaviour
 
         return updatedAmount;
     }
-
-
-
-
-
 
 
     public void UpdateUserBalance(PlayerGameDetails updatedData)
