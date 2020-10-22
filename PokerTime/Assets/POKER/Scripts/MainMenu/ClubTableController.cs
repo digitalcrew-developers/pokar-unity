@@ -141,145 +141,181 @@ public class ClubTableController : MonoBehaviour
 
         switch (eventName)
         {
-            case "SaveNLH":
+            case "SaveRingGameNLH":
                 {
-                    OnClickOnSaveNLH();
+                    OnClickOnSave("NLH","Ring Game");
                 }
                 break;
-            case "CreateNLH":
+            case "SaveSNGNLH":
                 {
-
+                    OnClickOnSave("NLH", "SNG");
                 }
                 break;
-            case "SavePLO":
+            case "SaveMTTNLH":
                 {
-
+                    OnClickOnSave("NLH", "MTT");
                 }
                 break;
-            case "CreatePLO":
+            case "CreateRingGameNLH":
                 {
-
+                    //OnClickOnSave("NLH", "Ring Game");
                 }
                 break;
-            case "SaveMIXED":
+            case "CreateSNGNLH":
                 {
-
+                    //OnClickOnSave("NLH", "SNG");
                 }
                 break;
-            case "CreateMIXED":
+            case "CreateMTTNLH":
                 {
-
+                    //OnClickOnSave("NLH", "MTT");
                 }
-                break;
+                break;            
         }
     }
 
-    private void OnClickOnSaveNLH()
+    private void OnClickOnSave(string gameType, string templateType)
     {
-        //string requestData = "{\"clubId\":\"" + NLH_RingGameSettings[0].transform.GetComponent<Text>().text.ToString() + "\"," +
-        //    "\"gameType\":\"" + NLH_RingGameSettings[1].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
-        //    "\"templateType\":\"" + roleToAssign + "\"," +
-        //    "\"tableId\":\"" + roleToAssign + "\"," +
-        //    "\"settingData\":\"[\"{\"templateSubType" + roleToAssign + "\"," +
-        //    "\"memberCount\":\"" + roleToAssign + "\"," +
-        //    "\"actionTime\":\"" + roleToAssign + "\"," +
-        //    "\"exclusiveTable\":\"" + roleToAssign + "\"," +
-        //    "\"blinds\":\"" + roleToAssign + "\"," +
-        //    "\"buyInMin\":\"" + roleToAssign + "\"," +
-        //    "\"buyInMax\":\"" + roleToAssign + "\"," +
-        //    "\"minVPIP\":\"" + roleToAssign + "\"," +
-        //    "\"VPIPLevel\":\"" + roleToAssign + "\"," +
-        //    "\"handsThreshold\":\"" + roleToAssign + "\"," +
-        //    "\"autoStart\":\"" + roleToAssign + "\"," +
-        //    "\"autoStartWith\":\"" + roleToAssign + "\"," +
-        //    "\"autoExtension\":\"" + roleToAssign + "\"," +
-        //    "\"autoExtensionTimes\":\"" + roleToAssign + "\"," +
-        //    "\"autoOpen\":\"" + roleToAssign + "\"," +
-        //    "\"riskManagement\":\"" + roleToAssign + "\"," +
-        //    "\"fee\":\"" + roleToAssign + "\"," +
-        //    "\"cap\":\"" + roleToAssign + "\"," +
-        //    "\"calltime\":\"" + roleToAssign + "\"," +
-        //    "\"authorizedBuyIn\":\"" + roleToAssign + "\"," +
-        //    "\"GPSRestriction\":\"" + roleToAssign + "\"," +
-        //    "\"IPRestriction\":\"" + roleToAssign + "\"," +
-        //    "\"banChatting\":\"" + roleToAssign + "\"," +
-        //    "\"hours\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"}\"]\"}";
+        string requestData = "";
 
-        ////MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-        //WebServices.instance.SendRequest(RequestType.CreateTemplate, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
-        //{
-        //    //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        if (templateType.Equals("Ring Game"))
+        {
+                requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                "\"gameType\":\"" + gameType + "\"," +
+                "\"templateType\":\"" + templateType + "\"," +
+                "\"status\":\"" + "Saved" + "\"," +
+                "\"settingData\":[{\"templateSubType\":\"" + NLH_RingGameSettings[0].transform.GetComponent<Text>().text.ToString() + "\"," +
+                "\"memberCount\":\"" + NLH_RingGameSettings[1].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
+                "\"actionTime\":\"" + NLH_RingGameSettings[2].transform.GetComponent<Toggle>().isOn.ToString() + "\"," +
+                "\"exclusiveTable\":\"" + NLH_RingGameSettings[3].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"blinds\":\"" + NLH_RingGameSettings[4].transform.GetComponent<Slider>().value.ToString() + "\"," +
+                "\"buyInMin\":\"" + NLH_RingGameSettings[5].transform.GetComponent<RangeSlider>().HighValue.ToString() + "\"," +
+                "\"buyInMax\":\"" + NLH_RingGameSettings[5].transform.GetComponent<RangeSlider>().LowValue.ToString() + "\"," +
+                "\"minVPIP\":\"" + NLH_RingGameSettings[6].transform.GetComponent<Slider>().value.ToString() + "\"," +
+                "\"VPIPLevel\":\"" + NLH_RingGameSettings[7].transform.GetComponent<Slider>().value.ToString() + "\"," +
+                "\"handsThreshold\":\"" + "" + "\"," +
+                "\"autoStart\":\"" + NLH_RingGameSettings[8].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"autoStartWith\":\"" + "" + "\"," +
+                "\"autoExtension\":\"" + NLH_RingGameSettings[9].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"autoExtensionTimes\":\"" + NLH_RingGameSettings[10].transform.GetComponent<Slider>().value.ToString() + "\"," +
+                "\"autoOpen\":\"" + NLH_RingGameSettings[11].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"riskManagement\":\"" + "" + "\"," +
+                "\"fee\":\"" + NLH_RingGameSettings[13].transform.GetComponent<TMP_Dropdown>().value.ToString() + "\"," +
+                "\"cap\":\"" + NLH_RingGameSettings[14].transform.GetComponent<TMP_Dropdown>().value.ToString() + "\"," +
+                "\"calltime\":\"" + NLH_RingGameSettings[15].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"authorizedBuyIn\":\"" + NLH_RingGameSettings[16].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"GPSRestriction\":\"" + NLH_RingGameSettings[17].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"IPRestriction\":\"" + NLH_RingGameSettings[18].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"banChatting\":\"" + NLH_RingGameSettings[19].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"hours\":\"" + NLH_RingGameSettings[20].transform.GetComponent<Slider>().value.ToString() + "\"}]}";
+        }
+        else if (templateType.Equals("SNG"))
+        {
+                requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                "\"gameType\":\"" + gameType + "\"," +
+                "\"templateType\":\"" + templateType + "\"," +
+                "\"status\":\"" + "Saved" + "\"," +
+                "\"settingData\":[{\"templateSubType\":\"" + NLH_SNGGameSettings[0].transform.GetComponent<Text>().text.ToString() + "\"," +
+                "\"memberCount\":\"" + NLH_SNGGameSettings[1].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
+                "\"actionTime\":\"" + NLH_SNGGameSettings[2].transform.GetComponent<Toggle>().isOn.ToString() + "\"," +
+                "\"exclusiveTable\":\"" + NLH_SNGGameSettings[3].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"buyIn\":\"" + NLH_SNGGameSettings[4].transform.GetComponent<TMP_InputField>().text.ToString() + "\"," +
+                "\"startingChips\":\"" + NLH_SNGGameSettings[5].transform.GetComponent<Slider>().value.ToString() + "\"," +
+                "\"blindsUp\":\"" + NLH_SNGGameSettings[6].transform.GetComponent<Slider>().value.ToString() + "\"," +
+                "\"maxMultiplier\":\"" + NLH_SNGGameSettings[7].transform.GetComponent<Toggle>().isOn.ToString() + "\"," +
+                "\"blindStructure\":\"" + NLH_SNGGameSettings[8].transform.GetComponent<Toggle>().isOn.ToString() + "\"," +
+                "\"AutoOpen\":\"" + NLH_SNGGameSettings[9].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"authorizedRegister\":\"" + NLH_SNGGameSettings[10].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"GPSRestriction\":\"" + NLH_SNGGameSettings[11].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"IPRestriction\":\"" + NLH_SNGGameSettings[12].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+                "\"banChatting\":\"" + NLH_SNGGameSettings[13].transform.GetComponent<ToggleController>().isOn.ToString() + "\"}]}";
+        }
+        else if (templateType.Equals("MTT"))
+        {
+            requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+               "\"gameType\":\"" + gameType + "\"," +
+               "\"templateType\":\"" + templateType + "\"," +
+               "\"status\":\"" + "Saved" + "\"," +
+               "\"settingData\":[{\"templateSubType\":\"" + NLH_MTTGameSettings[0].transform.GetComponent<Text>().text.ToString() + "\"," +
+               "\"memberCount\":\"" + NLH_MTTGameSettings[1].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
+               "\"actionTime\":\"" + NLH_MTTGameSettings[2].transform.GetComponent<Toggle>().isOn.ToString() + "\"," +
+               "\"exclusiveTable\":\"" + NLH_MTTGameSettings[3].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+               "\"buyIn\":\"" + NLH_MTTGameSettings[4].transform.GetComponent<TMP_InputField>().text.ToString() + "\"," +
+               "\"rebuy\":\"" + NLH_MTTGameSettings[5].transform.GetComponent<TMP_InputField>().text.ToString() + "\"," +
+               "\"addOn\":\"" + NLH_MTTGameSettings[6].transform.GetComponent<TMP_InputField>().text.ToString() + "\"," +
+               "\"rebuyTimes\":\"" + NLH_MTTGameSettings[7].transform.GetComponent<TMP_Dropdown>().value.ToString() + "\"," +
+               "\"addOnX\":\"" + NLH_MTTGameSettings[8].transform.GetComponent<TMP_Dropdown>().value.ToString() + "\"," +
+               "\"startingChips\":\"" + NLH_MTTGameSettings[9].transform.GetComponent<Slider>().value.ToString() + "\"," +
+               "\"blindsUp\":\"" + NLH_MTTGameSettings[10].transform.GetComponent<Slider>().value.ToString() + "\"," +
+               "\"lateRegistrationLevel\":\"" + NLH_MTTGameSettings[11].transform.GetComponent<Slider>().value.ToString() + "\"," +
+               "\"minPlayers\":\"" + NLH_MTTGameSettings[12].transform.GetComponent<RangeSlider>().LowValue.ToString() + "\"," +
+               "\"maxPlayers\":\"" + NLH_MTTGameSettings[12].transform.GetComponent<RangeSlider>().HighValue.ToString() + "\"," +
+               "\"blindStructure\":\"" + NLH_MTTGameSettings[13].transform.GetComponent<Toggle>().isOn.ToString() + "\"," +
+               "\"earlyBird\":\"" + NLH_MTTGameSettings[14].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+               "\"KOBounty\":\"" + NLH_MTTGameSettings[15].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+               "\"authorizedRegister\":\"" + NLH_MTTGameSettings[16].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+               "\"banChatting\":\"" + NLH_MTTGameSettings[17].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+               "\"break\":\"" + NLH_MTTGameSettings[18].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+               "\"prizePool\":\"" + NLH_MTTGameSettings[19].transform.GetComponent<Toggle>().isOn.ToString() + "\"," +
+               "\"GtdPrizePool\":\"" + NLH_MTTGameSettings[20].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+               "\"startTime\":\"" + "" + "\"}]}";
+        }
 
-        //    if (errorMessage.Length > 0)
-        //    {
-        //        if (isShowErrorMessage)
-        //        {
-        //            MainMenuController.instance.ShowMessage(errorMessage);
-        //        }
-
-        //        return;
-        //    }
-
-        //    JsonData data = JsonMapper.ToObject(serverResponse);
-
-        //if (data["success"].ToString() == "1")
-        //{
-        //    Debug.Log(data["message"]);
-        //    }
-        //    else
-        //    {
-        //        //MainMenuController.instance.ShowMessage(data["message"].ToString());
-        //    }
-        //});
-
-
-
-        //clubID = ClubDetailsUIManager.instance.GetClubId();
-        //gameType = "NLH",
-        //templateType = "Ring Game",
-        //status = "",
-        //settingData = new List<SettingDataRingGame>
-        //{
-        //    new SettingDataRingGame()
-        //    {
-        //        templateSubType = NLH_RingGameSettings[0].transform.GetComponent<Text>().text.ToString(),
-        //        memberCount = NLH_RingGameSettings[1].transform.GetComponent<TMP_Text>().text.ToString(),
-        //        actionTime = NLH_RingGameSettings[2].transform.GetComponent<Toggle>().isOn.ToString(),
-        //        exclusiveTable = NLH_RingGameSettings[3].transform.GetComponent<ToggleController>().isOn.ToString(),
-        //        blinds = NLH_RingGameSettings[4].transform.GetComponent<Slider>().value.ToString(),
-        //        buyInMax = NLH_RingGameSettings[5].transform.GetComponent<RangeSlider>().HighValue.ToString(),
-        //        buyInMin = NLH_RingGameSettings[5].transform.GetComponent<RangeSlider>().LowValue.ToString(),
-        //        minVPIP = NLH_RingGameSettings[6].transform.GetComponent<Slider>().value.ToString(),
-        //        VPIPLevel = NLH_RingGameSettings[7].transform.GetComponent<Slider>().value.ToString(),
-        //        handsThreshold = "",
-        //        autoStart = NLH_RingGameSettings[8].transform.GetComponent<ToggleController>().isOn.ToString(),
-        //        autoStartWith = "",
-        //        autoExtension = NLH_RingGameSettings[9].transform.GetComponent<ToggleController>().isOn.ToString(),
-        //        autoExtensionTimes = NLH_RingGameSettings[10].transform.GetComponent<Slider>().value.ToString(),
-        //        autoOpen = NLH_RingGameSettings[11].transform.GetComponent<ToggleController>().isOn.ToString(),
-        //        riskManagement = "",
-        //        fee = NLH_RingGameSettings[13].transform.GetComponent<TMP_Dropdown>().value.ToString(),
-        //        cap = NLH_RingGameSettings[14].transform.GetComponent<TMP_Dropdown>().value.ToString(),
-        //        calltime = NLH_RingGameSettings[15].transform.GetComponent<ToggleController>().isOn.ToString(),
-        //        authorizedBuyIn = NLH_RingGameSettings[16].transform.GetComponent<ToggleController>().isOn.ToString(),
-        //        GPSRestriction = NLH_RingGameSettings[17].transform.GetComponent<ToggleController>().isOn.ToString(),
-        //        IPRestriction = NLH_RingGameSettings[18].transform.GetComponent<ToggleController>().isOn.ToString(),
-        //        banChatting = NLH_RingGameSettings[19].transform.GetComponent<ToggleController>().isOn.ToString(),
-        //        hours = NLH_RingGameSettings[20].transform.GetComponent<Slider>().value.ToString(),
-        //    },
-        //}
+        WebServices.instance.SendRequest(RequestType.CreateTemplate, requestData, true, OnServerResponseFound);
     }
+
+
+    private void OnClickOnCreate(string gameType, string templateType)
+    {
+        //if (templateType.Equals("NLH"))
+        //{
+        //    string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+        //        "\"gameType\":\"" + gameType + "\"," +
+        //        "\"templateType\":\"" + templateType + "\"," +
+        //        "\"status\":\"" + "Saved" + "\"," +
+        //        "\"settingData\":[{\"templateSubType\":\"" + NLH_RingGameSettings[0].transform.GetComponent<Text>().text.ToString() + "\"," +
+        //        "\"memberCount\":\"" + NLH_RingGameSettings[1].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
+        //        "\"actionTime\":\"" + NLH_RingGameSettings[2].transform.GetComponent<Toggle>().isOn.ToString() + "\"," +
+        //        "\"exclusiveTable\":\"" + NLH_RingGameSettings[3].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+        //        "\"blinds\":\"" + NLH_RingGameSettings[4].transform.GetComponent<Slider>().value.ToString() + "\"," +
+        //        "\"buyInMin\":\"" + NLH_RingGameSettings[5].transform.GetComponent<RangeSlider>().HighValue.ToString() + "\"," +
+        //        "\"buyInMax\":\"" + NLH_RingGameSettings[5].transform.GetComponent<RangeSlider>().LowValue.ToString() + "\"," +
+        //        "\"minVPIP\":\"" + NLH_RingGameSettings[6].transform.GetComponent<Slider>().value.ToString() + "\"," +
+        //        "\"VPIPLevel\":\"" + NLH_RingGameSettings[7].transform.GetComponent<Slider>().value.ToString() + "\"," +
+        //        "\"handsThreshold\":\"" + "" + "\"," +
+        //        "\"autoStart\":\"" + NLH_RingGameSettings[8].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+        //        "\"autoStartWith\":\"" + "" + "\"," +
+        //        "\"autoExtension\":\"" + NLH_RingGameSettings[9].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+        //        "\"autoExtensionTimes\":\"" + NLH_RingGameSettings[10].transform.GetComponent<Slider>().value.ToString() + "\"," +
+        //        "\"autoOpen\":\"" + NLH_RingGameSettings[11].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+        //        "\"riskManagement\":\"" + "" + "\"," +
+        //        "\"fee\":\"" + NLH_RingGameSettings[13].transform.GetComponent<TMP_Dropdown>().value.ToString() + "\"," +
+        //        "\"cap\":\"" + NLH_RingGameSettings[14].transform.GetComponent<TMP_Dropdown>().value.ToString() + "\"," +
+        //        "\"calltime\":\"" + NLH_RingGameSettings[15].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+        //        "\"authorizedBuyIn\":\"" + NLH_RingGameSettings[16].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+        //        "\"GPSRestriction\":\"" + NLH_RingGameSettings[17].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+        //        "\"IPRestriction\":\"" + NLH_RingGameSettings[18].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+        //        "\"banChatting\":\"" + NLH_RingGameSettings[19].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
+        //        "\"hours\":\"" + NLH_RingGameSettings[20].transform.GetComponent<Slider>().value.ToString() + "\"}]}";
+
+
+        //    WebServices.instance.SendRequest(RequestType.CreateTemplate, requestData, true, OnServerResponseFound);
+        //}
+
+    }
+
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
 
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                //MainMenuController.instance.ShowMessage(errorMessage);
+                Debug.Log(errorMessage);
             }
 
             return;
@@ -313,17 +349,18 @@ public class ClubTableController : MonoBehaviour
 
                     if (data["success"].ToString() == "1")
                     {
+                        Debug.Log(data["message"].ToString());
                         //joinClubPopUp.SetActive(false);
-                        //MainMenuController.instance.ShowMessage("Club join request sent");
+                        MainMenuController.instance.ShowMessage(data["message"].ToString());
                     }
                     else
                     {
-                        //MainMenuController.instance.ShowMessage(data["message"].ToString());
+                        Debug.Log(data["message"].ToString());
+                        MainMenuController.instance.ShowMessage(data["message"].ToString());
                     }
                 }
                 break;
-
-
+            
             default:
 #if ERROR_LOG
                 Debug.LogError("Unhandled requestType found in  MenuHandller = " + requestType);

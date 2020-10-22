@@ -51,6 +51,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 		if (MainMenuController.instance.bottomPanel.activeSelf)
 			MainMenuController.instance.bottomPanel.SetActive(false);
 
+		DisableAllScreens();
+
 		PickerEventListener.onImageSelect += OnImageSelect;
 		PickerEventListener.onImageLoad += OnImageLoad;
 		PickerEventListener.onError += OnError;
