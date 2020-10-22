@@ -13,8 +13,11 @@ public class NotificationUiManager : MonoBehaviour
 
     private void Start()
     {
-        notificationDetailsScreen.SetActive(false);
-        notificationListScreen.SetActive(true);
+        if(null!= notificationDetailsScreen)
+            notificationDetailsScreen.SetActive(false);
+
+        if(null!= notificationListScreen)
+            notificationListScreen.SetActive(true);
 
         ShowNotificationList(MainMenuController.instance.GetNotificationDetails());
     }
@@ -22,7 +25,6 @@ public class NotificationUiManager : MonoBehaviour
 
     private void ShowNotificationList(NotificationDetails notificationDetails)
     {
-        
         for (int i = 0; i < container.childCount; i++)
         {
             Destroy(container.GetChild(i).gameObject);
@@ -47,14 +49,13 @@ public class NotificationUiManager : MonoBehaviour
 
             gm.GetComponent<Button>().onClick.AddListener(()=> ShowDetaildMessage(notificationData, icon));
         }
-
-        layoutManager.UpdateLayout();
     }
 
 
     private void ShowDetaildMessage(Notification data,Image icon)
     {
-        notificationDetailsScreen.SetActive(true);
+        if (null != notificationDetailsScreen)
+            notificationDetailsScreen.SetActive(true);
         notificationDetailsText.text = data.title;
         notificationDetailsText.text += "\n\n"+data.desc;
 
@@ -79,14 +80,17 @@ public class NotificationUiManager : MonoBehaviour
 
     public void OnClickOnBack()
     {
-        if (notificationDetailsScreen.activeInHierarchy)
+        if (null != notificationDetailsScreen)
         {
-            notificationDetailsScreen.SetActive(false);
-        }
-        else
-        {
-            gameObject.SetActive(false);
-            //MainMenuController.instance.DestroyScreen(MainMenuScreens.Notification);
+            if (notificationDetailsScreen.activeInHierarchy)
+            {
+                notificationDetailsScreen.SetActive(false);
+            }
+            else
+            {
+                gameObject.SetActive(false);
+                //MainMenuController.instance.DestroyScreen(MainMenuScreens.Notification);
+            }
         }
     }
 }

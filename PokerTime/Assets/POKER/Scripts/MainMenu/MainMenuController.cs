@@ -373,7 +373,7 @@ public class MainMenuController : MonoBehaviour
             GameObject gm = Instantiate(screens[(int)screenName], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
             mainMenuScreen.screenObject = gm;
             mainMenuActiveScreens.Add(mainMenuScreen);
-
+            gm.SetActive(true);
             switch (screenName)
             {
                 case MainMenuScreens.ClubDetails:
