@@ -3,6 +3,7 @@ using LitJson;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Permissions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,12 +16,28 @@ public class ClubTableController : MonoBehaviour
     public GameObject templateObj;
     public Transform container;
 
-    [Space(10)]
+
+    private int memberCount_NLH = 9;
     [Header("NLH")]
+    public Button incrementMemberCount_NLH;
+    public Button decreamentMemberCount_NLH;
+
+    public TMP_Text handThresholdText;
+    public Slider handThreshold;
+    public Slider autoExtensionTime;
+    public Slider callTime;
+
+    public Button RingGame_RegularModeTabNLH;
+    public Button RingGame_6PlusModeTabNLH;
+
     public Button RingGameTabButton_NLH;
     public Button SNGGameTabButton_NLH;
     public Button MTTGameTabButton_NLH;
-    public GameObject RingGamePanel_NLH, SNGamePanel_NLH, MTTGamePanel_NLH;
+
+    public GameObject BanChattingDiamondObj, RingGamePanel_NLH, SNGamePanel_NLH, MTTGamePanel_NLH;
+
+    public List<GameObject> NLH_autoStartMemberList = new List<GameObject>();
+
     public List<GameObject> NLH_RingGameSettings = new List<GameObject>();
     public List<GameObject> NLH_SNGGameSettings = new List<GameObject>();
     public List<GameObject> NLH_MTTGameSettings = new List<GameObject>();
@@ -34,7 +51,10 @@ public class ClubTableController : MonoBehaviour
     public GameObject EVChopValueField;
 
 
+    private int memberCount_PLO = 9;
     [Header("PLO")]
+    public Button incrementMemberCount_PLO;
+    public Button decreamentMemberCount_PLO;
     public Button RingGameTabButton_PLO;
     public Button SNGGameTabButton_PLO;
     public Button MTTGameTabButton_PLO;
@@ -51,7 +71,11 @@ public class ClubTableController : MonoBehaviour
     public Toggle EVChop_PLO;
     public GameObject EVChopValueField_PLO;
 
+    
+    private int memberCount_MIXED = 9;
     [Header("MIXED GAME")]
+    public Button incrementMemberCount_MIXED;
+    public Button decreamentMemberCount_MIXED;
     public Button RingGameTabButton_MIXED;
     public Button SNGGameTabButton_MIXED;
     public Button MTTGameTabButton_MIXED;
@@ -83,6 +107,158 @@ public class ClubTableController : MonoBehaviour
     private void Start()
     {
         Initialise();
+        InitializeNLHRingGameParameters("NLH_RegularMode");
+    }
+
+    private void InitializeNLHRingGameParameters(string templateSubType)
+    {
+        if(templateSubType.Equals("NLH_RegularMode"))
+        {
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("TemplateSubType").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("MemberCount").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("ActionTime").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("ExclusiveTableToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("BlindsSlider").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("BuyInSlider").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("MinVPIP").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("VPIPLevel").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AutoStartToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AutoStart").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AutoStartExtensionToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("TimesSlider").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AutoOpenToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("RiskManagement").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("Fee").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("Cap").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("CallTimeToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AuthorizedBuyInToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("GPSRestrictionToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("IPRestrictionToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("BanChattingToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("TimeMarkerSlider").gameObject as GameObject);
+
+        }
+        else if(templateSubType.Equals("NLH_6Plus"))
+        {
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("TemplateSubType").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("MemberCount").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("ActionTime").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("ExclusiveTableToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AnteSlider").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("BuyInSlider").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("MinVPIP").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("VPIPLevel").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AutoStartToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AutoStart").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AutoStartExtensionToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("TimesSlider").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AutoOpenToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("RiskManagement").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("Fee").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("Cap").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("ChipWIthdrawalToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AuthorizedBuyInToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("GPSRestrictionToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("IPRestrictionToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("BanChattingToggle").gameObject as GameObject);
+            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("TimeMarkerSlider").gameObject as GameObject);
+        }
+    }
+
+
+    private void Update()
+    {
+        if (memberCount_NLH < 9)
+            incrementMemberCount_NLH.interactable = true;
+        else
+            incrementMemberCount_NLH.interactable = false;
+
+        //if (memberCount_PLO < 9)
+        //    incrementMemberCount_PLO.interactable = true;
+        //else
+        //    incrementMemberCount_PLO.interactable = false;
+
+        //if (memberCount_MIXED < 9)
+        //    incrementMemberCount_MIXED.interactable = true;
+        //else
+        //    incrementMemberCount_MIXED.interactable = false;
+
+        if (memberCount_NLH > 2)
+            decreamentMemberCount_NLH.interactable = true;
+        else
+            decreamentMemberCount_NLH.interactable = false;
+
+        //if (memberCount_PLO > 2)
+        //    decreamentMemberCount_PLO.interactable = true;
+        //else
+        //    decreamentMemberCount_PLO.interactable = false;
+
+        //if (memberCount_MIXED > 2)
+        //    decreamentMemberCount_MIXED.interactable = true;
+        //else
+        //    decreamentMemberCount_MIXED.interactable = false;
+
+        //Members Toggle list Enable/Disable
+        if(NLH_RingGameSettings[8].transform.GetComponent<ToggleController>().isOn)
+        {
+            NLH_RingGameSettings[9].transform.Find("Members").gameObject.SetActive(true);
+            NLH_RingGameSettings[9].transform.GetComponent<RectTransform>().sizeDelta = new Vector2(608.5f, 420.48f);
+        }
+        else
+        {
+            NLH_RingGameSettings[9].transform.Find("Members").gameObject.SetActive(false);
+            NLH_RingGameSettings[9].transform.GetComponent<RectTransform>().sizeDelta = new Vector2(608.5f, 344f);
+        }
+
+        //Hand Threshold Slider Enable/Disable
+        if(NLH_RingGameSettings[6].transform.GetComponent<Slider>().value > 15)
+        {
+            //handThreshold.interactable = true;
+            handThreshold.gameObject.SetActive(true);
+            handThresholdText.gameObject.SetActive(true);
+            handThreshold.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 510);
+        }
+        else
+        {
+            //handThreshold.interactable = false;
+            handThreshold.gameObject.SetActive(false);
+            handThresholdText.gameObject.SetActive(false);
+            handThreshold.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 414);
+        }
+        
+        //Auto Extension Time Slider Enable/Disable
+        if (NLH_RingGameSettings[10].transform.GetComponent<ToggleController>().isOn)
+        {
+            autoExtensionTime.interactable = true;
+        }
+        else
+        {
+            autoExtensionTime.interactable = false;
+        }
+
+        //Call Time Slider Enable/Disable
+        if (NLH_RingGameSettings[16].transform.GetComponent<ToggleController>().isOn)
+        {
+            callTime.gameObject.SetActive(true);
+            callTime.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 135);
+            //callTime.interactable = true;
+        }
+        else
+        {
+            //callTime.interactable = false;
+            callTime.gameObject.SetActive(false);
+            callTime.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 75);
+        }
+
+        //Ban Chatting Diamond Prefab Enable
+        if(NLH_RingGameSettings[20].transform.GetComponent<ToggleController>().isOn)
+        {
+            BanChattingDiamondObj.SetActive(true);
+        }
+        else
+        {
+            BanChattingDiamondObj.SetActive(false);
+        }
     }
 
     private void Initialise()
@@ -97,6 +273,12 @@ public class ClubTableController : MonoBehaviour
         SNGGameTabButton_NLH.onClick.AddListener(() => OpenScreen("SNG_NLH"));
         MTTGameTabButton_NLH.onClick.AddListener(() => OpenScreen("MTT_NLH"));
 
+        RingGame_RegularModeTabNLH.onClick.RemoveAllListeners();
+        RingGame_6PlusModeTabNLH.onClick.RemoveAllListeners();
+
+        RingGame_RegularModeTabNLH.onClick.AddListener(() => OpenScreen("NLH_RegularMode"));
+        RingGame_6PlusModeTabNLH.onClick.AddListener(() => OpenScreen("NLH_6Plus"));
+
 
         //PLO
         RingGameTabButton_PLO.onClick.RemoveAllListeners();
@@ -108,8 +290,8 @@ public class ClubTableController : MonoBehaviour
         SNGGameTabButton_PLO.onClick.AddListener(() => OpenScreen("SNG_PLO"));
         MTTGameTabButton_PLO.onClick.AddListener(() => OpenScreen("MTT_PLO"));
 
-        //MIXED
 
+        //MIXED
         RingGameTabButton_MIXED.onClick.RemoveAllListeners();
         SNGGameTabButton_MIXED.onClick.RemoveAllListeners();
         MTTGameTabButton_MIXED.onClick.RemoveAllListeners();
@@ -135,7 +317,6 @@ public class ClubTableController : MonoBehaviour
             EVChopValueField.SetActive(false);
         }
     }
-
 
     private void OpenScreen(string screenName)
     {
@@ -226,6 +407,28 @@ public class ClubTableController : MonoBehaviour
                 RingGamePanel_MIXED.SetActive(false);
                 SNGamePanel_MIXED.SetActive(false);
                 MTTGamePanel_MIXED.SetActive(true);
+                break;
+
+
+            case "NLH_RegularMode":
+                Debug.Log("OnClick Regular Mode");
+
+                RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").gameObject.SetActive(true);
+                RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").gameObject.SetActive(false);
+
+                RingGamePanel_NLH.transform.GetComponent<ScrollRect>().content = RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").GetComponent<RectTransform>();
+
+                InitializeNLHRingGameParameters("NLH_RegularMode");
+                break;
+
+            case "NLH_6Plus":
+                Debug.Log("OnClick 6+ Mode");
+                
+                RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").gameObject.SetActive(false);
+                RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").gameObject.SetActive(true);
+
+                RingGamePanel_NLH.transform.GetComponent<ScrollRect>().content = RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").GetComponent<RectTransform>();
+                InitializeNLHRingGameParameters("NLH_6Plus");
                 break;
 
             default:
@@ -677,7 +880,7 @@ public class ClubTableController : MonoBehaviour
                 "\"autoOpen\":\"" + (NLH_RingGameSettings[12].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
                 "\"riskManagement\":\"" + "" + "\"," +
                 "\"fee\":\"" + NLH_RingGameSettings[14].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, NLH_RingGameSettings[14].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
-                "\"cap\":\"" + NLH_RingGameSettings[15].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, NLH_RingGameSettings[15].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
+                "\"cap\":\"" + NLH_RingGameSettings[15].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, NLH_RingGameSettings[15].transform.GetComponent<TMP_Text>().text.ToString().Length - 3) + "\"," +
                 "\"calltime\":\"" + (NLH_RingGameSettings[16].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
                 "\"authorizedBuyIn\":\"" + (NLH_RingGameSettings[17].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
                 "\"GPSRestriction\":\"" + (NLH_RingGameSettings[18].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
@@ -746,41 +949,6 @@ public class ClubTableController : MonoBehaviour
 
     private void OnClickOnCreate(string gameType, string templateType)
     {
-        //if (templateType.Equals("NLH"))
-        //{
-        //    string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-        //        "\"gameType\":\"" + gameType + "\"," +
-        //        "\"templateType\":\"" + templateType + "\"," +
-        //        "\"status\":\"" + "Saved" + "\"," +
-        //        "\"settingData\":[{\"templateSubType\":\"" + NLH_RingGameSettings[0].transform.GetComponent<Text>().text.ToString() + "\"," +
-        //        "\"memberCount\":\"" + NLH_RingGameSettings[1].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
-        //        "\"actionTime\":\"" + NLH_RingGameSettings[2].transform.GetComponent<Toggle>().isOn.ToString() + "\"," +
-        //        "\"exclusiveTable\":\"" + NLH_RingGameSettings[3].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
-        //        "\"blinds\":\"" + NLH_RingGameSettings[4].transform.GetComponent<Slider>().value.ToString() + "\"," +
-        //        "\"buyInMin\":\"" + NLH_RingGameSettings[5].transform.GetComponent<RangeSlider>().HighValue.ToString() + "\"," +
-        //        "\"buyInMax\":\"" + NLH_RingGameSettings[5].transform.GetComponent<RangeSlider>().LowValue.ToString() + "\"," +
-        //        "\"minVPIP\":\"" + NLH_RingGameSettings[6].transform.GetComponent<Slider>().value.ToString() + "\"," +
-        //        "\"VPIPLevel\":\"" + NLH_RingGameSettings[7].transform.GetComponent<Slider>().value.ToString() + "\"," +
-        //        "\"handsThreshold\":\"" + "" + "\"," +
-        //        "\"autoStart\":\"" + NLH_RingGameSettings[8].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
-        //        "\"autoStartWith\":\"" + "" + "\"," +
-        //        "\"autoExtension\":\"" + NLH_RingGameSettings[9].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
-        //        "\"autoExtensionTimes\":\"" + NLH_RingGameSettings[10].transform.GetComponent<Slider>().value.ToString() + "\"," +
-        //        "\"autoOpen\":\"" + NLH_RingGameSettings[11].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
-        //        "\"riskManagement\":\"" + "" + "\"," +
-        //        "\"fee\":\"" + NLH_RingGameSettings[13].transform.GetComponent<TMP_Dropdown>().value.ToString() + "\"," +
-        //        "\"cap\":\"" + NLH_RingGameSettings[14].transform.GetComponent<TMP_Dropdown>().value.ToString() + "\"," +
-        //        "\"calltime\":\"" + NLH_RingGameSettings[15].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
-        //        "\"authorizedBuyIn\":\"" + NLH_RingGameSettings[16].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
-        //        "\"GPSRestriction\":\"" + NLH_RingGameSettings[17].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
-        //        "\"IPRestriction\":\"" + NLH_RingGameSettings[18].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
-        //        "\"banChatting\":\"" + NLH_RingGameSettings[19].transform.GetComponent<ToggleController>().isOn.ToString() + "\"," +
-        //        "\"hours\":\"" + NLH_RingGameSettings[20].transform.GetComponent<Slider>().value.ToString() + "\"}]}";
-
-
-        //    WebServices.instance.SendRequest(RequestType.CreateTemplate, requestData, true, OnServerResponseFound);
-        //}
-
     }
 
 
@@ -865,50 +1033,83 @@ public class ClubTableController : MonoBehaviour
 #endif
                 break;
         }
-    }    
+    }
+    
+    public void OnClickIncreaseMemberCount()
+    {
+        if(memberCount_NLH < 9)
+        {
+            memberCount_NLH++;
+            NLH_RingGameSettings[1].transform.GetComponent<TMP_Text>().text = memberCount_NLH.ToString();
+        }
+        //else
+        //{
+        //    incrementMemberCount.interactable = false;
+        //}
+
+        switch(memberCount_NLH)
+        {
+            case 3:
+                {
+                    NLH_autoStartMemberList[0].SetActive(true);
+                }
+                break;
+            case 4:
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        NLH_autoStartMemberList[i].SetActive(true);
+                    }
+                }
+                break;
+            case 5:
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        NLH_autoStartMemberList[i].SetActive(true);
+                    }
+                }
+                break;
+        }
+    }
+
+    public void OnClickDecreaseMemberCount()
+    {
+        if(memberCount_NLH > 2)
+        {
+            memberCount_NLH--;
+            NLH_RingGameSettings[1].transform.GetComponent<TMP_Text>().text = memberCount_NLH.ToString();
+        }
+        //else
+        //{
+        //    decreamentMemberCount.interactable = false;
+        //}
+
+        switch (memberCount_NLH)
+        {
+            case 2:
+                {
+                    for (int i = 2; i >= 0; i--)
+                    {
+                        NLH_autoStartMemberList[i].SetActive(false);
+                    }
+                }
+                break;
+
+            case 3:
+                {
+                    for (int i = 2; i >= 1; i--)
+                    {
+                        NLH_autoStartMemberList[i].SetActive(false);
+                    }
+                }
+                break;
+            case 4:
+                {
+                    NLH_autoStartMemberList[2].SetActive(false);                    
+                }
+                break;
+           
+        }
+    }
 }
-
-//[System.Serializable]
-//public class RingGameData
-//{
-//    public string clubID, gameType, templateType, status;
-//    public List<SettingDataRingGame> settingData;
-//}
-
-//[System.Serializable]
-//public class SettingDataRingGame
-//{
-//    public string templateSubType;
-//    public string memberCount;
-//    public string actionTime;
-//    public string exclusiveTable, blinds, buyInMin, buyInMax, minVPIP, VPIPLevel, handsThreshold, autoStart, autoStartWith, autoExtension,
-//                  autoExtensionTimes, autoOpen, riskManagement, fee, cap, calltime, authorizedBuyIn, GPSRestriction, IPRestriction, banChatting, hours;
-//}
-
-//[System.Serializable]
-//public class SNGData
-//{
-//    public string clubID, gameType, templateType, status;
-//    public List<SettingDataSNG> settingData;
-//}
-
-//[System.Serializable]
-//public class SettingDataSNG
-//{
-//    public string templateSubType, memberCount, actionTime, exclusiveTable, buyIn, startingChips, blindsUp, maxMultiplier, blindStructure, AutoOpen, authorizedRegister, GPSRestriction,
-//                  IPRestriction, banChatting;
-//}
-
-//[System.Serializable]
-//public class MTTData
-//{
-//    public string clubID, gameType, templateType, status;
-//    public List<SettingDataMTT> settingData;
-//}
-
-//[System.Serializable]
-//public class SettingDataMTT
-//{
-//    public string templateSubType, memberCount, actionTime, exclusiveTable, buyIn, rebuy, addOn, rebuyTimes, addOnX, startingChips, blindsUp, lateRegistrationLevel, minPlayers, maxPlayers,
-//                  blindStructure, earlyBird, KOBounty, authorizedRegister, banChatting, breakData, prizePool, GtdPrizePool, startTime;
-//}
