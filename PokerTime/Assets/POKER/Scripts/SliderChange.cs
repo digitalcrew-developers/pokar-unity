@@ -22,7 +22,7 @@ public class SliderChange : MonoBehaviour
         instance = this;
         valueText.text = "Blinds: " + sliderValues[0];
         lowValueText.text = "BuyIn: " + SubValuearray[0].ToString();
-        highValueText.text = "Max : " + SubValuearray[15];
+        highValueText.text = "Max: " + SubValuearray[15];
     }
 
     public void SliderValueChange()
