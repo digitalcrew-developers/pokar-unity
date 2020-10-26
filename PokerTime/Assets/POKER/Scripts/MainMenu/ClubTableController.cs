@@ -107,64 +107,7 @@ public class ClubTableController : MonoBehaviour
     private void Start()
     {
         Initialise();
-        InitializeNLHRingGameParameters("NLH_RegularMode");
     }
-
-    private void InitializeNLHRingGameParameters(string templateSubType)
-    {
-        if(templateSubType.Equals("NLH_RegularMode"))
-        {
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("TemplateSubType").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("MemberCount").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("ActionTime").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("ExclusiveTableToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("BlindsSlider").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("BuyInSlider").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("MinVPIP").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("VPIPLevel").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AutoStartToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AutoStart").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AutoStartExtensionToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("TimesSlider").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AutoOpenToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("RiskManagement").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("Fee").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("Cap").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("CallTimeToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("AuthorizedBuyInToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("GPSRestrictionToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("IPRestrictionToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("BanChattingToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").Find("TimeMarkerSlider").gameObject as GameObject);
-
-        }
-        else if(templateSubType.Equals("NLH_6Plus"))
-        {
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("TemplateSubType").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("MemberCount").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("ActionTime").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("ExclusiveTableToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AnteSlider").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("BuyInSlider").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("MinVPIP").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("VPIPLevel").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AutoStartToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AutoStart").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AutoStartExtensionToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("TimesSlider").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AutoOpenToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("RiskManagement").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("Fee").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("Cap").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("ChipWIthdrawalToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("AuthorizedBuyInToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("GPSRestrictionToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("IPRestrictionToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("BanChattingToggle").gameObject as GameObject);
-            NLH_RingGameSettings.Add(RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").Find("TimeMarkerSlider").gameObject as GameObject);
-        }
-    }
-
 
     private void Update()
     {
@@ -418,7 +361,6 @@ public class ClubTableController : MonoBehaviour
 
                 RingGamePanel_NLH.transform.GetComponent<ScrollRect>().content = RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").GetComponent<RectTransform>();
 
-                InitializeNLHRingGameParameters("NLH_RegularMode");
                 break;
 
             case "NLH_6Plus":
@@ -428,7 +370,6 @@ public class ClubTableController : MonoBehaviour
                 RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").gameObject.SetActive(true);
 
                 RingGamePanel_NLH.transform.GetComponent<ScrollRect>().content = RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").GetComponent<RectTransform>();
-                InitializeNLHRingGameParameters("NLH_6Plus");
                 break;
 
             default:
