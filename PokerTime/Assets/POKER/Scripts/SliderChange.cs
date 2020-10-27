@@ -20,9 +20,9 @@ public class SliderChange : MonoBehaviour
     void Start()
     {
         instance = this;
-        valueText.text = "Blinds: " + sliderValues[0];
-        lowValueText.text = "BuyIn: " + SubValuearray[0].ToString();
-        highValueText.text = "Max: " + SubValuearray[15];
+        valueText.text = /*"Blinds: " +*/ sliderValues[0];
+        lowValueText.text = /*"BuyIn: " +*/ SubValuearray[0].ToString();
+        highValueText.text = /*"Max: " +*/ SubValuearray[15].ToString();
     }
 
     public void SliderValueChange()
@@ -59,14 +59,14 @@ public class SliderChange : MonoBehaviour
             {
                 if (rg.HighValue == j)
                 {
-                    highValueText.text = "Max: " + SubValuearray[j].ToString();
+                    highValueText.text = /*"Max: " +*/ SubValuearray[j].ToString();
                 }
             }
             for (int k = 0; k < SubValuearray.Length; k++)
             {
                 if (rg.LowValue == k)
                 {
-                    lowValueText.text = "BuyIn: " + SubValuearray[k].ToString();
+                    lowValueText.text = /*"BuyIn: " +*/ SubValuearray[k].ToString();
                 }
             }
         }
@@ -76,7 +76,7 @@ public class SliderChange : MonoBehaviour
         {
             if (slider.value == i)
             {
-                valueText.text = "Blinds: " + sliderValues[i];
+                valueText.text = /*"Blinds: " +*/ sliderValues[i];
             }
         }
     }
@@ -87,7 +87,7 @@ public class SliderChange : MonoBehaviour
         {
             if (rg.LowValue == i && rg.targetGraphic == rg.m_LowHandleRect.GetComponent<Graphic>())
             {
-                lowValueText.text = "BuyIn: " + SubValuearray[i].ToString();
+                lowValueText.text = /*"BuyIn: " +*/ SubValuearray[i].ToString();
             }
         }
 
@@ -95,7 +95,7 @@ public class SliderChange : MonoBehaviour
         {
             if (rg.HighValue == i && rg.targetGraphic == rg.m_HighHandleRect.GetComponent<Graphic>())
             {
-                highValueText.text = "Max: " + SubValuearray[i].ToString();
+                highValueText.text = /*"Max: " +*/ SubValuearray[i].ToString();
             }
         }
     }

@@ -221,39 +221,93 @@ public class RingGameManager : MonoBehaviour
             }
         }
 
+        //Hi Lo Toggle Group
+        string hi_Lo = "";
+        Toggle[] toggles_Hi_Lo = components[26].transform.GetComponentsInChildren<Toggle>();
+        foreach (var t in toggles_Hi_Lo)
+        {
+            if (t.isOn)
+            {
+                hi_Lo = t.name;
+                Debug.Log("Toggle Name:" + hi_Lo);
+            }
+        }
 
-        //Debug.Log("Length: " + components[12].transform.GetComponent<TMP_Text>().text.ToString().Substring(7, 2));
+        
+        string blindString = "";
+        string anteString = "";
+        string callTime = "";
+        string callTimeText = "";
+        string chipWithdrawal = "";
+
+        if (templateSubType.Equals("6 Plus"))
+        {
+            anteString = components[4].transform.GetComponent<TMP_Text>().text.ToString();
+            chipWithdrawal = components[20].transform.GetComponent<ToggleController>().isOn.ToString();
+            
+            blindString = "";
+            callTime = "";
+            callTimeText = "";
+        }
+        else
+        {
+            //string[] oldStr = components[3].transform.GetComponent<TMP_Text>().text.Split('/');
+            //for (int i = 0; i < oldStr.Length; i++)
+            //{
+            //    Debug.Log("Blind Data:" + oldStr[i]);
+            //    blindString = blindString + oldStr[i];
+            //}
+
+            anteString = "";
+            chipWithdrawal = "";
+            callTime = components[18].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off";
+            callTimeText = components[19].transform.GetComponent<TMP_Text>().text;            
+        }
+
+
+        //Debug.Log("Blind String: " + blindString);
+        //Debug.Log("Ante String" + anteString);
+        //Debug.Log("Chip Withdrawal" + chipWithdrawal);
+        //Debug.Log("Call Time" + callTime);
+        //Debug.Log("Call Time Text" + callTimeText);
+
 
         Debug.Log("ClubID: " + ClubDetailsUIManager.instance.GetClubId());
         Debug.Log("GameType: " + gameType);
-        Debug.Log("GameType: " + components[27].transform.GetComponent<TMP_InputField>().text.ToString());
+        Debug.Log("TemplateName: " + components[27].transform.GetComponent<TMP_InputField>().text.ToString());
         Debug.Log("templateType: " + templateType);
+        Debug.Log("Status: " + "Saved");
+        Debug.Log("TableId: " + "");
         Debug.Log("Template Sub Type: " + templateSubType);
+        Debug.Log("Member Count: " + components[0].transform.GetComponent<TMP_Text>().text);
+        Debug.Log("ActionTime: " + actionTime);
         Debug.Log("ExclusiveTable: " + (components[2].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("Blinds Type: " + components[3].transform.GetComponent<TMP_Text>().text.Substring(8, components[3].transform.GetComponent<TMP_Text>().text.Length - 8));
-        Debug.Log("MinBuy: " + components[5].transform.GetComponent<TMP_Text>().text.Substring(7, 2));
-        Debug.Log("MaxBuy: " + components[6].transform.GetComponent<TMP_Text>().text.Substring(5, components[5].transform.GetComponent<TMP_Text>().text.Length - 5));
-        Debug.Log("minVPIP: " + (components[7].transform.GetComponent<TMP_Text>().text.Length.ToString().Equals("13") ? components[6].transform.GetComponent<TMP_Text>().text.Substring(11, 1) : components[6].transform.GetComponent<TMP_Text>().text.Substring(11, 2)));
-        Debug.Log("VPIP Level: " + (components[8].transform.GetComponent<TMP_Text>().text.Length.ToString().Equals("14") ? components[7].transform.GetComponent<TMP_Text>().text.Substring(12, 1) : components[6].transform.GetComponent<TMP_Text>().text.Substring(12, 2)));
-        Debug.Log("autoStart: " + (components[10].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("Blinds Type: " + components[3].transform.GetComponent<TMP_Text>().text);
+        Debug.Log("Ante Type: " + components[4].transform.GetComponent<TMP_Text>().text);
+        Debug.Log("high_low: " + hi_Lo);
+        Debug.Log("MinBuy: " + components[5].transform.GetComponent<TMP_Text>().text);
+        Debug.Log("MaxBuy: " + components[6].transform.GetComponent<TMP_Text>().text);
+        Debug.Log("MinVPIP: " + components[7].transform.GetComponent<TMP_Text>().text.Substring(0, components[7].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        Debug.Log("VPIP Level: " + components[8].transform.GetComponent<TMP_Text>().text.Substring(0, components[8].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        Debug.Log("Hand Threshold: " + components[9].transform.GetComponent<TMP_Text>().text.Substring(0, components[8].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        Debug.Log("AutoStart: " + (components[10].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
         Debug.Log("AutoStartWith: " + autoStartWith);
         Debug.Log("AutoExtension: " + (components[12].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("AutoExtensionTimes: " + components[13].transform.GetComponent<TMP_Text>().text.ToString().Substring(7, 2));
+        Debug.Log("AsutoExtensionTimes: " + components[13].transform.GetComponent<TMP_Text>().text.ToString());
         Debug.Log("AutoOpen: " + (components[14].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("AutoStartWith: " + riskManagement);
-        Debug.Log("Fee : " + components[16].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[15].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
-        Debug.Log("Cap: " + components[17].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[16].transform.GetComponent<TMP_Text>().text.ToString().Length - 3));
-        Debug.Log("Call Time: " + (components[18].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("RunItMulti: " + "");
+        Debug.Log("EVChop: " + "");
+        Debug.Log("Fee : " + components[16].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[16].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        Debug.Log("Cap: " + components[17].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[17].transform.GetComponent<TMP_Text>().text.ToString().Length - 3));
+        Debug.Log("Call Time: " + callTime);
+        Debug.Log("Time Text: " + callTimeText);
+        Debug.Log("Chip Withdrawal: " +chipWithdrawal);
         Debug.Log("Autorized: " + (components[21].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
         Debug.Log("GPS: " + (components[22].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
         Debug.Log("IP: " + (components[23].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
         Debug.Log("Ban Chatting: " + (components[24].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
         Debug.Log("Hours: " + components[25].transform.GetComponent<Slider>().value.ToString());
-
-
-
-
-
+        
 
         //Request Data
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
@@ -266,24 +320,27 @@ public class RingGameManager : MonoBehaviour
             "\"memberCount\":\"" + components[0].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
             "\"actionTime\":\"" + actionTime + "\"," +
             "\"exclusiveTable\":\"" + (components[2].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"blinds\":\"" + /*(templateSubType.Equals("6+") ? "" :*/ components[3].transform.GetComponent<TMP_Text>().text.Substring(8, components[3].transform.GetComponent<TMP_Text>().text.Length - 8)/*)*/ + "\"," +
-            "\"ante\":\"" + /*(templateSubType.Equals("6+") ? components[4].transform.GetComponent<TMP_Text>().text : "")*/"" + "\"," +
-            "\"buyInMin\":\"" + components[5].transform.GetComponent<TMP_Text>().text.Substring(7, components[4].transform.GetComponent<TMP_Text>().text.Length - 7) + "\"," +
-            "\"buyInMax\":\"" + components[6].transform.GetComponent<TMP_Text>().text.Substring(5, components[5].transform.GetComponent<TMP_Text>().text.Length - 5) + "\"," +
-            "\"minVPIP\":\"" + (components[7].transform.GetComponent<TMP_Text>().text.Length.ToString().Equals("13") ? components[6].transform.GetComponent<TMP_Text>().text.Substring(11, 1) : components[6].transform.GetComponent<TMP_Text>().text.Substring(11, 2)) + "\"," +
-            "\"VPIPLevel\":\"" + (components[8].transform.GetComponent<TMP_Text>().text.Length.ToString().Equals("14") ? components[7].transform.GetComponent<TMP_Text>().text.Substring(12, 1) : components[6].transform.GetComponent<TMP_Text>().text.Substring(12, 2)) + "\"," +
-            "\"handsThreshold\":\"" + /*(components[9].transform.GetComponent<TMP_Text>().text.Length.ToString().Equals("19") ? components[8].transform.GetComponent<TMP_Text>().text.Substring(17, 1) : components[6].transform.GetComponent<TMP_Text>().text.Substring(17, 2))*/"" + "\"," +
+            "\"blinds\":\"" + blindString.ToString() + "\"," +
+            "\"ante\":\"" + anteString.ToString() + "\"," +
+            "\"high_low\":\"" + "" + "\"," +
+            "\"buyInMin\":\"" + components[5].transform.GetComponent<TMP_Text>().text + "\"," +
+            "\"buyInMax\":\"" + components[6].transform.GetComponent<TMP_Text>().text + "\"," +
+            "\"minVPIP\":\"" + components[7].transform.GetComponent<TMP_Text>().text.Substring(0, components[7].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
+            "\"VPIPLevel\":\"" + components[8].transform.GetComponent<TMP_Text>().text.Substring(0, components[8].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
+            "\"handsThreshold\":\"" + components[9].transform.GetComponent<TMP_Text>().text.Substring(0, components[8].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
             "\"autoStart\":\"" + (components[10].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
             "\"autoStartWith\":\"" + autoStartWith + "\"," +
             "\"autoExtension\":\"" + (components[12].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"autoExtensionTimes\":\"" + components[13].transform.GetComponent<TMP_Text>().text.ToString().Substring(7, 2) + "\"," +
+            "\"autoExtensionTimes\":\"" + components[13].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
             "\"autoOpen\":\"" + (components[14].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"riskManagement\":\"" + riskManagement + "\"," +
-            "\"fee\":\"" + components[16].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[15].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
-            "\"cap\":\"" + components[17].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[16].transform.GetComponent<TMP_Text>().text.ToString().Length - 3) + "\"," +
-            "\"calltime\":\"" + (components[18].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"time\":\"" + "" + "\"," +
-            "\"chipWithdrawal\":\"" + /*(templateSubType.Equals("6+") ? components[20].transform.GetComponent<TMP_Text>().text : "")*/"" + "\"," +
+            //"\"riskManagement\":\"" + /*riskManagement*/"" + "\"," +
+            "\"runItMulti\":\"" + /*anteString.ToString()*/"" + "\"," +
+            "\"evChop\":\"" + /*anteString.ToString()*/"" + "\"," +
+            "\"fee\":\"" + components[16].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[16].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
+            "\"cap\":\"" + components[17].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[17].transform.GetComponent<TMP_Text>().text.ToString().Length - 3) + "\"," +
+            "\"calltime\":\"" + callTime + "\"," +
+            "\"time\":\"" + callTimeText + "\"," +
+            "\"chipWithdrawal\":\"" + chipWithdrawal.ToString() + "\"," +
             "\"authorizedBuyIn\":\"" + (components[21].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
             "\"GPSRestriction\":\"" + (components[22].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
             "\"IPRestriction\":\"" + (components[23].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +

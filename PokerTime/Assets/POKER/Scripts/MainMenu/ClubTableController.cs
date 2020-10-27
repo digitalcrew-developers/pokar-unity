@@ -253,8 +253,8 @@ public class ClubTableController : MonoBehaviour
         SNGGameTabButton_MIXED.onClick.AddListener(() => OpenScreen("SNG_MIXED"));
         MTTGameTabButton_MIXED.onClick.AddListener(() => OpenScreen("MTT_MIXED"));
 
-        RingGame_NLHPLO4ModePLO.onClick.AddListener(() => OpenScreen("NLHPLO4Mode"));
-        RingGame_NLHPLO5ModePLO.onClick.AddListener(() => OpenScreen("NLHPLO5Mode"));
+        RingGame_NLHPLO4ModePLO.onClick.AddListener(() => OpenScreen("NLHPLO4"));
+        RingGame_NLHPLO5ModePLO.onClick.AddListener(() => OpenScreen("NLHPLO5"));
 
         //EVChop.onValueChanged.AddListener(delegate {
         //    ToggleValueChanged(EVChop);
