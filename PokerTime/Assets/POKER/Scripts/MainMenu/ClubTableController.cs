@@ -447,18 +447,33 @@ public class ClubTableController : MonoBehaviour
         
         for (int i = 0; i < data["response"].Count; i++)
         {
+            Debug.Log("Template Name: " + data["response"][i]["templateName"].ToString());
+
             GameObject obj = Instantiate(templateObj, container) as GameObject;
 
             obj.GetComponent<ClubTemplateManager>().tableId = data["response"][i]["tableId"].ToString();
-            obj.GetComponent<ClubTemplateManager>().templateType.text = data["response"][i]["templateType"].ToString();
+            obj.GetComponent<ClubTemplateManager>().templateName.text = data["response"][i]["templateName"].ToString();
             obj.GetComponent<ClubTemplateManager>().gameType.text = data["response"][i]["gameType"].ToString();
             
-            if (data["response"][i]["settingData"].Count > 0 && data["response"][i]["templateType"].ToString().Equals("Ring Game"))
+            if (data["response"][i]["settingData"].Count > 0 /*&& data["response"][i]["templateType"].ToString().Equals("Ring Game")*/)
             {
-                Debug.Log("Count Greater Zero: " + data["response"][i]["settingData"]["hours"].ToString());
-                obj.GetComponent<ClubTemplateManager>().chipsData.text = data["response"][i]["tableId"].ToString();
-                obj.GetComponent<ClubTemplateManager>().userData.text = data["response"][i]["settingData"]["memberCount"].ToString();
-                obj.GetComponent<ClubTemplateManager>().timeData.text = data["response"][i]["settingData"]["hours"].ToString();
+                if (data["response"][i]["templateSubType"].ToString().Equals("6+"))
+                {
+                    obj.GetComponent<ClubTemplateManager>()._6PlusObj.SetActive(true);
+                    obj.GetComponent<ClubTemplateManager>().blindsInfoObj.SetActive(false);
+                    obj.GetComponent<ClubTemplateManager>().anteInfoObj.SetActive(true);
+                    obj.GetComponent<ClubTemplateManager>().anteText.text = data["response"][i]["settingData"]["ante"].ToString();
+                }
+                else
+                {
+                    obj.GetComponent<ClubTemplateManager>()._6PlusObj.SetActive(false);
+                    obj.GetComponent<ClubTemplateManager>().blindsInfoObj.SetActive(false);
+                    obj.GetComponent<ClubTemplateManager>().anteInfoObj.SetActive(true);
+                    obj.GetComponent<ClubTemplateManager>().blindsText.text = data["response"][i]["settingData"]["blinds"].ToString();
+                }
+
+                obj.GetComponent<ClubTemplateManager>().playerText.text = data["response"][i]["settingData"]["memberCount"].ToString();
+                obj.GetComponent<ClubTemplateManager>().timeText.text = data["response"][i]["settingData"]["hours"].ToString();
             }
             
             obj.GetComponent<ClubTemplateManager>().deleteButton.onClick.AddListener(() => OnClickOnDeleteButton(obj.GetComponent<ClubTemplateManager>().tableId));
@@ -964,6 +979,8 @@ public class ClubTableController : MonoBehaviour
             case RequestType.GetTemplates:
                 {
                     JsonData data = JsonMapper.ToObject(serverResponse);
+
+                    //Debug.Log("Get Template Data: " + data.ToString());
 
                     if (data["success"].ToString() == "1")
                     {
