@@ -10,6 +10,7 @@ using NatCorder.Inputs;
 using UnityEditor;
 using System.IO;
 using UnityEngine.Networking;
+using System;
 
 public class InGameManager : MonoBehaviour
 {
@@ -45,6 +46,7 @@ public class InGameManager : MonoBehaviour
     private PlayerScript myPlayerObject = null,currentPlayer = null;
     private int MATCH_ROUND = 0, LAST_BET_AMOUNT = 0;
     private CardData[] openCards = null;
+    
     private string lastPlayerAction = "";
     private List<GameObject> winnersObject = new List<GameObject>();
     private int communityCardsAniamtionShowedUpToRound = 0;
@@ -86,6 +88,7 @@ public class InGameManager : MonoBehaviour
         //Debug.Log("Time: " + System.DateTime.Now.Hour + System.DateTime.Now.Minute);
     }
 
+    public Text TableName;
 
     private void Start()
     {
@@ -110,7 +113,7 @@ public class InGameManager : MonoBehaviour
             allPlayersObject[i].TogglePlayerUI(false);
             allPlayersObject[i].ResetAllData();
         }
-
+        TableName.text = GlobalGameManager.instance.GetRoomData().title;
         AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
     }
 
@@ -201,6 +204,41 @@ public class InGameManager : MonoBehaviour
         SwitchTurn(playerScriptWhosTurn,false);
     }
 
+    public IEnumerator SwitchTables()
+    {
+        //set new table id
+        InGameUiManager.instance.ShowScreen(InGameScreens.Loading);
+        yield return new WaitForSeconds(2f);
+        RoomData data = GetRandomRoom();
+        if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
+        {
+            StartCoroutine(SwitchTables());
+            yield break;
+        }
+        
+        data.isLobbyRoom = true;
+        GlobalGameManager.instance.SetRoomData(data);
+
+        StartCoroutine(SwitchToAnotherTableReset());
+
+        resetGame = true;
+        StartCoroutine(StartWaitingCountdown(0));
+    }
+
+    public RoomData GetRandomRoom()
+    {
+        RoomData data = null;
+
+        List<List<RoomData>> allRoomData = GlobalGameManager.instance.GetLobbyRoomData();
+        int gameMode = GlobalGameManager.instance.GetGameMode();
+
+        System.Random rnd = new System.Random();
+        int randomVal = rnd.Next(0, allRoomData[gameMode].Count);
+
+        data = allRoomData[gameMode][randomVal];
+
+        return data;
+    }
 
     public int GetLastBetAmount()
     {
@@ -359,6 +397,17 @@ public class InGameManager : MonoBehaviour
         SocketController.instance.ResetConnection();
 
         GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
+    }
+
+    public IEnumerator SwitchToAnotherTableReset()
+    {
+        gameExitCalled = true;
+        InGameUiManager.instance.ShowScreen(InGameScreens.Loading);
+
+        yield return new WaitForEndOfFrame();
+        SocketController.instance.SendLeaveMatchRequest();
+        yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
+        SocketController.instance.ResetConnection();
     }
 
     public PlayerScript GetMyPlayerObject()

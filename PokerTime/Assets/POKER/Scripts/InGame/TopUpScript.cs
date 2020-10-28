@@ -9,6 +9,13 @@ public class TopUpScript : MonoBehaviour
     public Text sliderAmountText, balanceText, minText, maxText;
     public Slider slider;
     private float initialBalance = 0;
+    public Button TopUpButton;
+
+    private void Start()
+    {
+        TopUpButton.onClick.RemoveAllListeners();
+        TopUpButton.onClick.AddListener(() => OnClickOnButton(true));
+    }
 
     public void Init(float userInitialBalance)
     {

@@ -33,6 +33,7 @@ public class MenuScript : MonoBehaviour
 
             case "SwitchTable":
                 {
+                    StartCoroutine(InGameManager.instance.SwitchTables());
                 }
                 break;
             case "tableSettings":
@@ -62,7 +63,7 @@ public class MenuScript : MonoBehaviour
                         {
                             if (InGameManager.instance.GetMyPlayerObject() != null)
                             {
-                                InGameUiManager.instance.ShowScreen(InGameScreens.TopUp,new object[] { InGameManager.instance.GetMyPlayerObject().GetPlayerData().balance});
+                                InGameUiManager.instance.ShowScreen(InGameScreens.TopUp, new object[] { InGameManager.instance.GetMyPlayerObject().GetPlayerData().balance });
                             }
                         }
                         else
@@ -70,6 +71,10 @@ public class MenuScript : MonoBehaviour
                             InGameUiManager.instance.ShowMessage("You don't have sufficient coins for TopUp");
                             //TODO show shop screen
                         }
+                    }
+                    else
+                    {
+                        InGameUiManager.instance.ShowMessage("Can only top up when game is running.");
                     }
                 }
                 break;

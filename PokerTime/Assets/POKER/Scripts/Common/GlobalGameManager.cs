@@ -36,13 +36,14 @@ public class GlobalGameManager : MonoBehaviour
     public static bool IsJoiningPreviousGame = false;
     public bool isTokenSent = false;
 
+
+
     private void Awake()
     {
         instance = this;
    //   PlayerPrefs.DeleteAll();
     }
-
-
+    
 
     private void Start()
     {
@@ -104,6 +105,25 @@ public class GlobalGameManager : MonoBehaviour
             PrefsManager.SetPlayerGameData(PlayerManager.instance.GetPlayerGameData());
         }
         //FireBaseAnalyticsIntegration.SharedInstance.LogEvent(FireBaseEvents.Game_Close);        
+    }
+
+    private List<List<RoomData>> allRoomData = new List<List<RoomData>>();
+    private int gameMode;
+
+    public void StoreLastLobbyData(List<List<RoomData>> _allRoomData, int _gameMode)
+    {
+        allRoomData = _allRoomData;
+        gameMode = _gameMode;
+    }
+
+    public List<List<RoomData>> GetLobbyRoomData()
+    {
+        return allRoomData;
+    }
+
+    public int GetGameMode()
+    {
+        return gameMode;
     }
 
     public void SetRoomData(RoomData data)

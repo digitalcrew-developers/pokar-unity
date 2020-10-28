@@ -154,10 +154,7 @@ public class LobbyUiManager: MonoBehaviour
                 //gameModeButtons[i].transform.GetChild(0).GetComponent<Text>().color = new Color32(200, 200, 200, 255);
             }
         }
-        
-}
-
-
+    }
     
     private void ShowScreen(GameMode gameMode)
     {
@@ -173,8 +170,6 @@ public class LobbyUiManager: MonoBehaviour
         }
 
         gameModeButtons[(int)gameMode].interactable = false;
-
-
 
         int index = (int)gameMode;
 
@@ -193,7 +188,7 @@ public class LobbyUiManager: MonoBehaviour
 
             gm.transform.Find("LivePlayer").GetComponent<Text>().text = data.totalActivePlayers.ToString();
 
-            gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(data));
+            gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(data,index));
             gm.GetComponent<Button>().onClick.AddListener(() => gm.GetComponent<LobbyRoomManager>().CallInsufficientCoin(data));
         }
 
@@ -251,7 +246,7 @@ public class LobbyUiManager: MonoBehaviour
     }
 
 
-    private void OnClickOnPlayButton(RoomData data)
+    private void OnClickOnPlayButton(RoomData data, int gameMode = -1)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
 
@@ -282,6 +277,8 @@ public class LobbyUiManager: MonoBehaviour
         {
             MainMenuController.instance.ShowMessage("Coming soon");
         }
+
+        GlobalGameManager.instance.StoreLastLobbyData(allRoomData, gameMode);
     }
 
 

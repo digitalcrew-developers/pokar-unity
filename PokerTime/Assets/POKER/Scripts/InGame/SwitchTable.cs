@@ -30,6 +30,7 @@ public class SwitchTable : MonoBehaviour
 
         PreviousBtn.onClick.AddListener(Decrement);
         NextBtn.onClick.AddListener(Increment);
+        ConfirmButton.onClick.AddListener(SwitchConfirm);
     }
 
     private void Increment()
@@ -85,6 +86,7 @@ public class SwitchTable : MonoBehaviour
     public void SwitchConfirm()
     {
         SwitchTables(counter);
+        ClosePanel();
     }
 
     public void ClosePanel()
