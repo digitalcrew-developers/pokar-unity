@@ -170,6 +170,11 @@ public class MainMenuController : MonoBehaviour
             case 0:
                 //shop
                 ShopUiManager.instance.ShowScreen();
+
+                FetchUserData();
+                FetchUserLogs();
+                //ProfileScreen
+                ProfileScreenUiManager.instance.InitialiseProfileScreen();
                 break;
             case 1:
                 //forum
@@ -178,6 +183,11 @@ public class MainMenuController : MonoBehaviour
             case 2:
                 //club list
                 ClubListUiManager.instance.FetchList(false);
+
+                FetchUserData();
+                FetchUserLogs();
+                //ProfileScreen
+                ProfileScreenUiManager.instance.InitialiseProfileScreen();
                 break;
             case 3:
                 //career
@@ -205,7 +215,7 @@ public class MainMenuController : MonoBehaviour
 
             case "menu":
                 {
-                    MenuSelection(4);
+                    //MenuSelection(4);
                     //ShowScreen(MainMenuScreens.MainMenu);
                 }
                 break;
@@ -213,26 +223,26 @@ public class MainMenuController : MonoBehaviour
 
             case "profile":
                 {
-                    MenuSelection(3);
+                    //MenuSelection(3);
                     //ShowScreen(MainMenuScreens.Profile);
                 }
                 break;
 
             case "shop":
                 {
-                    MenuSelection(0);
+                    //MenuSelection(0);
                     //ShowScreen(MainMenuScreens.Shop);
                 }
                 break;
             case "Forum":
                 {
-                    MenuSelection(1);
+                    //MenuSelection(1);
                     //ShowScreen(MainMenuScreens.Forum);
                 }
                 break;
             case "career":
                 {
-                    MenuSelection(2);
+                    //MenuSelection(2);
                     //ShowScreen(MainMenuScreens.Career);
                 }
                 break;
