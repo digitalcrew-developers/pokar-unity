@@ -21,12 +21,14 @@ public class ClubTemplateManager : MonoBehaviour
         editData.SetActive(true);
         counterData.SetActive(false);
 
+        selectToggle.isOn = false;
+
         templateCounterText.text = templateCounter.ToString();
     }
 
     private void Awake()
     {
-        instance = this;
+        instance = this;        
     }
 
     private void Update()
@@ -56,11 +58,6 @@ public class ClubTemplateManager : MonoBehaviour
             counterData.SetActive(false);
             editData.SetActive(true);
         }
-    }
-
-    public void OnClickOnTemplate()
-    {
-
     }
 
     public void OnClickIncrementButton()
