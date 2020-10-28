@@ -287,7 +287,7 @@ public class InGameManager : MonoBehaviour
             }
             else
             {
-                InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT);
+                InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
             }
         }
         else
@@ -694,6 +694,13 @@ public class InGameManager : MonoBehaviour
 
                     for (int i = 0; i < 3; i++)
                     {
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i].cardsSprite;
+                    }
+                    yield return new WaitForSeconds(1f);
+
+                    for (int i = 0; i < 3; i++)
+                    {
                         GameObject gm = Instantiate(cardAnimationPrefab,animationLayer) as GameObject;
                         gm.transform.localScale = communityCards[0].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
@@ -713,8 +720,9 @@ public class InGameManager : MonoBehaviour
 
                     for (int i = 0; i < 3; i++)
                     {
-                        communityCards[i].gameObject.SetActive(true);
+                        if(openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
                     }
                 }
             break;
@@ -723,9 +731,11 @@ public class InGameManager : MonoBehaviour
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        communityCards[i].gameObject.SetActive(true);
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
                     }
+                    yield return new WaitForSeconds(1f);
 
                     SoundManager.instance.PlaySound(SoundType.CardMove);
 
@@ -751,8 +761,9 @@ public class InGameManager : MonoBehaviour
 
                     for (int i = 0; i < 4; i++)
                     {
-                        communityCards[i].gameObject.SetActive(true);
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
                     }
                 }
             break;
@@ -761,9 +772,10 @@ public class InGameManager : MonoBehaviour
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        communityCards[i].gameObject.SetActive(true);
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
                     }
+                    yield return new WaitForSeconds(1f);
 
                     SoundManager.instance.PlaySound(SoundType.CardMove);
 
@@ -788,18 +800,21 @@ public class InGameManager : MonoBehaviour
 
                     for (int i = 0; i < communityCards.Length; i++)
                     {
-                        communityCards[i].gameObject.SetActive(true);
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
                     }
                 }
             break;
 
             default:
                 {
+
                     for (int i = 0; i < communityCards.Length; i++)
                     {
-                        communityCards[i].gameObject.SetActive(true);
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
                     }
                 }
             break;
@@ -1135,15 +1150,21 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < data[0].Count; i++)
         {
-            //if (string.IsNullOrEmpty(data[0][i].ToString()))
-            //{
-            //    openCards[i] = CardsManager.instance.GetEmptyCardData();
-            //}
-            //else
-            //{
-            //    openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
-            //}
-            openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
+            if (string.IsNullOrEmpty(data[0][i].ToString()))
+            {
+                openCards[i] = CardsManager.instance.GetEmptyCardData();
+            }
+            else
+            {
+                openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
+            }
+            //openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
+        }
+
+        for (int i = 0; i < communityCards.Length; i++)
+        {
+            if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+            communityCards[i].sprite = openCards[i].cardsSprite;
         }
     }
 

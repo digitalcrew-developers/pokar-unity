@@ -20,18 +20,12 @@ public class MissionsUiManager : MonoBehaviour
     {
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
 
-        if (isShowLoading)
-        {
-            MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-        }
         WebServices.instance.SendRequest(RequestType.GetMissions, requestData, true, OnServerResponseFound);
     }
-
-
+   
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
         {
@@ -118,14 +112,11 @@ public class MissionsUiManager : MonoBehaviour
                     if (MainMenuController.instance != null)
                     {
                         MainMenuController.instance.DestroyScreen(MainMenuScreens.Missions);
-                        MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
                     }
                     if (InGameUiManager.instance != null)
                     {
                         InGameUiManager.instance.DestroyScreen(InGameScreens.Missions);
                     }
-
-
                 }
                 break;
 

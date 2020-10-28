@@ -267,7 +267,12 @@ public class InGameUiManager : MonoBehaviour
                     InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Call, (int)availableCallAmount, "Call");
                 }
                 break;
-
+            case "allin":
+                {
+                    PlayerScript player = InGameManager.instance.GetMyPlayerObject();
+                    InGameManager.instance.OnPlayerActionCompleted(PlayerAction.AllIn, (int)player.GetPlayerData().balance, "AllIn");
+                }
+                break;
 
             case "check":
                 {
@@ -701,7 +706,7 @@ public class InGameUiManager : MonoBehaviour
         return actionButtonParent.activeInHierarchy;
     }
 
-    public void ToggleActionButton(bool isShow, PlayerScript playerObject = null, bool isCheckAvailable = false, int lastBetAmount = 0)
+    public void ToggleActionButton(bool isShow, PlayerScript playerObject = null, bool isCheckAvailable = false, int lastBetAmount = 0, float availableBalance = 0)
     {
         actionButtonParent.SetActive(isShow);
 
@@ -727,12 +732,24 @@ public class InGameUiManager : MonoBehaviour
             useRaisePotWise = isCheckAvailable;
 
             actionButtons[(int)PlayerAction.Check].SetActive(isCheckAvailable);
+            actionButtons[(int)PlayerAction.AllIn].SetActive(false);
 
             if (!isCheckAvailable)
             {
                 if (callAmount >= 0) // amount availabel to bet
                 {
-                    callAmountText.text = "" + callAmount;
+                    if(lastBetAmount > availableBalance)
+                    {
+                        actionButtons[(int)PlayerAction.Call].SetActive(false);
+                        actionButtons[(int)PlayerAction.AllIn].SetActive(true);
+                    }
+                    else
+                    {
+                        callAmountText.text = "" + callAmount;
+
+                        actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+                        actionButtons[(int)PlayerAction.Call].SetActive(true);
+                    }
                 }
                 else // dont have amount to bet hence show only fold and all-in
                 {
@@ -1119,7 +1136,8 @@ public enum PlayerAction
     Call,
     Raise,
     Fold,
-    Check
+    Check,
+    AllIn
 }
 
 public enum SuggestionActions
