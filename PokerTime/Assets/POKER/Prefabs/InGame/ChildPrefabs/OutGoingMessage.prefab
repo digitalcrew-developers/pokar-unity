@@ -235,7 +235,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: hi
+  m_Text: 
 --- !u!1 &4498696184181976163
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,10 +499,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 387.2, y: 106.49}
+  m_SizeDelta: {x: 387.2, y: 106.48999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5958924574409232394
 CanvasRenderer:
@@ -555,6 +555,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   userId: 
   profileImage: {fileID: 5958924575875292256}
+  userName: {fileID: 7222341976717747506}
+  userNameFirstLetter: {fileID: 9181750447852498990}
 --- !u!1 &5958924575208325860
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,7 +808,7 @@ GameObject:
   - component: {fileID: 5894713921707954242}
   - component: {fileID: 7222341976717747506}
   m_Layer: 5
-  m_Name: Text
+  m_Name: UserName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -830,8 +832,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60, y: -1.3633008}
-  m_SizeDelta: {x: 160, y: 21.820435}
+  m_AnchoredPosition: {x: 60, y: 0}
+  m_SizeDelta: {x: 160, y: 21}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5894713921707954242
 CanvasRenderer:
@@ -886,7 +888,7 @@ GameObject:
   - component: {fileID: 2212632487413188742}
   - component: {fileID: 9181750447852498990}
   m_Layer: 5
-  m_Name: Text
+  m_Name: UserNameFirstLetter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -33,13 +33,15 @@ public class ChatUiManager : MonoBehaviour
     }
 
 
-    void SuggestionArrowManager() {
+    void SuggestionArrowManager() 
+    {
         if (isSuggestionShow)
         {
             suggestionScreen.SetActive(true);
             suggestionBtnArrow.transform.localScale = new Vector3(suggestionBtnArrow.transform.localScale.x, suggestionBtnArrow.transform.localScale.y * (-1), suggestionBtnArrow.transform.localScale.z);
         }
-        else {
+        else
+        {
             {
                 suggestionScreen.SetActive(false);
                 if (suggestionBtnArrow.transform.localScale.y < 0)
@@ -47,9 +49,9 @@ public class ChatUiManager : MonoBehaviour
                     suggestionBtnArrow.transform.localScale = new Vector3(suggestionBtnArrow.transform.localScale.x, suggestionBtnArrow.transform.localScale.y * (-1), suggestionBtnArrow.transform.localScale.z);
 
                 }
-                else {
-                    suggestionBtnArrow.transform.localScale = new Vector3(suggestionBtnArrow.transform.localScale.x, suggestionBtnArrow.transform.localScale.y , suggestionBtnArrow.transform.localScale.z);
-
+                else
+                {
+                    suggestionBtnArrow.transform.localScale = new Vector3(suggestionBtnArrow.transform.localScale.x, suggestionBtnArrow.transform.localScale.y, suggestionBtnArrow.transform.localScale.z);
                 }
             }
         }
@@ -65,6 +67,8 @@ public class ChatUiManager : MonoBehaviour
 
         List<ChatMessage> chatList = ChatManager.instance.GetChatList();
 
+        Debug.Log("Chat List Count: " + chatList.Count);
+
         for (int i = 0; i < chatList.Count; i++)
         {
             GameObject gm = null;
@@ -73,19 +77,37 @@ public class ChatUiManager : MonoBehaviour
             {
                 gm = Instantiate(outGoingPrefab, container) as GameObject;
                 gm.GetComponent<InOutMsgUIManager>().userId = PlayerManager.instance.GetPlayerGameData().userId;
+                gm.GetComponent<InOutMsgUIManager>().userName.text = PlayerManager.instance.GetPlayerGameData().userName;
+                gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text = PlayerManager.instance.GetPlayerGameData().userName.Substring(0, 1);
+                //gm.transform.Find("Title").GetComponent<Text>().text = chatList[i].title;
+                //gm.transform.Find("ADesc").GetChild(0).GetComponent<Text>().text = chatList[i].desc;
+
+                //Debug.Log("Outgoing MSG:");
+                //Debug.Log("ID: " + gm.GetComponent<InOutMsgUIManager>().userId);
+                //Debug.Log("User Name: " + gm.GetComponent<InOutMsgUIManager>().userName.text);
+                //Debug.Log("First Letter: " + gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text);
             }
             else
             {
                 gm = Instantiate(inComingPrefab,container) as GameObject;
                 gm.GetComponent<InOutMsgUIManager>().userId = chatList[i].userId;
+                gm.GetComponent<InOutMsgUIManager>().userName.text = PlayerManager.instance.GetPlayerGameData().userName;
+                gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text = PlayerManager.instance.GetPlayerGameData().userName.Substring(0, 1);
+                //gm.transform.Find("Title").GetComponent<Text>().text = chatList[i].title;
+                //gm.transform.Find("ADesc").GetChild(0).GetComponent<Text>().text = chatList[i].desc;
+
+                //Debug.Log("Incoming MSG:");
+                //Debug.Log("ID: " + gm.GetComponent<InOutMsgUIManager>().userId);
+                //Debug.Log("User Name: " + gm.GetComponent<InOutMsgUIManager>().userName.text);
+                //Debug.Log("First Letter: " + gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text);                
             }
 
             gm.transform.Find("Title").GetComponent<Text>().text = chatList[i].title;
-           // Debug.Log("HIHIHIHII    "+ chatList[i].desc);
-           // gm.transform.Find("Desc").GetComponent<Text>().text = chatList[i].desc;
+            // Debug.Log("HIHIHIHII    "+ chatList[i].desc);
+            // gm.transform.Find("Desc").GetComponent<Text>().text = chatList[i].desc;
             gm.transform.Find("ADesc").GetChild(0).GetComponent<Text>().text = chatList[i].desc;
 
-          //  gm.transform.GetComponent<InOutMsgUIManager>().userId= chatList[i].us
+            //  gm.transform.GetComponent<InOutMsgUIManager>().userId= chatList[i].us
         }
 
 
@@ -149,13 +171,4 @@ public class ChatUiManager : MonoBehaviour
         ChatManager.instance.SendChatMessage(suggestionText.text);
         InGameUiManager.instance.DestroyScreen(InGameScreens.Chat);
     }
-
-
-
-   
-
-
-
-
-
 }

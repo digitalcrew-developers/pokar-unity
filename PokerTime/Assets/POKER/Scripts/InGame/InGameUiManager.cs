@@ -60,7 +60,9 @@ public class InGameUiManager : MonoBehaviour
 
     //DEV_CODE
     public Camera cameraObj;
+    [HideInInspector]
     public float height, width;
+    public GameObject inGamePopUp;
 
     public List<GameObject> TableImages = new List<GameObject>();
 
@@ -69,6 +71,7 @@ public class InGameUiManager : MonoBehaviour
         instance = this;
 
         //DEV_CODE
+        inGamePopUp.SetActive(false);
         //cameraObj = GameObject.Find("VideoRecordingCamera").GetComponent<Camera>();
 
         Canvas canvas = gameObject.GetComponent<Canvas>();
@@ -114,7 +117,9 @@ public class InGameUiManager : MonoBehaviour
         TableImages[counter].SetActive(true);
     }
 
-    public void CallDectuct(int val) {
+    public void CallDectuct(int val) 
+    {
+        StartCoroutine(ShowPopUp("You're in!", 1.5f));
         DeductCoinPostServer(val);
     }
 
@@ -150,8 +155,8 @@ public class InGameUiManager : MonoBehaviour
             JsonData data = JsonMapper.ToObject(serverResponse);
             if (data["success"].ToString() == "1")
             {
-
-              
+                Debug.Log("You're in!");
+                //StartCoroutine(ShowPopUp("You're in!", 0.5f));
             }
             else
             {
@@ -161,6 +166,15 @@ public class InGameUiManager : MonoBehaviour
        
     }
 
+    IEnumerator ShowPopUp(string msg, float delay)
+    {
+        inGamePopUp.SetActive(true);
+        inGamePopUp.transform.GetChild(0).GetComponent<Text>().text = msg;
+        yield return new WaitForSeconds(delay);
+        inGamePopUp.SetActive(false);
+    }
+
+
     public void OnSpinWheelArrowBtnClick()
     {
         Debug.Log("IIII  SpinWheelArrowBtnClick");
@@ -168,8 +182,6 @@ public class InGameUiManager : MonoBehaviour
 
         ShowScreen(InGameScreens.SpinWheelScreen);
     }
-
-   
 
     public void OnArrowBtnClick()
     {

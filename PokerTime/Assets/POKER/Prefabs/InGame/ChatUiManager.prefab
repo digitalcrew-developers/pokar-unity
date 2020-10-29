@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.18823531, g: 0.32941177, b: 0.3137255, a: 1}
+  m_Color: {r: 0.03529412, g: 0.8862746, b: 0.8862746, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -284,7 +284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.14509805, g: 0.3019608, b: 0.31764707, a: 1}
+  m_Color: {r: 0.03529412, g: 0.8862745, b: 0.8862745, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -670,11 +670,11 @@ MonoBehaviour:
     top: 0
   scrollRect: {fileID: 3139690788818179077}
   spacingX: 0
-  spacingY: 15.3
+  spacingY: 10
   numberOfColumns: 0
-  IsAdjustWidth: 0
+  IsAdjustWidth: 1
   IsAdjustHeight: 1
-  IsMaintainCurrentSize: 1
+  IsMaintainCurrentSize: 0
   Refresh: 0
 --- !u!1 &3139690788818179073
 GameObject:
@@ -2200,18 +2200,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4105244911471692504}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4654787027769472350}
-        m_MethodName: OnClickOnButton
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: send
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &4105244912908129916
 GameObject:
   m_ObjectHideFlags: 0
@@ -3664,7 +3653,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8885017725529938581
 RectTransform:
   m_ObjectHideFlags: 0

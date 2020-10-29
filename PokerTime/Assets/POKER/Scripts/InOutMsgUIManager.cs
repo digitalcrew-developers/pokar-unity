@@ -9,6 +9,7 @@ public class InOutMsgUIManager : MonoBehaviour
 {
     public string userId;
     public Image profileImage;
+    public Text userName, userNameFirstLetter;
 
     // Start is called before the first frame update
     void Start()
