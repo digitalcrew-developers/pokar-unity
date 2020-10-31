@@ -122,7 +122,7 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("matchPlayLogs", MatchHistory);
         socketManager.Socket.On("tipToDealer", OntipToDealer);
         socketManager.Socket.On("sendEmoji", OnSentEmoji);
-
+        socketManager.Socket.On("predictionReward", OnSendWinningBooster);
 
         socketManager.Socket.On("playerStatndOut", OnPlayerStandUp);
 
@@ -908,6 +908,29 @@ public class SocketController : MonoBehaviour
         socketResponse.Add(response);
     }
 
+
+    void OnSendWinningBooster(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_SEND_WINNING_BOOSTER))
+        {
+            Debug.Log("OnWinningBoosterFound = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+        Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.ON_SEND_WINNING_BOOSTER;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
     #endregion
 
 
@@ -1163,10 +1186,24 @@ public class SocketController : MonoBehaviour
         socketRequest.Add(request);
     }
 
+    //DEV_CODE
+    public void SendWinningBooster(int tableId, int rewardAmount, string cardValue)
+    {
+        string requestStringData = "{\"tableId\":" + tableId + "," +
+                     "\"userId\":" + int.Parse(PlayerManager.instance.GetPlayerGameData().userId) + "," +
+                     "\"card\":\"" + cardValue + "\"," +
+                     "\"reward\":" + rewardAmount + "}";
 
+        object requestObjectData = Json.Decode(requestStringData);
 
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "predictionReward";
 
-
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+    }
 
     #endregion
 
@@ -1375,7 +1412,8 @@ public enum SocketEvetns
     ON_PlayerStandUp,
     ON_TipToDealer,
     ON_SendEmoji,
-    NULL
+    NULL,
+    ON_SEND_WINNING_BOOSTER
 }
 
 

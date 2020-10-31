@@ -78,33 +78,16 @@ public class ChatUiManager : MonoBehaviour
                 gm = Instantiate(outGoingPrefab, container) as GameObject;
                 gm.GetComponent<InOutMsgUIManager>().userId = PlayerManager.instance.GetPlayerGameData().userId;
                 gm.GetComponent<InOutMsgUIManager>().userName.text = PlayerManager.instance.GetPlayerGameData().userName;
-                gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text = PlayerManager.instance.GetPlayerGameData().userName.Substring(0, 1);
-                //gm.transform.Find("Title").GetComponent<Text>().text = chatList[i].title;
-                //gm.transform.Find("ADesc").GetChild(0).GetComponent<Text>().text = chatList[i].desc;
-
-                //Debug.Log("Outgoing MSG:");
-                //Debug.Log("ID: " + gm.GetComponent<InOutMsgUIManager>().userId);
-                //Debug.Log("User Name: " + gm.GetComponent<InOutMsgUIManager>().userName.text);
-                //Debug.Log("First Letter: " + gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text);
+                gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text = PlayerManager.instance.GetPlayerGameData().userName.Substring(0, 1);               
             }
             else
             {
                 gm = Instantiate(inComingPrefab,container) as GameObject;
                 gm.GetComponent<InOutMsgUIManager>().userId = chatList[i].userId;
-                gm.GetComponent<InOutMsgUIManager>().userName.text = PlayerManager.instance.GetPlayerGameData().userName;
-                gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text = PlayerManager.instance.GetPlayerGameData().userName.Substring(0, 1);
-                //gm.transform.Find("Title").GetComponent<Text>().text = chatList[i].title;
-                //gm.transform.Find("ADesc").GetChild(0).GetComponent<Text>().text = chatList[i].desc;
-
-                //Debug.Log("Incoming MSG:");
-                //Debug.Log("ID: " + gm.GetComponent<InOutMsgUIManager>().userId);
-                //Debug.Log("User Name: " + gm.GetComponent<InOutMsgUIManager>().userName.text);
-                //Debug.Log("First Letter: " + gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text);                
+                gm.GetComponent<InOutMsgUIManager>().userName.text = /*PlayerManager.instance.GetPlayerGameData().userName*/chatList[i].title;
+                gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text = /*PlayerManager.instance.GetPlayerGameData().userName.*/chatList[i].title.Substring(0, 1);                
             }
 
-            gm.transform.Find("Title").GetComponent<Text>().text = chatList[i].title;
-            // Debug.Log("HIHIHIHII    "+ chatList[i].desc);
-            // gm.transform.Find("Desc").GetComponent<Text>().text = chatList[i].desc;
             gm.transform.Find("ADesc").GetChild(0).GetComponent<Text>().text = chatList[i].desc;
 
             //  gm.transform.GetComponent<InOutMsgUIManager>().userId= chatList[i].us

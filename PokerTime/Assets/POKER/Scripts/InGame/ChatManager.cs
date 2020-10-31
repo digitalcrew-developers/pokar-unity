@@ -21,6 +21,7 @@ public class ChatManager : MonoBehaviour
         // Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIZNNNNNNNNNNNNNNNNNNN");
         //Debug.Log("From Data Player ID: " + jsonData[0]["from"].ToString());
         //Debug.Log("My ID: " + PlayerManager.instance.GetPlayerGameData().userId);
+        //Debug.Log("Chat Data : " + jsonData.ToString());
 
         if (jsonData[0]["from"].ToString() != PlayerManager.instance.GetPlayerGameData().userId)
         {
@@ -28,6 +29,7 @@ public class ChatManager : MonoBehaviour
             data.desc = jsonData[0]["desc"].ToString();
             data.title = jsonData[0]["title"].ToString();
             data.userId = jsonData[0]["userId"].ToString();
+            //data.userName = jsonData[0]["userName"].ToString();
             data.isMe = false;
             chatList.Add(data);
         }

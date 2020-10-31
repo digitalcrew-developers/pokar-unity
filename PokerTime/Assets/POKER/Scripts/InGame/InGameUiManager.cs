@@ -59,6 +59,8 @@ public class InGameUiManager : MonoBehaviour
     public string tableId;
 
     //DEV_CODE
+    private int winnigBoosterAmount;
+
     public Camera cameraObj;
     [HideInInspector]
     public float height, width;
@@ -119,18 +121,17 @@ public class InGameUiManager : MonoBehaviour
 
     public void CallDectuct(int val) 
     {
-        StartCoroutine(ShowPopUp("You're in!", 1.5f));
+        //StartCoroutine(ShowPopUp("You're in!", 1.5f));
         DeductCoinPostServer(val);
     }
 
 
     void DeductCoinPostServer(int val)
     {
-
-        int amount = val;
+        winnigBoosterAmount = val;
 
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-                              "\"amount\":\"" + amount + "\"," +
+                              "\"amount\":\"" + winnigBoosterAmount + "\"," +
                               "\"deductFrom\":\"" + "coins" + "\"," +
                                "\"narration\":\"" + "Wining Booster" + "\"}";
         WebServices.instance.SendRequest(RequestType.deductFromWallet, requestData, true, OnServerResponseFound);
@@ -139,13 +140,13 @@ public class InGameUiManager : MonoBehaviour
     {
 
         Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+               ShowMessage(errorMessage);
             }
 
             return;
@@ -156,11 +157,17 @@ public class InGameUiManager : MonoBehaviour
             if (data["success"].ToString() == "1")
             {
                 Debug.Log("You're in!");
-                //StartCoroutine(ShowPopUp("You're in!", 0.5f));
+                StartCoroutine(ShowPopUp("You're in!", 1.5f));
+
+                Debug.Log("Table ID:" + tableId);
+                Debug.Log("User ID:" + PlayerManager.instance.GetPlayerGameData().userId);
+                Debug.Log("Reward Amount: " + winnigBoosterAmount);
+
+                SocketController.instance.SendWinningBooster(int.Parse(tableId), winnigBoosterAmount, "EIGHT");
             }
             else
             {
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+               ShowMessage(data["message"].ToString());
             }
         }
        

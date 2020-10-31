@@ -1280,7 +1280,7 @@ public class InGameManager : MonoBehaviour
             //AdjustAllPlayersOnTable(data[0].Count);
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
             Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
-
+            InGameUiManager.instance.tableId = data[0][0]["tableId"].ToString();
             ShowNewPlayersOnTable(data, isMatchStarted);
 
             if (data[0].Count == 1)
