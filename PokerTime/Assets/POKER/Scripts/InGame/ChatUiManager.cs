@@ -84,13 +84,12 @@ public class ChatUiManager : MonoBehaviour
             {
                 gm = Instantiate(inComingPrefab,container) as GameObject;
                 gm.GetComponent<InOutMsgUIManager>().userId = chatList[i].userId;
-                gm.GetComponent<InOutMsgUIManager>().userName.text = /*PlayerManager.instance.GetPlayerGameData().userName*/chatList[i].title;
-                gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text = /*PlayerManager.instance.GetPlayerGameData().userName.*/chatList[i].title.Substring(0, 1);                
+                gm.GetComponent<InOutMsgUIManager>().userName.text = chatList[i].title;
+                gm.GetComponent<InOutMsgUIManager>().userNameFirstLetter.text = chatList[i].title.Substring(0, 1);                
             }
 
-            gm.transform.Find("ADesc").GetChild(0).GetComponent<Text>().text = chatList[i].desc;
-
-            //  gm.transform.GetComponent<InOutMsgUIManager>().userId= chatList[i].us
+            //gm.transform.Find("ADesc").GetChild(0).GetComponent<Text>().text = chatList[i].desc;
+            gm.GetComponent<InOutMsgUIManager>().SetText(chatList[i].desc);
         }
 
 

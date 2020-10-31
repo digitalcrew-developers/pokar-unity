@@ -61,6 +61,8 @@ public class InGameUiManager : MonoBehaviour
     //DEV_CODE
     private int winnigBoosterAmount;
 
+    public bool isSelectedWinningBooster = false;
+ 
     public Camera cameraObj;
     [HideInInspector]
     public float height, width;
@@ -156,6 +158,7 @@ public class InGameUiManager : MonoBehaviour
             JsonData data = JsonMapper.ToObject(serverResponse);
             if (data["success"].ToString() == "1")
             {
+                isSelectedWinningBooster = true;
                 Debug.Log("You're in!");
                 StartCoroutine(ShowPopUp("You're in!", 1.5f));
 
@@ -192,7 +195,10 @@ public class InGameUiManager : MonoBehaviour
 
     public void OnArrowBtnClick()
     {
-         ArrowPopUp.SetActive(true);
+        if (!isSelectedWinningBooster)
+            ArrowPopUp.SetActive(true);
+        else
+            StartCoroutine(ShowPopUp("You're in! Please wait for the result", 1.5f));
     }
     public void CloseArrowBtnClick()
     {

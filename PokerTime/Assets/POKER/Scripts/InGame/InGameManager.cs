@@ -1024,6 +1024,8 @@ public class InGameManager : MonoBehaviour
             {
                 if (remainingTime > GameConstants.BUFFER_TIME)
                 {
+                    //DEV_CODE
+                    InGameUiManager.instance.isSelectedWinningBooster = false;
 
                     if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
                     {
