@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
 
-
-
 public class MenuHandller : MonoBehaviour
 {
 	public static MenuHandller instance;
@@ -62,7 +60,7 @@ public class MenuHandller : MonoBehaviour
 		MainMenuController.instance.ShowScreen(MainMenuScreens.Missions);
 	}
 
-	private void UpdateAllText()
+	public void UpdateAllText()
 	{
 		PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
 		coinsText.text = Utility.GetTrimmedAmount(""+playerData.coins);

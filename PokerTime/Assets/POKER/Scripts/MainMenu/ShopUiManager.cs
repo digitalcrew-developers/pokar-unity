@@ -1446,10 +1446,18 @@ public class ShopUiManager: MonoBehaviour
                 {
                     PlayerManager.instance.SetPlayerGameData(updatedData);
                     UpdateAlltext(updatedData);
+                    if (MenuHandller.instance != null)
+                    {
+                        MenuHandller.instance.UpdateAllText();
+                    }
                 }
                 else
                 {
                     MainMenuController.instance.ShowMessage(data["message"].ToString());
+                    if (MenuHandller.instance != null)
+                    {
+                        MenuHandller.instance.UpdateAllText();
+                    }
                 }
             }
         });

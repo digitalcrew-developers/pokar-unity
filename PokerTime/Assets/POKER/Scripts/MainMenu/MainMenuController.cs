@@ -675,7 +675,7 @@ public enum MainMenuScreens
     CareerMenuScreen,
     CareerDataScreen,
     CareerDefinationScreen,
-    HandScreen,
+    HandScreen 
 }
 
 

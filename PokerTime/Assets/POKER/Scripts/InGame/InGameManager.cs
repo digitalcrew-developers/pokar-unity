@@ -113,6 +113,7 @@ public class InGameManager : MonoBehaviour
             allPlayersObject[i].TogglePlayerUI(false);
             allPlayersObject[i].ResetAllData();
         }
+        UnityEngine.Debug.Log("table id is :" + GlobalGameManager.instance.GetRoomData().socketTableId);
         TableName.text = GlobalGameManager.instance.GetRoomData().title;
         AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
     }
