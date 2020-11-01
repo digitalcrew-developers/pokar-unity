@@ -50,6 +50,7 @@ public class EmojiUIScreenManager : MonoBehaviour
     }
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        Debug.Log(serverResponse);
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)

@@ -1939,6 +1939,8 @@ GameObject:
   - component: {fileID: 967846151363641593}
   - component: {fileID: 967846151363641594}
   - component: {fileID: 6004198447930946281}
+  - component: {fileID: 6060329248265515548}
+  - component: {fileID: -977523529457871634}
   m_Layer: 5
   m_Name: EmojisScreen_New
   m_TagString: Untagged
@@ -2030,6 +2032,37 @@ MonoBehaviour:
   levletxt: {fileID: 4328280974056281852}
   addBtn: {fileID: 7035734818428852384}
   dealerBtn: {fileID: 1544475172015004270}
+--- !u!95 &6060329248265515548
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967846151363641596}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3ba3a21f79bbc4a41b4705b546e2c304, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-977523529457871634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967846151363641596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df558ac6f0c8ba74a8fb7fd7fed01097, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &985555608529566459
 GameObject:
   m_ObjectHideFlags: 0
@@ -6188,8 +6221,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 323.3, y: -54.5}
-  m_SizeDelta: {x: 142.06274, y: 71.88585}
+  m_AnchoredPosition: {x: 356.82, y: -54.5}
+  m_SizeDelta: {x: 276.15375, y: 71.88585}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &269963547197954989
 CanvasRenderer:

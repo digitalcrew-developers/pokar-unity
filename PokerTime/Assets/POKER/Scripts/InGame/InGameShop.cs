@@ -268,12 +268,36 @@ public class InGameShop : MonoBehaviour
             if (data["status"].Equals(true))
             {
                 Debug.Log("Purchase Successfull !!!");
-                InGameUiManager.instance.ShowMessage(data["response"].ToString());
+                if(null== InGameUiManager.instance)
+                {
+                    MainMenuController.instance.ShowMessage(data["response"].ToString());
+                    if (MenuHandller.instance != null)
+                    {
+                        MenuHandller.instance.UpdateAllText();
+                    }
+                    LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
+                }
+                else
+                {
+                    InGameUiManager.instance.ShowMessage(data["response"].ToString());
+                }
             }
             else
             {
                 Debug.Log("You don't have sufficient fund to purchase");
-                InGameUiManager.instance.ShowMessage(data["response"].ToString());
+                if (null == InGameUiManager.instance)
+                {
+                    MainMenuController.instance.ShowMessage(data["response"].ToString());
+                    if (MenuHandller.instance != null)
+                    {
+                        MenuHandller.instance.UpdateAllText();
+                    }
+                    LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
+                }
+                else
+                {
+                    InGameUiManager.instance.ShowMessage(data["response"].ToString());
+                }
             }
         }
     }

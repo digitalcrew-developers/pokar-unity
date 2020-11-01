@@ -98,12 +98,8 @@ public class LobbyUiManager: MonoBehaviour
                 break;
 
             case "coinsShop":
-                { 
-                    //Activate Bottom Panel
-                    if (!MainMenuController.instance.bottomPanel.activeSelf)
-                        MainMenuController.instance.bottomPanel.SetActive(true);
-
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+                {
+                    MainMenuController.instance.ShowScreen(MainMenuScreens.InGameShop);
                 }
                 break;
 

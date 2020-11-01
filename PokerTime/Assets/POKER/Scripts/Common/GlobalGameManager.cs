@@ -63,6 +63,10 @@ public class GlobalGameManager : MonoBehaviour
         }
 
         previousScene = Instantiate(gameScens[(int)gameScene], Vector3.zero, Quaternion.identity) as GameObject;
+        if (MenuHandller.instance != null)
+        {
+            MenuHandller.instance.UpdateAllText();
+        }
     }
 
 
