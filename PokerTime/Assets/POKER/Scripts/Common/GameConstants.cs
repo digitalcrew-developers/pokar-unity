@@ -118,6 +118,7 @@ public class GameConstants : MonoBehaviour
         API_URL+"/updateTemplateStatus",
         API_URL+"/createTemplate",
         API_URL+"/getTemplates",
+        SOCKET_URL+"/getRealTimeData",
     };
     #endregion
 
@@ -197,5 +198,6 @@ public enum RequestType
     ForgotPassword,
     UpdateTemplateStatus,
     CreateTemplate,
-    GetTemplates
+    GetTemplates,
+    RealtimeResult
 }

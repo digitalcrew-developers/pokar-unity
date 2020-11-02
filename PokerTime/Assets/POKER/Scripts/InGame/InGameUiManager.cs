@@ -826,6 +826,11 @@ public class InGameUiManager : MonoBehaviour
                         gm.GetComponent<SwitchTable>().TableImages = TableImages;
                     }
                     break;
+                case InGameScreens.RealTimeResult:
+                    {
+                        gm.GetComponent<RealTimeResultUiManager>().OnOpen();
+                    }
+                    break;
                 default:
                     break;
             }
