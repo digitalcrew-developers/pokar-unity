@@ -10270,6 +10270,7 @@ MonoBehaviour:
   chatButton: {fileID: 4707413370506578446}
   LoadingImage: {fileID: 4145927676005371956}
   ArrowPopUp: {fileID: 8090682417888414224}
+  arrowPopUpText: {fileID: 3794611624769552561}
   emojiContainerVal: 0
   EmojiShowTransform: {fileID: 8407494511636142678}
   fromEmojiShowTransform: {fileID: 0}
@@ -10303,7 +10304,9 @@ MonoBehaviour:
   TempUserID: 
   players: {fileID: 4707413369215380694}
   tableId: 
+  winnigBoosterAmount: 0
   isSelectedWinningBooster: 0
+  winningBoosterCardName: 
   cameraObj: {fileID: 0}
   height: 0
   width: 0
@@ -32184,7 +32187,7 @@ GameObject:
   - component: {fileID: 5744319476195151266}
   - component: {fileID: 3794611624769552561}
   m_Layer: 5
-  m_Name: Text
+  m_Name: ArrowPopUpText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32249,7 +32252,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Win 6x Gold if next hand includes an Ace
+  m_Text: 'Win 6x Gold if next hand includes '
 --- !u!1 &6653226402394671267
 GameObject:
   m_ObjectHideFlags: 0
@@ -37823,7 +37826,7 @@ GameObject:
   - component: {fileID: 693959236839937902}
   - component: {fileID: 798794489971098008}
   m_Layer: 5
-  m_Name: BG (1)
+  m_Name: ArrowPopUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

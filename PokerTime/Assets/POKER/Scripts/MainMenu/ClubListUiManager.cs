@@ -123,6 +123,8 @@ public class ClubListUiManager : MonoBehaviour
 
 		if (requestType == RequestType.GetClubList)
 		{
+			Debug.Log("On Club List Found: " + serverResponse.ToString());
+
 			JsonData data = JsonMapper.ToObject(serverResponse);
 
 			if (data["success"].ToString() == "1")

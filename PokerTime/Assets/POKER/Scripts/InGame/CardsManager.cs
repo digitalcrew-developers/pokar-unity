@@ -479,6 +479,8 @@ public class CardsManager: MonoBehaviour
 
         
         data.cardsSprite = cardSprites[(cardIcon * 13) + cardNumber];
+
+        //Debug.Log("Returning card data//");
         return data;
     }
  

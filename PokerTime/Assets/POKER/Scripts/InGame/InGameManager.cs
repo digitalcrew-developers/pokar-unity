@@ -11,6 +11,7 @@ using UnityEditor;
 using System.IO;
 using UnityEngine.Networking;
 using System;
+using BestHTTP.SocketIO;
 
 public class InGameManager : MonoBehaviour
 {
@@ -121,6 +122,7 @@ public class InGameManager : MonoBehaviour
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
     {
+        
         isRematchRequestSent = false;
         matchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
         onlinePlayersScript = new PlayerScript[matchMakingPlayerData.Count];
@@ -1267,6 +1269,12 @@ public class InGameManager : MonoBehaviour
 
     public void OnPlayerObjectFound(string serverResponse)
     {
+        if (!InGameUiManager.instance.isSelectedWinningBooster)
+        {
+            SocketController.instance.GetRandomCard();
+            //InGameUiManager.instance.isSelectedWinningBooster = true;
+        }
+
         if (gameExitCalled) { return; }
         Debug.Log("**[OnPlayerObjectFound] _ 0" + serverResponse);
 

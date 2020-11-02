@@ -41,6 +41,7 @@ public class InGameUiManager : MonoBehaviour
     private int suggestionCallAmount = 0;
 
     public GameObject ArrowPopUp;
+    public Text arrowPopUpText;
 
     public int emojiContainerVal;
     public Transform EmojiShowTransform;
@@ -59,9 +60,10 @@ public class InGameUiManager : MonoBehaviour
     public string tableId;
 
     //DEV_CODE
-    private int winnigBoosterAmount;
+    public int winnigBoosterAmount;
 
     public bool isSelectedWinningBooster = false;
+    public string winningBoosterCardName = "";
  
     public Camera cameraObj;
     [HideInInspector]
@@ -125,15 +127,19 @@ public class InGameUiManager : MonoBehaviour
     {
         //StartCoroutine(ShowPopUp("You're in!", 1.5f));
         DeductCoinPostServer(val);
+        
+        winnigBoosterAmount = val;
+        
+        //SocketController.instance.GetRandomCard();
     }
 
 
-    void DeductCoinPostServer(int val)
+    public void DeductCoinPostServer(int boosterAmount)
     {
-        winnigBoosterAmount = val;
+        //winningBoosterCardName = cardName;
 
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-                              "\"amount\":\"" + winnigBoosterAmount + "\"," +
+                              "\"amount\":\"" + boosterAmount + "\"," +
                               "\"deductFrom\":\"" + "coins" + "\"," +
                                "\"narration\":\"" + "Wining Booster" + "\"}";
         WebServices.instance.SendRequest(RequestType.deductFromWallet, requestData, true, OnServerResponseFound);
@@ -159,14 +165,15 @@ public class InGameUiManager : MonoBehaviour
             if (data["success"].ToString() == "1")
             {
                 isSelectedWinningBooster = true;
-                Debug.Log("You're in!");
+                //Debug.Log("You're in!");
                 StartCoroutine(ShowPopUp("You're in!", 1.5f));
 
-                Debug.Log("Table ID:" + tableId);
-                Debug.Log("User ID:" + PlayerManager.instance.GetPlayerGameData().userId);
-                Debug.Log("Reward Amount: " + winnigBoosterAmount);
+                //Debug.Log("Table ID:" + tableId);
+                //Debug.Log("User ID:" + PlayerManager.instance.GetPlayerGameData().userId);
+                //Debug.Log("Reward Amount: " + winnigBoosterAmount);
+                //Debug.Log("Card Name: " + winningBoosterCardName);
 
-                SocketController.instance.SendWinningBooster(int.Parse(tableId), winnigBoosterAmount, "EIGHT");
+                SocketController.instance.SendWinningBooster(int.Parse(tableId), winnigBoosterAmount, winningBoosterCardName);
             }
             else
             {

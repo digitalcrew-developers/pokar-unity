@@ -9,7 +9,7 @@ public class ProfileScreenUiManager : MonoBehaviour
 {
     public static ProfileScreenUiManager instance;
     public Image avtar, frame, flag;
-    public RawImage avatar;
+    //public RawImage avatar;
     public string countrycode, countryname;
     public string avtarurl, flagurl, frameurl;
     public int avtarid;

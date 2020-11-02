@@ -594,6 +594,8 @@ public class ClubAdminManager : MonoBehaviour
 
             case RequestType.GetClubDetails:
                 {
+                    Debug.Log("Response CLUB List: " + serverResponse.ToString());
+
                     JsonData data = JsonMapper.ToObject(serverResponse);
                     if (data["message"].ToString() == "Success")
                     {

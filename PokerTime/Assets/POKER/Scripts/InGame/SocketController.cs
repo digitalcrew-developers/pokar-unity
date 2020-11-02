@@ -123,7 +123,8 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("tipToDealer", OntipToDealer);
         socketManager.Socket.On("sendEmoji", OnSentEmoji);
         socketManager.Socket.On("predictionReward", OnSendWinningBooster);
-
+        socketManager.Socket.On("getRandomCard", OnGetRandomCard);
+        
         socketManager.Socket.On("playerStatndOut", OnPlayerStandUp);
 
         socketManager.Open();
@@ -300,6 +301,17 @@ public class SocketController : MonoBehaviour
                     break;
                 case SocketEvetns.ON_TipToDealer:
                     InGameManager.instance.TipToDealer(responseObject.data);
+                    break;
+                case SocketEvetns.ON_GET_RANDOM_CARD:
+                    //InGameUiManager.instance.DeductCoinPostServer(InGameUiManager.instance.winnigBoosterAmount, responseObject.data.Substring(2, 2));
+                    string cardName = responseObject.data.Substring(2, 2);
+                    Debug.Log("Card Name FUll: " + cardName);
+
+                    CardData cardDt = CardsManager.instance.GetCardData(cardName);
+                    InGameUiManager.instance.winningBoosterCardName = cardDt.cardNumber.ToString();
+                    InGameUiManager.instance.arrowPopUpText.text += InGameUiManager.instance.winningBoosterCardName;
+
+                    Debug.Log("Name: " + cardDt.cardNumber);
                     break;
 
                 default:
@@ -921,12 +933,34 @@ public class SocketController : MonoBehaviour
             Debug.Log("OnWinningBoosterFound = " + responseText + "  Time = " + System.DateTime.Now);
         }
 #else
-        Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+        Debug.Log("OnWinningBoosterFound = " + responseText + "  Time = " + System.DateTime.Now);
 #endif
 #endif
 
         SocketResponse response = new SocketResponse();
         response.eventType = SocketEvetns.ON_SEND_WINNING_BOOSTER;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+    void OnGetRandomCard(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_GET_RANDOM_CARD))
+        {
+            Debug.Log("OnRandomCardFound = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+        Debug.Log("OnRandomCardFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.ON_GET_RANDOM_CARD;
         response.data = responseText;
         socketResponse.Add(response);
     }
@@ -1205,6 +1239,21 @@ public class SocketController : MonoBehaviour
         socketRequest.Add(request);
     }
 
+    public void GetRandomCard()
+    {
+        string requestStringData = "";
+
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "getRandomCard";
+
+        request.plainDataToBeSend = "";
+        //request.jsonDataToBeSend = requestObjectData;
+        //request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+    }
+
     #endregion
 
 
@@ -1413,7 +1462,8 @@ public enum SocketEvetns
     ON_TipToDealer,
     ON_SendEmoji,
     NULL,
-    ON_SEND_WINNING_BOOSTER
+    ON_SEND_WINNING_BOOSTER,
+    ON_GET_RANDOM_CARD
 }
 
 
