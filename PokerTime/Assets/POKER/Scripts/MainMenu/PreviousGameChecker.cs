@@ -195,9 +195,6 @@ public class PreviousGameChecker: MonoBehaviour
     }
 
 
-
-
-
     private void SendReconectRequest()
     {
         ReconnectData requestData = new ReconnectData();
