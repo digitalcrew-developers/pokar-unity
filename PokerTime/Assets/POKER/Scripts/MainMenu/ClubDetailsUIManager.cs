@@ -239,12 +239,12 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 		UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/updateClub", form);
 
-		pathText.text = "Uploading!!!";
-		Debug.Log("Uploading !!!!!!");
+		//pathText.text = "Uploading!!!";
+		//Debug.Log("Uploading !!!!!!");
 		yield return www.SendWebRequest();
 
-		pathText.text = "Upload Success....";
-		Debug.Log("Upload Success...");
+		//pathText.text = "Upload Success....";
+		//Debug.Log("Upload Success...");
 
 		if (www.isNetworkError || www.isHttpError)
 		{
