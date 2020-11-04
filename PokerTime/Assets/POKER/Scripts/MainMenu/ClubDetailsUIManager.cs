@@ -111,7 +111,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.Log(serverResponse);
+        Debug.Log("Response GetClubDetails: " + serverResponse);
         //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)

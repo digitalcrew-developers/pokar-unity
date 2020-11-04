@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class ClubAdminManager : MonoBehaviour
 {
     public static ClubAdminManager instance = null;
+    public GameObject bottomPanel;
     public List<GameObject> AllScreens = new List<GameObject>();
 
     #region JackpotSettings variables
@@ -616,6 +617,16 @@ public class ClubAdminManager : MonoBehaviour
                         }
                         //Fill Level
                         LevelText.text = "Lv." + rating.ToString();
+
+                        //DEV_CODE
+                        if(data["data"][0]["isAdmin"].ToString().Equals("Yes"))
+                        {
+                            bottomPanel.SetActive(true);
+                        }
+                        else
+                        {
+                            bottomPanel.SetActive(false);
+                        }
                     }
                 }
                 break;

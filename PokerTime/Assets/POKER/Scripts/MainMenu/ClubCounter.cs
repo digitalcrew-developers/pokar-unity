@@ -10,16 +10,21 @@ public class ClubCounter : MonoBehaviour
 {
     public static ClubCounter instance;
 
+    private int allPTChips;
+
+    public GameObject popUpText;
+
     public Button StatsBtn;
     public Button TabTradeBtn, TabSleepModeBtn, TabVIPBtn, TabTicketBtn;
-    public GameObject TradePanel, SleepPanel, VIPPanel, TicketPanel;
+    public GameObject TradePanel, SleepPanel, VIPPanel, TicketPanel, TradeRecordPanel;
 
-    public Button SendOutBtn, ClaimBackBtn, SetLimitBtn, RemoveLimitBtn, SendVIPBtn, AddTicketBtn;
+    public Button SendOutBtn, ClaimBackBtn, SetLimitBtn, RemoveLimitBtn, SendVIPBtn, AddTicketBtn, OpenTradeRecordBtn;
 
-    public GameObject TradeListItemPrefab, SleepListItemPrefab, SendVIPListItemPrefab, TicketItemListPrefab;
-    public Transform TradeListContent, SleepListContent, SendVIPContent, TicketContent;
+    public GameObject TradeListItemPrefab, SleepListItemPrefab, SendVIPListItemPrefab, TicketItemListPrefab, TradeRecordPrefab;
+    public Transform TradeListContent, SleepListContent, SendVIPContent, TicketContent, TradeRecordListContent;
 
     public GameObject SendOutPanel;
+    public TMP_Text SendOutChipsCount;
     public Button ConfirmChipsSendButton;
     public Button ConfirmChipsClaimBackButton;
 
@@ -56,6 +61,8 @@ public class ClubCounter : MonoBehaviour
         {
             instance = this;
         }
+
+        popUpText.SetActive(false);
     }
 
     private void Start()
@@ -69,11 +76,13 @@ public class ClubCounter : MonoBehaviour
         TabSleepModeBtn.onClick.RemoveAllListeners();
         TabVIPBtn.onClick.RemoveAllListeners();
         TabTicketBtn.onClick.RemoveAllListeners();
+        OpenTradeRecordBtn.onClick.RemoveAllListeners();
 
         TabTradeBtn.onClick.AddListener(() => OpenScreen("Trade"));
         TabSleepModeBtn.onClick.AddListener(() => OpenScreen("SleepMode"));
         TabVIPBtn.onClick.AddListener(() => OpenScreen("VIP"));
         TabTicketBtn.onClick.AddListener(() => OpenScreen("Ticket"));
+        OpenTradeRecordBtn.onClick.AddListener(() => OpenScreen("OpenTradeRecord"));
 
         GetMembersListFromServer();
 
@@ -83,7 +92,6 @@ public class ClubCounter : MonoBehaviour
         ClaimBackBtn.onClick.RemoveAllListeners();
         ClaimBackBtn.onClick.AddListener(() => OpenSendOutPanel(true));
         
-
         TradeFilterBtn.onClick.RemoveAllListeners();
         TradeFilterBtn.onClick.AddListener(ToggleOpenTradeListFilter);
 
@@ -110,6 +118,7 @@ public class ClubCounter : MonoBehaviour
         }
 
         ClubChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
+        SendOutChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
         OpenVIPButton.onClick.RemoveAllListeners();
         OpenVIPButton.onClick.AddListener(OpenVIPPanel);
     }
@@ -238,6 +247,14 @@ public class ClubCounter : MonoBehaviour
         //sort based on statename and type
         switch (stateName)
         {
+            case "Time Joined":
+                break;
+            case "PP Chip Balance":
+                break;
+            case "Players With Prizes":
+                break;
+            case "Prize Expiry Date":
+                break;
             case "Fee":
                 break;
             case "SpinUp Buy-In":
@@ -262,7 +279,19 @@ public class ClubCounter : MonoBehaviour
         TradeFilterPanel.SetActive(false);
     }
 
+    public void CheckForAvailableMembers()
+    {
+        if (TradeListContent.childCount < 10)
+            StartCoroutine(ShowPopUp("Cannot exchange with less than 10 members.", 1.29f));
+    }
 
+    IEnumerator ShowPopUp(string msg, float delay)
+    {
+        popUpText.SetActive(true);
+        popUpText.transform.GetChild(0).GetComponent<Text>().text = msg;
+        yield return new WaitForSeconds(delay);
+        popUpText.SetActive(false);
+    }
 
     public void GetMembersListFromServer()
     {
@@ -271,6 +300,13 @@ public class ClubCounter : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.GetClubMemberList, requestData, true, OnServerResponseFound);
     }
 
+    public void GetTradeRecordList()
+    {
+        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                             "\"OrderBy\":\"" + "created" + "\"," +
+                             "\"Sequence\":\"" + "DESC" + "\"}";
+        WebServices.instance.SendRequest(RequestType.GetTradeHistory, requestData, true, OnServerResponseFound);
+    }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
@@ -305,6 +341,7 @@ public class ClubCounter : MonoBehaviour
                     }
                 }
                 break;
+
             case RequestType.ClaimBackChips:
                 JsonData data2 = JsonMapper.ToObject(serverResponse);
                 if (data2["success"].Equals(1))
@@ -320,8 +357,10 @@ public class ClubCounter : MonoBehaviour
                     MainMenuController.instance.ShowMessage(data2["message"].ToString());
                 }
                 break;
+
             case RequestType.GetClubMemberList:
                 {
+                    Debug.Log("Response GetClubMemberList: " + serverResponse);
                     JsonData data3 = JsonMapper.ToObject(serverResponse);
                     Debug.LogWarning("Club memeber list counter :" + serverResponse);
                     if (data3["status"].Equals(true))
@@ -349,6 +388,44 @@ public class ClubCounter : MonoBehaviour
                     }
                 }
                 break;
+
+            case RequestType.GetTradeHistory:
+                {
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    Debug.Log("Response GetTradeHistory: " + serverResponse);
+                    if (data["success"].Equals(1))
+                    {
+                        //Debug.Log("Total Data: " + data["response"][0]["nickName"].ToString());
+                        for (int i = 0; i < data["response"].Count; i++)
+                        {
+                            GameObject gm = Instantiate(TradeRecordPrefab, TradeRecordListContent);
+
+                            if(data["response"][i]["nickName"] != null)
+                                gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["nickName"].ToString();
+                            else
+                                gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["userId"].ToString();
+
+                            gm.transform.Find("Time").GetComponent<TMP_Text>().text = data["response"][i]["created"].ToString().Substring(0, 10) + " " + data["response"][i]["created"].ToString().Substring(11, 5);
+
+                            if (data["response"][i]["tradeType"].ToString().Equals("Dr"))
+                            {
+                                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.red;
+                                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "-" + data["response"][i]["amount"].ToString();
+
+                                gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Sent out to " + data["response"][i]["toUserId"].ToString();
+                            }
+                            else
+                            {
+                                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.green;
+                                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "+" + data["response"][i]["amount"].ToString();
+
+                                gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Claimed back from " + data["response"][i]["userId"].ToString();
+                            }
+                        }
+                    }
+                }
+                break;
+
             default:
                 Debug.LogError("Unhandled server requestType found  " + requestType);
                 break;
@@ -437,10 +514,11 @@ public class ClubCounter : MonoBehaviour
     private void AddToAllLists(JsonData data)
     {
         CleanAll();
+        allPTChips = 0;
 
         foreach(TMPro.TextMeshProUGUI t in MemberCountTexts)
         {
-            t.text = "Member: " + data["data"].Count.ToString();
+            t.text = "Member : " + data["data"].Count.ToString();
         }
 
         for (int i = 0; i < data["data"].Count; i++)
@@ -451,6 +529,15 @@ public class ClubCounter : MonoBehaviour
             clubMemberDetails.userName = data["data"][x]["requestUserName"].ToString();
             clubMemberDetails.clubRequestId = data["data"][x]["clubRequestId"].ToString();
             clubMemberDetails.ptChips = data["data"][x]["ptChips"].ToString();
+
+            Debug.Log("For Player: " + clubMemberDetails.userId + " - PT Chips : " + clubMemberDetails.ptChips);
+
+            //DEV_CODE
+            allPTChips += int.Parse(clubMemberDetails.ptChips);
+
+            if (clubMemberDetails.userId.Equals(PlayerManager.instance.GetPlayerGameData().userId))
+                ClubOwnerChipCount.text = clubMemberDetails.ptChips;
+
 
             string initial = clubMemberDetails.userName.ToUpper();
             initial = initial.Substring(0, 2);
@@ -496,8 +583,10 @@ public class ClubCounter : MonoBehaviour
                 ToggleValueChangedVIP(vipItem.transform.Find("Toggle").GetComponent<Toggle>(), clubMemberDetails);
             });
             ScrollItems.Add(vipItem);
-
         }
+
+
+        RestMemberChipCount.text = allPTChips.ToString();
     }
 
     private void ToggleValueChangedTradeList(Toggle tardeItem, ClubMemberDetails clubMemberDetails)
@@ -550,8 +639,7 @@ public class ClubCounter : MonoBehaviour
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                    "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
                    "\"shopId\":\"" + "13" + "\"," +
-                   "\"toUserId\":\"" + selectedUserIDForVIP
-                   + "\"}";
+                   "\"toUserId\":\"" + selectedUserIDForVIP + "\"}";
 
         Debug.Log("sending vip for user id :" + requestData + " username :" + LastSelectedVIPMember);
 
@@ -571,18 +659,42 @@ public class ClubCounter : MonoBehaviour
 
     private void OpenSendOutPanel(bool claim = false)
     {
-        ConfirmChipsSendButton.onClick.RemoveAllListeners();
-        if (!claim)
+        bool isAnyMemberSelected = false;
+
+        for (int i = 0; i < TradeListContent.childCount; i++)
         {
-            ConfirmChipsSendButton.onClick.AddListener(SendChipsAPIRequest);
-        }
-        else
-        {
-            ConfirmChipsSendButton.onClick.AddListener(ClaimChipsAPIRequest);
+            if (TradeListContent.GetChild(i).Find("Toggle").GetComponent<Toggle>().isOn)
+                isAnyMemberSelected = true;
         }
 
-        SendOutPanel.SetActive(true);
-        OpenSendOut();
+
+        if (!isAnyMemberSelected)
+            StartCoroutine(ShowPopUp("Please select a member", 1.29f));
+        else
+        {
+            ConfirmChipsSendButton.onClick.RemoveAllListeners();
+            if (!claim)
+            {
+                SendOutPanel.transform.Find("BG1/Heading/Text").GetComponent<Text>().text = "Send Out";
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Label").gameObject.SetActive(false);
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Chip1").gameObject.SetActive(true);
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Panel/CommisionText").gameObject.SetActive(true);
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Panel/AllClaimBackToggle").gameObject.SetActive(false);
+                ConfirmChipsSendButton.onClick.AddListener(SendChipsAPIRequest);
+            }
+            else
+            {
+                SendOutPanel.transform.Find("BG1/Heading/Text").GetComponent<Text>().text = "Claim Back";
+                ConfirmChipsClaimBackButton.onClick.AddListener(ClaimChipsAPIRequest);
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Label").gameObject.SetActive(true);
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Chip1").gameObject.SetActive(false);
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Panel/CommisionText").gameObject.SetActive(false);
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Panel/AllClaimBackToggle").gameObject.SetActive(true);
+            }
+
+            SendOutPanel.SetActive(true);
+            OpenSendOut();
+        }
     }
 
     public Transform SendOutListContent;
@@ -688,7 +800,7 @@ public class ClubCounter : MonoBehaviour
 
         selectedMembers = selectedMembers.Remove(selectedMembers.Length - 1, 1);
 
-        string request = "{\"userId\":\"" + MemberListUIManager.instance.GetClubOwnerObject().userId + "\"," +
+        string request = "{\"userId\":\"" + /*MemberListUIManager.instance.GetClubOwnerObject().userId*/PlayerManager.instance.GetPlayerGameData().userId + "\"," +
             "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
             "\"amount\":\"" + amount.ToString() + "\"," +
             "\"membersArray\":[" + selectedMembers + "]}";
@@ -699,12 +811,14 @@ public class ClubCounter : MonoBehaviour
 
     private void SendChipsAPIRequest()
     {
+        Debug.Log("User ID:" + PlayerManager.instance.GetPlayerGameData().userId);
+
         int amount = 0;
         int.TryParse(AmountToSendInputField.text, out amount);
 
         selectedMembers = selectedMembers.Remove(selectedMembers.Length-1, 1);
 
-        string request = "{\"userId\":\"" + MemberListUIManager.instance.GetClubOwnerObject().userId + "\"," +
+        string request = "{\"userId\":\"" + /*MemberListUIManager.instance.GetClubOwnerObject().userId*/PlayerManager.instance.GetPlayerGameData().userId + "\"," +
             "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
             "\"amount\":\"" + amount.ToString() + "\"," +
             "\"membersArray\":[" + selectedMembers + "]}";
@@ -764,7 +878,14 @@ public class ClubCounter : MonoBehaviour
                 VIPPanel.SetActive(false);
                 TicketPanel.SetActive(true);
                 break;
+
+            case "OpenTradeRecord":
+                GetTradeRecordList();
+                TradeRecordPanel.SetActive(true);
+                break;
+
             default:
+                TradeRecordPanel.SetActive(false);
                 break;
         }
     }
