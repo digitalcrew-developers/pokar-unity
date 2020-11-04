@@ -21,8 +21,7 @@ public class CardsManager: MonoBehaviour
         cardSprites = Resources.LoadAll<Sprite>("cards");
         cardBackSprite = cardSprites[52];
     }
-
-
+    
 
     public Sprite GetCardBackSideSprite()
     {
@@ -416,6 +415,7 @@ public class CardsManager: MonoBehaviour
     public CardData GetCardData(string serverGivenCardName)
     {
         CardData data = new CardData();
+        
 
         switch (serverGivenCardName[0])
         {
@@ -470,22 +470,26 @@ public class CardsManager: MonoBehaviour
             break;
         }
 
-        int totalCardNumbers = Enum.GetNames(typeof(CardNumber)).Length - 1; 
-        int totalCardIcons = Enum.GetNames(typeof(CardIcon)).Length - 1; 
-
+        int totalCardNumbers = Enum.GetNames(typeof(CardNumber)).Length - 1;
+        int totalCardIcons = Enum.GetNames(typeof(CardIcon)).Length - 1;
 
         int cardNumber = totalCardNumbers - (int)data.cardNumber; // reverse order
         int cardIcon = totalCardIcons - (int)data.cardIcon; // reverse order
 
-        
-        data.cardsSprite = cardSprites[(cardIcon * 13) + cardNumber];
+        if (serverGivenCardName[0] == 'J' || serverGivenCardName[0] == 'K' || serverGivenCardName[0] == 'Q' ||
+            serverGivenCardName[0] == 'A'|| serverGivenCardName[0] == 'T')
+        {
+            data.cardsSprite = cardSprites[((cardIcon * 13) + cardNumber)];
+        }
+        else
+        {
+            int val = (((cardIcon * 13) + cardNumber) - 1);
+            data.cardsSprite = cardSprites[val];
+        }
         return data;
     }
  
 }
-
-
-
 
 
 [System.Serializable]
