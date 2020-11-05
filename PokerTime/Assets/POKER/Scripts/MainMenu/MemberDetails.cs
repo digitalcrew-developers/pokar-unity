@@ -21,13 +21,16 @@ public class MemberDetails : MonoBehaviour
     public List<GameObject> AdditionalObjects;
 
     //DEV_CODE
+    [Space(10)]
+    public GameObject TipsObj;
+
     public TMP_InputField editMemberName, editMemberNote;
 
     private ClubMemberDetails clubMemberDetails;
 
-    private float fullHeight = 978.8948f;
-    private float halfHeight = 678f;
-    private float fullWidth = 637.2f;
+    private float fullHeight = 979f;
+    private float halfHeight = 690f;
+    private float fullWidth = 650f;
 
     private GameObject ListObject;
 
@@ -37,6 +40,9 @@ public class MemberDetails : MonoBehaviour
         {
             instance = this;
         }
+
+        if (TipsObj != null)
+            TipsObj.SetActive(false);
     }
 
     /// <summary>
@@ -53,25 +59,63 @@ public class MemberDetails : MonoBehaviour
         UserName.text = _clubMemberDetails.userName;
         UserID.text = "ID: " + clubMemberDetails.userId + " | " + "Nickname " + clubMemberDetails.nickName;
 
+        //Assign tab listeners
+        TabButtons[0].onClick.RemoveAllListeners();
+        TabButtons[1].onClick.RemoveAllListeners();
+        TabButtons[2].onClick.RemoveAllListeners();
+
+        TabButtons[0].onClick.AddListener(() => EnableTab("overall"));
+        TabButtons[1].onClick.AddListener(() => EnableTab("7days"));
+        TabButtons[2].onClick.AddListener(() => EnableTab("select"));
+
+
+        EnableTab("overall");
         //call api and fill rest details
+
+        //Setting Current Player role
+        Debug.Log("Current Player Role: " + clubMemberDetails.memberRole);
+        switch (clubMemberDetails.memberRole)
+        {
+            case ClubMemberRole.Agent:
+                Agent.transform.Find("Image").GetComponent<Button>().interactable = true;
+                Agent.isOn = true;
+                if (!transform.Find("BG1/Heading/Career").gameObject.activeSelf)
+                    transform.Find("BG1/Heading/Career").gameObject.SetActive(true);
+                break;
+            case ClubMemberRole.Manager:
+                Agent.transform.Find("Image").GetComponent<Button>().interactable = false;
+                Manager.isOn = true;
+                if (transform.Find("BG1/Heading/Career").gameObject.activeSelf)
+                    transform.Find("BG1/Heading/Career").gameObject.SetActive(false);
+                break;
+            case ClubMemberRole.Member:
+                Agent.transform.Find("Image").GetComponent<Button>().interactable = false;
+                Member.isOn = true;
+                if (transform.Find("BG1/Heading/Career").gameObject.activeSelf)
+                    transform.Find("BG1/Heading/Career").gameObject.SetActive(false);
+                break;
+        }
 
         Manager.onValueChanged.RemoveAllListeners();
         Agent.onValueChanged.RemoveAllListeners();
         Member.onValueChanged.RemoveAllListeners();
 
-        Manager.onValueChanged.AddListener(delegate {
+        Manager.onValueChanged.AddListener(delegate
+        {
             ManagerToogleValueChanged(Manager);
         });
-        Agent.onValueChanged.AddListener(delegate {
+        Agent.onValueChanged.AddListener(delegate
+        {
             AgentToogleValueChanged(Agent);
         });
-        Member.onValueChanged.AddListener(delegate {
+        Member.onValueChanged.AddListener(delegate
+        {
             MemberToogleValueChanged(Member);
         });
 
-        /*
-        if(clubMemberDetails.memberRole == ClubMemberRole.Owner)
+        if (clubMemberDetails.memberRole == ClubMemberRole.Owner)
         {
+            Debug.Log("Owner Details" + clubMemberDetails.userId);
             transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(fullWidth, halfHeight);
             foreach (GameObject g in AdditionalObjects)
             {
@@ -80,16 +124,32 @@ public class MemberDetails : MonoBehaviour
         }
         else
         {
+            Debug.Log("Other Details" + clubMemberDetails.userId);
             transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(fullWidth, fullHeight);
             foreach (GameObject g in AdditionalObjects)
             {
                 g.SetActive(true);
             }
-        }
-        */
 
-        DeleteMemberBtn.onClick.RemoveAllListeners();
-        DeleteMemberBtn.onClick.AddListener(DeleteMember);
+            DeleteMemberBtn.onClick.RemoveAllListeners();
+            DeleteMemberBtn.onClick.AddListener(DeleteMember);
+        }             
+    }
+
+    private void Update()
+    {
+        //if(clubMemberDetails.memberRole == ClubMemberRole.Agent)
+        //{
+        //    if(!transform.Find("BG1/Heading/Career").gameObject.activeSelf)
+        //        transform.Find("BG1/Heading/Career").gameObject.SetActive(true);
+
+        //    if()
+        //}
+        //else
+        //{
+        //    if(transform.Find("BG1/Heading/Career").gameObject.activeSelf)
+        //        transform.Find("BG1/Heading/Career").gameObject.SetActive(false);
+        //}
     }
 
     private void ManagerToogleValueChanged(object classicToogle)
@@ -103,18 +163,79 @@ public class MemberDetails : MonoBehaviour
     }
 
     private void MemberToogleValueChanged(object listedToogle)
-    {
+    {   
         CallUpdatePlayer(ClubMemberRole.Member);
     }
 
     private void CallUpdatePlayer(ClubMemberRole clubMemberRole)
     {
-        MemberListUIManager.instance.ChangeUserRole(ListObject,false, clubMemberDetails, clubMemberRole);
+        switch (clubMemberDetails.memberRole)
+        {
+            case ClubMemberRole.Agent:
+                TipsObj.transform.Find("BG1/BG2/Text").GetComponent<Text>().text = "Current downlines' data will be removed if you chagne this Agent's rights. Are you sure?";
+                TipsObj.transform.Find("BG1/BG2/BottomBtns/CancelBtn").GetComponent<Button>().onClick.AddListener(() =>
+                    Agent.isOn = true);
+                TipsObj.transform.Find("BG1/BG2/BottomBtns/CancelBtn").GetComponent<Button>().onClick.AddListener(() =>
+                   TipsObj.SetActive(false));                
+                break;
+
+            case ClubMemberRole.Manager:
+                TipsObj.transform.Find("BG1/BG2/Text").GetComponent<Text>().text = "Confirm to change user rights?";
+                TipsObj.transform.Find("BG1/BG2/BottomBtns/CancelBtn").GetComponent<Button>().onClick.AddListener(() =>
+                    Manager.isOn = true);
+                TipsObj.transform.Find("BG1/BG2/BottomBtns/CancelBtn").GetComponent<Button>().onClick.AddListener(() =>
+                   TipsObj.SetActive(false));
+                break;
+
+            case ClubMemberRole.Member:
+                TipsObj.transform.Find("BG1/BG2/Text").GetComponent<Text>().text = "Confirm to change user rights?";
+                TipsObj.transform.Find("BG1/BG2/BottomBtns/CancelBtn").GetComponent<Button>().onClick.AddListener(() =>
+                    Member.isOn = true);
+                TipsObj.transform.Find("BG1/BG2/BottomBtns/CancelBtn").GetComponent<Button>().onClick.AddListener(() =>
+                   TipsObj.SetActive(false));
+                break;
+        }
+        
+        TipsObj.transform.Find("BG1/Heading/Text").GetComponent<Text>().text = "Tips";
+        TipsObj.transform.Find("BG1/Heading/Close").gameObject.SetActive(false);
+        TipsObj.transform.Find("BG1/BG2/BottomBtns/CancelBtn").gameObject.SetActive(true);
+        TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmBtn").GetComponent<Button>().onClick.AddListener(() =>
+            MemberListUIManager.instance.ChangeUserRole(ListObject, false, clubMemberDetails, clubMemberRole));
+        TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmBtn").GetComponent<Button>().onClick.AddListener(() =>
+            TipsObj.SetActive(false));
+
+        if (clubMemberRole == ClubMemberRole.Agent)
+        {
+            TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmBtn").GetComponent<Button>().onClick.AddListener(() =>
+                Agent.transform.Find("Image").GetComponent<Button>().interactable = true);
+            TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmBtn").GetComponent<Button>().onClick.AddListener(() =>
+                transform.Find("BG1/Heading/Career").gameObject.SetActive(true));
+        }
+        else
+        {
+            TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmBtn").GetComponent<Button>().onClick.AddListener(() =>
+                Agent.transform.Find("Image").GetComponent<Button>().interactable = false);
+            TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmBtn").GetComponent<Button>().onClick.AddListener(() =>
+                transform.Find("BG1/Heading/Career").gameObject.SetActive(false));
+        }
+
+        TipsObj.SetActive(true);
+
+        //TipsObj.SetActive(false);
+        //MemberListUIManager.instance.ChangeUserRole(ListObject, false, clubMemberDetails, clubMemberRole);
     }
 
     private void DeleteMember()
     {
-        MemberListUIManager.instance.ChangeUserRole(ListObject, true, clubMemberDetails, ClubMemberRole.Member);
+        TipsObj.transform.Find("BG1/Heading/Text").GetComponent<Text>().text = "Notice";
+        TipsObj.transform.Find("BG1/Heading/Close").gameObject.SetActive(true);
+        TipsObj.transform.Find("BG1/BG2/Text").GetComponent<Text>().text = "Wish to delete member?";
+        TipsObj.transform.Find("BG1/BG2/BottomBtns/CancelBtn").gameObject.SetActive(false);
+        TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmBtn").GetComponent<Button>().onClick.AddListener(() =>
+            MemberListUIManager.instance.ChangeUserRole(ListObject, true, clubMemberDetails, clubMemberDetails.memberRole)
+            );
+
+        TipsObj.SetActive(true);
     }
 
     private void EnableTab(string tab)

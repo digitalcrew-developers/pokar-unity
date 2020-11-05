@@ -241,6 +241,8 @@ public class MemberListUIManager : MonoBehaviour
                     return;
                 }
 
+                Debug.Log("Response User Role Change: " + serverResponse);
+
                 JsonData data = JsonMapper.ToObject(serverResponse);
 
                 if (data["success"].ToString() == "1")
@@ -352,10 +354,10 @@ public class MemberListUIManager : MonoBehaviour
             return;
         }
 
-        if(requestType == RequestType.ChangePlayerRoleInClub)
-        {
-            UnityEngine.Debug.Log(serverResponse);
-        }
+        //if(requestType == RequestType.ChangePlayerRoleInClub)
+        //{
+        //    UnityEngine.Debug.Log(serverResponse);
+        //}
 
         if(requestType == RequestType.GetPendingClubJoinRequest)
         {
@@ -372,6 +374,7 @@ public class MemberListUIManager : MonoBehaviour
         else
         if (requestType == RequestType.GetClubMemberList)
         {
+            Debug.Log("Response ClubMemberList: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["status"].Equals(true))
