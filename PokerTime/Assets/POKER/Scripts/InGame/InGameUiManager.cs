@@ -844,6 +844,11 @@ public class InGameUiManager : MonoBehaviour
                         gm.GetComponent<RealTimeResultUiManager>().OnOpen();
                     }
                     break;
+                case InGameScreens.HandHistory:
+                    {
+                        gm.GetComponent<HandHistoryManager>().Init();
+                    }
+                    break;
                 default:
                     break;
             }
