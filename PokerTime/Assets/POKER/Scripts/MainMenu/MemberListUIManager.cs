@@ -221,15 +221,15 @@ public class MemberListUIManager : MonoBehaviour
         }
         else
         {
-            string requestData = "{\"requestUserId\":\"" + memberDetails.userId + "\","+
-            "\"assignRole\":\"" + roleToAssign + "\"," +
-            "\"requestStatus\":\"Approved\","+
-            "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"}";
+            string requestData = "{\"requestUserId\":\"" + memberDetails.userId + "\"," +
+                "\"assignRole\":\"" + roleToAssign + "\"," +
+                "\"requestStatus\":\"Approved\"," +
+                "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"}";
             
             //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
             WebServices.instance.SendRequest(RequestType.ChangePlayerRoleInClub, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
             {
-                MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+                //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
                 if (errorMessage.Length > 0)
                 {

@@ -233,17 +233,17 @@ public class ClubDetailsUIManager : MonoBehaviour
 		form.AddField("uniqueClubId", GetClubUniqueId());
 		form.AddField("clubName", GetClubName());
 		form.AddField("clubStatus", "1");
-		//form.AddField("jackpotToggle", GetJackpotStatus().ToString());
-		//form.AddField("layout", GetLayout());
+		form.AddField("jackpotToggle", GetJackpotStatus().ToString());
+		form.AddField("layout", GetLayout());
 		form.AddBinaryData("clubImage", bytes, path, "image/jpg");
 
 		UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/updateClub", form);
 
-		//pathText.text = "Uploading!!!";
+		pathText.text = "Uploading!!!";
 		//Debug.Log("Uploading !!!!!!");
 		yield return www.SendWebRequest();
 
-		//pathText.text = "Upload Success....";
+		pathText.text = "Upload Success....";
 		//Debug.Log("Upload Success...");
 
 		if (www.isNetworkError || www.isHttpError)

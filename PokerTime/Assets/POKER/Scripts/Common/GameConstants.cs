@@ -119,7 +119,11 @@ public class GameConstants : MonoBehaviour
         API_URL+"/createTemplate",
         API_URL+"/getTemplates",
         SOCKET_URL+"/getRealTimeData",
-        API_URL+"/getTableHandHistory"
+        API_URL+"/getTableHandHistory",
+        API_URL+"/editMemberDetails",
+        API_URL+"/getAgentDetails",
+        API_URL+"/getDownlineList",
+        API_URL+"/addDownliners"
     };
     #endregion
 
@@ -201,5 +205,9 @@ public enum RequestType
     CreateTemplate,
     GetTemplates,
     RealtimeResult,
-    GetTableHandHistory
+    GetTableHandHistory,
+    EditClubMemberDetails,
+    GetAgentDetails,
+    GetDownlineList,
+    AddDownliners
 }
