@@ -293,6 +293,7 @@ public class PlayerScript : MonoBehaviour
         fx_holder.gameObject.SetActive(false);
         timerBar.fillAmount = 0;
         StopCoroutine("CountDownAnimation");
+        CountDownTimerRunning = false;
     }
 
     public void ToggleLocalPot(bool isShow)
@@ -372,19 +373,29 @@ public class PlayerScript : MonoBehaviour
 
         lastActionText.text = textToShow;
     }
+    public bool CountDownTimerRunning = false;
+
     IEnumerator CountDownAnimation()
     {
         float t = 0;
-        float time = 9;
+        float time = GameConstants.TURN_TIME;
         fx_holder.gameObject.SetActive(true);
         while (t < time)
         {
             t += Time.deltaTime;
             timerBar.fillAmount = t / time;
             fx_holder.rotation = Quaternion.Euler(new Vector3(0, 0, -(timerBar.fillAmount) * 360));
+            CountDownTimerRunning = true;
             yield return null;
         }
+        CountDownTimerRunning = false;
     }
+
+    public void ShowRemainingTime()
+    {
+       StartCoroutine("CountDownAnimation");      
+    }
+
     public void ShowRemainingTime(int remainingTime)
     {
         remainingTime = GameConstants.TURN_TIME - remainingTime;

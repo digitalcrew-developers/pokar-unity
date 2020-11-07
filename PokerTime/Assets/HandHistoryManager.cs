@@ -26,6 +26,10 @@ public class HandHistoryManager : MonoBehaviour
 
     public GameObject Slider;
 
+    public Text TimeText;
+    public Text SB_BB;
+    public Text GameID;
+
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -191,6 +195,8 @@ public class HandHistoryManager : MonoBehaviour
 
         if (totalPages > 0)
         {
+            TimeText.text = histories.histories[pageNo].matchDetails.gameTime;
+            SB_BB.text = histories.histories[pageNo].matchDetails.blind;
             //HandSummary
             for (int j = 0; j < histories.histories[pageNo].handSummary.Count; j++)
             {
@@ -277,6 +283,7 @@ public class HandHistoryData
 {
     public List<HandSummary> handSummary = new List<HandSummary>();
     public HandDetails handDetails;
+    public MatchDetails matchDetails;
 }
 
 [Serializable]
@@ -290,6 +297,7 @@ public class PreFlop
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
+    public string seatName;
 }
 
 [Serializable]
@@ -302,6 +310,7 @@ public class PostFlop {
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
+    public string seatName;
 }
 
 [Serializable]
@@ -315,6 +324,7 @@ public class PostTurn
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
+    public string seatName;
 }
 
 [Serializable]
@@ -328,6 +338,7 @@ public class PostRiver
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
+    public string seatName;
 }
 
 [Serializable]
@@ -341,6 +352,7 @@ public class ShowDown
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
+    public string seatName;
 }
 
 [Serializable]
@@ -387,4 +399,14 @@ public class HandDetails
     public List<PostRiver> POSTRIVER = new List<PostRiver>();
     //public List<PostRiver> PORTRIVER = new List<PostRiver>();
 
+}
+
+[Serializable]
+public class MatchDetails
+{
+    public string blind;
+    public int players;
+    public string bet;
+    public int activePlayers;
+    public string gameTime;
 }

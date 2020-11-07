@@ -47,8 +47,8 @@ public class RealTimeResultUiManager : MonoBehaviour
                     for (int i=0;i< data["data"]["realTimeArr"].Count; i++)
                     {
                         GameObject gm = Instantiate(resultPrefab, RealTimeContent) as GameObject;
-                        
-                        gm.transform.Find("Name").GetComponent<TMPro.TextMeshProUGUI>().text = data["data"]["realTimeArr"][i]["username"].ToString();
+                        gm.SetActive(true);
+                        gm.transform.Find("Name").GetComponent<TMPro.TextMeshProUGUI>().text = data["data"]["realTimeArr"][i]["userName"].ToString();
                         gm.transform.Find("BuyIn").GetComponent<TMPro.TextMeshProUGUI>().text = data["data"]["realTimeArr"][i]["totalCoinInGame"].ToString();
                         gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().text = data["data"]["realTimeArr"][i]["totalWinCoin"].ToString();
 
@@ -68,8 +68,9 @@ public class RealTimeResultUiManager : MonoBehaviour
                     for (int i = 0; i < data["data"]["realTimeArr"].Count; i++)
                     {
                         GameObject gm = Instantiate(spectatorPrefab, spectatorContent) as GameObject;
+                        gm.SetActive(true);
 
-                        gm.transform.Find("Text").GetComponent<Text>().text = data["data"]["standoutArr"][i]["username"].ToString();
+                        gm.transform.Find("Text").GetComponent<Text>().text = data["data"]["standoutArr"][i]["userName"].ToString();
                         
                     }
                 }

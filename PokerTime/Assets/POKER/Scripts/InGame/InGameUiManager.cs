@@ -849,6 +849,11 @@ public class InGameUiManager : MonoBehaviour
                         gm.GetComponent<HandHistoryManager>().Init();
                     }
                     break;
+                case InGameScreens.PointEarnMsg:
+                    {
+                        gm.GetComponent<PointEarnMsg>().OnOpen();
+                    }
+                    break;
                 default:
                     break;
             }

@@ -265,6 +265,8 @@ public class LobbyUiManager: MonoBehaviour
         GlobalGameManager.instance.SetRoomData(data);
         GameConstants.TURN_TIME = data.callTimer;
 
+        Debug.Log("GameConstants.TURN_TIME " + GameConstants.TURN_TIME);
+        Debug.Log("data.callTimer " + data.callTimer);
         if (data.gameMode != GameMode.OFC)
         {
             GlobalGameManager.instance.LoadScene(Scenes.InGame);
@@ -331,6 +333,7 @@ public class LobbyUiManager: MonoBehaviour
     
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        Debug.Log(serverResponse);
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
