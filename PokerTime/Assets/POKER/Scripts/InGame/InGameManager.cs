@@ -105,7 +105,6 @@ public class InGameManager : MonoBehaviour
         }
 
         UpdatePot("");
-        Debug.Log("i am here!!!!!!!!!!!!!!!!!");
         Pot.SetActive(false);
         onlinePlayersScript = new PlayerScript[0];
 
@@ -122,7 +121,6 @@ public class InGameManager : MonoBehaviour
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
     {
-        
         isRematchRequestSent = false;
         matchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
         onlinePlayersScript = new PlayerScript[matchMakingPlayerData.Count];
@@ -277,8 +275,7 @@ public class InGameManager : MonoBehaviour
         {
             onlinePlayersScript[i].ResetTurn();
         }
-
-
+        
         currentPlayer = playerScript;
         if (currentPlayer.IsMe())
         {
@@ -341,6 +338,7 @@ public class InGameManager : MonoBehaviour
                 InGameUiManager.instance.ToggleSuggestionButton(true, isCheckAvailable, callAmount, GetMyPlayerObject().GetPlayerData().balance);
             }
         }
+
     }
 
 
@@ -883,9 +881,18 @@ public class InGameManager : MonoBehaviour
     public void TipToDealer(string serverResponse)
     {
         Debug.LogError("TipToDealer serverResponse ---*****----> " + serverResponse);
-       
+
+        //JsonData data = JsonMapper.ToObject(serverResponse);
+        //string s = data["data"]["allPlayers"].ToString();
     }
 
+    public int PointEarnedCounter = 0;
+
+    public void PointUpdated(string serverResponse)
+    {
+        Debug.LogError("PointUpdated serverResponse ---*****----> " + serverResponse);
+        PointEarnedCounter++;
+    }
 
     public void StandUpPlayer(string serverResponse)
     {
@@ -1092,39 +1099,22 @@ public class InGameManager : MonoBehaviour
 
     public void OnTurnCountDownFound(string serverResponse)
     {
+        Debug.LogError("OnTurnCountDownFound" + serverResponse);
         if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (currentPlayer != null)
             {
-
                 int remainingTime = (int)float.Parse(data[0].ToString());
+                int endTime = (int)(GameConstants.TURN_TIME * 0.25f);
 
-               // Debug.Log("%%%%%%%%%%%%%%%%%%%%%%  remainingTime " + remainingTime);
-                if (remainingTime == 10)
+                if (remainingTime < endTime)
                 {
-                    PlayerTimerReset();
+                    SoundManager.instance.PlaySound(SoundType.TurnEnd);
                 }
-
-                if (currentPlayer.IsMe())
-                {
-
-                    int endTime = (int)(GameConstants.TURN_TIME * 0.25f);
-
-                    if (remainingTime == endTime)
-                    {
-                        SoundManager.instance.PlaySound(SoundType.TurnEnd);
-                    }
-                    currentPlayer.ShowRemainingTime(remainingTime);
-                }
-
-                else if(!currentPlayer.IsMe())
-                {
-                    currentPlayer.ShowRemainingTime(remainingTime);
-                }
-             
-
+                if (!currentPlayer.CountDownTimerRunning)
+                    currentPlayer.ShowRemainingTime();
             }
             else
             {
@@ -1291,6 +1281,7 @@ public class InGameManager : MonoBehaviour
             //AdjustAllPlayersOnTable(data[0].Count);
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
             Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
+            SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
             InGameUiManager.instance.tableId = data[0][0]["tableId"].ToString();
             ShowNewPlayersOnTable(data, isMatchStarted);
 

@@ -10,6 +10,7 @@ public class NotificationUiManager : MonoBehaviour
     public Transform container;
     public Text notificationDetailsText;
     public LayoutManager layoutManager;
+    public GameObject NoEmail;
 
     private void Start()
     {
@@ -32,6 +33,7 @@ public class NotificationUiManager : MonoBehaviour
 
         for (int i = 0; i < notificationDetails.notifications.Count; i++)
         {
+            NoEmail.SetActive(false);
             Notification notificationData = notificationDetails.notifications[i];
 
             GameObject gm = Instantiate(notificationPrefab,container) as GameObject;

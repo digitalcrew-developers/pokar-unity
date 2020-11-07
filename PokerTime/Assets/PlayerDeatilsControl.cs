@@ -43,25 +43,25 @@ public class PlayerDeatilsControl : MonoBehaviour
         {
             case "preflop":                
                 PlayerNameText.text = handDetails.PREFLOP[place].userName;
-                UpdateTextAndColor(handDetails.PREFLOP[place].betType);
+                UpdateTextAndColor(handDetails.PREFLOP[place].betType, handDetails.PREFLOP[place].seatName);
                 BetText.text = handDetails.PREFLOP[place].amount.ToString();
                 TotalText.text = handDetails.PREFLOP[place].currentPot.ToString();   
                 break;
             case "postflop":
                 PlayerNameText.text = handDetails.POSTFLOP[place].userName;
-                UpdateTextAndColor(handDetails.POSTFLOP[place].betType);
+                UpdateTextAndColor(handDetails.POSTFLOP[place].betType, handDetails.PREFLOP[place].seatName);
                 BetText.text = handDetails.POSTFLOP[place].amount.ToString();
                 TotalText.text = handDetails.POSTFLOP[place].currentPot.ToString();
                 break;
             case "turn":
                 PlayerNameText.text = handDetails.POSTTURN[place].userName;
-                UpdateTextAndColor(handDetails.POSTTURN[place].betType);
+                UpdateTextAndColor(handDetails.POSTTURN[place].betType, handDetails.PREFLOP[place].seatName);
                 BetText.text = handDetails.POSTTURN[place].amount.ToString();
                 TotalText.text = handDetails.POSTTURN[place].currentPot.ToString();
                 break;
             case "river":
                 PlayerNameText.text = handDetails.POSTRIVER[place].userName;
-                UpdateTextAndColor(handDetails.POSTRIVER[place].betType);
+                UpdateTextAndColor(handDetails.POSTRIVER[place].betType, handDetails.PREFLOP[place].seatName);
                 BetText.text = handDetails.POSTRIVER[place].amount.ToString();
                 TotalText.text = handDetails.POSTRIVER[place].currentPot.ToString();
                 break;
@@ -76,37 +76,37 @@ public class PlayerDeatilsControl : MonoBehaviour
         }
     }
 
-    private void UpdateTextAndColor(string betType)
+    private void UpdateTextAndColor(string betType, string seatName)
     {
         switch (betType)
         {
             case "Call":
-                ActionOneText.text = "C";
+                ActionTwoText.text = "C";
                 ActionTwoImage.color = CallColor;
                 break;
             case "Check":
-                ActionOneText.text = "C";
+                ActionTwoText.text = "C";
                 ActionTwoImage.color = CheckColor;
                 break;
             case "fold Card":
-                ActionOneText.text = "F";
+                ActionTwoText.text = "F";
                 ActionTwoImage.color = FoldColor;
                 break;
             case "Winner":
-                ActionOneText.text = "W";
+                ActionTwoText.text = "W";
                 ActionTwoImage.color = CallColor;
                 break;
             case "Raise":
-                ActionOneText.text = "R";
+                ActionTwoText.text = "R";
                 ActionTwoImage.color = RaiseColor;
                 break;
             case "All In":
-                ActionOneText.text = "A";
+                ActionTwoText.text = "A";
                 ActionTwoImage.color = AllInColor;
                 break;
             default:
                 break;
         }
-        ActionTwoText.text = ActionOneText.text;
+        ActionOneText.text = seatName;
     }
 }

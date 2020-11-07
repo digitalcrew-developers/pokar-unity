@@ -120,12 +120,13 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("sendMessage", OnMessageFound);
         socketManager.Socket.On("userReconnect", OnReconnected);
         socketManager.Socket.On("matchPlayLogs", MatchHistory);
-        socketManager.Socket.On("tipToDealer", OntipToDealer);
         socketManager.Socket.On("sendEmoji", OnSentEmoji);
         socketManager.Socket.On("predictionReward", OnSendWinningBooster);
         socketManager.Socket.On("getRandomCard", OnGetRandomCard);
         
         socketManager.Socket.On("playerStatndOut", OnPlayerStandUp);
+        socketManager.Socket.On("allTipData", OnAllTipData);
+        socketManager.Socket.On("pointUpdate", OnPointUpdate);
 
         socketManager.Open();
     }
@@ -299,8 +300,11 @@ public class SocketController : MonoBehaviour
                 case SocketEvetns.ON_SendEmoji:
                     InGameManager.instance.SendEmoji(responseObject.data);
                     break;
-                case SocketEvetns.ON_TipToDealer:
+                case SocketEvetns.ON_ALL_TIP_DATA:
                     InGameManager.instance.TipToDealer(responseObject.data);
+                    break;
+                case SocketEvetns.ON_POINT_UPDATE:
+                    InGameManager.instance.PointUpdated(responseObject.data);
                     break;
                 case SocketEvetns.ON_GET_RANDOM_CARD:
                     //InGameUiManager.instance.DeductCoinPostServer(InGameUiManager.instance.winnigBoosterAmount, responseObject.data.Substring(2, 2));
@@ -572,6 +576,49 @@ public class SocketController : MonoBehaviour
         socketResponse.Add(response);
     }
 
+    void OnPointUpdate(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        InGameManager.instance.Pot.SetActive(false);
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_POINT_UPDATE))
+        {
+            Debug.Log("ON_POINT_UPDATE = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+        Debug.Log("OnResultDataFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.ON_POINT_UPDATE;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+    void OnAllTipData(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        InGameManager.instance.Pot.SetActive(false);
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_ALL_TIP_DATA))
+        {
+            Debug.Log("OnAllTipData = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+        Debug.Log("OnResultDataFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.ON_ALL_TIP_DATA;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
 
     void OnResultDataFound(Socket socket, Packet packet, params object[] args)
     {
@@ -846,34 +893,8 @@ public class SocketController : MonoBehaviour
         Debug.Log("ReconnectFailed Time = " + System.DateTime.Now);
 #endif
     }
-
-
-
-    void OntipToDealer(Socket socket, Packet packet, params object[] args)
-    {
-#if DEBUG
-        Debug.Log("OnOtherSeeTip CALL     = " + System.DateTime.Now);
-#endif
-
-        string responseText = JsonMapper.ToJson(args);
-
-#if DEBUG
-
-#if UNITY_EDITOR
-        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_TipToDealer))
-        {
-            Debug.Log("OnOtherSeeTip CALL = " + responseText + "  Time = " + System.DateTime.Now);
-        }
-#else
-        Debug.Log("OnReconnected = " + responseText + "  Time = " + System.DateTime.Now);
-#endif
-#endif
-
-        SocketResponse response = new SocketResponse();
-        response.eventType = SocketEvetns.ON_TipToDealer;
-        response.data = responseText;
-        socketResponse.Add(response);
-    }
+    
+    
     void OnSentEmoji(Socket socket, Packet packet, params object[] args)
     {
 #if DEBUG
@@ -1021,14 +1042,14 @@ public class SocketController : MonoBehaviour
 
     public void TipToDealer()
     {
-        string requestStringData = "{\"userId\":\"" +( (int.Parse(PlayerManager.instance.GetPlayerGameData().userId)).ToString() + "\"," +
-     "\"tableId\":\"" + int.Parse(TABLE_ID)).ToString() + "\"}";
+        string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                                    "\"tableId\":\"" + TABLE_ID + "\"}";
 
         Debug.Log("i am herejhdsf   "+ requestStringData);
         object requestObjectData = Json.Decode(requestStringData);
 
         SocketRequest request = new SocketRequest();
-        request.emitEvent = "allTipData";
+        request.emitEvent = "tipToDealer";
 
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
@@ -1288,6 +1309,7 @@ public class SocketController : MonoBehaviour
         TABLE_ID = tableIdToAssign;
 
         PrefsManager.SetData(PrefsKey.RoomData, JsonUtility.ToJson(GlobalGameManager.instance.GetRoomData()));
+        Debug.Log("Table ID Is :" + TABLE_ID);
     }
 
     public string GetTableID()
@@ -1459,11 +1481,12 @@ public enum SocketEvetns
     ON_RECONNECTED,
     ON_MATCH_HISTORY_FOUND,
     ON_PlayerStandUp,
-    ON_TipToDealer,
     ON_SendEmoji,
     NULL,
     ON_SEND_WINNING_BOOSTER,
-    ON_GET_RANDOM_CARD
+    ON_GET_RANDOM_CARD,
+    ON_ALL_TIP_DATA,
+    ON_POINT_UPDATE
 }
 
 
