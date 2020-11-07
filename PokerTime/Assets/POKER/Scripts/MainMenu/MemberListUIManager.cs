@@ -16,8 +16,8 @@ public class MemberListUIManager : MonoBehaviour
     public TMPro.TextMeshProUGUI MemberCountText;
     public GameObject MemberDetailsPanel;
 
-    private List<ClubMemberDetails> newMembersList = new List<ClubMemberDetails>();
-    private List<ClubMemberDetails> oldMembersList = new List<ClubMemberDetails>();
+    public List<ClubMemberDetails> newMembersList = new List<ClubMemberDetails>();
+    public List<ClubMemberDetails> oldMembersList = new List<ClubMemberDetails>();
 
     public List<FilterButtonState> ClubMemberFilterButtons = new List<FilterButtonState>();
     public Text CurrentMemberListFilterName;
@@ -251,8 +251,9 @@ public class MemberListUIManager : MonoBehaviour
                     newMembersList.Remove(memberDetails);
                     MemberCountText.text = "Members : " + newMembersList.Count;
 
+                    MemberDetails.instance.isRoleAssigned = true;
                     memberDetails.memberRole = roleToAssign;
-                    oldMembersList.Add(memberDetails);
+                    oldMembersList.Add(memberDetails);                    
                 }
                 else
                 {

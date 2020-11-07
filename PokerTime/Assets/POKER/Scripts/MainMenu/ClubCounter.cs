@@ -781,7 +781,8 @@ public class ClubCounter : MonoBehaviour
         if (t.isOn)
         {
             selectedSendPlayerCount++;
-            selectedMembers += "{\"userId\":\"" + clubMemberDetails.userId + "\"},";
+            selectedMembers += "{\"userId\":\"" + clubMemberDetails.userId + "\"," +
+                               "\"role\":\"" + clubMemberDetails.memberRole + "\"},";
         }
         else
         {
