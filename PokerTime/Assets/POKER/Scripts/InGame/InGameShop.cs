@@ -237,6 +237,7 @@ public class InGameShop : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        Debug.Log("SHOP RESPONSE :" + serverResponse);
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
@@ -259,6 +260,25 @@ public class InGameShop : MonoBehaviour
             Debug.Log("Shop Data.." + data.ToJson().ToString());
         }
 
+        if (requestType == RequestType.GetUserDetails)
+        {
+            Debug.Log("profile :" + serverResponse);
+            JsonData data = JsonMapper.ToObject(serverResponse);
+
+            if (data["success"].ToString() == "1")
+            {
+                for (int i = 0; i < data["getData"].Count; i++)
+                {
+                    PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data["getData"][i]["coins"].ToString());
+                    if (MenuHandller.instance != null)
+                    {
+                        MenuHandller.instance.UpdateAllText();
+                    }
+                    LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);                
+                }
+            }
+        }
+
         if (requestType == RequestType.GetInGameShopValue)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
@@ -268,7 +288,10 @@ public class InGameShop : MonoBehaviour
             if (data["status"].Equals(true))
             {
                 Debug.Log("Purchase Successfull !!!");
-                if(null== InGameUiManager.instance)
+                WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" +
+                    PlayerManager.instance.GetPlayerGameData().userId+ "\"}", true, OnServerResponseFound);
+
+                if (null== InGameUiManager.instance)
                 {
                     MainMenuController.instance.ShowMessage(data["response"].ToString());
                     if (MenuHandller.instance != null)

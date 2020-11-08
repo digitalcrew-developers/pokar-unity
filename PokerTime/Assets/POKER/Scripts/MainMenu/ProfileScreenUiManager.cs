@@ -67,7 +67,6 @@ public class ProfileScreenUiManager : MonoBehaviour
             {
                 for (int i = 0; i < data["getData"].Count; i++)
                 {
-
                     //loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString(), data["getData"][i]["countryFlag"].ToString());
                     userLevel.text = "Lvl. " + data["getData"][i]["userLevel"].ToString() + ">>";
                     userName.text = data["getData"][i]["userName"].ToString();
@@ -77,6 +76,11 @@ public class ProfileScreenUiManager : MonoBehaviour
                     avtarurl = data["getData"][i]["profileImage"].ToString();
                     frameurl = data["getData"][i]["frameURL"].ToString();
                     flagurl = data["getData"][i]["countryFlag"].ToString();
+                    PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data["getData"][i]["coins"].ToString());
+                    if(null!= LobbyUiManager.instance)
+                    {
+                        LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + data["getData"][i]["coins"].ToString());
+                    }
                     //avtarid = int.Parse(data["getData"][i]["avatarID"].ToString()); //this is not coming in data
                     LoadImages(avtarurl, frameurl, flagurl);
                 }

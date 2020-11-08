@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class HandHistoryManager : MonoBehaviour
 {
+    public GameObject LoadingText;
     public GameObject DetailsPanel, SummaryPanel;
     public GameObject DetailsButtonImage, SummaryButtonImage;
     public GameObject HandDetailRoundPrefab, PlayerDetailsPrefab, HandSummaryItemPrefab;
@@ -195,6 +196,7 @@ public class HandHistoryManager : MonoBehaviour
 
         if (totalPages > 0)
         {
+            LoadingText.SetActive(false);
             TimeText.text = histories.histories[pageNo].matchDetails.gameTime;
             SB_BB.text = histories.histories[pageNo].matchDetails.blind;
             //HandSummary

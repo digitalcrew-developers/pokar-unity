@@ -387,7 +387,6 @@ public class SocketController : MonoBehaviour
     void OnOpenCardDataFound(Socket socket, Packet packet, params object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
-        InGameManager.instance.Pot.SetActive(true);
 #if DEBUG
 
 #if UNITY_EDITOR

@@ -2,6 +2,7 @@
 using LitJson;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -300,7 +301,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 	{
 #if UNITY_ANDROID
 		AndroidPicker.BrowseImage(false);
-#elif UNITY_EDITOR
+#endif
+#if UNITY_EDITOR
         string path = EditorUtility.OpenFilePanel("Ovrewrite with jpg", "", "");
         if (path != null)
         {
@@ -311,7 +313,7 @@ public class ClubDetailsUIManager : MonoBehaviour
             /*ProfileImage.texture = www.texture;*/
         }
 #endif
-	}
+    }
 
 	#region Image Picking Methods
 	void OnDisable()

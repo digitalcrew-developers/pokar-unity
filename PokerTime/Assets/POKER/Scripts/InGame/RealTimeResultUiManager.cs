@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class RealTimeResultUiManager : MonoBehaviour
 {
+    public GameObject LoadingText;
     public GameObject resultPrefab;
     public GameObject spectatorPrefab;
     public Transform RealTimeContent;
@@ -46,6 +47,7 @@ public class RealTimeResultUiManager : MonoBehaviour
 
                     for (int i=0;i< data["data"]["realTimeArr"].Count; i++)
                     {
+                        LoadingText.SetActive(false);
                         GameObject gm = Instantiate(resultPrefab, RealTimeContent) as GameObject;
                         gm.SetActive(true);
                         gm.transform.Find("Name").GetComponent<TMPro.TextMeshProUGUI>().text = data["data"]["realTimeArr"][i]["userName"].ToString();

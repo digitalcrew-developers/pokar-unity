@@ -299,6 +299,7 @@ public class InGameManager : MonoBehaviour
                             }
                             else
                             {
+                                Debug.LogWarning("LAST BET AMOUNT " + LAST_BET_AMOUNT);
                                 InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT);
                             }
                         }
@@ -325,6 +326,7 @@ public class InGameManager : MonoBehaviour
             }
             else
             {
+                Debug.LogWarning("LAST BET AMOUNT 1" + LAST_BET_AMOUNT);
                 InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
             }
         }
@@ -673,6 +675,14 @@ public class InGameManager : MonoBehaviour
 
     private void UpdatePot(string textToShow)
     {
+        if (string.IsNullOrEmpty(textToShow))
+        {
+            Pot.SetActive(false);
+        }
+        else
+        {
+            Pot.SetActive(true);
+        }
         potText.text = textToShow;
     }
 
@@ -941,6 +951,9 @@ public class InGameManager : MonoBehaviour
 
     public void OnResultResponseFound(string serverResponse)
     {
+        InGameUiManager.instance.ToggleSuggestionButton(false);
+        InGameUiManager.instance.ToggleActionButton(false);
+
         if (winnersObject.Count > 0)
         {
             return;
@@ -1319,6 +1332,8 @@ public class InGameManager : MonoBehaviour
                     {
                         MatchMakingPlayerData playerData = new MatchMakingPlayerData();
 
+                        PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
+
                         playerData.playerData = new PlayerData();
                         playerData.playerData.userId = data[0][i]["userId"].ToString();
 
@@ -1376,7 +1391,7 @@ public class InGameManager : MonoBehaviour
 
                 PlayerScript playerWhosTurn = null;
                 bool isCheckAvailable = false;
-
+                bool showTurn = false;
                 for (int i = 0; i < data[0].Count; i++)
                 {
                     PlayerScript playerObject = GetPlayerObject(data[0][i]["userId"].ToString());
@@ -1393,6 +1408,13 @@ public class InGameManager : MonoBehaviour
                         {
                             playerWhosTurn = playerObject;
                             isCheckAvailable = data[0][i]["isCheck"].Equals(true);
+                            showTurn = true;
+                        }
+                        else
+                        {
+                            InGameUiManager.instance.ToggleSuggestionButton(false);
+                            InGameUiManager.instance.ToggleActionButton(false);
+                            showTurn = false;
                         }
 
                         if (data[0][i]["userData"] != null && data[0][i]["userData"].ToString().Length > 0)
@@ -1417,11 +1439,13 @@ public class InGameManager : MonoBehaviour
                 if (playerWhosTurn != null)
                 {
                     Debug.Log("Switching turn");
-
-                    SwitchTurn(playerWhosTurn, isCheckAvailable);
+                    if(showTurn)
+                        SwitchTurn(playerWhosTurn, isCheckAvailable);
                 }
                 else
                 {
+                    InGameUiManager.instance.ToggleSuggestionButton(false);
+                    InGameUiManager.instance.ToggleActionButton(false);
 #if ERROR_LOG
                     Debug.LogError("Null reference exception found playerWhosTurn is not found");
 #endif

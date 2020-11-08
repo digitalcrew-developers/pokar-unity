@@ -791,7 +791,11 @@ public class InGameUiManager : MonoBehaviour
                 if(callAmount==0)
                 {
                     callAmountText.text = "";
-
+                    actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                    actionButtons[(int)PlayerAction.Check].SetActive(false);
+                    actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+                    actionButtons[(int)PlayerAction.Fold].SetActive(false);
                 }
             }
 

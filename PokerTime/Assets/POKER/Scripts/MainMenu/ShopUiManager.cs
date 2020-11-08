@@ -1450,6 +1450,7 @@ public class ShopUiManager: MonoBehaviour
                     {
                         MenuHandller.instance.UpdateAllText();
                     }
+                    LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
                 }
                 else
                 {

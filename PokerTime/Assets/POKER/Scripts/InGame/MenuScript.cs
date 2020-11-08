@@ -57,8 +57,8 @@ public class MenuScript : MonoBehaviour
 
             case "topUp":
                 {
-                    if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
-                    {
+                    //if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
+                    //{
                         if (PlayerManager.instance.GetPlayerGameData().coins > GlobalGameManager.instance.GetRoomData().minBuyIn)
                         {
                             if (InGameManager.instance.GetMyPlayerObject() != null)
@@ -71,11 +71,11 @@ public class MenuScript : MonoBehaviour
                             InGameUiManager.instance.ShowMessage("You don't have sufficient coins for TopUp");
                             //TODO show shop screen
                         }
-                    }
-                    else
-                    {
-                        InGameUiManager.instance.ShowMessage("Can only top up when game is running.");
-                    }
+                    //}
+                    //else
+                    //{
+                    //    InGameUiManager.instance.ShowMessage("Can only top up when game is running.");
+                    //}
                 }
                 break;
 
