@@ -7,6 +7,7 @@ using System;
 using LitJson;
 using System.Net;
 using UnityEngine.Networking;
+using VoxelBusters.Utility;
 
 public class MemberDetails : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class MemberDetails : MonoBehaviour
 
     public GameObject popUpText;
 
-    public TextMeshProUGUI UserID, UserName, Remark, LastLogin;
+    public TextMeshProUGUI UserID, UserAliasName, Remark, LastLogin;
     public Image ProfileImage;
     public Button EditProfileBtn;
 
@@ -29,7 +30,7 @@ public class MemberDetails : MonoBehaviour
     [Space(10)]
     public GameObject TipsObj;
 
-    public TMP_InputField editMemberName, editMemberNote;
+    public TMP_InputField editMemberAlias, editMemberNote;
 
     private ClubMemberDetails clubMemberDetails;
 
@@ -88,12 +89,16 @@ public class MemberDetails : MonoBehaviour
     public void Initialise(ClubMemberDetails _clubMemberDetails, GameObject ListObject)
     {
         //DEV_CODE
-        editMemberName.text = _clubMemberDetails.userName;
+        editMemberAlias.text = _clubMemberDetails.userAlias;
+        editMemberNote.text = _clubMemberDetails.userNote;
 
         //fill general details from previously present data 
         clubMemberDetails = _clubMemberDetails;
-        UserName.text = _clubMemberDetails.userName;
+        UserAliasName.text = _clubMemberDetails.userAlias;
         UserID.text = "ID: " + clubMemberDetails.userId + " | " + "Nickname " + clubMemberDetails.nickName;
+
+        //ProfileImage.sprite = _clubMemberDetails.profileImage.sprite;
+        StartCoroutine(LoadSpriteImageFromUrl(_clubMemberDetails.profileImagePath, ProfileImage));
 
         //Assign tab listeners
         TabButtons[0].onClick.RemoveAllListeners();
@@ -112,38 +117,43 @@ public class MemberDetails : MonoBehaviour
         switch (clubMemberDetails.memberRole)
         {
             case ClubMemberRole.Agent:
-                if (TipsObj.activeSelf)
-                    TipsObj.SetActive(false);
+                {
+                    Agent.isOn = true;
+                    Agent.transform.Find("Image").GetComponent<Button>().interactable = true;
+                    if (!transform.Find("BG1/Heading/Career").gameObject.activeSelf)
+                        transform.Find("BG1/Heading/Career").gameObject.SetActive(true);
 
-                Agent.isOn = true;
-                Agent.transform.Find("Image").GetComponent<Button>().interactable = true;
-                if (!transform.Find("BG1/Heading/Career").gameObject.activeSelf)
-                    transform.Find("BG1/Heading/Career").gameObject.SetActive(true);
+                    if (TipsObj.activeSelf)
+                        TipsObj.SetActive(false);
 
-                string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-                                 "\"userId\":\"" + clubMemberDetails.userId + "\"}";
-
-                WebServices.instance.SendRequest(RequestType.GetAgentDetails, requestData, true, OnServerResponseFound);
+                    GetAgentDetails();
+                }
                 break;
 
             case ClubMemberRole.Manager:
-                if (TipsObj.activeSelf)
-                    TipsObj.SetActive(false);
+                {
+                    Agent.transform.Find("Image").GetComponent<Button>().interactable = false;
+                    Manager.isOn = true;
 
-                Agent.transform.Find("Image").GetComponent<Button>().interactable = false;
-                Manager.isOn = true;
-                if (transform.Find("BG1/Heading/Career").gameObject.activeSelf)
-                    transform.Find("BG1/Heading/Career").gameObject.SetActive(false);
+                    if (TipsObj.activeSelf)
+                        TipsObj.SetActive(false);
+
+                    if (transform.Find("BG1/Heading/Career").gameObject.activeSelf)
+                        transform.Find("BG1/Heading/Career").gameObject.SetActive(false);
+                }
                 break;
 
             case ClubMemberRole.Member:
-                if (TipsObj.activeSelf)
-                    TipsObj.SetActive(false);
+                {
+                    Agent.transform.Find("Image").GetComponent<Button>().interactable = false;
+                    Member.isOn = true;
 
-                Agent.transform.Find("Image").GetComponent<Button>().interactable = false;
-                Member.isOn = true;
-                if (transform.Find("BG1/Heading/Career").gameObject.activeSelf)
-                    transform.Find("BG1/Heading/Career").gameObject.SetActive(false);
+                    if (TipsObj.activeSelf)
+                        TipsObj.SetActive(false);
+
+                    if (transform.Find("BG1/Heading/Career").gameObject.activeSelf)
+                        transform.Find("BG1/Heading/Career").gameObject.SetActive(false);
+                }
                 break;
         }
 
@@ -191,7 +201,7 @@ public class MemberDetails : MonoBehaviour
     {
         if (Manager.isOn && !isRoleAssigned)
         {
-            Debug.Log("Manager Toggle Changed..");
+            //Debug.Log("Manager Toggle Changed..");
             CallUpdatePlayer(ClubMemberRole.Manager);
         }
     }
@@ -200,7 +210,7 @@ public class MemberDetails : MonoBehaviour
     {
         if (Agent.isOn && !isRoleAssigned)
         {
-            Debug.Log("Agent Toggle Changed..");
+            //Debug.Log("Agent Toggle Changed..");
             CallUpdatePlayer(ClubMemberRole.Agent);
         }
     }
@@ -209,7 +219,7 @@ public class MemberDetails : MonoBehaviour
     {
         if(Member.isOn && !isRoleAssigned)
         {
-            Debug.Log("Member Toggle Changed..");
+            //Debug.Log("Member Toggle Changed..");
             CallUpdatePlayer(ClubMemberRole.Member);
         }
     }
@@ -217,8 +227,8 @@ public class MemberDetails : MonoBehaviour
     public void CallUpdatePlayer(ClubMemberRole clubMemberRole)
     {
         //isRoleAssigned = true;
-        Debug.Log("Current Role: " + clubMemberRole);
-        Debug.Log("Previous Role: " + clubMemberDetails.memberRole);
+        //Debug.Log("Current Role: " + clubMemberRole);
+        //Debug.Log("Previous Role: " + clubMemberDetails.memberRole);
 
         if (clubMemberDetails.memberRole == ClubMemberRole.Agent)
         {
@@ -249,7 +259,7 @@ public class MemberDetails : MonoBehaviour
 
     public void OnConfirmChangeMemberRole(/*ClubMemberRole memberRole*/)
     {
-        Debug.Log("Confirm Toggle: " + /*memberRole*/currentRole);
+        //Debug.Log("Confirm Toggle: " + /*memberRole*/currentRole);
 
         TipsObj.transform.Find("BG1/Heading/Text").GetComponent<Text>().text = "Tips";
         TipsObj.transform.Find("BG1/Heading/Close").gameObject.SetActive(false);
@@ -257,10 +267,7 @@ public class MemberDetails : MonoBehaviour
 
         if (/*memberRole*/currentRole == ClubMemberRole.Agent)
         {
-            string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-                                 "\"userId\":\"" + clubMemberDetails.userId + "\"}";
-
-            WebServices.instance.SendRequest(RequestType.GetAgentDetails, requestData, true, OnServerResponseFound);
+            GetAgentDetails();
 
             Agent.transform.Find("Image").GetComponent<Button>().interactable = true;
             transform.Find("BG1/Heading/Career").gameObject.SetActive(true);
@@ -275,7 +282,7 @@ public class MemberDetails : MonoBehaviour
             transform.Find("BG1/Heading/Career").gameObject.SetActive(false);
             TipsObj.SetActive(false);
             Manager.isOn = true;
-             ChangeMemberRole(/*memberRole*/currentRole);
+            ChangeMemberRole(/*memberRole*/currentRole);
             //MemberListUIManager.instance.ChangeUserRole(ListObject, false, clubMemberDetails, memberRole);
         }
         else if (/*memberRole*/currentRole == ClubMemberRole.Member)
@@ -447,7 +454,22 @@ public class MemberDetails : MonoBehaviour
 
             if (data["success"].ToString() == "1")
             {
+                UserAliasName.text = editMemberAlias.text;
 
+                //Removing OLD members from list
+                for (int i = 0; i < MemberListUIManager.instance.oldMembersList.Count; i++)
+                {
+                    MemberListUIManager.instance.oldMembersList.RemoveAt(i);
+                }
+                for (int j = 0; j < MemberListUIManager.instance.newMembersList.Count; j++)
+                {
+                    MemberListUIManager.instance.newMembersList.RemoveAt(j);
+                }
+
+                MemberListUIManager.instance.FetchMembersList();
+                
+                GetAgentDetails();
+                transform.Find("EditMemberDetails").gameObject.SetActive(false);                                
             }
             else
             {
@@ -473,10 +495,7 @@ public class MemberDetails : MonoBehaviour
 
                 EnableTab("selectDownline");
 
-                AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data1/TotalFee/Data").GetComponent<Text>().text = data["response"][0]["FeeDetails"].ToString();
-                AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data2/SpinUpBuyIn/Data").GetComponent<Text>().text = data["response"][0]["SpinUpDetails"].ToString();
-                AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data3/TotalWinnings/Data").GetComponent<Text>().text = data["response"][0]["WinningDetails"].ToString();
-                AgentCareerDetails.transform.Find("BG1/BG2/BottomPanel/MemberCount").GetComponent<Text>().text = data["response"][0]["MemberCount"].ToString();
+                LoadAgentDetails(data);
 
                 RequestAllDownlinerList();
                 RequestCurrentDownlinerList();
@@ -508,11 +527,11 @@ public class MemberDetails : MonoBehaviour
             JsonData data1 = JsonMapper.ToObject(serverResponse);
             if (data1["success"].Equals(1))
             {
-                //MainMenuController.instance.ShowMessage(serverResponse, () =>
-                //{
-                //    GetMembersListFromServer();
-                //    CloseSendOutPanel();
-                //});
+                AgentSendOutPanel.SetActive(false);
+
+                GetTradeRecordList();
+
+                EnableTab("grantCredit");
             }
             else
             {
@@ -521,16 +540,16 @@ public class MemberDetails : MonoBehaviour
         }
         else if(requestType == RequestType.ClaimBackChips)
         {
-            Debug.Log("Response => SendChipsOut : " + serverResponse);
+            Debug.Log("Response => ClaimBackChips : " + serverResponse);
 
             JsonData data2 = JsonMapper.ToObject(serverResponse);
             if (data2["success"].Equals(1))
             {
-                //MainMenuController.instance.ShowMessage(serverResponse, () =>
-                //{
-                //    GetMembersListFromServer();
-                //    CloseSendOutPanel();
-                //});
+                AgentClaimBackPanel.SetActive(false);
+
+                GetTradeRecordList();
+
+                EnableTab("grantCredit");
             }
             else
             {
@@ -543,6 +562,11 @@ public class MemberDetails : MonoBehaviour
             Debug.Log("Response GetTradeHistory: " + serverResponse);
             if (data["success"].Equals(1))
             {
+                for (int j = 0; j < AgentGrantCreditContainer.childCount; j++)
+                {
+                    Destroy(AgentGrantCreditContainer.GetChild(j).gameObject);
+                }
+
                 //Debug.Log("Total Data: " + data["response"][0]["nickName"].ToString());
                 for (int i = 0; i < data["response"].Count; i++)
                 {
@@ -572,6 +596,48 @@ public class MemberDetails : MonoBehaviour
                 }
             }
         }
+        else if(requestType == RequestType.GetClubMemberList)
+        {
+            Debug.Log("Response => GetClubMemberList: " + serverResponse);
+            JsonData data = JsonMapper.ToObject(serverResponse);
+
+            if (data["status"].Equals(true))
+            {
+                MemberListUIManager.instance.ShowMemberDetails(data);
+            }
+            else
+            {
+                //MainMenuController.instance.ShowMessage(data["message"].ToString());
+            }
+        }
+    }
+
+    public void LoadAgentDetails(JsonData data)
+    {
+        AgentGrantCreditObj.transform.Find("CreditBalanceLabel/CreditBalanceData").GetComponent<TMP_Text>().text = data["response"][0]["ChipsDetails"][0]["creditBalance"].ToString();
+
+        //Fee Details
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data1/TotalFee/Data").GetComponent<Text>().text = data["response"][0]["FeeDetails"][0]["TotalFee"].ToString();
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data1/LastWeek/Data").GetComponent<Text>().text = data["response"][0]["FeeDetails"][0]["LastWeek"].ToString();
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data1/ThisWeek/Data").GetComponent<Text>().text = data["response"][0]["FeeDetails"][0]["ThisWeek"].ToString();
+
+        //SpinUp Details
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data2/SpinUpBuyIn/Data").GetComponent<Text>().text = data["response"][0]["SpinUpDetails"][0]["SpinUpBuyIn"].ToString();
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data2/LastWeek/Data").GetComponent<Text>().text = data["response"][0]["SpinUpDetails"][0]["LastWeek"].ToString();
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data2/ThisWeek/Data").GetComponent<Text>().text = data["response"][0]["SpinUpDetails"][0]["ThisWeek"].ToString();
+
+        //Winnings Details
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data3/TotalWinnings/Data").GetComponent<Text>().text = data["response"][0]["WinningDetails"][0]["TotalWinnings"].ToString();
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data3/LastWeek/Data").GetComponent<Text>().text = data["response"][0]["WinningDetails"][0]["LastWeek"].ToString();
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data3/ThisWeek/Data").GetComponent<Text>().text = data["response"][0]["WinningDetails"][0]["ThisWeek"].ToString();
+
+        //Chips Details
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data4/CreditBalance/Data").GetComponent<Text>().text = data["response"][0]["ChipsDetails"][0]["creditBalance"].ToString();
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data4/DownlinesChips/Data").GetComponent<Text>().text = data["response"][0]["ChipsDetails"][0]["DownlinesChips"].ToString();
+        AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data4/ChipsInPlay/Data").GetComponent<Text>().text = data["response"][0]["ChipsDetails"][0]["chipsInPlay"].ToString();
+
+        //Member Details
+        AgentCareerDetails.transform.Find("BG1/BG2/BottomPanel/MemberCount").GetComponent<Text>().text = data["response"][0]["MemberCount"].ToString();
     }
 
     public void GetTradeRecordList()
@@ -579,8 +645,16 @@ public class MemberDetails : MonoBehaviour
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
                              "\"OrderBy\":\"" + "created" + "\"," +
                              "\"Sequence\":\"" + "DESC" + "\"," +
-                             "\"userId\":\"" + /*clubMemberDetails.userId*/PlayerManager.instance.GetPlayerGameData().userId + "\"}";
+                             "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
         WebServices.instance.SendRequest(RequestType.GetTradeHistory, requestData, true, OnServerResponseFound);
+    }
+    
+    public void GetAgentDetails()
+    {
+        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                                     "\"userId\":\"" + clubMemberDetails.userId + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.GetAgentDetails, requestData, true, OnServerResponseFound);
     }
 
     public void OpenSendOutPanel()
@@ -590,51 +664,80 @@ public class MemberDetails : MonoBehaviour
 
         AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/ChipsData/Text").GetComponent<Text>().text = ClubDetailsUIManager.instance.CLubChips.text;
         
-        //AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/PlayerNameText").GetComponent<Text>().text = clubMemberDetails.nickName;
-        //AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/ChipsData/Text").GetComponent<Text>().text = PlayerManager.instance.GetPlayerGameData().;
-
         AgentSendOutPanel.SetActive(true);
+    }
+
+    public void OnConfirmSendOut()
+    {
+        string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "," +
+            "\"amount\":" + AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text + "," +
+            "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + clubMemberDetails.memberRole + "\"}]}";
+
+        float totalAmount = 0;
+        float currentAmount = 0;
+
+        float.TryParse(ClubDetailsUIManager.instance.CLubChips.text, out totalAmount);
+        float.TryParse(AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text, out currentAmount);
+
+        Debug.Log("Current Amount: " + currentAmount);
+        Debug.Log("Total Amount: " + totalAmount);
+
+        if (currentAmount > totalAmount)
+        {
+            StartCoroutine(ShowPopUp("Insufficient for 5% transacion fee", 1.29f));
+        }
+        else
+        {
+            Debug.Log("request is - " + request);
+            WebServices.instance.SendRequest(RequestType.SendChipsOut, request, true, OnServerResponseFound);
+        }
     }
 
     public void OpenClaimBackPanel()
     {
         AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/PlayerNameText").GetComponent<Text>().text = clubMemberDetails.nickName;
-        AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/ChipsData/Text").GetComponent<Text>().text = clubMemberDetails.ptChips;
+        AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/ChipsData/Text").GetComponent<Text>().text = AgentCareerDetails.transform.Find("BG1/BG2/CenterArea/Data4/CreditBalance/Data").GetComponent<Text>().text;
 
         AgentClaimBackPanel.SetActive(true);
     }
 
-    public void OnConfirmSendOut()
-    {
-        string request = "{\"userId\":\"" + clubMemberDetails.userId/*PlayerManager.instance.GetPlayerGameData().userId*/ + "\"," +
-            "\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "," +
-            "\"amount\":" + AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text + "," +
-            "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + clubMemberDetails.memberRole + "\"}]}";
-
-        //int totalAmount, currentAmount;
-        //int.TryParse(ClubDetailsUIManager.instance.CLubChips.text, out totalAmount);
-        //int.TryParse(AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text, out currentAmount);
-
-        //Debug.Log("Current Amount: " + currentAmount);
-        //Debug.Log("Total Amount: " + totalAmount);
-
-        //if (currentAmount > totalAmount)
-        //{
-        //    StartCoroutine(ShowPopUp("Insufficient for 5% transacion fee", 1.29f));
-        //}
-        //else
-        //{
-            Debug.Log("request is - " + request);
-            WebServices.instance.SendRequest(RequestType.SendChipsOut, request, true, OnServerResponseFound);
-        //}
-    }
-
     public void OnConfirmClaimBack()
     {
-        string request = "{\"userId\":\"" + /*MemberListUIManager.instance.GetClubOwnerObject().userId*/PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+        float totalAmount = 0;
+        float currentAmount = 0;
+        float amount;
+
+        float.TryParse(AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/ChipsData/Text").GetComponent<Text>().text, out totalAmount);
+        float.TryParse(AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/EnterAmountInputField").GetComponent<TMP_InputField>().text, out currentAmount);
+
+        Debug.Log("Current Amount: " + currentAmount);
+        Debug.Log("Total Amount: " + totalAmount);
+
+        if (currentAmount > totalAmount)
+        {
+            amount = totalAmount;
+        }
+        else
+        {
+            amount = currentAmount;
+        }
+
+        string role = "";
+        if(MemberListUIManager.instance.GetClubOwnerObject().memberRole == ClubMemberRole.Owner)
+        {
+            role = "Creater";
+        }
+        else
+        {
+            role = MemberListUIManager.instance.GetClubOwnerObject().memberRole.ToString();
+        }
+
+        string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"role\":\"" + role + "\"," +
             "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-            "\"amount\":" + AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/EnterAmountInputField").GetComponent<TMP_InputField>().text + "," +
-            "\"membersArray\":[" + clubMemberDetails.userId + "]}";
+            "\"amount\":" + amount + "," +
+            "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + "}]}";
 
         Debug.Log("request is - " + request);
         WebServices.instance.SendRequest(RequestType.ClaimBackChips, request, true, OnServerResponseFound);
@@ -644,7 +747,7 @@ public class MemberDetails : MonoBehaviour
     {
         string requestData = "{\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
                     "\"requestUserId\":\"" + clubMemberDetails.userId + "\"," +
-                    "\"userAlias\":\"" + editMemberName.text + "\"," +
+                    "\"userAlias\":\"" + editMemberAlias.text + "\"," +
                     "\"note\":\"" + editMemberNote.text + "\"}";
 
         WebServices.instance.SendRequest(RequestType.EditClubMemberDetails, requestData, true, OnServerResponseFound);
@@ -682,7 +785,7 @@ public class MemberDetails : MonoBehaviour
         }
         else
         {
-            Debug.Log("No Player is selected to add");
+            //Debug.Log("No Player is selected to add");
             StartCoroutine(ShowPopUp("Please select players first", 1.29f));
         }
     }
@@ -715,19 +818,19 @@ public class MemberDetails : MonoBehaviour
 
     private void LoadCurrentDownliners(JsonData data)
     {
-        for (int i = 0; i < AgentSelectDownlineContainer.childCount; i++)
+        for (int i = 0; i < AgentCurrentDownlineContainer.childCount; i++)
         {
-            Destroy(AgentSelectDownlineContainer.GetChild(i).gameObject);
+            Destroy(AgentCurrentDownlineContainer.GetChild(i).gameObject);
         }
 
         for (int i = 0; i < data["response"].Count; i++)
         {
             GameObject obj = Instantiate(AgentPrefabForDownline, AgentCurrentDownlineContainer) as GameObject;
 
-            obj.transform.Find("TextName").GetComponent<TMP_Text>().text = data["response"][i]["requestUserName"].ToString();
+            obj.transform.Find("TextName").GetComponent<TMP_Text>().text = data["response"][i]["userAlias"].ToString();
             obj.transform.Find("TextId").GetComponent<TMP_Text>().text = data["response"][i]["requestUserId"].ToString();
             obj.transform.Find("TextNickname").GetComponent<TMP_Text>().text = data["response"][i]["nickName"].ToString();
-            obj.transform.Find("Coins").GetComponent<TMP_Text>().text = data["response"][i]["ptChips"].ToString();
+            obj.transform.Find("Coins").GetComponent<TMP_Text>().text = data["response"][i]["creditChips"].ToString();
             obj.transform.Find("Coins").gameObject.SetActive(true);
             obj.transform.Find("SelectedToggle").gameObject.SetActive(false);
 
@@ -748,10 +851,13 @@ public class MemberDetails : MonoBehaviour
             }
             else
             {
+                Debug.Log("Response => GetDownlineList : " + requestData);
+
                 JsonData data = JsonMapper.ToObject(serverResponse);
                 if (data["success"].ToString() == "1")
                 {
-                    LoadAllDownlinerList(data);
+                    if (data["response"].Count > 0)
+                        LoadAllDownlinerList(data);
                 }
                 else
                 {
@@ -772,7 +878,7 @@ public class MemberDetails : MonoBehaviour
         {
             GameObject obj = Instantiate(AgentPrefabForDownline, AgentSelectDownlineContainer) as GameObject;
 
-            obj.transform.Find("TextName").GetComponent<TMP_Text>().text = data["response"][i]["requestUserName"].ToString();
+            obj.transform.Find("TextName").GetComponent<TMP_Text>().text = data["response"][i]["userAlias"].ToString();
             obj.transform.Find("TextId").GetComponent<TMP_Text>().text = data["response"][i]["requestUserId"].ToString();
             obj.transform.Find("TextNickname").GetComponent<TMP_Text>().text = data["response"][i]["nickName"].ToString();
             //obj.transform.Find("Coins").GetComponent<TMP_Text>().text = data["response"][i]["ptChips"].ToString();
@@ -798,7 +904,9 @@ public class MemberDetails : MonoBehaviour
         {
             var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
             Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
-            image.sprite = sprite;
+            
+            if(image != null)
+                image.sprite = sprite;
 
             //Debug.Log("Successfully Set Player Profile");
         }

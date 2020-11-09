@@ -801,10 +801,11 @@ public class ClubCounter : MonoBehaviour
 
         selectedMembers = selectedMembers.Remove(selectedMembers.Length - 1, 1);
 
-        string request = "{\"userId\":\"" + /*MemberListUIManager.instance.GetClubOwnerObject().userId*/PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+        string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"role\":\"" + MemberListUIManager.instance.GetClubOwnerObject().memberRole + "\"," +
             "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
             "\"amount\":\"" + amount.ToString() + "\"," +
-            "\"membersArray\":[" + selectedMembers + "]}";
+            "\"membersArray\":[{\"userId\":" + selectedMembers + "}]}";
 
         Debug.Log("request is - " + request);
         WebServices.instance.SendRequest(RequestType.ClaimBackChips, request, true, OnServerResponseFound);
@@ -819,7 +820,7 @@ public class ClubCounter : MonoBehaviour
 
         selectedMembers = selectedMembers.Remove(selectedMembers.Length-1, 1);
 
-        string request = "{\"userId\":\"" + /*MemberListUIManager.instance.GetClubOwnerObject().userId*/PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+        string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
             "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
             "\"amount\":\"" + amount.ToString() + "\"," +
             "\"membersArray\":[" + selectedMembers + "]}";

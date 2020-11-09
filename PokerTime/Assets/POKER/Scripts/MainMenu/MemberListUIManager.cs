@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
 using System;
+using UnityEngine.Networking;
 
 public class MemberListUIManager : MonoBehaviour
 {
@@ -129,12 +130,16 @@ public class MemberListUIManager : MonoBehaviour
                 ClubMemberDetails memberDetails = newMembersList[i];
 
                 GameObject gm = Instantiate(newMemberPrefab,container) as GameObject;
-                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = memberDetails.userName + " (" + "ID: " + memberDetails.userId + ")";
+                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = memberDetails.userAlias + " (" + "ID: " + memberDetails.userId + ")";
                 gm.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "Referral ID : None ";
                 gm.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + memberDetails.nickName;
-                string initial = memberDetails.userName.ToUpper();
-                initial = initial.Substring(0, 2);
-                gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
+                //string initial = memberDetails.userName.ToUpper();
+                //initial = initial.Substring(0, 2);
+                //gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
+
+                StartCoroutine(LoadSpriteImageFromUrl(memberDetails.profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
+                //StartCoroutine(LoadSpriteImageFromUrl(memberDetails.profileImagePath, memberDetails.profileImage));
+                //gm.transform.Find("Image").GetComponent<Image>().sprite = memberDetails.profileImage.sprite;
 
                 gm.transform.Find("Reject").GetComponent<Button>().onClick.AddListener(()=> ChangeUserRole(gm,true, memberDetails));
                 gm.transform.Find("Approve").GetComponent<Button>().onClick.AddListener(() => ChangeUserRole(gm,false, memberDetails));
@@ -150,13 +155,18 @@ public class MemberListUIManager : MonoBehaviour
                 GameObject gm = Instantiate(oldMemberPrefab, container) as GameObject;
                 gm.SetActive(true);
 
-                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = oldMembersList[i].userName;
+                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = oldMembersList[i].userAlias;
                 gm.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "ID : " + oldMembersList[i].userId;
                 gm.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + oldMembersList[i].nickName;
-                gm.transform.Find("Coins").GetComponent<TMPro.TextMeshProUGUI>().text = oldMembersList[i].ptChips;
-                string initial = oldMembersList[i].userName.ToUpper();
-                initial = initial.Substring(0, 2);
-                gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
+                gm.transform.Find("Coins").GetComponent<TMPro.TextMeshProUGUI>().text = oldMembersList[i].creditChips;
+                //string initial = oldMembersList[i].userName.ToUpper();
+                //initial = initial.Substring(0, 2);
+                //gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
+
+                StartCoroutine(LoadSpriteImageFromUrl(oldMembersList[i].profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
+                //StartCoroutine(LoadSpriteImageFromUrl(oldMembersList[i].profileImagePath, oldMembersList[i].profileImage));
+                //gm.transform.Find("Image").GetComponent<Image>().sprite = oldMembersList[i].profileImage.sprite;
+
 
                 gm.GetComponent<Button>().onClick.RemoveAllListeners();
                 Debug.Log("Debug i value :" + i);
@@ -166,6 +176,27 @@ public class MemberListUIManager : MonoBehaviour
         }
 
         //layoutManager.UpdateLayout();
+    }
+
+    IEnumerator LoadSpriteImageFromUrl(string URL, Image image)
+    {
+        UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
+        yield return unityWebRequest.SendWebRequest();
+
+        if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+        {
+            Debug.LogError("Download failed");
+        }
+        else
+        {
+            var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
+            Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
+            
+            if(image!=null)
+                image.sprite = sprite;
+
+            Debug.Log("Successfully Set Player Profile");
+        }
     }
 
     private void OpenMemberDetailsPanel(int i, GameObject gm)
@@ -253,7 +284,7 @@ public class MemberListUIManager : MonoBehaviour
 
                     MemberDetails.instance.isRoleAssigned = true;
                     memberDetails.memberRole = roleToAssign;
-                    oldMembersList.Add(memberDetails);                    
+                    oldMembersList.Add(memberDetails);
                 }
                 else
                 {
@@ -273,15 +304,28 @@ public class MemberListUIManager : MonoBehaviour
         return clubOwner;
     }
 
-    private void ShowMemberDetails(JsonData data, bool newMembers = false)
+    public void ShowMemberDetails(JsonData data, bool newMembers = false)
     {
+        for (int i = 0; i < container.childCount; i++)
+        {
+            Destroy(container.GetChild(i).gameObject);
+        }
+        for (int i = 0; i < oldMembersList.Count; i++)
+        {
+            oldMembersList.RemoveAt(i);
+        }
+
         for (int i = 0; i < data["data"].Count; i++)
         {
             ClubMemberDetails clubMemberDetails = new ClubMemberDetails();
             clubMemberDetails.userId = data["data"][i]["requestUserId"].ToString();
             clubMemberDetails.userName = data["data"][i]["requestUserName"].ToString();
+            clubMemberDetails.userAlias = data["data"][i]["userAlias"].ToString();
+            clubMemberDetails.userNote = data["data"][i]["note"].ToString();
             clubMemberDetails.clubRequestId = data["data"][i]["clubRequestId"].ToString();
             clubMemberDetails.ptChips = data["data"][i]["ptChips"].ToString();
+            clubMemberDetails.creditChips = data["data"][i]["creditChips"].ToString();
+            clubMemberDetails.profileImagePath = data["data"][i]["profileImage"].ToString();            
 
             if (!newMembers)
             {
@@ -372,14 +416,18 @@ public class MemberListUIManager : MonoBehaviour
                 //MainMenuController.instance.ShowMessage(data["message"].ToString());
             }
         }
-        else
-        if (requestType == RequestType.GetClubMemberList)
+        else if (requestType == RequestType.GetClubMemberList)
         {
-            Debug.Log("Response ClubMemberList: " + serverResponse);
+            Debug.Log("Response GetClubMemberList: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["status"].Equals(true))
             {
+                for (int i = 0; i < container.childCount; i++)
+                {
+                    Destroy(container.GetChild(i).gameObject);
+                }
+
                 ShowMemberDetails(data);
             }
             else
@@ -465,11 +513,15 @@ public class MemberListUIManager : MonoBehaviour
 [System.Serializable]
 public class ClubMemberDetails
 {
+    public string profileImagePath;
     public string userId;
     public string clubRequestId;
     public string userName;
     public string nickName;
     public string ptChips;
+    public string userAlias;
+    public string userNote;
+    public string creditChips;
 
     public ClubMemberRole memberRole;
 }
