@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,12 @@ public class ClubAdminManager : MonoBehaviour
 
     #region JackpotSettings variables
     [Header("JACKPOT")]
+    public static bool isJackpotActivated = false;
+    public GameObject popUpText;
+    public GameObject TipsObj;
+    public GameObject TopUpJackpotPrefab;
+    public Transform TopUpJackpotContainer;
+    public TMP_Text TotalJackpotAmountText;
     public TMPro.TextMeshProUGUI ChipsAvailableText;
     public TMPro.TMP_InputField JackpotAmountInputField;
     public Button JackpotTopUpConfimButton;
@@ -23,7 +30,7 @@ public class ClubAdminManager : MonoBehaviour
     private bool isExplanationScreenOpen = true;
     public bool IsJackpotEnabled { get => IsJackpotEnabled; }
     private bool isJackpotEnabled { get; set; }
-    public GameObject JackpotPanel;
+    public GameObject JackpotPanel, TurnOffJackpotPanel;
     #endregion
 
     [Space(10)]
@@ -203,6 +210,10 @@ public class ClubAdminManager : MonoBehaviour
         TopupTabButton.onClick.AddListener(OpenTopUpPanel);
         TopupRecordTabButton.onClick.AddListener(OpenTopRecordPanel);
 
+        //Default Open TopupPanel
+        OpenTopUpPanel();
+        RequestJackpotDetails();
+
         JackpotToggleController.ToggleValueChanged += JackpotToggleController_ToggleValueChanged;
 
         JackpotTopUpConfimButton.onClick.RemoveAllListeners();
@@ -211,31 +222,115 @@ public class ClubAdminManager : MonoBehaviour
         ChipsAvailableText.text = ClubDetailsUIManager.instance.CLubChips.text;
     }
 
+    private void RequestJackpotDetails()
+    {
+        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}"; 
+
+        WebServices.instance.SendRequest(RequestType.GetJackpotDetailByClubId, requestData, true, OnServerResponseFound);
+    }
+
     private void SendTopUpJackpotRequest()
     {
-        int amount = 0;
-        int.TryParse(JackpotAmountInputField.text, out amount);
+        float amount = 0;
+        float availableAmount = 0;
+        float.TryParse(JackpotAmountInputField.text, out amount);
+        float.TryParse(ChipsAvailableText.text, out availableAmount);
+        Debug.Log("Jackpot Amount: " + amount);
+        Debug.Log("Available Amount: " + availableAmount);
+        
+        if(amount > availableAmount)
+        {
+            Debug.Log("Insufficient Amount...");
+        }
+        else
+        {
+            Debug.Log("Available to topUp");
+            string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                                     "\"userId\":\"" + MemberListUIManager.instance.GetClubOwnerObject().userId + "\"," +
+                                     "\"jackpotAmount\":\"" + amount + "\"}";
 
-        //need api
+            WebServices.instance.SendRequest(RequestType.TopUpJackpot, requestData, true, OnServerResponseFound);
+        }
     }
 
     private void JackpotToggleController_ToggleValueChanged(bool val)
     {
-        ClubDetailsUIManager.instance.SetJackpotStatus(val);
-        Debug.Log("jackpot status :" + val.ToString());
-        string b = string.Empty;
-        if (val) { b = "1"; } else { b = "0"; }
-        Debug.Log(ClubDetailsUIManager.instance.GetClubUniqueId());
+        if (isJackpotActivated)
+        {
+            ClubDetailsUIManager.instance.SetJackpotStatus(val);
+            Debug.Log("jackpot status :" + val.ToString());
+            string b = string.Empty;
+            if (val) { b = "1"; } else { b = "0"; }
+            Debug.Log(ClubDetailsUIManager.instance.GetClubUniqueId());
 
-        string requestData = "{\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
-                            "\"clubName\":\"" + ClubDetailsUIManager.instance.GetClubName() + "\"," +
-                            "\"clubStatus\":\"" + "1" + "\"," +
-                            "\"jackpotToggle\":\"" + b + "\"," +
-                            "\"layout\":\"" + ClubDetailsUIManager.instance.GetLayout() //to-do. get layout from club details ui manager
-                            + "\"}";
+            string requestData = "{\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
+                                "\"clubName\":\"" + ClubDetailsUIManager.instance.GetClubName() + "\"," +
+                                "\"clubStatus\":\"" + "1" + "\"," +
+                                "\"jackpotToggle\":\"" + b + "\"," +
+                                "\"layout\":\"" + ClubDetailsUIManager.instance.GetLayout() //to-do. get layout from club details ui manager
+                                + "\"}";
 
-        WebServices.instance.SendRequest(RequestType.UpdateClub, requestData, true, OnServerResponseFound);
+            WebServices.instance.SendRequest(RequestType.UpdateClub, requestData, true, OnServerResponseFound);
+
+            if(!val)
+            {
+                TurnOffJackpotPanel.SetActive(true);
+                TurnOffJackpotPanel.transform.Find("BG1/Heading/Close").GetComponent<Button>().onClick.RemoveAllListeners();
+                TurnOffJackpotPanel.transform.Find("BG1/Heading/Close").GetComponent<Button>().onClick.AddListener(() => OnCloseTurnOffJackpotPanel());
+                TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/Text (TMP)").GetComponent<TMP_Text>().text = "ID: " + ClubDetailsUIManager.instance.GetClubId();
+                TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/BtnConfirm").GetComponent<Button>().onClick.AddListener(() => CheckToConfirm(val));
+            }
+            else if(val)
+            {
+                TurnOffJackpotPanel.SetActive(false);
+                string req = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                             "\"status\":\"" + "Active" + "\"}";
+
+                WebServices.instance.SendRequest(RequestType.OnOffJackpot, req, true, OnServerResponseFound);
+            }            
+        }
+        else
+        {
+            if(val)
+            {
+                JackpotTopUpPopup.SetActive(true);
+                OpenTopUpPanel();
+            }            
+        }
     }
+    
+    private void OnCloseTurnOffJackpotPanel()
+    {        
+        JackpotToggleController.isOn = true;        
+        TurnOffJackpotPanel.SetActive(false);
+    }
+
+    private void CheckToConfirm(bool val)
+    {
+        if(TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField (TMP)").GetComponent<TMP_InputField>().text.Length <= 0)
+        {
+            StartCoroutine(ShowPopUp("Enter Club ID", 1.29f));
+        }
+        else if(!TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField (TMP)").GetComponent<TMP_InputField>().text.Equals(ClubDetailsUIManager.instance.GetClubId()))
+        {
+            StartCoroutine(ShowPopUp("ID incorrect", 1.29f));
+        }
+        else
+        {
+            TipsObj.SetActive(true);
+            TipsObj.transform.Find("BG1/BG2/ConfirmDeleteMember").GetComponent<Button>().onClick.RemoveAllListeners();
+            TipsObj.transform.Find("BG1/BG2/ConfirmDeleteMember").GetComponent<Button>().onClick.AddListener(() => OnConfirmDisableJackpot());
+        }
+    }
+
+    private void OnConfirmDisableJackpot()
+    {
+        string req = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                     "\"status\":\"" + "Inactive" + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.OnOffJackpot, req, true, OnServerResponseFound);
+    }
+
 
     private void OpenTopupPopup()
     {
@@ -295,6 +390,8 @@ public class ClubAdminManager : MonoBehaviour
 
         TopUpPanel.SetActive(false);
         TopRecordPanel.SetActive(true);
+
+        WebServices.instance.SendRequest(RequestType.GetTopUpDetailsByClubId, "{\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "}", true, OnServerResponseFound);
     }
 
     #endregion
@@ -454,6 +551,14 @@ public class ClubAdminManager : MonoBehaviour
         NotTextPanel.SetActive(false);
         NotImagePanel.SetActive(true);
     }
+
+    IEnumerator ShowPopUp(string msg, float delay)
+    {
+        popUpText.SetActive(true);
+        popUpText.transform.GetChild(0).GetComponent<Text>().text = msg;
+        yield return new WaitForSeconds(delay);
+        popUpText.SetActive(false);
+    }
     #endregion
 
     #region Preferences
@@ -540,7 +645,7 @@ public class ClubAdminManager : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.Log("server response club admin : " + serverResponse);
+        //Debug.Log("server response club admin : " + serverResponse);
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
@@ -626,6 +731,107 @@ public class ClubAdminManager : MonoBehaviour
                         else
                         {
                             bottomPanel.SetActive(false);
+                        }
+                    }
+                }
+                break;
+
+            case RequestType.GetJackpotDetailByClubId:
+                {
+                    Debug.Log("Response => GetJackpotDetailsByClubId : " + serverResponse);
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    if (data["status"].Equals(true))
+                    {
+                        if (!isJackpotActivated)
+                            isJackpotActivated = true;
+
+                        int a = data["data"][0]["jackpotAmount"].ToString().Length;
+                        int b = TotalJackpotAmountText.text.Length;
+
+                        string str = "";
+                        for (int i = 0; i < (b-a); i++)
+                        {
+                            if (i == 1)
+                            {
+                                str += ",";
+                                continue;
+                            }
+                            else if (i == 5)
+                            {
+                                str += ",";
+                                continue;
+                            }
+                            str += "0";
+                        }
+
+                        str += data["data"][0]["jackpotAmount"].ToString();
+                        //Debug.Log("Amount: " + str);
+                        TotalJackpotAmountText.text = str;
+
+                        Debug.Log("Jackpot is active");
+                        if(data["data"][0]["jackpotStatus"].ToString().Equals("Active"))
+                        {
+                            JackpotToggleController.isOn = true;
+                        }
+                        else
+                        {
+                            JackpotToggleController.isOn = false;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("No Jackpot is available...");
+                        JackpotToggleController.isOn = false;
+                    }
+                }
+                break;
+
+            case RequestType.TopUpJackpot:
+                {
+                    Debug.Log("Response => TopUpJackpot : " + serverResponse);
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    //if (data["message"].ToString() == "Success")
+                    //{
+                        
+                    //}
+                }
+                break;
+
+            case RequestType.OnOffJackpot:
+                {
+                    Debug.Log("Response => OnOffJackpot : " + serverResponse);
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    if (data["status"].Equals(true))
+                    {
+                        if (TipsObj.activeSelf)
+                            TipsObj.SetActive(false);
+
+                        if (TurnOffJackpotPanel.activeSelf)
+                            TurnOffJackpotPanel.SetActive(false);
+                    }
+                }
+                break;
+
+
+            case RequestType.GetTopUpDetailsByClubId:
+                {
+                    Debug.Log("Response => GetTopUpDetailsByClubId : " + serverResponse);
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    if (data["success"].Equals(1))
+                    {
+                        for (int i = 0; i < TopUpJackpotContainer.childCount; i++)
+                        {
+                            Destroy(TopUpJackpotContainer.GetChild(0).gameObject);
+                        }
+
+                        for (int i = 0; i < data["data"].Count; i++)
+                        {
+                            GameObject gm = Instantiate(TopUpJackpotPrefab, TopUpJackpotContainer) as GameObject;
+                            gm.transform.Find("Data").GetComponent<TMP_Text>().gameObject.SetActive(false);
+                            gm.transform.Find("Name").GetComponent<TMP_Text>().text = MemberListUIManager.instance.GetClubOwnerObject().userAlias + " topped up";
+                            //gm.transform.Find("Name").GetComponent<RectTransform>().position = new Vector3(18, 12, 0);
+                            gm.transform.Find("Time").GetComponent<TMP_Text>().text = data["data"][i]["created"].ToString().Substring(0, 10) + " " + data["data"][i]["created"].ToString().Substring(11, 5);
+                            gm.transform.Find("Image/Coins").GetComponent<TMP_Text>().text = "-" + data["data"][i]["jackpotAmount"].ToString();
                         }
                     }
                 }

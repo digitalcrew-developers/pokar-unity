@@ -14,6 +14,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 	public Text clubNameText, uniqueClubIdText;
 	private string clubId = "", uniqueClubId = "";
     public Text CLubChips;
+	public Image clubProfileImage;
 
 	//DEV_CODE
 	[Header("Gameobject")]
@@ -64,12 +65,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 #endif
 	}
 
-	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub)
+	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub, string clubProfileImagePath)
 	{
 		clubNameText.text = "Club Name : "+nameOfClub;
 		uniqueClubIdText.text = "Club Id : "+clubUniqueId;
 		clubId = idOfClub;
 		uniqueClubId = clubUniqueId;
+		StartCoroutine(LoadSpriteImageFromUrl(clubProfileImagePath, clubProfileImage));
 
 		//DEV_CODE
 		//Debug.Log("Club name: " + nameOfClub);
@@ -77,8 +79,30 @@ public class ClubDetailsUIManager : MonoBehaviour
 		editProfileClubName.text = nameOfClub;
 
 		GetChips();
+		GetNotifications();
         //to-do... get layout from server for this club and update in local string
     }
+
+	IEnumerator LoadSpriteImageFromUrl(string URL, Image image)
+	{
+		UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
+		yield return unityWebRequest.SendWebRequest();
+
+		if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+		{
+			Debug.LogError("Download failed");
+		}
+		else
+		{
+			var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
+			Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
+
+			if (image != null)
+				image.sprite = sprite;
+
+			Debug.Log("Successfully Set Player Profile");
+		}
+	}
 
 	private void DisableAllScreens()
 	{
@@ -110,7 +134,16 @@ public class ClubDetailsUIManager : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.GetClubDetails, request, true, OnServerResponseFound);
     }
 
-    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+	public void GetNotifications()
+	{
+		string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+						   "\"clubId\":\"" + GetClubId() + "\"," +
+						   "\"unionId\":\"" + "" + "\"}";
+
+		WebServices.instance.SendRequest(RequestType.GetNotification, request, true, OnServerResponseFound);
+	}
+
+	public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         Debug.Log("Response GetClubDetails: " + serverResponse);
         //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
@@ -134,6 +167,13 @@ public class ClubDetailsUIManager : MonoBehaviour
                     CLubChips.text = chipsText;
                 }
                 break;
+
+			case RequestType.GetNotification:
+				{
+					Debug.Log("Response => GetNotification: " + serverResponse);
+				}
+				break;
+
             default:
 #if ERROR_LOG
 			Debug.LogError("Unhandled requestType found in  MenuHandller = "+requestType);
@@ -213,7 +253,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 	public void OnClickSaveBtn()
 	{
 		Debug.Log("Clicked on Save Button...");
-		UploadProfileImage();	
+		UploadProfileImage();
 	}
 
 	public void UploadProfileImage()
@@ -342,7 +382,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 		editClubProfileImg.sprite = sprite;
 
 		//OnCloseSelectFrom();
-
+		//UploadProfileImage();
 		selectFrom.SetActive(false);
 	}
 

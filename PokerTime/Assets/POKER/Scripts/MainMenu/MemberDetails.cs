@@ -110,7 +110,9 @@ public class MemberDetails : MonoBehaviour
         TabButtons[2].onClick.AddListener(() => EnableTab("select"));
 
         EnableTab("overall");
-        //call api and fill rest details
+        //Disable Delete Btn From TipsObj
+        if(TipsObj.transform.Find("BG1/BG2/ConfirmDeleteMember").gameObject.activeSelf)
+            TipsObj.transform.Find("BG1/BG2/ConfirmDeleteMember").gameObject.SetActive(false);
 
         //Setting Current Player role
         Debug.Log("Current Player Role: " + clubMemberDetails.memberRole);
@@ -366,13 +368,20 @@ public class MemberDetails : MonoBehaviour
         }
     }
 
+    public void OnCloseMemberDetailsPanel()
+    {
+        MemberListUIManager.instance.FetchMembersList();
+    }
+
     private void DeleteMember()
     {
         TipsObj.transform.Find("BG1/Heading/Text").GetComponent<Text>().text = "Notice";
         TipsObj.transform.Find("BG1/Heading/Close").gameObject.SetActive(true);
         TipsObj.transform.Find("BG1/BG2/Text").GetComponent<Text>().text = "Wish to delete member?";
         TipsObj.transform.Find("BG1/BG2/BottomBtns/CancelBtn").gameObject.SetActive(false);
-        TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmBtn").GetComponent<Button>().onClick.AddListener(() =>
+        TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmBtn").gameObject.SetActive(false);
+        TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmDeleteMember").gameObject.SetActive(true);
+        TipsObj.transform.Find("BG1/BG2/BottomBtns/ConfirmDeleteMember").GetComponent<Button>().onClick.AddListener(() =>
             MemberListUIManager.instance.ChangeUserRole(ListObject, true, clubMemberDetails, clubMemberDetails.memberRole));
 
         TipsObj.SetActive(true);
@@ -468,7 +477,9 @@ public class MemberDetails : MonoBehaviour
 
                 MemberListUIManager.instance.FetchMembersList();
                 
-                GetAgentDetails();
+                if(clubMemberDetails.memberRole == ClubMemberRole.Agent)
+                    GetAgentDetails();
+
                 transform.Find("EditMemberDetails").gameObject.SetActive(false);                                
             }
             else
@@ -529,7 +540,8 @@ public class MemberDetails : MonoBehaviour
             {
                 AgentSendOutPanel.SetActive(false);
 
-                GetTradeRecordList();
+                //GetTradeRecordList();
+                GetAgentDetails();
 
                 EnableTab("grantCredit");
             }
@@ -547,7 +559,8 @@ public class MemberDetails : MonoBehaviour
             {
                 AgentClaimBackPanel.SetActive(false);
 
-                GetTradeRecordList();
+                //GetTradeRecordList();
+                GetAgentDetails();
 
                 EnableTab("grantCredit");
             }

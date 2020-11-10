@@ -234,6 +234,7 @@ public class MenuHandller : MonoBehaviour
 
 		case RequestType.CreateClub:
 			{
+					Debug.Log("Response => CreateClub: " + serverResponse);
 				JsonData data = JsonMapper.ToObject(serverResponse);
 
 				if (data["success"].ToString() == "1")

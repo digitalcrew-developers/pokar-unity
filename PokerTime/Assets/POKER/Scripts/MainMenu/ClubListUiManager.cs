@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using LitJson;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class ClubListUiManager : MonoBehaviour
@@ -14,6 +15,8 @@ public class ClubListUiManager : MonoBehaviour
 
     public GameObject MiddleButtons;
     public GameObject TopButtonJoin, TopButtonCreate;
+
+	private Sprite[] clubProfiles;
 
 	void Awake()
 	{
@@ -66,11 +69,13 @@ public class ClubListUiManager : MonoBehaviour
 				string uniqueClubId = data["data"][i]["uniqueClubId"].ToString();
 				string clubName = data["data"][i]["clubName"].ToString();
 				string clubId = data["data"][i]["clubId"].ToString();
+				string clubProfileImagePath = data["data"][i]["clubImage"].ToString();
 
-
+				//Load Club Profile Image
+				StartCoroutine(LoadSpriteImageFromUrl(clubProfileImagePath, gm.transform.Find("PhotoBg").GetComponent<Image>()));
 				gm.transform.Find("ClubName").GetComponent<Text>().text = clubName;
-				Transform stars = gm.transform.Find("Star");
 
+				Transform stars = gm.transform.Find("Star");
 
 				int activeStarCount = UnityEngine.Random.Range(2,stars.childCount);
 
@@ -87,21 +92,22 @@ public class ClubListUiManager : MonoBehaviour
                 }
 
 				//gm.transform.Find("ClubId").GetComponent<Text>().text = "ClubId : " + uniqueClubId;
-				gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnClub(clubName, uniqueClubId, clubId));
+				gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnClub(clubName, uniqueClubId, clubId, clubProfileImagePath));
 			}			
 		}
 
 		//layoutManager.UpdateLayout();
 	}
 
-	private void OnClickOnClub(string clubName,string uniqueClubId,string clubId)
+	private void OnClickOnClub(string clubName,string uniqueClubId,string clubId, string clubProfileImagePath)
 	{
 		SoundManager.instance.PlaySound(SoundType.Click);
 
-		object[] parameters = new object[3];
+		object[] parameters = new object[4];
 		parameters[0] = clubName;
 		parameters[1] = uniqueClubId;
 		parameters[2] = clubId;
+		parameters[3] = clubProfileImagePath;
 
 
 		MainMenuController.instance.ShowScreen(MainMenuScreens.ClubDetails, parameters);
@@ -129,10 +135,10 @@ public class ClubListUiManager : MonoBehaviour
 
 			if (data["success"].ToString() == "1")
             {
-                MiddleButtons.SetActive(false);
+				MiddleButtons.SetActive(false);
                 TopButtonJoin.SetActive(true);
                 TopButtonCreate.SetActive(true);
-                ShowClubList(data);
+				ShowClubList(data);
 			}
 			else
 			{
@@ -144,6 +150,24 @@ public class ClubListUiManager : MonoBehaviour
 		}
 	}
 
+	IEnumerator LoadSpriteImageFromUrl(string URL, Image image)
+	{
+		UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
+		yield return unityWebRequest.SendWebRequest();
 
+		if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+		{
+			Debug.LogError("Download failed");
+		}
+		else
+		{
+			var Text = DownloadHandlerTexture.GetContent(unityWebRequest);
+			Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
 
+			if (image != null)
+				image.sprite = sprite;
+
+			Debug.Log("Successfully Set Player Profile");
+		}
+	}
 }
