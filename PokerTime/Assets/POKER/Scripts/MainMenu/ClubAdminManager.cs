@@ -15,6 +15,7 @@ public class ClubAdminManager : MonoBehaviour
 
     #region JackpotSettings variables
     [Header("JACKPOT")]
+    public string JackpotAmount = "";
     public static bool isJackpotActivated = false;
     public GameObject popUpText;
     public GameObject TipsObj;
@@ -86,7 +87,7 @@ public class ClubAdminManager : MonoBehaviour
         if (null == instance)
         {
             instance = this;
-        }
+        }        
     }
 
     /// <summary>
@@ -222,7 +223,7 @@ public class ClubAdminManager : MonoBehaviour
         ChipsAvailableText.text = ClubDetailsUIManager.instance.CLubChips.text;
     }
 
-    private void RequestJackpotDetails()
+    public void RequestJackpotDetails()
     {
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}"; 
 
@@ -235,8 +236,8 @@ public class ClubAdminManager : MonoBehaviour
         float availableAmount = 0;
         float.TryParse(JackpotAmountInputField.text, out amount);
         float.TryParse(ChipsAvailableText.text, out availableAmount);
-        Debug.Log("Jackpot Amount: " + amount);
-        Debug.Log("Available Amount: " + availableAmount);
+        //Debug.Log("Jackpot Amount: " + amount);
+        //Debug.Log("Available Amount: " + availableAmount);
         
         if(amount > availableAmount)
         {
@@ -765,8 +766,10 @@ public class ClubAdminManager : MonoBehaviour
                         }
 
                         str += data["data"][0]["jackpotAmount"].ToString();
-                        //Debug.Log("Amount: " + str);
-                        TotalJackpotAmountText.text = str;
+
+                        JackpotAmount = str;
+                        Debug.Log("Jackpot Amount: " + JackpotAmount);
+                        TotalJackpotAmountText.text = JackpotAmount;
 
                         Debug.Log("Jackpot is active");
                         if(data["data"][0]["jackpotStatus"].ToString().Equals("Active"))

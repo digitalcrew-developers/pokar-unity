@@ -27,8 +27,8 @@ public class ClubListUiManager : MonoBehaviour
     {
         if (PlayerManager.instance.IsLogedIn())
         {
-            FetchList();
-        }
+            FetchList();			
+		}
 	}
 
 	public void FetchList(bool isShowLoading = true)
@@ -42,7 +42,7 @@ public class ClubListUiManager : MonoBehaviour
 		}
 		
 		WebServices.instance.SendRequest(RequestType.GetClubList, requestData, true, OnServerResponseFound);
-	}
+	}	
 
 	public void OnClickOnBack()
 	{
@@ -70,9 +70,10 @@ public class ClubListUiManager : MonoBehaviour
 				string clubName = data["data"][i]["clubName"].ToString();
 				string clubId = data["data"][i]["clubId"].ToString();
 				string clubProfileImagePath = data["data"][i]["clubImage"].ToString();
+				string playerType = data["data"][i]["playerType"].ToString();
 
 				//Load Club Profile Image
-				StartCoroutine(LoadSpriteImageFromUrl(clubProfileImagePath, gm.transform.Find("PhotoBg").GetComponent<Image>()));
+				StartCoroutine(LoadSpriteImageFromUrl(clubProfileImagePath, gm.transform.Find("PhotoBg/Photo").GetComponent<Image>()));
 				gm.transform.Find("ClubName").GetComponent<Text>().text = clubName;
 
 				Transform stars = gm.transform.Find("Star");
@@ -92,23 +93,23 @@ public class ClubListUiManager : MonoBehaviour
                 }
 
 				//gm.transform.Find("ClubId").GetComponent<Text>().text = "ClubId : " + uniqueClubId;
-				gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnClub(clubName, uniqueClubId, clubId, clubProfileImagePath));
+				gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnClub(clubName, uniqueClubId, clubId, clubProfileImagePath, playerType));
 			}			
 		}
 
 		//layoutManager.UpdateLayout();
 	}
 
-	private void OnClickOnClub(string clubName,string uniqueClubId,string clubId, string clubProfileImagePath)
+	private void OnClickOnClub(string clubName,string uniqueClubId,string clubId, string clubProfileImagePath, string playerType)
 	{
 		SoundManager.instance.PlaySound(SoundType.Click);
 
-		object[] parameters = new object[4];
+		object[] parameters = new object[5];
 		parameters[0] = clubName;
 		parameters[1] = uniqueClubId;
 		parameters[2] = clubId;
 		parameters[3] = clubProfileImagePath;
-
+		parameters[4] = playerType;
 
 		MainMenuController.instance.ShowScreen(MainMenuScreens.ClubDetails, parameters);
 	}

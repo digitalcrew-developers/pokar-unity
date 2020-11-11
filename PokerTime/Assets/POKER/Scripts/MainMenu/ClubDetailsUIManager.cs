@@ -2,6 +2,7 @@
 using LitJson;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -15,6 +16,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 	private string clubId = "", uniqueClubId = "";
     public Text CLubChips;
 	public Image clubProfileImage;
+	public TMP_Text jackpotAmountText;
+	public string playerTypeForClub = "";
 
 	//DEV_CODE
 	[Header("Gameobject")]
@@ -65,13 +68,16 @@ public class ClubDetailsUIManager : MonoBehaviour
 #endif
 	}
 
-	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub, string clubProfileImagePath)
+	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub, string clubProfileImagePath, string playerType)
 	{
 		clubNameText.text = "Club Name : "+nameOfClub;
 		uniqueClubIdText.text = "Club Id : "+clubUniqueId;
 		clubId = idOfClub;
 		uniqueClubId = clubUniqueId;
+		playerTypeForClub = playerType;
+		
 		StartCoroutine(LoadSpriteImageFromUrl(clubProfileImagePath, clubProfileImage));
+		FetchJackpotDetails();		
 
 		//DEV_CODE
 		//Debug.Log("Club name: " + nameOfClub);
@@ -82,6 +88,55 @@ public class ClubDetailsUIManager : MonoBehaviour
 		GetNotifications();
         //to-do... get layout from server for this club and update in local string
     }
+
+	private void FetchJackpotDetails()
+	{
+		string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+		WebServices.instance.SendRequest(RequestType.GetJackpotDetailByClubId, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
+		{
+			if (errorMessage.Length > 0)
+			{
+				if (isShowErrorMessage)
+				{
+					MainMenuController.instance.ShowMessage(errorMessage);
+				}
+				return;
+			}
+
+			Debug.Log("Response => GetJackpotDetails(ClubPanel): " + serverResponse);
+
+			JsonData data = JsonMapper.ToObject(serverResponse);
+
+			if (data["status"].Equals(true))
+			{
+				int a = data["data"][0]["jackpotAmount"].ToString().Length;
+
+				string str = "";
+				for (int i = 0; i < (9 - a); i++)
+				{
+					if (i == 1)
+					{
+						str += ",";
+						continue;
+					}
+					else if (i == 5)
+					{
+						str += ",";
+						continue;
+					}
+					str += "0";
+				}
+
+				str += data["data"][0]["jackpotAmount"].ToString();
+
+				jackpotAmountText.text = str;
+			}
+			else
+			{
+				Debug.Log("No Jackpot is available...");
+			}
+		});
+	}
 
 	IEnumerator LoadSpriteImageFromUrl(string URL, Image image)
 	{

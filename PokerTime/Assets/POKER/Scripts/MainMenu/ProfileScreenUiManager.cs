@@ -114,7 +114,7 @@ public class ProfileScreenUiManager : MonoBehaviour
             Sprite sprite = Sprite.Create(Text, new Rect(0, 0, Text.width, Text.height), Vector2.zero);
             image.sprite = sprite;
             
-            Debug.Log("Successfully Set Player Profile");
+            //Debug.Log("Successfully Set Player Profile");
         }
 
 

@@ -34,6 +34,18 @@ public class MemberListUIManager : MonoBehaviour
 
     private void Start()
     {
+        if(ClubDetailsUIManager.instance.playerTypeForClub.Equals("Creater"))
+        {
+            Debug.Log("I'm the Owner..");
+        }
+        else
+        {
+            memberListScreen.transform.Find("BG1/BG2/Menu").gameObject.SetActive(false);
+            memeberPanel.transform.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(0, 0, 0);
+            memeberPanel.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(610, 660);
+            Debug.Log("Not Owner..");
+        }
+
         FetchMembersList();
 
         MemberFilter.onClick.RemoveAllListeners();
@@ -45,17 +57,22 @@ public class MemberListUIManager : MonoBehaviour
         }
     }
 
+    //private void OnEnable()
+    //{
+        
+    //}
+
     public void FetchMembersList()
     {
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
         int limit = 0;
         string pendingUserRequestData = "{\"limit\":\"" +  limit.ToString() + "\"," + "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
 
-        Debug.LogWarning("CLUB DETAILS CLUB ID-" + ClubDetailsUIManager.instance.GetClubId());
-        Debug.LogWarning("CLUB DETAILS UNIQUE CLUB ID-" + ClubDetailsUIManager.instance.GetClubUniqueId());
+        //Debug.LogWarning("CLUB DETAILS CLUB ID-" + ClubDetailsUIManager.instance.GetClubId());
+        //Debug.LogWarning("CLUB DETAILS UNIQUE CLUB ID-" + ClubDetailsUIManager.instance.GetClubUniqueId());
 
 
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
         //old member list
         WebServices.instance.SendRequest(RequestType.GetClubMemberList, requestData, true, OnServerResponseFound);
         //new member list
@@ -130,14 +147,15 @@ public class MemberListUIManager : MonoBehaviour
                 ClubMemberDetails memberDetails = newMembersList[i];
 
                 GameObject gm = Instantiate(newMemberPrefab,container) as GameObject;
-                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = memberDetails.userAlias + " (" + "ID: " + memberDetails.userId + ")";
+                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = memberDetails.userName + " (" + "ID: " + memberDetails.userId + ")";
                 gm.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "Referral ID : None ";
-                gm.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + memberDetails.nickName;
+                gm.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + memberDetails.userName;
                 //string initial = memberDetails.userName.ToUpper();
                 //initial = initial.Substring(0, 2);
                 //gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
 
-                StartCoroutine(LoadSpriteImageFromUrl(memberDetails.profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
+                if (memberDetails.profileImagePath.Length > 0)
+                    StartCoroutine(LoadSpriteImageFromUrl(memberDetails.profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
 
                 gm.transform.Find("Reject").GetComponent<Button>().onClick.AddListener(() => newMemberButton.transform.Find("Notification").gameObject.SetActive(false));
                 gm.transform.Find("Reject").GetComponent<Button>().onClick.AddListener(()=> ChangeUserRole(gm,true, memberDetails));
@@ -163,11 +181,14 @@ public class MemberListUIManager : MonoBehaviour
                 //initial = initial.Substring(0, 2);
                 //gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
 
-                StartCoroutine(LoadSpriteImageFromUrl(oldMembersList[i].profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
+                if (oldMembersList[i].profileImagePath.Length > 0)
+                    StartCoroutine(LoadSpriteImageFromUrl(oldMembersList[i].profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
                 
                 gm.GetComponent<Button>().onClick.RemoveAllListeners();
                 Debug.Log("Debug i value :" + i);
-                gm.GetComponent<Button>().onClick.AddListener(() => OpenMemberDetailsPanel(x, gm));
+
+                if(ClubDetailsUIManager.instance.playerTypeForClub.Equals("Creater"))
+                    gm.GetComponent<Button>().onClick.AddListener(() => OpenMemberDetailsPanel(x, gm));
             }
             MemberCountText.text = "Members : " + oldMembersList.Count;
         }
@@ -214,8 +235,6 @@ public class MemberListUIManager : MonoBehaviour
                     "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"}";
 
 
-            //WebServices.instance.SendRequest(RequestType.ChangePlayerRoleInClub, requestData, true, OnServerResponseFound);
-
             //string requestData = "{\"clubRequestId\":\"" + memberDetails.clubRequestId + "\"}";
 
             //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
@@ -235,12 +254,14 @@ public class MemberListUIManager : MonoBehaviour
                     return;
                 }
 
+                Debug.Log("Response => DeleteMemberRequest : " + serverResponse);
                 JsonData data = JsonMapper.ToObject(serverResponse);
 
                 if (data["success"].ToString() == "1")
                 {
                     Destroy(gm);
                     newMembersList.Remove(memberDetails);
+                                        
                     MemberCountText.text = "Members : " + newMembersList.Count;
                 }
                 else
@@ -271,7 +292,7 @@ public class MemberListUIManager : MonoBehaviour
                     return;
                 }
 
-                Debug.Log("Response User Role Change: " + serverResponse);
+                Debug.Log("Response => UserRoleChange: " + serverResponse);
 
                 JsonData data = JsonMapper.ToObject(serverResponse);
 
@@ -281,8 +302,8 @@ public class MemberListUIManager : MonoBehaviour
                     newMembersList.Remove(memberDetails);
                     MemberCountText.text = "Members : " + newMembersList.Count;
 
-                    MemberDetails.instance.isRoleAssigned = true;
                     memberDetails.memberRole = roleToAssign;
+                    //MemberDetails.instance.isRoleAssigned = true;
                     oldMembersList.Add(memberDetails);
                 }
                 else
@@ -290,10 +311,7 @@ public class MemberListUIManager : MonoBehaviour
                     MainMenuController.instance.ShowMessage(data["message"].ToString());
                 }
             });
-        }
-
-
-        
+        }        
     }
 
     private ClubMemberDetails clubOwner;
@@ -308,28 +326,37 @@ public class MemberListUIManager : MonoBehaviour
         for (int i = 0; i < container.childCount; i++)
         {
             Destroy(container.GetChild(i).gameObject);
-        }
-        for (int i = 0; i < oldMembersList.Count; i++)
-        {
-            oldMembersList.RemoveAt(i);
-        }
+        }        
 
         for (int i = 0; i < data["data"].Count; i++)
         {
             ClubMemberDetails clubMemberDetails = new ClubMemberDetails();
             clubMemberDetails.userId = data["data"][i]["requestUserId"].ToString();
             clubMemberDetails.userName = data["data"][i]["requestUserName"].ToString();
-            
-            //if (data["data"][i]["userAlias"].Equals(null))
-            //    clubMemberDetails.userAlias = "";
-            //else
-            //    clubMemberDetails.userAlias = data["data"][i]["userAlias"].ToString();
 
-            //clubMemberDetails.userNote = data["data"][i]["note"].ToString();
+            if (data["data"][i]["userAlias"] == null)
+            {
+                clubMemberDetails.userAlias = "";
+            }
+            else
+            {
+                clubMemberDetails.userAlias = data["data"][i]["userAlias"].ToString();
+            }
+
+            if (data["data"][i]["note"] == null)
+            {
+                clubMemberDetails.userNote = "";
+            }
+            else
+            {
+                clubMemberDetails.userNote = data["data"][i]["note"].ToString();
+            }
+
             clubMemberDetails.clubRequestId = data["data"][i]["clubRequestId"].ToString();
             clubMemberDetails.ptChips = data["data"][i]["ptChips"].ToString();
             clubMemberDetails.creditChips = data["data"][i]["creditChips"].ToString();
-            //clubMemberDetails.profileImagePath = data["data"][i]["profileImage"].ToString();            
+            clubMemberDetails.profileImagePath = data["data"][i]["profileImage"].ToString();
+            
 
             if (!newMembers)
             {

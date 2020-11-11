@@ -127,7 +127,8 @@ public class GameConstants : MonoBehaviour
         API_URL+"/getJackpotDetailByClubId",
         API_URL+"/topUpJackpot",
         API_URL+"/getTopUpDetailsByClubId",
-        API_URL+"/onOffJackpot"
+        API_URL+"/onOffJackpot",
+        API_URL+"/createJackpot"
     };
     #endregion
 
@@ -217,5 +218,6 @@ public enum RequestType
     GetJackpotDetailByClubId,
     TopUpJackpot,
     GetTopUpDetailsByClubId,
-    OnOffJackpot
+    OnOffJackpot,
+    CreateJackpot
 }
