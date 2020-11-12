@@ -124,9 +124,11 @@ public class InGameManager : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.GetSeatObject, req, true, OnServerResponseFound);
     }
 
+    private Dictionary<string, string> AllSeatsOnTable = new Dictionary<string, string>();
+
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.LogError("Seats available :" + serverResponse);
+        Debug.LogError("Seats available 0:" + serverResponse);
 
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
@@ -142,7 +144,7 @@ public class InGameManager : MonoBehaviour
 
         if (requestType == RequestType.GetSeatObject)
         {
-            Debug.LogError("Seats available :" + serverResponse);
+            Debug.LogError("Seats available 1:" + serverResponse);
         }
     }
 
