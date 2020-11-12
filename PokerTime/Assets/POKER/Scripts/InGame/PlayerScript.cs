@@ -28,7 +28,6 @@ public class PlayerScript : MonoBehaviour
     private Text balanceText, lastActionText, userName, localBetPot, RealTimeResulttxt;
     private GameObject foldScreen, parentObject, emptyObject, RealTimeResult, localbetBG;
     private bool isItMe;
-
     public string otheruserId;
 
    
@@ -290,6 +289,7 @@ public class PlayerScript : MonoBehaviour
 
     public void ResetTurn()
     {
+        Debug.LogError("Stopping Turn");
         fx_holder.gameObject.SetActive(false);
         timerBar.fillAmount = 0;
         StopCoroutine("CountDownAnimation");
@@ -378,11 +378,25 @@ public class PlayerScript : MonoBehaviour
     IEnumerator CountDownAnimation()
     {
         float t = 0;
-        float time = GameConstants.TURN_TIME;
+        float time = 0.0f;
+        if (!string.IsNullOrEmpty(playerData.userVIPCard))
+        {
+            int extraTime = 0;
+            int.TryParse(playerData.bufferTime, out extraTime);
+            time = GameConstants.TURN_TIME + extraTime;
+            Debug.LogError("extra Time :" + time);
+        }
+        else
+        {
+            time = GameConstants.TURN_TIME;
+            Debug.LogError("normal Time :" + time);
+        }
+
         fx_holder.gameObject.SetActive(true);
         while (t < time)
         {
             t += Time.deltaTime;
+            Debug.LogError("t :" + t);
             timerBar.fillAmount = t / time;
             fx_holder.rotation = Quaternion.Euler(new Vector3(0, 0, -(timerBar.fillAmount) * 360));
             CountDownTimerRunning = true;
@@ -591,6 +605,7 @@ public class PlayerData
     public float balance, totalBet;
     public CardData[] cards;
     public string avatarurl;
+    public string userVIPCard, cardValidity, bufferTime;
 }
 
 public class GetData

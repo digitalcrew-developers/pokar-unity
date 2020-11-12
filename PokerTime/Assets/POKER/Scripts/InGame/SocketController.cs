@@ -127,10 +127,42 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("playerStatndOut", OnPlayerStandUp);
         socketManager.Socket.On("allTipData", OnAllTipData);
         socketManager.Socket.On("pointUpdate", OnPointUpdate);
+        socketManager.Socket.On("minMaxAppEmit", MinimizeAppServer);
 
         socketManager.Open();
     }
 
+    bool isPaused = false;
+
+    void OnGUI()
+    {
+        if (isPaused)
+            GUI.Label(new Rect(100, 100, 50, 30), "Game paused");
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        isPaused = !hasFocus;
+        if (!isPaused)
+        {
+            MaximizeAppEvent();
+        }
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        isPaused = pauseStatus;
+        if (isPaused)
+        {
+            MinimizeAppEvent();
+        }
+    }
+
+    private void MinimizeAppServer(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log(responseText);
+    }
 
     private void HandleSocketResponse()
     {
@@ -195,13 +227,8 @@ public class SocketController : MonoBehaviour
 
 
                 case SocketEvetns.PLAYER_OBJECT:
-
-
-                    Debug.Log("Error of player object----------");
                     if (InGameManager.instance != null)
                     {
-                        Debug.Log("Error of player object---000000000-------");
-
                         if (GetSocketState() == SocketState.ReConnecting)
                         {
                             SetSocketState(SocketState.Game_Running);
@@ -804,6 +831,7 @@ public class SocketController : MonoBehaviour
 
     void OnServerDisconnect(Socket socket, Packet packet, params object[] args)
     {
+        //string responseText = JsonMapper.ToJson(args);
 
 #if DEBUG
 
@@ -1120,7 +1148,41 @@ public class SocketController : MonoBehaviour
         request.requestDataStructure = requestStringData;
         socketRequest.Add(request);
     }
+    
+    public void MinimizeAppEvent()
+    {
+        MinEvent requestData = new MinEvent();
+        requestData.appStatus = "minimize";//maximize
 
+        string requestStringData = JsonMapper.ToJson(requestData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest req = new SocketRequest();
+        req.emitEvent = "minMaxApp";
+
+        req.plainDataToBeSend = null;
+        req.jsonDataToBeSend = requestObjectData;
+        req.requestDataStructure = requestStringData;
+        socketRequest.Add(req);
+    }
+
+    public void MaximizeAppEvent()
+    {
+        MinEvent requestData = new MinEvent();
+        requestData.appStatus = "maximize";//maximize
+
+        string requestStringData = JsonMapper.ToJson(requestData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest req = new SocketRequest();
+        req.emitEvent = "minMaxApp";
+
+        req.plainDataToBeSend = null;
+        req.jsonDataToBeSend = requestObjectData;
+        req.requestDataStructure = requestStringData;
+        socketRequest.Add(req);
+    }
+    
 
     public void SendBetData(int betAmount, int totalBetInRound, string userAction, int roundNo)
     {
@@ -1534,6 +1596,12 @@ public class FoldData
     public string tableId;
     public string userId;
     public UserBetData userData;
+}
+
+[Serializable]
+public class MinEvent
+{
+    public string appStatus;
 }
 
 [System.Serializable]

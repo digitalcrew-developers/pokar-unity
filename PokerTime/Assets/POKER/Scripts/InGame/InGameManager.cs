@@ -1106,8 +1106,7 @@ public class InGameManager : MonoBehaviour
 
         ResetMatchData();
     }
-
-
+    
 
 
     public void OnTurnCountDownFound(string serverResponse)
@@ -1403,6 +1402,10 @@ public class InGameManager : MonoBehaviour
                         playerData.isFold = data[0][i]["isBlocked"].Equals(true);
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
+
+                        playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
+                        playerData.cardValidity = data[0][i]["cardValidity"].ToString();
+                        playerData.bufferTime = data[0][i]["bufferTime"].ToString();
 
                         if (data[0][i]["isTurn"].Equals(true))
                         {
