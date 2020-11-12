@@ -393,12 +393,20 @@ public class PlayerScript : MonoBehaviour
         {
             if (!string.IsNullOrEmpty(playerData.userVIPCard))
             {
-                int extraTime = 0;
-                int.TryParse(playerData.bufferTime, out extraTime);
-                time = extraTime;
-                Debug.LogError("Starting extra time");
-                ShowRemainingTime(time);
-                PlayedExtraTimeOnce = true;
+                Debug.LogError("playerData.userVIPCard " + playerData.userVIPCard);
+
+                int userVIPCard = 0;
+                int.TryParse(playerData.userVIPCard, out userVIPCard);
+                if(userVIPCard > 0)
+                {
+                    int extraTime = 0;
+                    int.TryParse(playerData.bufferTime, out extraTime);
+                    time = extraTime;
+                    Debug.LogError("Starting extra time");
+                    ShowRemainingTime(time);
+                    PlayedExtraTimeOnce = true;
+                }
+
             }
         }
         CountDownTimerRunning = false;
