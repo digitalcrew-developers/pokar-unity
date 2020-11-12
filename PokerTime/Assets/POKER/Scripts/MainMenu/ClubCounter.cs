@@ -15,13 +15,13 @@ public class ClubCounter : MonoBehaviour
     public GameObject popUpText;
 
     public Button StatsBtn;
-    public Button TabTradeBtn, TabSleepModeBtn, TabVIPBtn, TabTicketBtn;
-    public GameObject TradePanel, SleepPanel, VIPPanel, TicketPanel, TradeRecordPanel;
+    public Button TabTradeBtn, /*TabSleepModeBtn,*/ TabVIPBtn, TabTicketBtn;
+    public GameObject TradePanel, /*SleepPanel,*/ VIPPanel, TicketPanel, TradeRecordPanel;
 
     public Button SendOutBtn, ClaimBackBtn, SetLimitBtn, RemoveLimitBtn, SendVIPBtn, AddTicketBtn, OpenTradeRecordBtn;
 
-    public GameObject TradeListItemPrefab, SleepListItemPrefab, SendVIPListItemPrefab, TicketItemListPrefab, TradeRecordPrefab;
-    public Transform TradeListContent, SleepListContent, SendVIPContent, TicketContent, TradeRecordListContent;
+    public GameObject TradeListItemPrefab, /*SleepListItemPrefab,*/ SendVIPListItemPrefab, TicketItemListPrefab, TradeRecordPrefab;
+    public Transform TradeListContent,/* SleepListContent,*/ SendVIPContent, TicketContent, TradeRecordListContent;
 
     public GameObject SendOutPanel;
     public TMP_Text SendOutChipsCount;
@@ -73,13 +73,13 @@ public class ClubCounter : MonoBehaviour
     private void Initialise()
     {
         TabTradeBtn.onClick.RemoveAllListeners();
-        TabSleepModeBtn.onClick.RemoveAllListeners();
+        //TabSleepModeBtn.onClick.RemoveAllListeners();
         TabVIPBtn.onClick.RemoveAllListeners();
         TabTicketBtn.onClick.RemoveAllListeners();
         OpenTradeRecordBtn.onClick.RemoveAllListeners();
 
         TabTradeBtn.onClick.AddListener(() => OpenScreen("Trade"));
-        TabSleepModeBtn.onClick.AddListener(() => OpenScreen("SleepMode"));
+        //TabSleepModeBtn.onClick.AddListener(() => OpenScreen("SleepMode"));
         TabVIPBtn.onClick.AddListener(() => OpenScreen("VIP"));
         TabTicketBtn.onClick.AddListener(() => OpenScreen("Ticket"));
         OpenTradeRecordBtn.onClick.AddListener(() => OpenScreen("OpenTradeRecord"));
@@ -556,19 +556,19 @@ public class ClubCounter : MonoBehaviour
             });
             ScrollItems.Add(tardeItem);
 
-            GameObject sleepItem = Instantiate(SleepListItemPrefab, SleepListContent) as GameObject;
-            sleepItem.SetActive(true);
+            //GameObject sleepItem = Instantiate(SleepListItemPrefab, SleepListContent) as GameObject;
+            //sleepItem.SetActive(true);
 
-            sleepItem.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = clubMemberDetails.userName;
-            sleepItem.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "ID : " + clubMemberDetails.userId;
-            sleepItem.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + clubMemberDetails.nickName;
-            sleepItem.transform.Find("Image/Coins").GetComponent<TMPro.TextMeshProUGUI>().text = clubMemberDetails.ptChips;
-            sleepItem.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
+            //sleepItem.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = clubMemberDetails.userName;
+            //sleepItem.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "ID : " + clubMemberDetails.userId;
+            //sleepItem.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + clubMemberDetails.nickName;
+            //sleepItem.transform.Find("Image/Coins").GetComponent<TMPro.TextMeshProUGUI>().text = clubMemberDetails.ptChips;
+            //sleepItem.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
 
-            sleepItem.transform.Find("Toggle").GetComponent<Toggle>().onValueChanged.AddListener(delegate {
-                ToggleValueChangedSleep(sleepItem.transform.Find("Toggle").GetComponent<Toggle>(), clubMemberDetails);
-            });
-            ScrollItems.Add(sleepItem);
+            //sleepItem.transform.Find("Toggle").GetComponent<Toggle>().onValueChanged.AddListener(delegate {
+            //    ToggleValueChangedSleep(sleepItem.transform.Find("Toggle").GetComponent<Toggle>(), clubMemberDetails);
+            //});
+            //ScrollItems.Add(sleepItem);
 
             GameObject vipItem = Instantiate(SendVIPListItemPrefab, SendVIPContent) as GameObject;
             vipItem.SetActive(true);
@@ -838,45 +838,45 @@ public class ClubCounter : MonoBehaviour
         {
             case "Trade":
                 TabTradeBtn.GetComponent<Image>().color = c;
-                TabSleepModeBtn.GetComponent<Image>().color = c1;
+                //TabSleepModeBtn.GetComponent<Image>().color = c1;
                 TabVIPBtn.GetComponent<Image>().color = c1;
                 TabTicketBtn.GetComponent<Image>().color = c1;
 
                 TradePanel.SetActive(true);
-                SleepPanel.SetActive(false);
+                //SleepPanel.SetActive(false);
                 VIPPanel.SetActive(false);
                 TicketPanel.SetActive(false);
                 break;
             case "SleepMode":
                 TabTradeBtn.GetComponent<Image>().color = c1;
-                TabSleepModeBtn.GetComponent<Image>().color = c;
+                //TabSleepModeBtn.GetComponent<Image>().color = c;
                 TabVIPBtn.GetComponent<Image>().color = c1;
                 TabTicketBtn.GetComponent<Image>().color = c1;
 
                 TradePanel.SetActive(false);
-                SleepPanel.SetActive(true);
+                //SleepPanel.SetActive(true);
                 VIPPanel.SetActive(false);
                 TicketPanel.SetActive(false);
                 break;
             case "VIP":
                 TabTradeBtn.GetComponent<Image>().color = c1;
-                TabSleepModeBtn.GetComponent<Image>().color = c1;
+                //TabSleepModeBtn.GetComponent<Image>().color = c1;
                 TabVIPBtn.GetComponent<Image>().color = c;
                 TabTicketBtn.GetComponent<Image>().color = c1;
 
                 TradePanel.SetActive(false);
-                SleepPanel.SetActive(false);
+                //SleepPanel.SetActive(false);
                 VIPPanel.SetActive(true);
                 TicketPanel.SetActive(false);
                 break;
             case "Ticket":
                 TabTradeBtn.GetComponent<Image>().color = c1;
-                TabSleepModeBtn.GetComponent<Image>().color = c1;
+                //TabSleepModeBtn.GetComponent<Image>().color = c1;
                 TabVIPBtn.GetComponent<Image>().color = c1;
                 TabTicketBtn.GetComponent<Image>().color = c;
 
                 TradePanel.SetActive(false);
-                SleepPanel.SetActive(false);
+                //SleepPanel.SetActive(false);
                 VIPPanel.SetActive(false);
                 TicketPanel.SetActive(true);
                 break;

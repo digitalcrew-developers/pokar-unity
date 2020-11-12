@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
+using TMPro;
 
 public class MenuHandller : MonoBehaviour
 {
@@ -83,6 +84,7 @@ public class MenuHandller : MonoBehaviour
 
 		case "openCreateClub":
 			{
+				createClubPopUp.transform.Find("BG1/BG2/ClubName").GetComponent<TMP_InputField>().text = "";
 				createClubPopUp.SetActive(true);
 				joinClubPopUp.SetActive(false);
 			}
@@ -90,6 +92,8 @@ public class MenuHandller : MonoBehaviour
 
 		case "openJoinClub":
 			{
+				joinClubPopUp.transform.Find("BG1/BG2/ClubIDTMP").GetComponent<TMP_InputField>().text = "";
+				joinClubPopUp.transform.Find("BG1/BG2/ReferralIDTMP").GetComponent<TMP_InputField>().text = "";
 				createClubPopUp.SetActive(false);
 				joinClubPopUp.SetActive(true);
 			}
@@ -246,6 +250,8 @@ public class MenuHandller : MonoBehaviour
 				else
 				{
 					MainMenuController.instance.ShowMessage(data["message"].ToString());
+						if (createClubPopUp.activeInHierarchy)
+							createClubPopUp.SetActive(false);
 				}
 			}
 			break;

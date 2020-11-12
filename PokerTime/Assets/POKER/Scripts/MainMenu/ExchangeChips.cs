@@ -28,7 +28,7 @@ public class ExchangeChips : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void OnEnable()
     {
         Init();
     }
@@ -43,6 +43,8 @@ public class ExchangeChips : MonoBehaviour
         PTChipsTabButton.onClick.RemoveAllListeners();
         PTChipsTabButton.onClick.AddListener(() => OpenScreen("PTChips"));
         DiamondTabButton.onClick.AddListener(() => OpenScreen("Diamond"));
+
+        OpenScreen("PTChips");
 
         ConfirmButton.onClick.RemoveAllListeners();
         ConfirmButton.onClick.AddListener(AddPTChips);
