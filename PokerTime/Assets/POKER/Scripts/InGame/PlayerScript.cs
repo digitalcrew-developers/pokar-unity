@@ -375,50 +375,49 @@ public class PlayerScript : MonoBehaviour
     }
     public bool CountDownTimerRunning = false;
 
-    IEnumerator CountDownAnimation()
+    public bool PlayedExtraTimeOnce = false;
+    IEnumerator CountDownAnimation(float time)
     {
+        Debug.LogError("Starting time : " + time);
         float t = 0;
-        float time = 0.0f;
-        if (!string.IsNullOrEmpty(playerData.userVIPCard))
-        {
-            int extraTime = 0;
-            int.TryParse(playerData.bufferTime, out extraTime);
-            time = GameConstants.TURN_TIME + extraTime;
-            Debug.LogError("extra Time :" + time);
-        }
-        else
-        {
-            time = GameConstants.TURN_TIME;
-            Debug.LogError("normal Time :" + time);
-        }
-
         fx_holder.gameObject.SetActive(true);
         while (t < time)
         {
             t += Time.deltaTime;
-            Debug.LogError("t :" + t);
             timerBar.fillAmount = t / time;
             fx_holder.rotation = Quaternion.Euler(new Vector3(0, 0, -(timerBar.fillAmount) * 360));
             CountDownTimerRunning = true;
             yield return null;
         }
+        if (!PlayedExtraTimeOnce)
+        {
+            if (!string.IsNullOrEmpty(playerData.userVIPCard))
+            {
+                int extraTime = 0;
+                int.TryParse(playerData.bufferTime, out extraTime);
+                time = extraTime;
+                Debug.LogError("Starting extra time");
+                ShowRemainingTime(time);
+                PlayedExtraTimeOnce = true;
+            }
+        }
         CountDownTimerRunning = false;
     }
 
-    public void ShowRemainingTime()
+    public void ShowRemainingTime(float time)
     {
-       StartCoroutine("CountDownAnimation");      
+        StartCoroutine(CountDownAnimation(time));      
     }
 
-    public void ShowRemainingTime(int remainingTime)
-    {
-        remainingTime = GameConstants.TURN_TIME - remainingTime;
-        // Debug.Log("remainingTime     " + remainingTime);
-        if (remainingTime == 0)
-        {
-            StartCoroutine("CountDownAnimation");
-        }
-    }
+    //public void ShowRemainingTime(int remainingTime)
+    //{
+    //    remainingTime = GameConstants.TURN_TIME - remainingTime;
+    //    // Debug.Log("remainingTime     " + remainingTime);
+    //    if (remainingTime == 0)
+    //    {
+    //        StartCoroutine("CountDownAnimation");
+    //    }
+    //}
 
 
     /// <summary>

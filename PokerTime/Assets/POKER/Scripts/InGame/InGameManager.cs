@@ -1126,7 +1126,10 @@ public class InGameManager : MonoBehaviour
                     SoundManager.instance.PlaySound(SoundType.TurnEnd);
                 }
                 if (!currentPlayer.CountDownTimerRunning)
-                    currentPlayer.ShowRemainingTime();
+                {
+                    currentPlayer.PlayedExtraTimeOnce = false;
+                    currentPlayer.ShowRemainingTime(GameConstants.TURN_TIME);
+                }
             }
             else
             {
