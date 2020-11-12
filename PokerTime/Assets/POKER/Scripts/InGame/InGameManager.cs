@@ -94,7 +94,6 @@ public class InGameManager : MonoBehaviour
     private void Start()
     {
         gameExitCalled = false;
-        GetAvailableSeats();
         //DEV_CODE
         videoHeight = (int)InGameUiManager.instance.height;
         videoWidth = (int)InGameUiManager.instance.width;
@@ -1300,6 +1299,7 @@ public class InGameManager : MonoBehaviour
         GlobalGameManager.instance.LoadScene(Scenes.InGame);
     }
 
+    private bool CallOnce = true;
 
     public void OnPlayerObjectFound(string serverResponse)
     {
@@ -1326,6 +1326,14 @@ public class InGameManager : MonoBehaviour
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
             Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
             SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
+
+            if (CallOnce)
+            {
+                GetAvailableSeats();
+                CallOnce = false;
+            }
+
+
             InGameUiManager.instance.tableId = data[0][0]["tableId"].ToString();
             ShowNewPlayersOnTable(data, isMatchStarted);
 
