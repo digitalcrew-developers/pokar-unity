@@ -128,7 +128,7 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("allTipData", OnAllTipData);
         socketManager.Socket.On("pointUpdate", OnPointUpdate);
         socketManager.Socket.On("minMaxAppEmit", MinimizeAppServer);
-
+        socketManager.Socket.On("seatObject", SeatObjectsReceived);
         socketManager.Open();
     }
 
@@ -162,6 +162,12 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.Log(responseText);
+    }
+    
+    private void SeatObjectsReceived(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError(responseText);
     }
 
     private void HandleSocketResponse()
@@ -1118,6 +1124,8 @@ public class SocketController : MonoBehaviour
 
         SocketRequest request = new SocketRequest();
         request.emitEvent = "joinRoom";
+
+        Debug.LogError("joinRoom: " + requestStringData);
 
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
