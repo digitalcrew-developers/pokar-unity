@@ -94,7 +94,7 @@ public class InGameManager : MonoBehaviour
     private void Start()
     {
         gameExitCalled = false;
-
+        GetAvailableSeats();
         //DEV_CODE
         videoHeight = (int)InGameUiManager.instance.height;
         videoWidth = (int)InGameUiManager.instance.width;
@@ -118,6 +118,32 @@ public class InGameManager : MonoBehaviour
         AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
     }
 
+    public void GetAvailableSeats()
+    {
+        string req = "{\"tableId\":\"" + GlobalGameManager.instance.GetRoomData().socketTableId + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.GetSeatObject, req, true, OnServerResponseFound);
+    }
+
+    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    {
+        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+
+        if (errorMessage.Length > 0)
+        {
+            if (isShowErrorMessage)
+            {
+                MainMenuController.instance.ShowMessage(errorMessage);
+            }
+
+            return;
+        }
+
+        if (requestType == RequestType.GetSeatObject)
+        {
+            Debug.LogError("Seats available :" + serverResponse);
+        }
+    }
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
     {
