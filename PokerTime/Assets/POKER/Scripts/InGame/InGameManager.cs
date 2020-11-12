@@ -121,12 +121,14 @@ public class InGameManager : MonoBehaviour
     public void GetAvailableSeats()
     {
         string req = "{\"tableId\":\"" + GlobalGameManager.instance.GetRoomData().socketTableId + "\"}";
-
+        Debug.LogError("Sending get available seats :" + req);
         WebServices.instance.SendRequest(RequestType.GetSeatObject, req, true, OnServerResponseFound);
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        Debug.LogError("Seats available :" + serverResponse);
+
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
