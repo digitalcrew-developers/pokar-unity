@@ -1140,6 +1140,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnBetDataFound(string serverResponse)
     {
+        Debug.LogError("serverResponse BETDATAFOUND " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         LAST_BET_AMOUNT = (int)float.Parse(data[0]["lastBet"].ToString());
         string userId = data[0]["userId"].ToString();

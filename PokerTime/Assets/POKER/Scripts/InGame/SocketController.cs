@@ -287,7 +287,7 @@ public class SocketController : MonoBehaviour
                 //break;
 
                 case SocketEvetns.ON_BET_DATA_FOUND:
-                    InGameManager.instance.PlayerTimerReset();
+                    //InGameManager.instance.PlayerTimerReset();
                     InGameManager.instance.OnBetDataFound(responseObject.data);
                     break;
 
