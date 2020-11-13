@@ -82,6 +82,7 @@ public class InGameManager : MonoBehaviour
 
     bool isCardValueSet = false;
     bool isScreenshotCaptured = false;
+    string myPlayerSeat;
 
     private void Awake()
     {
@@ -93,6 +94,8 @@ public class InGameManager : MonoBehaviour
 
     private void Start()
     {
+        //InGameUiManager.instance.ShowTableMessage("Select a seat");
+
         gameExitCalled = false;
         //DEV_CODE
         videoHeight = (int)InGameUiManager.instance.height;
@@ -124,28 +127,58 @@ public class InGameManager : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.GetSeatObject, req, true, OnServerResponseFound);
     }
 
-    private Dictionary<string, string> AllSeatsOnTable = new Dictionary<string, string>();
+    public List<GameObject> AllSeatButtons = new List<GameObject>();
+    TableSeats AllSeats;
+
+    public GameObject GetSeatObject(string seatNo)
+    {
+        int seat = 0;
+        int.TryParse(seatNo, out seat);
+
+        seat = seat - 1;
+        if(seat < 0) { seat = 0; }
+
+        return AllSeatButtons[seat];
+    }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         Debug.LogError("Seats available 0:" + serverResponse);
 
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
-
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                InGameUiManager.instance.ShowMessage(errorMessage);
             }
-
             return;
         }
 
         if (requestType == RequestType.GetSeatObject)
         {
             Debug.LogError("Seats available 1:" + serverResponse);
+            AllSeats = JsonUtility.FromJson<TableSeats>(serverResponse);
+            UpdateSeatClickSettingsAndView();
         }
+    }
+
+    private void UpdateSeatClickSettingsAndView()
+    {
+        Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
+        Vector3 position2 = GetSeatObject("1").transform.position;
+
+        GetSeatObject(myPlayerSeat).transform.position = position2;
+        GetSeatObject("1").transform.position = position1;
+        foreach (GameObject g in AllSeatButtons)
+        {
+            g.SetActive(false);            
+        }
+        for (int i = 0; i < AllSeats.data.Length; i++)
+        {
+            AllSeatButtons[i].SetActive(true);
+            AllSeatButtons[i].GetComponent<PlayerSeat>().UpdateState();            
+        }
+        GetSeatObject(myPlayerSeat).SetActive(false);
     }
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
@@ -476,8 +509,7 @@ public class InGameManager : MonoBehaviour
         return onlinePlayersScript;
     }
 
-
-
+    public bool AmISpectator = true;
 
     private void ShowNewPlayersOnTable(JsonData data, bool isMatchStarted)
     {
@@ -507,10 +539,7 @@ public class InGameManager : MonoBehaviour
                 playerData.Add(playerDataObject);
             }
         }
-
-
-      
-       
+        
         for (int i = onlinePlayersScript.Length; i < allPlayersObject.Length; i++)
         {
             allPlayersObject[i].TogglePlayerUI(false);
@@ -554,8 +583,7 @@ public class InGameManager : MonoBehaviour
                 ++index;
             }
         }
-
-
+        
         if (isMatchStarted && onlinePlayersScript != null && onlinePlayersScript.Length > 0)
         {
             List<PlayerScript> leftPlayers = new List<PlayerScript>();
@@ -585,35 +613,7 @@ public class InGameManager : MonoBehaviour
             }
         }
 
-
-        for (int i = 0; i < allPlayersObject.Length; i++)
-        {
-            allPlayersObject[i].ToggleEmptyObject(false);
-        }
-
         int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
-
-        for (int i = 0; i < maxPlayerOnTable && i < allPlayersObject.Length; i++)
-        {
-            if (!allPlayersObject[i].IsPlayerObjectActive())
-            {
-
-                allPlayersObject[i].ToggleEmptyObject(true);
-            }
-
-        }
- /*       if (playerData.Count > 0)
-        {
-            int startIndex = onlinePlayersScript.Length;
-            int maxIndex = startIndex + playerData.Count;
-            int index = 0;
-
-            for (int i = startIndex; i < maxIndex && i < allPlayersObject.Length; i++)
-            {
-                allPlayersObject[i].ShowAvtars_frame_flag(playerData[index].userId);
-                ++index;
-            }
-        }*/
     }
 
 
@@ -940,6 +940,7 @@ public class InGameManager : MonoBehaviour
     }
     public void OnClickStandupBtn()
     {
+        AmISpectator = true;
         SocketController.instance.SendStandUpdata();
     }
 
@@ -1141,6 +1142,32 @@ public class InGameManager : MonoBehaviour
     public void OnTurnCountDownFound(string serverResponse)
     {
         Debug.LogError("OnTurnCountDownFound" + serverResponse);
+        //if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
+        //{
+        //    JsonData data = JsonMapper.ToObject(serverResponse);
+
+        //    if (currentPlayer != null)
+        //    {
+        //        int remainingTime = (int)float.Parse(data[0].ToString());
+        //        int endTime = (int)(GameConstants.TURN_TIME * 0.25f);
+
+        //        if (remainingTime < endTime)
+        //        {
+        //            SoundManager.instance.PlaySound(SoundType.TurnEnd);
+        //        }
+        //        if (!currentPlayer.CountDownTimerRunning)
+        //        {
+        //            currentPlayer.PlayedExtraTimeOnce = false;
+        //            currentPlayer.ShowRemainingTime(GameConstants.TURN_TIME);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Debug.LogError("Null reference exception found current player object is null");
+        //    }
+        //}
+
+
         if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
@@ -1148,16 +1175,24 @@ public class InGameManager : MonoBehaviour
             if (currentPlayer != null)
             {
                 int remainingTime = (int)float.Parse(data[0].ToString());
-                int endTime = (int)(GameConstants.TURN_TIME * 0.25f);
-
-                if (remainingTime < endTime)
+                if (remainingTime == 1)
                 {
-                    SoundManager.instance.PlaySound(SoundType.TurnEnd);
+                    PlayerTimerReset();
                 }
-                if (!currentPlayer.CountDownTimerRunning)
+
+                if (currentPlayer.IsMe())
                 {
-                    currentPlayer.PlayedExtraTimeOnce = false;
-                    currentPlayer.ShowRemainingTime(GameConstants.TURN_TIME);
+                    int endTime = (int)(GameConstants.TURN_TIME * 0.25f);
+
+                    if (remainingTime == endTime)
+                    {
+                        SoundManager.instance.PlaySound(SoundType.TurnEnd);
+                    }
+                    currentPlayer.ShowRemainingTime(remainingTime);
+                }
+                else if (!currentPlayer.IsMe())
+                {
+                    currentPlayer.ShowRemainingTime(remainingTime);
                 }
             }
             else
@@ -1264,7 +1299,6 @@ public class InGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
 
         int remainingTime = (int)float.Parse(data[0].ToString());
-        Debug.Log("Game Start serverResponse => " + serverResponse);
         Debug.Log("Game Start in => " + remainingTime);
      /*   if (remainingTime < 30)
         {*/
@@ -1321,21 +1355,15 @@ public class InGameManager : MonoBehaviour
         }
 
         JsonData data = JsonMapper.ToObject(serverResponse);
-        
+
+        AmISpectator = true;
+
         if (data[0].Count > 0)
         {
             //AdjustAllPlayersOnTable(data[0].Count);
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
             Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
             SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
-
-            if (CallOnce)
-            {
-                GetAvailableSeats();
-                CallOnce = false;
-            }
-
-
             InGameUiManager.instance.tableId = data[0][0]["tableId"].ToString();
             ShowNewPlayersOnTable(data, isMatchStarted);
 
@@ -1343,14 +1371,8 @@ public class InGameManager : MonoBehaviour
             {
                 Debug.LogWarning("ONE PLAYER-" + serverResponse);
                 //if "userData": "" then game has not started
-                if (data[0][0]["userData"].Keys.Count > 0)
+                if (data[0][0]["userData"].ToString().Length > 0)
                 {
-                    //Debug.LogWarning("ONE PLAYER- userData exists");
-                    //ResetMatchData();
-                    //InGameManager.instance.Pot.SetActive(false);
-                    //ResetAllDataForPlayers();
-                    //InGameUiManager.instance.ToggleActionButton(false);
-                    //ShowNewPlayersOnTable(data, false);
                     resetGame = true;
                     StartCoroutine(StartWaitingCountdown());
                     return;
@@ -1359,7 +1381,6 @@ public class InGameManager : MonoBehaviour
 
             if (SocketController.instance.GetSocketState() == SocketState.WaitingForOpponent)
             {
-               
                 SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
 
                 if (isMatchStarted) // Match is started
@@ -1392,7 +1413,14 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.isDealer = data[0][i]["isDealer"].Equals(true);
                         playerData.playerData.isSmallBlind = data[0][i]["smallBlind"].Equals(true);
                         playerData.playerData.isBigBlind = data[0][i]["bigBlind"].Equals(true);
-                    
+
+                        playerData.playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
+                        playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
+                        playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
+                        playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
+
+                        Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
+
                         if (playerData.isTurn)
                         {
                             playerData.isCheckAvailable = data[0][i]["isCheck"].Equals(true);
@@ -1400,6 +1428,7 @@ public class InGameManager : MonoBehaviour
 
                         playerData.playerData.cards = new CardData[data[0][i]["cards"].Count];
 
+                        
                         for (int j = 0; j < playerData.playerData.cards.Length; j++)
                         {
                             if (playerData == null)
@@ -1428,11 +1457,9 @@ public class InGameManager : MonoBehaviour
             else if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
             {
                 Debug.Log("Game not started" + isMatchStarted);
-
-
+                
                 PlayerScript playerWhosTurn = null;
                 bool isCheckAvailable = false;
-                bool showTurn = false;
                 for (int i = 0; i < data[0].Count; i++)
                 {
                     PlayerScript playerObject = GetPlayerObject(data[0][i]["userId"].ToString());
@@ -1448,18 +1475,19 @@ public class InGameManager : MonoBehaviour
                         playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
                         playerData.cardValidity = data[0][i]["cardValidity"].ToString();
                         playerData.bufferTime = data[0][i]["bufferTime"].ToString();
-
+                        playerData.seatNo = data[0][i]["seatNo"].ToString();
+                        
+                        Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
                         {
+                            Debug.LogWarning("isTurn is true");
                             playerWhosTurn = playerObject;
                             isCheckAvailable = data[0][i]["isCheck"].Equals(true);
-                            showTurn = true;
                         }
                         else
                         {
                             InGameUiManager.instance.ToggleSuggestionButton(false);
                             InGameUiManager.instance.ToggleActionButton(false);
-                            showTurn = false;
                         }
 
                         if (data[0][i]["userData"] != null && data[0][i]["userData"].ToString().Length > 0)
@@ -1471,31 +1499,48 @@ public class InGameManager : MonoBehaviour
                         }
                         else
                         {
-                            playerObject. UpdateDetails(playerData,"",0,-1);
+                            playerObject.UpdateDetails(playerData,"",0,-1);
                         }
                         //update balance from playerObject
                         if(playerObject.playerData.userId == PlayerManager.instance.GetPlayerGameData().userId)
                         {
                             PlayerManager.instance.GetPlayerGameData().coins = playerObject.playerData.balance;
+                            AmISpectator = false;
                         }
                     }
                 }
 
                 if (playerWhosTurn != null)
                 {
-                    Debug.Log("Switching turn");
-                    if(showTurn)
-                        SwitchTurn(playerWhosTurn, isCheckAvailable);
+                    Debug.LogWarning("Switching turn");
+                    SwitchTurn(playerWhosTurn, isCheckAvailable);
                 }
                 else
                 {
                     InGameUiManager.instance.ToggleSuggestionButton(false);
                     InGameUiManager.instance.ToggleActionButton(false);
-#if ERROR_LOG
                     Debug.LogError("Null reference exception found playerWhosTurn is not found");
-#endif
                 }
             }
+
+
+            for (int i = 0; i < data[0].Count; i++)
+            {
+                //update balance from playerObject
+                if (PlayerManager.instance.GetPlayerGameData().userId == data[0][i]["userId"].ToString())
+                {
+                    AmISpectator = false;
+                    myPlayerSeat = data[0][i]["seatNo"].ToString();
+
+                    Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
+                    Vector3 position2 = GetSeatObject("1").transform.position;
+
+                    GetSeatObject(myPlayerSeat).transform.position = position2;
+                    GetSeatObject("1").transform.position = position1;
+                }
+            }
+
+            GetAvailableSeats();
         }        
     }
 
@@ -1653,4 +1698,19 @@ public class MatchMakingPlayerData
     public bool isTurn;
     public bool isCheckAvailable;
     public string playerType;
+}
+
+[System.Serializable]
+public class TableSeats
+{
+    public bool status;
+    public string message;
+    public Seat[] data;
+}
+
+[System.Serializable]
+public class Seat
+{
+    public int userId;
+    public string seatNo;
 }

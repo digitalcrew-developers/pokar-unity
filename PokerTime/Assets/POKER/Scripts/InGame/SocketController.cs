@@ -61,7 +61,6 @@ public class SocketController : MonoBehaviour
 
     public void Connect(bool isReconnecting = false)
     {
-        InGameUiManager.instance.ShowTableMessage("Connecting...");
         ResetConnection(isReconnecting);
         SetSocketState(SocketState.Connecting);
 
@@ -293,7 +292,7 @@ public class SocketController : MonoBehaviour
                 //break;
 
                 case SocketEvetns.ON_BET_DATA_FOUND:
-                    //InGameManager.instance.PlayerTimerReset();
+                    InGameManager.instance.PlayerTimerReset();
                     InGameManager.instance.OnBetDataFound(responseObject.data);
                     break;
 
@@ -1054,7 +1053,6 @@ public class SocketController : MonoBehaviour
     {
         string roomId = GlobalGameManager.instance.GetRoomData().roomId;
 
-
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
      "\"tableId\":\"" + TABLE_ID + "\"," +
      "\"roomId\":\"" + roomId + "\"," +
@@ -1116,6 +1114,29 @@ public class SocketController : MonoBehaviour
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
              "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
              "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
+             "\"playerType\":\"Real\"," +
+             "\"isPrivate\":\"No\"," +
+             "\"isFree\":\"No\"}";
+
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "joinRoom";
+
+        Debug.LogError("joinRoom: " + requestStringData);
+
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+    }
+
+    public void SendGameJoinRequestWithSeat(string seatNo)
+    {
+        string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+             "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
+             "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
+             "\"seatNo\":\"" + seatNo + "\"," +
              "\"playerType\":\"Real\"," +
              "\"isPrivate\":\"No\"," +
              "\"isFree\":\"No\"}";
