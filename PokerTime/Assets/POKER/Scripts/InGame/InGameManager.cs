@@ -1524,23 +1524,23 @@ public class InGameManager : MonoBehaviour
             }
 
 
-            for (int i = 0; i < data[0].Count; i++)
-            {
-                //update balance from playerObject
-                if (PlayerManager.instance.GetPlayerGameData().userId == data[0][i]["userId"].ToString())
-                {
-                    AmISpectator = false;
-                    myPlayerSeat = data[0][i]["seatNo"].ToString();
+            //for (int i = 0; i < data[0].Count; i++)
+            //{
+            //    //update balance from playerObject
+            //    if (PlayerManager.instance.GetPlayerGameData().userId == data[0][i]["userId"].ToString())
+            //    {
+            //        AmISpectator = false;
+            //        myPlayerSeat = data[0][i]["seatNo"].ToString();
 
-                    Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
-                    Vector3 position2 = GetSeatObject("1").transform.position;
+            //        Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
+            //        Vector3 position2 = GetSeatObject("1").transform.position;
 
-                    GetSeatObject(myPlayerSeat).transform.position = position2;
-                    GetSeatObject("1").transform.position = position1;
-                }
-            }
+            //        GetSeatObject(myPlayerSeat).transform.position = position2;
+            //        GetSeatObject("1").transform.position = position1;
+            //    }
+            //}
 
-            GetAvailableSeats();
+            //GetAvailableSeats();
         }        
     }
 
