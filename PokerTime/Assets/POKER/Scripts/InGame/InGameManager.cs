@@ -52,7 +52,17 @@ public class InGameManager : MonoBehaviour
     private List<GameObject> winnersObject = new List<GameObject>();
     private int communityCardsAniamtionShowedUpToRound = 0;
     private int currentRoundTotalBets = 0;
-    private float potAmount = 0;
+    private float pot1Amount = 0;
+
+    private float pot2Amount = 0;
+    private float pot3Amount = 0;
+    private float pot4Amount = 0;
+    private float pot5Amount = 0;
+    private float pot6Amount = 0;
+    private float pot7Amount = 0;
+    private float pot8Amount = 0;
+    private float pot9Amount = 0;
+
 
     private bool isRematchRequestSent = false,isTopUpDone = false;
     private float availableBalance = 0;
@@ -699,7 +709,7 @@ public class InGameManager : MonoBehaviour
     }
     public float GetPotAmount()
     {
-        return potAmount;
+        return pot1Amount;
     }
 
     private void UpdatePot(string textToShow)
@@ -773,7 +783,7 @@ public class InGameManager : MonoBehaviour
             SoundManager.instance.PlaySound(SoundType.ChipsCollect);
         }
 
-        UpdatePot("" + (int)potAmount);
+        UpdatePot("" + (int)pot1Amount);
 
         switch (MATCH_ROUND)
         {
@@ -1068,10 +1078,10 @@ public class InGameManager : MonoBehaviour
         }
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
-
+        Debug.LogWarning("NEXT ROUND In: " + remainingTime);
         if (remainingTime > 1)
         {
-           // InGameUiManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
+            InGameUiManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
            // InGameUiManager.instance.LoadingImage.SetActive(true);
             if (!isRematchRequestSent)
             {
@@ -1204,12 +1214,29 @@ public class InGameManager : MonoBehaviour
 
     public void OnBetDataFound(string serverResponse)
     {
-        Debug.LogWarning("serverResponse BETDATAFOUND " + serverResponse);
+        //Debug.LogWarning("serverResponse BETDATAFOUND " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         LAST_BET_AMOUNT = (int)float.Parse(data[0]["lastBet"].ToString());
         string userId = data[0]["userId"].ToString();
-        potAmount = float.Parse(data[0]["pot"].ToString());
 
+        //        pot1Amount = float.Parse(data[0]["pot"].ToString());
+        try
+        {
+            pot1Amount = float.Parse(data[0]["pot"]["sidePot"][0]["amount"].ToString());
+            pot2Amount = float.Parse(data[0]["pot"]["sidePot"][1]["amount"].ToString());
+            pot3Amount = float.Parse(data[0]["pot"]["sidePot"][2]["amount"].ToString());
+            pot4Amount = float.Parse(data[0]["pot"]["sidePot"][3]["amount"].ToString());
+            pot5Amount = float.Parse(data[0]["pot"]["sidePot"][4]["amount"].ToString());
+            pot6Amount = float.Parse(data[0]["pot"]["sidePot"][5]["amount"].ToString());
+            pot7Amount = float.Parse(data[0]["pot"]["sidePot"][6]["amount"].ToString());
+            pot8Amount = float.Parse(data[0]["pot"]["sidePot"][7]["amount"].ToString());
+            pot9Amount = float.Parse(data[0]["pot"]["sidePot"][8]["amount"].ToString());
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning(ex.ToString());
+        }
+        
 
         if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         {
@@ -1414,12 +1441,12 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.isSmallBlind = data[0][i]["smallBlind"].Equals(true);
                         playerData.playerData.isBigBlind = data[0][i]["bigBlind"].Equals(true);
 
-                        //playerData.playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
-                        //playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
-                        //playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
-                        //playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
+                        playerData.playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
+                        playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
+                        playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
+                        playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
 
-                        //Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
+                        Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
                         if (playerData.isTurn)
                         {
@@ -1472,10 +1499,10 @@ public class InGameManager : MonoBehaviour
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 
-                        //playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
-                        //playerData.cardValidity = data[0][i]["cardValidity"].ToString();
-                        //playerData.bufferTime = data[0][i]["bufferTime"].ToString();
-                        //playerData.seatNo = data[0][i]["seatNo"].ToString();
+                        playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
+                        playerData.cardValidity = data[0][i]["cardValidity"].ToString();
+                        playerData.bufferTime = data[0][i]["bufferTime"].ToString();
+                        playerData.seatNo = data[0][i]["seatNo"].ToString();
                         
                         Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
@@ -1524,23 +1551,23 @@ public class InGameManager : MonoBehaviour
             }
 
 
-            //for (int i = 0; i < data[0].Count; i++)
-            //{
-            //    //update balance from playerObject
-            //    if (PlayerManager.instance.GetPlayerGameData().userId == data[0][i]["userId"].ToString())
-            //    {
-            //        AmISpectator = false;
-            //        myPlayerSeat = data[0][i]["seatNo"].ToString();
+            for (int i = 0; i < data[0].Count; i++)
+            {
+                //update balance from playerObject
+                if (PlayerManager.instance.GetPlayerGameData().userId == data[0][i]["userId"].ToString())
+                {
+                    AmISpectator = false;
+                    myPlayerSeat = data[0][i]["seatNo"].ToString();
 
-            //        Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
-            //        Vector3 position2 = GetSeatObject("1").transform.position;
+                    Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
+                    Vector3 position2 = GetSeatObject("1").transform.position;
 
-            //        GetSeatObject(myPlayerSeat).transform.position = position2;
-            //        GetSeatObject("1").transform.position = position1;
-            //    }
-            //}
+                    GetSeatObject(myPlayerSeat).transform.position = position2;
+                    GetSeatObject("1").transform.position = position1;
+                }
+            }
 
-            //GetAvailableSeats();
+            GetAvailableSeats();
         }        
     }
 
@@ -1568,7 +1595,7 @@ public class InGameManager : MonoBehaviour
         winnersObject.Clear();
         communityCardsAniamtionShowedUpToRound = 0;
         currentRoundTotalBets = 0;
-        potAmount = 0;
+        pot1Amount = 0;
         lastPlayerAction = "";
         openCards = null;
         LAST_BET_AMOUNT = 0;
