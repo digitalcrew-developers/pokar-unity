@@ -130,6 +130,10 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("seatObject", SeatObjectsReceived);
         socketManager.Socket.On("rabbitCardDataemit", RabbitCardDataReceived);
         socketManager.Open();
+
+        GameObject rabbitButton = GameObject.Find("RabbitButton");
+        rabbitButton.GetComponent<UnityEngine.UI.Button>().onClick.RemoveAllListeners();
+        rabbitButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(RequestRabbitCard);
     }
 
     bool isPaused = false;
