@@ -1141,7 +1141,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnTurnCountDownFound(string serverResponse)
     {
-        //Debug.LogError("OnTurnCountDownFound" + serverResponse);
+        Debug.LogError("OnTurnCountDownFound" + serverResponse);
         //if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         //{
         //    JsonData data = JsonMapper.ToObject(serverResponse);
