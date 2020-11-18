@@ -128,6 +128,7 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("pointUpdate", OnPointUpdate);
         socketManager.Socket.On("minMaxAppEmit", MinimizeAppServer);
         socketManager.Socket.On("seatObject", SeatObjectsReceived);
+        socketManager.Socket.On("rabbitCardDataemit", RabbitCardDataReceived);
         socketManager.Open();
     }
 
@@ -162,7 +163,13 @@ public class SocketController : MonoBehaviour
         string responseText = JsonMapper.ToJson(args);
         Debug.Log(responseText);
     }
-    
+
+    private void RabbitCardDataReceived(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError("RabbitCardDataReceived :" + responseText);
+    }
+
     private void SeatObjectsReceived(Socket socket, Packet packet, object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
@@ -1028,6 +1035,24 @@ public class SocketController : MonoBehaviour
 
 
     #region EMIT_METHODS
+
+    public void RequestRabbitCard()
+    {
+        RabitData requestData = new RabitData();
+        requestData.tableId = TABLE_ID;
+        requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+
+        string requestStringData = JsonMapper.ToJson(requestData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "rabbitOpenCards";
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+    }
+
     public void SendStandUpdata()
     {
         StandUpdata requestData = new StandUpdata();
@@ -1579,6 +1604,12 @@ public enum SocketEvetns
     ON_POINT_UPDATE
 }
 
+[System.Serializable]
+public class RabitData
+{
+    public string tableId;
+    public string userId;
+}
 
 [System.Serializable]
 public class StandUpdata
