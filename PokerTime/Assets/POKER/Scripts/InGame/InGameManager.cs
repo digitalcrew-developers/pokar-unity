@@ -1141,7 +1141,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnTurnCountDownFound(string serverResponse)
     {
-        Debug.LogError("OnTurnCountDownFound" + serverResponse);
+        //Debug.LogError("OnTurnCountDownFound" + serverResponse);
         //if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         //{
         //    JsonData data = JsonMapper.ToObject(serverResponse);
@@ -1362,7 +1362,7 @@ public class InGameManager : MonoBehaviour
         {
             //AdjustAllPlayersOnTable(data[0].Count);
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
-            Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
+            //Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
             SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
             InGameUiManager.instance.tableId = data[0][0]["tableId"].ToString();
             ShowNewPlayersOnTable(data, isMatchStarted);

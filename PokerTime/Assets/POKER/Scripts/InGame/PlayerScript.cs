@@ -280,7 +280,7 @@ public class PlayerScript : MonoBehaviour
 
     public void ResetTurn()
     {
-        Debug.LogError("Stopping Turn");
+        //Debug.LogError("Stopping Turn");
         fx_holder.gameObject.SetActive(false);
         timerBar.fillAmount = 0;
         if (lastRoutine != null)
@@ -289,7 +289,7 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-            Debug.LogError("lastRoutine is null");
+            //Debug.LogError("lastRoutine is null");
         }
         CountDownTimerRunning = false;
     }
@@ -436,19 +436,19 @@ public class PlayerScript : MonoBehaviour
 
         int extraTime = 0;
         int.TryParse(playerData.bufferTime, out extraTime);
-        UnityEngine.Debug.Log("playerData.bufferTime " + playerData.bufferTime);
+        //UnityEngine.Debug.Log("playerData.bufferTime " + playerData.bufferTime);
         int totalTime = GameConstants.TURN_TIME + extraTime;
-        UnityEngine.Debug.LogError("GameConstants.TURN_TIME = " + GameConstants.TURN_TIME);
-        UnityEngine.Debug.LogError("extraTime = " + extraTime);
-        UnityEngine.Debug.LogError("totalTime = " + totalTime);
+        //UnityEngine.Debug.LogError("GameConstants.TURN_TIME = " + GameConstants.TURN_TIME);
+        //UnityEngine.Debug.LogError("extraTime = " + extraTime);
+        //UnityEngine.Debug.LogError("totalTime = " + totalTime);
 
         remainingTime = totalTime - remainingTime;      //10  - 30
 
-        UnityEngine.Debug.LogError("RemainingTime = " + remainingTime);
+        //UnityEngine.Debug.LogError("RemainingTime = " + remainingTime);
 
         if (remainingTime == 0)
         {
-            UnityEngine.Debug.LogError("Starting timer");
+            //UnityEngine.Debug.LogError("Starting timer");
             lastRoutine = StartCoroutine(CountDownAnimation(totalTime));
         }
     }
