@@ -1419,7 +1419,7 @@ public class InGameManager : MonoBehaviour
                         //playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         //playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
 
-                        Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
+                        //Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
                         if (playerData.isTurn)
                         {
