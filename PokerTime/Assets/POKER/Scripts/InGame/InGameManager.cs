@@ -1414,10 +1414,10 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.isSmallBlind = data[0][i]["smallBlind"].Equals(true);
                         playerData.playerData.isBigBlind = data[0][i]["bigBlind"].Equals(true);
 
-                        playerData.playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
-                        playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
-                        playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
-                        playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
+                        //playerData.playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
+                        //playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
+                        //playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
+                        //playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
 
                         Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
@@ -1472,10 +1472,10 @@ public class InGameManager : MonoBehaviour
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 
-                        playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
-                        playerData.cardValidity = data[0][i]["cardValidity"].ToString();
-                        playerData.bufferTime = data[0][i]["bufferTime"].ToString();
-                        playerData.seatNo = data[0][i]["seatNo"].ToString();
+                        //playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
+                        //playerData.cardValidity = data[0][i]["cardValidity"].ToString();
+                        //playerData.bufferTime = data[0][i]["bufferTime"].ToString();
+                        //playerData.seatNo = data[0][i]["seatNo"].ToString();
                         
                         Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
