@@ -36,7 +36,7 @@ public class MemberListUIManager : MonoBehaviour
     {
         if(ClubDetailsUIManager.instance.playerTypeForClub.Equals("Creater"))
         {
-            Debug.Log("I'm the Owner..");
+            //Debug.Log("I'm the Owner..");
         }
         else
         {

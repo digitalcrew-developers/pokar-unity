@@ -425,6 +425,7 @@ public class ClubTableController : MonoBehaviour
         {
             case RequestType.GetTemplates:
                 {
+                    Debug.Log("Response => GetTemplates : " + serverResponse);
                     JsonData data = JsonMapper.ToObject(serverResponse);
                     if (data["success"].ToString() == "1")
                     {
@@ -462,6 +463,7 @@ public class ClubTableController : MonoBehaviour
                         else if (data["message"].ToString().Equals("Template Published"))
                         {
                             //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
+                            Debug.Log("Tamplate Published Successfully");
                             
                         }
                     }

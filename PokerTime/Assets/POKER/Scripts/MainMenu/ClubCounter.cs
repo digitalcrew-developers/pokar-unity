@@ -112,7 +112,7 @@ public class ClubCounter : MonoBehaviour
         VIPFilterBtn.onClick.RemoveAllListeners();
         VIPFilterBtn.onClick.AddListener(ToggleOpenVIPFIlter);
 
-        for (int i = 0; i < TradeFilterButtons.Count; i++)
+        for (int i = 0; i < VIPButtons.Count; i++)
         {
             VIPButtons[i].OnStateChange += Filter_OnStateChange;
         }
@@ -277,6 +277,7 @@ public class ClubCounter : MonoBehaviour
                 break;
         }
         TradeFilterPanel.SetActive(false);
+        VIPFilterPanel.SetActive(false);
     }
 
     public void CheckForAvailableMembers()

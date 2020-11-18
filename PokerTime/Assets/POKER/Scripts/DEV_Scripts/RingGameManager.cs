@@ -35,6 +35,8 @@ public class RingGameManager : MonoBehaviour
     [Space(7)]
     public List<GameObject> innerComponents = new List<GameObject>();
 
+    [HideInInspector]
+    public bool isPublishTemplateWithCreate = false;
 
     private void Awake()
     {
@@ -349,6 +351,12 @@ public class RingGameManager : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.CreateTemplate, requestData, true, OnServerResponseFound);
     }
 
+    public void OnClickOnCreate()
+    {
+        isPublishTemplateWithCreate = true;
+        OnClickOnSave();
+    }
+
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
 
@@ -381,6 +389,35 @@ public class RingGameManager : MonoBehaviour
                     {
                         Debug.Log(data["message"].ToString());
                         MainMenuController.instance.ShowMessage(data["message"].ToString());
+                    }
+
+                    if(isPublishTemplateWithCreate)
+                    {
+                        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                                "\"status\":\"" + "Published" + "\"," +
+                                "\"tableIds\":[\"" + data["tableId"].ToString() + "\"]}";
+
+                        WebServices.instance.SendRequest(RequestType.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
+                    }
+                }
+                break;
+
+            case RequestType.UpdateTemplateStatus:
+                {
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+
+                    if (data["success"].ToString() == "1")
+                    {
+                        if (data["message"].ToString().Equals("Template Published"))
+                        {
+                            //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
+                            Debug.Log("Tamplate Published Successfully");
+                            isPublishTemplateWithCreate = false;
+                        }
+                    }
+                    else
+                    {
+                        //MainMenuController.instance.ShowMessage(data["message"].ToString());
                     }
                 }
                 break;

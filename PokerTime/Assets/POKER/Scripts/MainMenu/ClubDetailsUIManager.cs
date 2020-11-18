@@ -11,22 +11,26 @@ using UnityEngine.UI;
 
 public class ClubDetailsUIManager : MonoBehaviour
 {
-	public static ClubDetailsUIManager instance;    
+	public static ClubDetailsUIManager instance;
 	public Text clubNameText, uniqueClubIdText;
 	private string clubId = "", uniqueClubId = "";
-    public Text CLubChips;
+	public Text CLubChips;
 	public Image clubProfileImage;
 	public TMP_Text jackpotAmountText;
 	public string playerTypeForClub = "";
 
 	//DEV_CODE
 	[Header("Gameobject")]
+	public GameObject clubTablesContainer;
 	public GameObject clubProfile;
 	public GameObject editClubProfile;
 	public GameObject selectFrom;
 	public GameObject clubEmail;
 	public GameObject clubNotice;
-	
+
+	[Header("Prefabs")]
+	public GameObject tableType2;
+	public GameObject tableType3;
 
 	[Header("Images")]
 	public Image clubProfileImg;
@@ -39,7 +43,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 	public InputField editProfileClubNotice;
 
 	private string layout = "Listed";
-    private bool isJackpotOn = false;
+	private bool isJackpotOn = false;
 	private GameObject bottom;
 
 	private string path;
@@ -47,7 +51,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	private void Awake()
 	{
-		instance = this;	
+		instance = this;
 	}
 
 	private void OnEnable()
@@ -68,16 +72,16 @@ public class ClubDetailsUIManager : MonoBehaviour
 #endif
 	}
 
-	public void Initialize(string nameOfClub,string clubUniqueId,string idOfClub, string clubProfileImagePath, string playerType)
+	public void Initialize(string nameOfClub, string clubUniqueId, string idOfClub, string clubProfileImagePath, string playerType)
 	{
-		clubNameText.text = "Club Name : "+nameOfClub;
-		uniqueClubIdText.text = "Club Id : "+clubUniqueId;
+		clubNameText.text = "Club Name : " + nameOfClub;
+		uniqueClubIdText.text = "Club Id : " + clubUniqueId;
 		clubId = idOfClub;
 		uniqueClubId = clubUniqueId;
 		playerTypeForClub = playerType;
-		
+
 		StartCoroutine(LoadSpriteImageFromUrl(clubProfileImagePath, clubProfileImage));
-		FetchJackpotDetails();		
+		FetchJackpotDetails();
 
 		//DEV_CODE
 		//Debug.Log("Club name: " + nameOfClub);
@@ -86,8 +90,9 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 		GetChips();
 		GetNotifications();
-        //to-do... get layout from server for this club and update in local string
-    }
+		GetClubTemplates();
+		//to-do... get layout from server for this club and update in local string
+	}
 
 	private void FetchJackpotDetails()
 	{
@@ -165,29 +170,29 @@ public class ClubDetailsUIManager : MonoBehaviour
 		editClubProfile.SetActive(false);
 		selectFrom.SetActive(false);
 		clubEmail.SetActive(false);
-		clubNotice.SetActive(false);		
+		clubNotice.SetActive(false);
 	}
 
-    public void GetChips()
-    {
-        int id = 1;
-        string userId = PlayerManager.instance.GetPlayerGameData().userId;
-        int userIdInt = 0;
+	public void GetChips()
+	{
+		int id = 1;
+		string userId = PlayerManager.instance.GetPlayerGameData().userId;
+		int userIdInt = 0;
 
-        int.TryParse(userId, out userIdInt);
+		int.TryParse(userId, out userIdInt);
 
-        string clubID = ClubDetailsUIManager.instance.GetClubId();
-        int clubIdInt = 0;
+		string clubID = ClubDetailsUIManager.instance.GetClubId();
+		int clubIdInt = 0;
 
-        int.TryParse(clubID, out clubIdInt);
+		int.TryParse(clubID, out clubIdInt);
 
-        string request = "{\"userId\":\"" + userIdInt + "\"," +
-                        "\"clubId\":\"" + clubIdInt + "\"," +
-                        "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
-                        "\"clubStatus\":\"" + id + "\"}";
+		string request = "{\"userId\":\"" + userIdInt + "\"," +
+						"\"clubId\":\"" + clubIdInt + "\"," +
+						"\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
+						"\"clubStatus\":\"" + id + "\"}";
 
-        WebServices.instance.SendRequest(RequestType.GetClubDetails, request, true, OnServerResponseFound);
-    }
+		WebServices.instance.SendRequest(RequestType.GetClubDetails, request, true, OnServerResponseFound);
+	}
 
 	public void GetNotifications()
 	{
@@ -196,6 +201,16 @@ public class ClubDetailsUIManager : MonoBehaviour
 						   "\"unionId\":\"" + "" + "\"}";
 
 		WebServices.instance.SendRequest(RequestType.GetNotification, request, true, OnServerResponseFound);
+	}
+
+	public void GetClubTemplates()
+	{
+		string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+								"\"tableId\":\"" + "" + "\"," +
+								"\"status\":\"" + "Published" + "\"," +
+								"\"settingData\":\"" + "Yes" + "\"}";
+
+		WebServices.instance.SendRequest(RequestType.GetTemplates, requestData, true, OnServerResponseFound);
 	}
 
 	public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -229,6 +244,14 @@ public class ClubDetailsUIManager : MonoBehaviour
 				}
 				break;
 
+			case RequestType.GetTemplates:
+				{
+					Debug.Log("Response => GetTemplates : " + serverResponse);
+					JsonData data = JsonMapper.ToObject(serverResponse);
+					LoadTemplates(data);
+				}
+				break;
+
             default:
 #if ERROR_LOG
 			Debug.LogError("Unhandled requestType found in  MenuHandller = "+requestType);
@@ -236,6 +259,49 @@ public class ClubDetailsUIManager : MonoBehaviour
                 break;
         }
     }
+
+	private void LoadTemplates(JsonData data)
+	{
+		//Debug.Log("Total Templates: " + data["response"].Count);
+
+		for (int i = 1; i < clubTablesContainer.transform.childCount; i++)
+		{
+			Destroy(clubTablesContainer.transform.GetChild(i).gameObject);
+		}
+
+		for (int i = 0; i < data["response"].Count; i++)
+		{
+			GameObject obj;
+
+			if ((i+1) % 2 == 0)
+			{
+				obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;				
+			}
+			else
+			{
+				obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
+			}
+
+			if(data["response"][i]["templateName"] != null)
+				obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+
+			obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
+			//obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = "";
+
+			//if(data["response"][i]["settingData"].Count > 0)
+			//{
+			//	if (data["response"][i]["settingData"]["blinds"] != null)
+			//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
+
+			//	else if (data["response"][i]["settingData"]["ante"] != null)
+			//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
+			//}
+			
+			obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11,8);
+			obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
+			//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
+		}
+	}
 
     public void OnClickOnButton(string eventName)
 	{
