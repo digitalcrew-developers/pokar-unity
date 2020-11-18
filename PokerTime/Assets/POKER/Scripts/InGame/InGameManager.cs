@@ -1078,6 +1078,7 @@ public class InGameManager : MonoBehaviour
         }
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
+        Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
         Debug.LogWarning("NEXT ROUND In: " + remainingTime);
         if (remainingTime > 1)
         {
