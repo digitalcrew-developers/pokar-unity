@@ -128,7 +128,7 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("pointUpdate", OnPointUpdate);
         socketManager.Socket.On("minMaxAppEmit", MinimizeAppServer);
         socketManager.Socket.On("seatObject", SeatObjectsReceived);
-        socketManager.Socket.On("rabbitCardDataemit", RabbitCardDataReceived);
+        socketManager.Socket.On("rabbitOpenCards", RabbitCardDataReceived);
         socketManager.Open();
 
         GameObject rabbitButton = GameObject.Find("RabbitButton");
@@ -1050,7 +1050,7 @@ public class SocketController : MonoBehaviour
         object requestObjectData = Json.Decode(requestStringData);
 
         SocketRequest request = new SocketRequest();
-        request.emitEvent = "rabbitOpenCards";
+        request.emitEvent = "rabbitCardData"; //rabbitCardData //rabbitOpenCards
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
