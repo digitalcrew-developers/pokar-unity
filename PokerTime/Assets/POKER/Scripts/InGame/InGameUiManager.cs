@@ -113,7 +113,7 @@ public class InGameUiManager : MonoBehaviour
 
     private void SwitchTables(int counter)
     {
-        Debug.LogError("counter is " + counter);
+        //Debug.LogError("counter is " + counter);
         PlayerPrefs.SetInt("TableCount", counter);
 
         foreach (GameObject g in TableImages)
@@ -265,6 +265,12 @@ public class InGameUiManager : MonoBehaviour
 
         switch (eventName)
         {
+            case "rabbit":
+                {
+                    InGameManager.instance.RabbitButton.SetActive(false);
+                    StartCoroutine(InGameManager.instance.WaitAndShowRabbit());
+                }
+                break;
             case "store":
                 {
                     ShowScreen(InGameScreens.InGameShop);

@@ -172,6 +172,23 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.LogError("RabbitCardDataReceived :" + responseText);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.RABBIT_CARDS))
+        {
+            Debug.Log("RABBIT_CARDS = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+        Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.RABBIT_CARDS;
+        response.data = responseText;
+        socketResponse.Add(response);
     }
 
     private void SeatObjectsReceived(Socket socket, Packet packet, object[] args)
@@ -262,6 +279,9 @@ public class SocketController : MonoBehaviour
 
                 case SocketEvetns.ON_OPEN_CARD_DATA_FOUND:
                     InGameManager.instance.OnOpenCardsDataFound(responseObject.data);
+                    break;
+                case SocketEvetns.RABBIT_CARDS:
+                    InGameManager.instance.OnRabbitDataFound(responseObject.data);
                     break;
 
                 //case SocketEvetns.ON_OPEN_CARD_TIMER_FOUND:
@@ -622,6 +642,7 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         InGameManager.instance.Pot.SetActive(false);
+        InGameManager.instance.DeactivateAllPots();
 #if DEBUG
 
 #if UNITY_EDITOR
@@ -644,6 +665,7 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         InGameManager.instance.Pot.SetActive(false);
+        InGameManager.instance.DeactivateAllPots();
 #if DEBUG
 
 #if UNITY_EDITOR
@@ -666,6 +688,7 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         InGameManager.instance.Pot.SetActive(false);
+        InGameManager.instance.DeactivateAllPots();
 #if DEBUG
 
 #if UNITY_EDITOR
@@ -1605,7 +1628,8 @@ public enum SocketEvetns
     ON_SEND_WINNING_BOOSTER,
     ON_GET_RANDOM_CARD,
     ON_ALL_TIP_DATA,
-    ON_POINT_UPDATE
+    ON_POINT_UPDATE,
+    RABBIT_CARDS
 }
 
 [System.Serializable]

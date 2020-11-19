@@ -29,7 +29,9 @@ public class InGameManager : MonoBehaviour
     [SerializeField]
     private Transform animationLayer;
 
-    
+    public List<GameObject> AllPots = new List<GameObject>();
+    public List<float> PotValues = new List<float>();
+
     public GameObject Pot;
     
     [SerializeField]
@@ -101,11 +103,12 @@ public class InGameManager : MonoBehaviour
     }
 
     public Text TableName;
+    public GameObject RabbitButton;
 
     private void Start()
     {
         //InGameUiManager.instance.ShowTableMessage("Select a seat");
-
+        RabbitButton.SetActive(false);
         gameExitCalled = false;
         //DEV_CODE
         videoHeight = (int)InGameUiManager.instance.height;
@@ -118,6 +121,7 @@ public class InGameManager : MonoBehaviour
 
         UpdatePot("");
         Pot.SetActive(false);
+        DeactivateAllPots();
         onlinePlayersScript = new PlayerScript[0];
 
         for (int i = 0; i < allPlayersObject.Length; i++)
@@ -130,10 +134,18 @@ public class InGameManager : MonoBehaviour
         AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
     }
 
+    public void DeactivateAllPots()
+    {
+        foreach(GameObject g in AllPots)
+        {
+            g.SetActive(false);
+        }
+    }
+
     public void GetAvailableSeats()
     {
         string req = "{\"tableId\":\"" + GlobalGameManager.instance.GetRoomData().socketTableId + "\"}";
-        Debug.LogError("Sending get available seats :" + req);
+        //Debug.LogError("Sending get available seats :" + req);
         WebServices.instance.SendRequest(RequestType.GetSeatObject, req, true, OnServerResponseFound);
     }
 
@@ -153,7 +165,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.LogError("Seats available 0:" + serverResponse);
+        //Debug.LogError("Seats available 0:" + serverResponse);
 
         if (errorMessage.Length > 0)
         {
@@ -166,7 +178,7 @@ public class InGameManager : MonoBehaviour
 
         if (requestType == RequestType.GetSeatObject)
         {
-            Debug.LogError("Seats available 1:" + serverResponse);
+            //Debug.LogError("Seats available 1:" + serverResponse);
             AllSeats = JsonUtility.FromJson<TableSeats>(serverResponse);
             UpdateSeatClickSettingsAndView();
         }
@@ -189,6 +201,22 @@ public class InGameManager : MonoBehaviour
             AllSeatButtons[i].GetComponent<PlayerSeat>().UpdateState();            
         }
         GetSeatObject(myPlayerSeat).SetActive(false);
+    }
+
+    public void OnRabbitDataFound(string responseText)
+    {
+        Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
+        Debug.LogError("isFold :" + GetMyPlayerObject().GetPlayerData().isFold);
+
+        int vipCard = 0;
+        int.TryParse(GetMyPlayerObject().GetPlayerData().userVIPCard, out vipCard);
+
+        
+        if (vipCard > 0)
+        {
+            RabbitButton.SetActive(true);
+            OnOpenCardsDataFound(responseText);
+        }
     }
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
@@ -398,7 +426,7 @@ public class InGameManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("LAST BET AMOUNT 1" + LAST_BET_AMOUNT);
+                //Debug.LogWarning("LAST BET AMOUNT 1" + LAST_BET_AMOUNT);
                 InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
             }
         }
@@ -714,15 +742,29 @@ public class InGameManager : MonoBehaviour
 
     private void UpdatePot(string textToShow)
     {
-        if (string.IsNullOrEmpty(textToShow))
+        //if (string.IsNullOrEmpty(textToShow))
+        //{
+        //    Pot.SetActive(false);
+        //}
+        //else
+        //{
+        //    Pot.SetActive(true);
+        //}
+        //potText.text = textToShow;
+        foreach(GameObject g in AllPots)
         {
-            Pot.SetActive(false);
+            g.SetActive(false);
         }
-        else
+        for(int i = 0; i < PotValues.Count; i++)
         {
-            Pot.SetActive(true);
+            string s = PotValues[i].ToString();
+            if (!string.IsNullOrEmpty(s))
+            {
+                AllPots[i].SetActive(true);
+                AllPots[i].transform.Find("Text").GetComponent<Text>().text = s;
+            }
         }
-        potText.text = textToShow;
+
     }
 
     public int GetMatchRound()
@@ -750,6 +792,45 @@ public class InGameManager : MonoBehaviour
         }
 
         StartCoroutine(WaitAndShowCommunityCardsAnimation());
+    }
+
+    public IEnumerator WaitAndShowRabbit()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+            communityCards[i].sprite = openCards[i].cardsSprite;
+        }
+        yield return new WaitForSeconds(1f);
+
+        SoundManager.instance.PlaySound(SoundType.CardMove);
+
+        for (int i = 4; i < 5; i++)
+        {
+            GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+
+            gm.transform.localScale = communityCards[i].transform.localScale;
+            gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
+            gm.transform.Rotate(0, -90, 0);
+            gm.transform.position = communityCards[i].transform.position;
+
+            gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+            gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+            yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+
+            Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+        }
+
+        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+
+        for (int i = 0; i < communityCards.Length; i++)
+        {
+            if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+            communityCards[i].sprite = openCards[i].cardsSprite;
+            communityCards[i].gameObject.SetActive(true);
+        }
+
     }
 
     private IEnumerator WaitAndShowCommunityCardsAnimation()
@@ -999,7 +1080,7 @@ public class InGameManager : MonoBehaviour
             return;
         }
 
-        Debug.LogError("OnResultSuccessFound :" + serverResponse);
+        //Debug.LogError("OnResultSuccessFound :" + serverResponse);
 
         MATCH_ROUND = 10; // ToShow all cards
         ShowCommunityCardsAnimation();
@@ -1215,29 +1296,26 @@ public class InGameManager : MonoBehaviour
 
     public void OnBetDataFound(string serverResponse)
     {
-        //Debug.LogWarning("serverResponse BETDATAFOUND " + serverResponse);
+        Debug.LogWarning("serverResponse BETDATAFOUND " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         LAST_BET_AMOUNT = (int)float.Parse(data[0]["lastBet"].ToString());
         string userId = data[0]["userId"].ToString();
 
-        //        pot1Amount = float.Parse(data[0]["pot"].ToString());
-        try
+        pot1Amount = float.Parse(data[0]["pot"].ToString());
+
+        string s = serverResponse.Remove(serverResponse.Length - 1, 1);
+        s = s.Remove(0, 1);
+        Debug.LogWarning("s" + s);
+
+        MyBetData betData = JsonUtility.FromJson<MyBetData>(s);
+
+        Debug.LogWarning("side pot length; " + betData.sidePot.Count);
+        PotValues.Clear();
+        for (int i=0;i< betData.sidePot.Count; i++)
         {
-            pot1Amount = float.Parse(data[0]["pot"]["sidePot"][0]["amount"].ToString());
-            pot2Amount = float.Parse(data[0]["pot"]["sidePot"][1]["amount"].ToString());
-            pot3Amount = float.Parse(data[0]["pot"]["sidePot"][2]["amount"].ToString());
-            pot4Amount = float.Parse(data[0]["pot"]["sidePot"][3]["amount"].ToString());
-            pot5Amount = float.Parse(data[0]["pot"]["sidePot"][4]["amount"].ToString());
-            pot6Amount = float.Parse(data[0]["pot"]["sidePot"][5]["amount"].ToString());
-            pot7Amount = float.Parse(data[0]["pot"]["sidePot"][6]["amount"].ToString());
-            pot8Amount = float.Parse(data[0]["pot"]["sidePot"][7]["amount"].ToString());
-            pot9Amount = float.Parse(data[0]["pot"]["sidePot"][8]["amount"].ToString());
+            var value = float.Parse(betData.sidePot[i].amount.ToString());
+            PotValues.Add(value);
         }
-        catch (Exception ex)
-        {
-            Debug.LogWarning(ex.ToString());
-        }
-        
 
         if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         {
@@ -1278,7 +1356,7 @@ public class InGameManager : MonoBehaviour
     string handtype;
     public void OnRoundDataFound(string serverResponse)
     {
-        UnityEngine.Debug.LogWarning("Round Data :- " + serverResponse);
+        //UnityEngine.Debug.LogWarning("Round Data :- " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
         handtype = serverResponse;
@@ -1296,7 +1374,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnOpenCardsDataFound(string serverResponse)
     {
-        Debug.LogWarning("OpenCardDataFound : " + serverResponse);
+        Debug.LogError("OpenCardDataFound : " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         openCards = new CardData[data[0].Count];
 
@@ -1505,10 +1583,10 @@ public class InGameManager : MonoBehaviour
                         playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         playerData.seatNo = data[0][i]["seatNo"].ToString();
                         
-                        Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
+                        //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
                         {
-                            Debug.LogWarning("isTurn is true");
+                            //Debug.LogWarning("isTurn is true");
                             playerWhosTurn = playerObject;
                             isCheckAvailable = data[0][i]["isCheck"].Equals(true);
                         }
@@ -1540,7 +1618,7 @@ public class InGameManager : MonoBehaviour
 
                 if (playerWhosTurn != null)
                 {
-                    Debug.LogWarning("Switching turn");
+                    //Debug.LogWarning("Switching turn");
                     SwitchTurn(playerWhosTurn, isCheckAvailable);
                 }
                 else
@@ -1597,6 +1675,8 @@ public class InGameManager : MonoBehaviour
         communityCardsAniamtionShowedUpToRound = 0;
         currentRoundTotalBets = 0;
         pot1Amount = 0;
+        RabbitButton.SetActive(false);
+        ClearPotAmount();
         lastPlayerAction = "";
         openCards = null;
         LAST_BET_AMOUNT = 0;
@@ -1611,6 +1691,11 @@ public class InGameManager : MonoBehaviour
 
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScript[0];
+    }
+
+    private void ClearPotAmount()
+    {
+        PotValues.Clear();
     }
 
 
@@ -1741,4 +1826,20 @@ public class Seat
 {
     public int userId;
     public string seatNo;
+}
+
+[System.Serializable]
+public class MyBetData
+{
+    public int userId;
+    public int bet;
+    public int lastBet;
+    public int pot;
+    public List<Pot> sidePot = new List<Pot>();
+}
+
+[System.Serializable]
+public class Pot
+{
+    public int amount;
 }
