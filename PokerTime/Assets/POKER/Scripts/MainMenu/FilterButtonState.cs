@@ -20,6 +20,27 @@ public enum ClubMemberFilters
     LastPlayed
 }
 
+public enum ClubCounterTradeFilters
+{
+    TimeJoined,
+    PPChipBalance,
+    PlayerWithPrizes,
+    PrizeExpiryDate
+}
+
+public enum ClubCounterVipFilters
+{
+    Fee,
+    SpinUpBuyIn,
+    Winnings,
+    Hand,
+    LastLogin,
+    LastPlayed,
+    OldMember,
+    NewMember,
+    ActiveMember
+}
+
 public class FilterButtonState : MonoBehaviour
 {
     private FilterState state;

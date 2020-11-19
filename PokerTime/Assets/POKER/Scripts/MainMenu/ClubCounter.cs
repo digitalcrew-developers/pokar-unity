@@ -243,36 +243,87 @@ public class ClubCounter : MonoBehaviour
                 break;
         }
 
-
         //sort based on statename and type
         switch (stateName)
         {
             case "Time Joined":
+                {
+
+                }
                 break;
+
             case "PP Chip Balance":
+                {
+
+                }
                 break;
+
             case "Players With Prizes":
+                {
+
+                }
                 break;
+
             case "Prize Expiry Date":
+                {
+
+                }
                 break;
+
             case "Fee":
+                {
+
+                }
                 break;
+
             case "SpinUp Buy-In":
+                {
+
+                }
                 break;
+
             case "Winnings":
+                {
+
+                }
                 break;
+
             case "Hand":
+                {
+
+                }
                 break;
+
             case "LastLogin":
+                {
+
+                }
                 break;
+
             case "LastPlayed":
+                {
+
+                }
                 break;
+
             case "OldMember":
+                {
+
+                }
                 break;
+
             case "NewMember":
+                {
+
+                }
                 break;
+
             case "ActiveMember":
+                {
+
+                }
                 break;
+
             default:
                 break;
         }
@@ -327,14 +378,15 @@ public class ClubCounter : MonoBehaviour
         {
             case RequestType.SendChipsOut:
                 {
+                    Debug.Log("Response => SendChipsOut : " + serverResponse);
                     JsonData data1 = JsonMapper.ToObject(serverResponse);
                     if (data1["success"].Equals(1))
                     {
-                        MainMenuController.instance.ShowMessage(serverResponse, () =>
-                        {
-                            GetMembersListFromServer();
-                            CloseSendOutPanel();
-                        });
+                        //MainMenuController.instance.ShowMessage(serverResponse, () =>
+                        //{
+                        //    GetMembersListFromServer();
+                        //    CloseSendOutPanel();
+                        //});
                     }
                     else
                     {
@@ -344,14 +396,15 @@ public class ClubCounter : MonoBehaviour
                 break;
 
             case RequestType.ClaimBackChips:
+                Debug.Log("Response => ClaimBackChips : " + serverResponse);
                 JsonData data2 = JsonMapper.ToObject(serverResponse);
                 if (data2["success"].Equals(1))
                 {
-                    MainMenuController.instance.ShowMessage(serverResponse, () =>
-                    {
-                        GetMembersListFromServer();
-                        CloseSendOutPanel();
-                    });
+                    //MainMenuController.instance.ShowMessage(serverResponse, () =>
+                    //{
+                    //    GetMembersListFromServer();
+                    //    CloseSendOutPanel();
+                    //});
                 }
                 else
                 {
@@ -396,6 +449,11 @@ public class ClubCounter : MonoBehaviour
                     Debug.Log("Response GetTradeHistory: " + serverResponse);
                     if (data["success"].Equals(1))
                     {
+                        for (int i = 0; i < TradeRecordListContent.childCount; i++)
+                        {
+                            Destroy(TradeRecordListContent.GetChild(i).gameObject);
+                        }
+
                         //Debug.Log("Total Data: " + data["response"][0]["nickName"].ToString());
                         for (int i = 0; i < data["response"].Count; i++)
                         {
@@ -814,7 +872,7 @@ public class ClubCounter : MonoBehaviour
 
     private void SendChipsAPIRequest()
     {
-        Debug.Log("User ID:" + PlayerManager.instance.GetPlayerGameData().userId);
+        //Debug.Log("User ID:" + PlayerManager.instance.GetPlayerGameData().userId);
 
         int amount = 0;
         int.TryParse(AmountToSendInputField.text, out amount);

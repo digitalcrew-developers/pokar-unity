@@ -27,6 +27,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 	public GameObject selectFrom;
 	public GameObject clubEmail;
 	public GameObject clubNotice;
+	public GameObject jackpotData;
 
 	[Header("Prefabs")]
 	public GameObject tableType2;
@@ -72,13 +73,23 @@ public class ClubDetailsUIManager : MonoBehaviour
 #endif
 	}
 
-	public void Initialize(string nameOfClub, string clubUniqueId, string idOfClub, string clubProfileImagePath, string playerType)
+	public void Initialize(string nameOfClub, string clubUniqueId, string idOfClub, string clubProfileImagePath, string playerType, string isAdmin)
 	{
-		clubNameText.text = "Club Name : " + nameOfClub;
+		clubNameText.text = /*"Club Name : " +*/ nameOfClub;
 		uniqueClubIdText.text = "Club Id : " + clubUniqueId;
 		clubId = idOfClub;
 		uniqueClubId = clubUniqueId;
 		playerTypeForClub = playerType;
+
+		//To Enable/Disable Bottom Panel
+		if (isAdmin.Equals("Yes"))
+		{
+			ClubAdminManager.instance.bottomPanel.SetActive(true);
+		}
+		else
+		{
+			ClubAdminManager.instance.bottomPanel.SetActive(false);
+		}
 
 		StartCoroutine(LoadSpriteImageFromUrl(clubProfileImagePath, clubProfileImage));
 		FetchJackpotDetails();
@@ -94,7 +105,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 		//to-do... get layout from server for this club and update in local string
 	}
 
-	private void FetchJackpotDetails()
+	public void FetchJackpotDetails()
 	{
 		string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
 		WebServices.instance.SendRequest(RequestType.GetJackpotDetailByClubId, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
@@ -112,8 +123,11 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 			JsonData data = JsonMapper.ToObject(serverResponse);
 
-			if (data["status"].Equals(true))
+			if (data["data"][0]["jackpotStatus"].Equals("Active"))
 			{
+				if (!jackpotData.activeSelf)
+					jackpotData.SetActive(true);
+
 				int a = data["data"][0]["jackpotAmount"].ToString().Length;
 
 				string str = "";
@@ -139,6 +153,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 			else
 			{
 				Debug.Log("No Jackpot is available...");
+				jackpotData.SetActive(false);
 			}
 		});
 	}
@@ -215,7 +230,6 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.Log("Response GetClubDetails: " + serverResponse);
         //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
@@ -232,15 +246,16 @@ public class ClubDetailsUIManager : MonoBehaviour
         {
             case RequestType.GetClubDetails:
                 {
-                    JsonData data = JsonMapper.ToObject(serverResponse);
+					Debug.Log("Response => GetClubDetails : " + serverResponse);
+					JsonData data = JsonMapper.ToObject(serverResponse);
                     string chipsText = data["data"][0]["ptChips"].ToString();
-                    CLubChips.text = chipsText;
-                }
+                    CLubChips.text = chipsText;					
+				}
                 break;
 
 			case RequestType.GetNotification:
 				{
-					Debug.Log("Response => GetNotification: " + serverResponse);
+					Debug.Log("Response => GetNotification : " + serverResponse);
 				}
 				break;
 
@@ -315,13 +330,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 				if (!MainMenuController.instance.bottomPanel.activeSelf)
 					MainMenuController.instance.bottomPanel.SetActive(true);
 
-                    MainMenuController.instance.SwitchToMainMenu(true);
+                MainMenuController.instance.SwitchToMainMenu(true);
             }
 			break;
 
 			case "members":
 			{
-				MemberListUIManager.instance.ToggleScreen(true);
+				MemberListUIManager.instance.ToggleScreen(true);				
 			}
 			break;
 

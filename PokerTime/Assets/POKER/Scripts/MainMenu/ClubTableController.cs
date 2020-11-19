@@ -268,7 +268,7 @@ public class ClubTableController : MonoBehaviour
         }
     }
 
-    private void RequestTemplateData()
+    public void RequestTemplateData()
     {
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
                                 "\"tableId\":\"" + "" + "\"," +
@@ -451,6 +451,7 @@ public class ClubTableController : MonoBehaviour
 
             case RequestType.UpdateTemplateStatus:
                 {
+                    Debug.Log("Response => UpdateTemplateStatus : " + serverResponse);
                     JsonData data = JsonMapper.ToObject(serverResponse);
 
                     if (data["success"].ToString() == "1")
@@ -458,13 +459,16 @@ public class ClubTableController : MonoBehaviour
                         if (data["message"].ToString().Equals("Template Deleted"))
                         {
                             MainMenuController.instance.ShowMessage("Deleted successfully");
+                            for (int i = 0; i < container.childCount; i++)
+                            {
+                                Destroy(container.GetChild(i).gameObject);
+                            }
                             RequestTemplateData();
                         }
                         else if (data["message"].ToString().Equals("Template Published"))
                         {
                             //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
-                            Debug.Log("Tamplate Published Successfully");
-                            
+                            Debug.Log("Tamplate Published Successfully");                            
                         }
                     }
                     else

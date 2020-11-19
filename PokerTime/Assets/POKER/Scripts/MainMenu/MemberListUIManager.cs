@@ -43,7 +43,7 @@ public class MemberListUIManager : MonoBehaviour
             memberListScreen.transform.Find("BG1/BG2/Menu").gameObject.SetActive(false);
             memeberPanel.transform.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(0, 0, 0);
             memeberPanel.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(610, 660);
-            Debug.Log("Not Owner..");
+            //Debug.Log("Not Owner..");
         }
 
         FetchMembersList();
@@ -185,7 +185,7 @@ public class MemberListUIManager : MonoBehaviour
                     StartCoroutine(LoadSpriteImageFromUrl(oldMembersList[i].profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
                 
                 gm.GetComponent<Button>().onClick.RemoveAllListeners();
-                Debug.Log("Debug i value :" + i);
+                //Debug.Log("Debug i value :" + i);
 
                 if(ClubDetailsUIManager.instance.playerTypeForClub.Equals("Creater"))
                     gm.GetComponent<Button>().onClick.AddListener(() => OpenMemberDetailsPanel(x, gm));
@@ -242,7 +242,7 @@ public class MemberListUIManager : MonoBehaviour
 
             WebServices.instance.SendRequest(RequestType.ChangePlayerRoleInClub, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
             {
-                MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+                //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
                 if (errorMessage.Length > 0)
                 {

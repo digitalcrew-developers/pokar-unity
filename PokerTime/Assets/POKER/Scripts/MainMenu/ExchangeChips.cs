@@ -9,9 +9,9 @@ using UnityEngine.Networking;
 
 public class ExchangeChips : MonoBehaviour
 {
-    public TextMeshProUGUI ChipsCount;
+    public TextMeshProUGUI TotalDiamonds;
     public TMP_InputField Diamonds;
-    public TMP_InputField PPChips;
+    public TMP_InputField PTChips;
 
     public Button ConfirmButton;
 
@@ -19,6 +19,8 @@ public class ExchangeChips : MonoBehaviour
 
     public Button PTChipsTabButton, DiamondTabButton;
     public GameObject DiamondPanel, PTPanel;
+
+    private float diamondsToConvert = 0;
 
     private void Awake()
     {
@@ -35,10 +37,8 @@ public class ExchangeChips : MonoBehaviour
 
     public void Init()
     {
-        Diamonds.text = PlayerManager.instance.GetPlayerGameData().diamonds.ToString();
-        Diamonds.enabled = false;
+        TotalDiamonds.text = PlayerManager.instance.GetPlayerGameData().diamonds.ToString();
         
-        GetChips();
         DiamondTabButton.onClick.RemoveAllListeners();
         PTChipsTabButton.onClick.RemoveAllListeners();
         PTChipsTabButton.onClick.AddListener(() => OpenScreen("PTChips"));
@@ -52,16 +52,29 @@ public class ExchangeChips : MonoBehaviour
 
     private void AddPTChips()
     {
-        string userID = PlayerManager.instance.GetPlayerGameData().userId;
-        string clubID = ClubDetailsUIManager.instance.GetClubId();
-        string chipsCount = PPChips.text;
+        float.TryParse(Diamonds.text, out diamondsToConvert);
 
-        string request = "{\"userId\":\"" + userID + "\"," +
-                        "\"clubId\":\"" + clubID + "\"," +
-                        "\"chips\":\"" + chipsCount + "\"}";
+        if (diamondsToConvert > PlayerManager.instance.GetPlayerGameData().diamonds)
+        {
+            //StartCoroutine(Showp)
+            Debug.Log("Insufficient Diamonds...");
+            Diamonds.text = "";
+        }
+        else
+        {
+            float chips = diamondsToConvert * 3;
+            PTChips.text = chips.ToString();
+            Debug.Log("Ready to convert..." + PTChips + " Chips");
 
-        WebServices.instance.SendRequest(RequestType.AddPTChips, request, true, OnServerResponseFound);
+            string userID = PlayerManager.instance.GetPlayerGameData().userId;
+            string clubID = ClubDetailsUIManager.instance.GetClubId();
+            
+            string request = "{\"userId\":\"" + userID + "\"," +
+                            "\"clubId\":\"" + clubID + "\"," +
+                            "\"chips\":\"" + PTChips.text + "\"}";
 
+            WebServices.instance.SendRequest(RequestType.AddPTChips, request, true, OnServerResponseFound);
+        }
     }
 
     private void OpenScreen(string screenName)
@@ -90,32 +103,78 @@ public class ExchangeChips : MonoBehaviour
         }
     }
 
-    private void GetChips()
+    private void UpdatePlayerDiamonds(PlayerGameDetails updatedData)
     {
-        int id = 1;
-        //string userId = MemberListUIManager.instance.GetClubOwnerObject().userId;
-        string userId = PlayerManager.instance.GetPlayerGameData().userId;
-        int userIdInt = 0;
+        Debug.Log("Available Diamonds: " + PlayerManager.instance.GetPlayerGameData().diamonds);
 
-        int.TryParse(userId, out userIdInt);
 
-        string clubID = ClubDetailsUIManager.instance.GetClubId();
-        int clubIdInt = 0;
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"silver\":\"0\"," +
+            "\"coins\":\"" + (int)updatedData.coins + "\"," +
+            "\"points\":\"" + (int)updatedData.points + "\"," +
+            "\"diamond\":\"" + (int)updatedData.diamonds+ "\"," +
 
-        int.TryParse(clubID, out clubIdInt);
+            "\"rabbit\":\"0\"," +
+            "\"emoji\":\"0\"," +
+            "\"time\":\"0\"," +
+            "\"day\":\"0\"," +
+            "\"playerProgress\":\"\"}";
 
-        string request = "{\"userId\":\"" + userIdInt + "\"," +
-                        "\"clubId\":\"" + clubIdInt + "\"," +
-                        "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
-                        "\"clubStatus\":\"" + id + "\"}";
+        WebServices.instance.SendRequest(RequestType.UpdateUserBalance, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
+        {
+            //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
-        WebServices.instance.SendRequest(RequestType.GetClubDetails, request, true, OnServerResponseFound);
+            if (errorMessage.Length > 0)
+            {
+                MainMenuController.instance.ShowMessage(errorMessage);
+            }
+            else
+            {
+                JsonData data = JsonMapper.ToObject(serverResponse);
+                if (data["status"].Equals(true))
+                {
+                    PlayerManager.instance.SetPlayerGameData(updatedData);
+                    
+                    if (MenuHandller.instance != null)
+                    {
+                        MenuHandller.instance.UpdateAllText();
+                    }
+                }
+                else
+                {
+                    MainMenuController.instance.ShowMessage(data["message"].ToString());
+                    if (MenuHandller.instance != null)
+                    {
+                        MenuHandller.instance.UpdateAllText();
+                    }
+                }
+            }
+        });
+
+        //int id = 1;
+        ////string userId = MemberListUIManager.instance.GetClubOwnerObject().userId;
+        //string userId = PlayerManager.instance.GetPlayerGameData().userId;
+        //int userIdInt = 0;
+
+        //int.TryParse(userId, out userIdInt);
+
+        //string clubID = ClubDetailsUIManager.instance.GetClubId();
+        //int clubIdInt = 0;
+
+        //int.TryParse(clubID, out clubIdInt);
+
+        //string request = "{\"userId\":\"" + userIdInt + "\"," +
+        //                "\"clubId\":\"" + clubIdInt + "\"," +
+        //                "\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
+        //                "\"clubStatus\":\"" + id + "\"}";
+
+        //WebServices.instance.SendRequest(RequestType.GetClubDetails, request, true, OnServerResponseFound);
     }    
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.Log(serverResponse);
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        //Debug.Log(serverResponse);
+        //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
         {
@@ -131,15 +190,20 @@ public class ExchangeChips : MonoBehaviour
         {
             case RequestType.GetClubDetails:
                 {
+                    Debug.Log("Response => GetClubDetails(Exchange Chips) : " + serverResponse);
                     JsonData data = JsonMapper.ToObject(serverResponse);
                     string chipsText = data["data"][0]["ptChips"].ToString();
-                    ChipsCount.text = chipsText;
+                    TotalDiamonds.text = chipsText;
                 }
                 break;
             case RequestType.AddPTChips:
                 {
-                    GetChips();
-                    ClubDetailsUIManager.instance.GetChips();
+                    Debug.Log("Response => AddPTChips: " + serverResponse);
+                    PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
+                    playerData.diamonds -= diamondsToConvert;
+                    UpdatePlayerDiamonds(playerData);
+                    Diamonds.text = "";
+                    PTChips.text = "";
                     gameObject.SetActive(false);
                 }
                 break;

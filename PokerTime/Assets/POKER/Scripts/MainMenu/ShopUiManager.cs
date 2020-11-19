@@ -1069,7 +1069,6 @@ public class ShopUiManager: MonoBehaviour
 
     private void OnClickOnBuyButton(ShopItem itemData)
     {
-
         PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
         bool isChangesMade = false;
 

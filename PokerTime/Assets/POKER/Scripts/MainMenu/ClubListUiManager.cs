@@ -71,6 +71,7 @@ public class ClubListUiManager : MonoBehaviour
 				string clubId = data["data"][i]["clubId"].ToString();
 				string clubProfileImagePath = data["data"][i]["clubImage"].ToString();
 				string playerType = data["data"][i]["playerType"].ToString();
+				string isAdmin = data["data"][i]["isAdmin"].ToString();
 
 				//Load Club Profile Image
 				StartCoroutine(LoadSpriteImageFromUrl(clubProfileImagePath, gm.transform.Find("PhotoBg/Photo").GetComponent<Image>()));
@@ -93,23 +94,26 @@ public class ClubListUiManager : MonoBehaviour
                 }
 
 				//gm.transform.Find("ClubId").GetComponent<Text>().text = "ClubId : " + uniqueClubId;
-				gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnClub(clubName, uniqueClubId, clubId, clubProfileImagePath, playerType));
+				gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnClub(clubName, uniqueClubId, clubId, clubProfileImagePath, playerType, isAdmin));
 			}			
 		}
 
 		//layoutManager.UpdateLayout();
 	}
 
-	private void OnClickOnClub(string clubName,string uniqueClubId,string clubId, string clubProfileImagePath, string playerType)
+	private void OnClickOnClub(string clubName,string uniqueClubId,string clubId, string clubProfileImagePath, string playerType, string isAdmin)
 	{
 		SoundManager.instance.PlaySound(SoundType.Click);
 
-		object[] parameters = new object[5];
+		object[] parameters = new object[6];
 		parameters[0] = clubName;
 		parameters[1] = uniqueClubId;
 		parameters[2] = clubId;
 		parameters[3] = clubProfileImagePath;
 		parameters[4] = playerType;
+		parameters[5] = isAdmin;
+
+		Debug.Log("Is Admin: " + isAdmin);
 
 		MainMenuController.instance.ShowScreen(MainMenuScreens.ClubDetails, parameters);
 	}

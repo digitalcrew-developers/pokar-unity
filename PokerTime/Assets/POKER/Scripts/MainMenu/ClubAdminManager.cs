@@ -243,6 +243,10 @@ public class ClubAdminManager : MonoBehaviour
         {
             Debug.Log("Insufficient Amount...");
         }
+        else if(amount == 0)
+        {
+            StartCoroutine(ShowPopUp("Please enter valid amount", 1.25f));
+        }
         else
         {
             Debug.Log("Available to topUp");
@@ -259,10 +263,10 @@ public class ClubAdminManager : MonoBehaviour
         if (isJackpotActivated)
         {
             ClubDetailsUIManager.instance.SetJackpotStatus(val);
-            Debug.Log("jackpot status :" + val.ToString());
+            //Debug.Log("jackpot status :" + val.ToString());
             string b = string.Empty;
             if (val) { b = "1"; } else { b = "0"; }
-            Debug.Log(ClubDetailsUIManager.instance.GetClubUniqueId());
+            //Debug.Log(ClubDetailsUIManager.instance.GetClubUniqueId());
 
             string requestData = "{\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
                                 "\"clubName\":\"" + ClubDetailsUIManager.instance.GetClubName() + "\"," +
@@ -301,8 +305,11 @@ public class ClubAdminManager : MonoBehaviour
     }
     
     private void OnCloseTurnOffJackpotPanel()
-    {        
-        JackpotToggleController.isOn = true;        
+    {
+        //JackpotToggleController.isOn = true;
+        //JackpotToggleController.DoYourStaff();
+        JackpotToggleController.isOn = true;
+        JackpotToggleController.Toggle(true);
         TurnOffJackpotPanel.SetActive(false);
     }
 
@@ -378,7 +385,24 @@ public class ClubAdminManager : MonoBehaviour
 
         TopUpPanel.SetActive(true);
         TopRecordPanel.SetActive(false);
+    }
 
+    public void OnCloseTopUpPanel()
+    {
+        if(!isJackpotActivated)
+        {
+            JackpotToggleController.isOn = false;
+            //JackpotToggleController.Toggle(false);
+            JackpotToggleController.Toggle(false);
+            JackpotTopUpPopup.SetActive(false);
+        }
+        else
+        {
+            JackpotToggleController.isOn = true;
+            //JackpotToggleController.Toggle(false);
+            JackpotToggleController.Toggle(true);
+            JackpotTopUpPopup.SetActive(false);
+        }
     }
 
     private void OpenTopRecordPanel()
@@ -679,6 +703,10 @@ public class ClubAdminManager : MonoBehaviour
                         {
                             MainMenuController.instance.ShowMessage("Club has been disbanded", () => {
                                 ClubDetailsUIManager.instance.OnClickOnButton("back");
+                                for (int i = 0; i < ClubListUiManager.instance.container.childCount; i++)
+                                {
+                                    Destroy(ClubListUiManager.instance.container.GetChild(i).gameObject);
+                                }
                                 ClubListUiManager.instance.FetchList(true);
                             });
                         }
@@ -723,16 +751,6 @@ public class ClubAdminManager : MonoBehaviour
                         }
                         //Fill Level
                         LevelText.text = "Lv." + rating.ToString();
-
-                        //DEV_CODE
-                        if(data["data"][0]["isAdmin"].ToString().Equals("Yes"))
-                        {
-                            bottomPanel.SetActive(true);
-                        }
-                        else
-                        {
-                            bottomPanel.SetActive(false);
-                        }
                     }
                 }
                 break;
@@ -775,16 +793,22 @@ public class ClubAdminManager : MonoBehaviour
                         if(data["data"][0]["jackpotStatus"].ToString().Equals("Active"))
                         {
                             JackpotToggleController.isOn = true;
+                            //JackpotToggleController.DoYourStaff();
+                            JackpotToggleController.Toggle(true); 
                         }
                         else
                         {
                             JackpotToggleController.isOn = false;
+                            //JackpotToggleController.DoYourStaff();
+                            JackpotToggleController.Toggle(false);
                         }
                     }
                     else
                     {
                         Debug.Log("No Jackpot is available...");
                         JackpotToggleController.isOn = false;
+                        //JackpotToggleController.DoYourStaff();
+                        JackpotToggleController.Toggle(false);
                     }
                 }
                 break;
@@ -793,10 +817,13 @@ public class ClubAdminManager : MonoBehaviour
                 {
                     Debug.Log("Response => TopUpJackpot : " + serverResponse);
                     JsonData data = JsonMapper.ToObject(serverResponse);
-                    //if (data["message"].ToString() == "Success")
-                    //{
-                        
-                    //}
+                    if (data["message"].ToString() == "Success")
+                    {
+                        JackpotToggleController.isOn = true;
+                        JackpotToggleController.Toggle(true);
+                        JackpotTopUpPopup.SetActive(false);
+                        JackpotAmountInputField.text = "";
+                    }
                 }
                 break;
 
@@ -810,7 +837,13 @@ public class ClubAdminManager : MonoBehaviour
                             TipsObj.SetActive(false);
 
                         if (TurnOffJackpotPanel.activeSelf)
+                        {
                             TurnOffJackpotPanel.SetActive(false);
+                            TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField (TMP)").GetComponent<TMP_InputField>().text = "";
+                            ClubDetailsUIManager.instance.jackpotData.SetActive(false);
+                        }
+
+                        ClubDetailsUIManager.instance.FetchJackpotDetails();
                     }
                 }
                 break;

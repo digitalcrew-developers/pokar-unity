@@ -80,7 +80,7 @@ public class ToggleController : MonoBehaviour
 
     public void DoYourStaff()
     {
-        Debug.Log(isOn);
+        //Debug.Log(isOn);
         ToggleValueChanged?.Invoke(isOn);
     }
 

@@ -384,6 +384,7 @@ public class RingGameManager : MonoBehaviour
                         Debug.Log(data["message"].ToString());
                         //joinClubPopUp.SetActive(false);
                         MainMenuController.instance.ShowMessage(data["message"].ToString());
+                        ClubTableController.instance.RequestTemplateData();
                     }
                     else
                     {
@@ -410,9 +411,11 @@ public class RingGameManager : MonoBehaviour
                     {
                         if (data["message"].ToString().Equals("Template Published"))
                         {
-                            //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
                             Debug.Log("Tamplate Published Successfully");
                             isPublishTemplateWithCreate = false;
+                            //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
+                            ClubDetailsUIManager.instance.GetClubTemplates();
+                            ClubTableController.instance.RequestTemplateData();
                         }
                     }
                     else
