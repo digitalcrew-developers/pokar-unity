@@ -411,10 +411,10 @@ public class PlayerScript : MonoBehaviour
     //}
 
     IEnumerator CountDownAnimation(float time)
-    {   if (time == 0) yield break;
+    {//   if (time == 0) yield break;
         float t = 0;
         fx_holder.gameObject.SetActive(true);
-        while (t < time)
+        while (t <= time)
         {
             t += Time.deltaTime;
             timerBar.fillAmount = t / time;

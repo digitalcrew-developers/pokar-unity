@@ -130,7 +130,7 @@ public class InGameManager : MonoBehaviour
             allPlayersObject[i].ResetAllData();
         }
         UnityEngine.Debug.Log("table id is :" + GlobalGameManager.instance.GetRoomData().socketTableId);
-        TableName.text = GlobalGameManager.instance.GetRoomData().title;
+        TableName.text = "";// GlobalGameManager.instance.GetRoomData().title;
         AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
     }
 
@@ -798,7 +798,10 @@ public class InGameManager : MonoBehaviour
     {
         for (int i = 0; i < 4; i++)
         {
-            if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+            if (openCards[i].cardIcon == CardIcon.NONE) {
+                communityCards[i].gameObject.SetActive(false);
+                break;
+            }
             communityCards[i].sprite = openCards[i].cardsSprite;
         }
         yield return new WaitForSeconds(1f);
@@ -826,7 +829,10 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < communityCards.Length; i++)
         {
-            if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+            if (openCards[i].cardIcon == CardIcon.NONE) {
+                communityCards[i].gameObject.SetActive(false);
+                break;
+            }
             communityCards[i].sprite = openCards[i].cardsSprite;
             communityCards[i].gameObject.SetActive(true);
         }
@@ -1070,8 +1076,83 @@ public class InGameManager : MonoBehaviour
 
     #region SocketCallBacks
 
+    private void ResultProcess(string serverResponse)
+    {
+        DeactivateAllPots();
+
+        string s = serverResponse.Remove(serverResponse.Length - 1, 1);
+        s = s.Remove(0, 1);
+        Debug.LogWarning("s" + s);
+
+
+        AllShowdownSidePots showdownSidePot = JsonUtility.FromJson<AllShowdownSidePots>(s);
+        Debug.LogWarning("side pot count : " + showdownSidePot.sidePot.Count);
+        Debug.LogWarning("side pot count amount: " + showdownSidePot.sidePot[0].amount);
+
+        //int outerLoopCount = 1;
+        //if(showdownSidePot.sidePot.Count > 1)
+        //{
+        //    outerLoopCount = showdownSidePot.sidePot.Count;
+        //}
+        //if(showdownSidePot.sidePot.Count == 1)
+        //{
+        //    outerLoopCount = 1;
+        //}
+
+
+        for (int i=0;i< showdownSidePot.sidePot.Count; i++)
+        {
+            for(int j = 0; j < showdownSidePot.sidePot[i].winners.Count; j++)
+            {
+                Debug.LogWarning(showdownSidePot.sidePot[i].winners[j].isWin);
+                //if winner count is greater than 0 then it is a split pot.
+                if (showdownSidePot.sidePot[i].winners[j].isWin)
+                {
+                    InstantiateWin(showdownSidePot.sidePot[i].winners[j].userId.ToString(),
+                        showdownSidePot.sidePot[i].winners[j].name,
+                        showdownSidePot.sidePot[i].winners[j].winAmount.ToString());
+                }
+            }
+        }
+    }
+
+    private void InstantiateWin(string userId, string name, string winAmount)
+    {
+        PlayerScript winnerPlayer = GetPlayerObject(userId);
+
+        if (winnerPlayer != null)
+        {
+            GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
+            gm.transform.Find("WinBy").GetComponent<Text>().text = name;
+            gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
+            if (string.IsNullOrEmpty(name))
+            {
+                gm.transform.Find("WinBy").gameObject.SetActive(false);
+                gm.transform.Find("Image").gameObject.SetActive(false);
+            }
+            else
+            {
+                gm.transform.Find("WinBy").gameObject.SetActive(true);
+                gm.transform.Find("Image").gameObject.SetActive(true);
+            }
+            if (winAmount.ToCharArray().Length > 5)
+            {
+                SoundManager.instance.PlaySound(SoundType.bigWin);
+            }
+            gm.transform.position = winnerPlayer.gameObject.transform.position;
+            gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
+            gm.transform.SetSiblingIndex(0);
+            Vector3 inititalScale = gm.transform.localScale;
+            gm.transform.localScale = Vector3.zero;
+            StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer, winAmount, gm));
+            // gm.transform.DOScale(inititalScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+            winnersObject.Add(gm);
+        }
+    }
+
     public void OnResultResponseFound(string serverResponse)
     {
+        Debug.LogWarning("RESULT RESPONSE :" + serverResponse);
         InGameUiManager.instance.ToggleSuggestionButton(false);
         InGameUiManager.instance.ToggleActionButton(false);
 
@@ -1106,37 +1187,41 @@ public class InGameManager : MonoBehaviour
         }
         isScreenshotCaptured = true;
 
-        JsonData data = JsonMapper.ToObject(serverResponse);
-        
-        if (data[0].Count > 0)
-        {
-            for (int i = 0; i < data[0][0].Count; i++)
-            {
-                if (data[0][0][i]["isWin"].Equals(true))
-                {
-                    PlayerScript winnerPlayer = GetPlayerObject(data[0][0][i]["userId"].ToString());
+        ResultProcess(serverResponse);
 
-                    if (winnerPlayer != null)
-                    {
-                        GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
-                        gm.transform.Find("WinBy").GetComponent<Text>().text = data[0][0][i]["name"].ToString();
-                        gm.transform.Find("winAmount").GetComponent<Text>().text="+"+data[0][0][i]["winAmount"].ToString(); 
-                        if(data[0][0][i]["winAmount"].ToString()=="50000")
-                        {
-                            SoundManager.instance.PlaySound(SoundType.bigWin);
-                        }
-                        gm.transform.position = winnerPlayer.gameObject.transform.position;
-                        gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
-                        gm.transform.SetSiblingIndex(0);
-                        Vector3 inititalScale = gm.transform.localScale;
-                        gm.transform.localScale = Vector3.zero;
-                        StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer,  data[0][0][i]["winAmount"].ToString(), gm));
-                       // gm.transform.DOScale(inititalScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-                        winnersObject.Add(gm);
-                    }
-                }
-            }
-        }
+        //JsonData data = JsonMapper.ToObject(serverResponse);
+
+        //if (data[0].Count > 0)
+        //{
+        //    for (int i = 0; i < data[0][0].Count; i++)
+        //    {
+        //        if (data[0][0][i]["isWin"].Equals(true))
+        //        {
+        //            PlayerScript winnerPlayer = GetPlayerObject(data[0][0][i]["userId"].ToString());
+
+        //            if (winnerPlayer != null)
+        //            {
+        //                GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
+        //                gm.transform.Find("WinBy").GetComponent<Text>().text = data[0][0][i]["name"].ToString();
+        //                gm.transform.Find("winAmount").GetComponent<Text>().text="+"+data[0][0][i]["winAmount"].ToString(); 
+        //                if(data[0][0][i]["winAmount"].ToString()=="50000")
+        //                {
+        //                    SoundManager.instance.PlaySound(SoundType.bigWin);
+        //                }
+        //                gm.transform.position = winnerPlayer.gameObject.transform.position;
+        //                gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
+        //                gm.transform.SetSiblingIndex(0);
+        //                Vector3 inititalScale = gm.transform.localScale;
+        //                gm.transform.localScale = Vector3.zero;
+        //                StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer,  data[0][0][i]["winAmount"].ToString(), gm));
+        //               // gm.transform.DOScale(inititalScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        //                winnersObject.Add(gm);
+        //            }
+        //        }
+        //    }
+        //}
+
+
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             onlinePlayersScript[i].ToggleCards(true,true);
@@ -1163,7 +1248,7 @@ public class InGameManager : MonoBehaviour
         Debug.LogWarning("NEXT ROUND In: " + remainingTime);
         if (remainingTime > 1)
         {
-            InGameUiManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
+           //InGameUiManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
            // InGameUiManager.instance.LoadingImage.SetActive(true);
             if (!isRematchRequestSent)
             {
@@ -1233,7 +1318,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnTurnCountDownFound(string serverResponse)
     {
-        //Debug.LogError("OnTurnCountDownFound" + serverResponse);
+        Debug.LogWarning("OnTurnCountDownFound" + serverResponse);
         //if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         //{
         //    JsonData data = JsonMapper.ToObject(serverResponse);
@@ -1267,7 +1352,7 @@ public class InGameManager : MonoBehaviour
             if (currentPlayer != null)
             {
                 int remainingTime = (int)float.Parse(data[0].ToString());
-                if (remainingTime == 1)
+                if (remainingTime == 0)
                 {
                     PlayerTimerReset();
                 }
@@ -1842,4 +1927,30 @@ public class MyBetData
 public class Pot
 {
     public int amount;
+}
+
+
+[System.Serializable]
+public class WinnerObject
+{
+    public int userId;
+    public string userName;
+    public int winAmount;
+    public bool isWin;
+    public int betAmount;
+    public string name;
+}
+
+[System.Serializable]
+public class ShowdownSidePot
+{
+    public int amount;
+    public List<WinnerObject> users = new List<WinnerObject>();
+    public List<WinnerObject> winners = new List<WinnerObject>();
+}
+
+[System.Serializable]
+public class AllShowdownSidePots
+{
+    public List<ShowdownSidePot> sidePot = new List<ShowdownSidePot>();
 }
