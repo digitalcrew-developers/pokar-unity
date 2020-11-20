@@ -69,6 +69,10 @@ public class MemberDetails : MonoBehaviour
     public GameObject AgentClaimBackPanel;    
 
     public ClubMemberRole currentRole;
+
+    private float sendOutAmount = 0.0f;
+    private float claimBackAmount = 0.0f;
+    private float clubChips = 0.0f;
     #endregion
 
     private void Awake()
@@ -414,11 +418,12 @@ public class MemberDetails : MonoBehaviour
                 TipsObj.SetActive(false);
                 transform.gameObject.SetActive(false);
 
-                //Removing OLD data from list
+                //Removing Old Members from list
                 for (int i = 0; i < MemberListUIManager.instance.oldMembersList.Count; i++)
                 {
                     MemberListUIManager.instance.oldMembersList.RemoveAt(i);
                 }
+                //Removing New Members from List
                 for (int i = 0; i < MemberListUIManager.instance.newMembersList.Count; i++)
                 {
                     MemberListUIManager.instance.newMembersList.RemoveAt(i);
@@ -595,6 +600,10 @@ public class MemberDetails : MonoBehaviour
             JsonData data1 = JsonMapper.ToObject(serverResponse);
             if (data1["success"].Equals(1))
             {
+                clubChips -= sendOutAmount;
+                ClubDetailsUIManager.instance.CLubChips.text = clubChips.ToString();
+                AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/ChipsData/Text").GetComponent<Text>().text = ClubDetailsUIManager.instance.CLubChips.text;
+                AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text = string.Empty;
                 AgentSendOutPanel.SetActive(false);
 
                 //GetTradeRecordList();
@@ -614,6 +623,9 @@ public class MemberDetails : MonoBehaviour
             JsonData data2 = JsonMapper.ToObject(serverResponse);
             if (data2["success"].Equals(1))
             {
+                clubChips += claimBackAmount;
+                ClubDetailsUIManager.instance.CLubChips.text = clubChips.ToString();
+                AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/EnterAmountInputField").GetComponent<TMP_InputField>().text = string.Empty;
                 AgentClaimBackPanel.SetActive(false);
 
                 //GetTradeRecordList();
@@ -734,6 +746,7 @@ public class MemberDetails : MonoBehaviour
     {
         Debug.Log("Total Member list: " + MemberListUIManager.instance.oldMembersList.Count);
         Debug.Log("Owner Chips Count: " + ClubDetailsUIManager.instance.CLubChips.text);
+        float.TryParse(ClubDetailsUIManager.instance.CLubChips.text, out clubChips);
 
         AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/ChipsData/Text").GetComponent<Text>().text = ClubDetailsUIManager.instance.CLubChips.text;
         
@@ -747,16 +760,16 @@ public class MemberDetails : MonoBehaviour
             "\"amount\":" + AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text + "," +
             "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + clubMemberDetails.memberRole + "\"}]}";
 
-        float totalAmount = 0;
-        float currentAmount = 0;
+        //float totalAmount = 0;
+        //float currentAmount = 0;
 
-        float.TryParse(ClubDetailsUIManager.instance.CLubChips.text, out totalAmount);
-        float.TryParse(AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text, out currentAmount);
+        float.TryParse(ClubDetailsUIManager.instance.CLubChips.text, out clubChips);
+        float.TryParse(AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text, out sendOutAmount);
 
-        Debug.Log("Current Amount: " + currentAmount);
-        Debug.Log("Total Amount: " + totalAmount);
+        Debug.Log("Current Amount: " + sendOutAmount);
+        Debug.Log("Total Amount: " + clubChips);
 
-        if (currentAmount > totalAmount)
+        if (sendOutAmount > clubChips)
         {
             StartCoroutine(ShowPopUp("Insufficient for 5% transacion fee", 1.29f));
         }
@@ -778,23 +791,22 @@ public class MemberDetails : MonoBehaviour
     public void OnConfirmClaimBack()
     {
         float totalAmount = 0;
-        float currentAmount = 0;
-        float amount;
-
+        //float currentAmount = 0;
+        
         float.TryParse(AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/ChipsData/Text").GetComponent<Text>().text, out totalAmount);
-        float.TryParse(AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/EnterAmountInputField").GetComponent<TMP_InputField>().text, out currentAmount);
+        float.TryParse(AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/EnterAmountInputField").GetComponent<TMP_InputField>().text, out claimBackAmount);
 
-        Debug.Log("Current Amount: " + currentAmount);
+        Debug.Log("Current Amount: " + claimBackAmount);
         Debug.Log("Total Amount: " + totalAmount);
 
-        if (currentAmount > totalAmount)
+        if (claimBackAmount > totalAmount)
         {
-            amount = totalAmount;
+            claimBackAmount = totalAmount;
         }
-        else
-        {
-            amount = currentAmount;
-        }
+        //else
+        //{
+        //    amount = currentAmount;
+        //}
 
         string role = "";
         if(MemberListUIManager.instance.GetClubOwnerObject().memberRole == ClubMemberRole.Owner)
@@ -806,11 +818,18 @@ public class MemberDetails : MonoBehaviour
             role = MemberListUIManager.instance.GetClubOwnerObject().memberRole.ToString();
         }
 
+        //OLD REQUEST
+        //string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+        //    "\"role\":\"" + role + "\"," +
+        //    "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+        //    "\"amount\":" + claimBackAmount + "," +
+        //    "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + "}]}";
+
+        //NEW REQUEST
         string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-            "\"role\":\"" + role + "\"," +
-            "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-            "\"amount\":" + amount + "," +
-            "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + "}]}";
+            "\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "," +
+            "\"amount\":" + AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text + "," +
+            "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + role + "\"}]}";
 
         Debug.Log("request is - " + request);
         WebServices.instance.SendRequest(RequestType.ClaimBackChips, request, true, OnServerResponseFound);

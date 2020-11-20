@@ -241,15 +241,16 @@ public class ClubAdminManager : MonoBehaviour
         
         if(amount > availableAmount)
         {
-            Debug.Log("Insufficient Amount...");
+            //Debug.Log("Insufficient Amount...");
+            StartCoroutine(ShowPopUp("Insufficient amount", 1.29f));
         }
         else if(amount == 0)
         {
-            StartCoroutine(ShowPopUp("Please enter valid amount", 1.25f));
+            StartCoroutine(ShowPopUp("Please enter valid amount", 1.29f));
         }
         else
         {
-            Debug.Log("Available to topUp");
+            //Debug.Log("Available to topUp");
             string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
                                      "\"userId\":\"" + MemberListUIManager.instance.GetClubOwnerObject().userId + "\"," +
                                      "\"jackpotAmount\":\"" + amount + "\"}";
@@ -697,7 +698,7 @@ public class ClubAdminManager : MonoBehaviour
             case RequestType.UpdateClub:
                 {
                     JsonData data = JsonMapper.ToObject(serverResponse);
-                    if(data["message"].ToString() == "Success")
+                    if(data["status"].Equals(true))
                     {
                         if (DisbandClub.activeInHierarchy)//api response is for disband club
                         {
@@ -732,7 +733,7 @@ public class ClubAdminManager : MonoBehaviour
                     Debug.Log("Response CLUB List: " + serverResponse.ToString());
 
                     JsonData data = JsonMapper.ToObject(serverResponse);
-                    if (data["message"].ToString() == "Success")
+                    if (data["status"].Equals(true))
                     {
                         int rating = 2;//temp 
 
@@ -817,12 +818,14 @@ public class ClubAdminManager : MonoBehaviour
                 {
                     Debug.Log("Response => TopUpJackpot : " + serverResponse);
                     JsonData data = JsonMapper.ToObject(serverResponse);
-                    if (data["message"].ToString() == "Success")
+                    if (data["status"].Equals(true)/*["message"].ToString() == "Jackpot topup successfully"*/)
                     {
                         JackpotToggleController.isOn = true;
                         JackpotToggleController.Toggle(true);
                         JackpotTopUpPopup.SetActive(false);
                         JackpotAmountInputField.text = "";
+
+                        StartCoroutine(ShowPopUp("Topped Up Successfully", 1.29f));
                     }
                 }
                 break;

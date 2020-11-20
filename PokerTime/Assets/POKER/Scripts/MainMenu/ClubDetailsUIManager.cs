@@ -17,7 +17,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 	public Text CLubChips;
 	public Image clubProfileImage;
 	public TMP_Text jackpotAmountText;
-	public string playerTypeForClub = "";
+	public string playerTypeForClub = "";	
 
 	//DEV_CODE
 	[Header("Gameobject")]
@@ -73,16 +73,16 @@ public class ClubDetailsUIManager : MonoBehaviour
 #endif
 	}
 
-	public void Initialize(string nameOfClub, string clubUniqueId, string idOfClub, string clubProfileImagePath, string playerType, string isAdmin)
+	public void Initialize(string nameOfClub, string clubUniqueId, string idOfClub, string clubProfileImagePath, string playerType, string playerRole)
 	{
 		clubNameText.text = /*"Club Name : " +*/ nameOfClub;
 		uniqueClubIdText.text = "Club Id : " + clubUniqueId;
 		clubId = idOfClub;
 		uniqueClubId = clubUniqueId;
 		playerTypeForClub = playerType;
-
+		
 		//To Enable/Disable Bottom Panel
-		if (isAdmin.Equals("Yes"))
+		if (playerRole.Equals("Creater") || playerRole.Equals("Manager") || playerRole.Equals("Agent"))
 		{
 			ClubAdminManager.instance.bottomPanel.SetActive(true);
 		}

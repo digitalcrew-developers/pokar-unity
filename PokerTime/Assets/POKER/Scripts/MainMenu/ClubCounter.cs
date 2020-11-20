@@ -11,12 +11,17 @@ public class ClubCounter : MonoBehaviour
     public static ClubCounter instance;
 
     private int allPTChips;
+    private float sendOutAmount = 0.0f;
+    private float claimBackAmount = 0.0f;
+    private float clubChips;
 
     public GameObject popUpText;
 
     public Button StatsBtn;
     public Button TabTradeBtn, /*TabSleepModeBtn,*/ TabVIPBtn, TabTicketBtn;
     public GameObject TradePanel, /*SleepPanel,*/ VIPPanel, TicketPanel, TradeRecordPanel;
+
+    public GameObject exchangePanel;
 
     public Button SendOutBtn, ClaimBackBtn, SetLimitBtn, RemoveLimitBtn, SendVIPBtn, AddTicketBtn, OpenTradeRecordBtn;
 
@@ -63,6 +68,7 @@ public class ClubCounter : MonoBehaviour
         }
 
         popUpText.SetActive(false);
+        exchangePanel.SetActive(false);
     }
 
     private void Start()
@@ -117,6 +123,7 @@ public class ClubCounter : MonoBehaviour
             VIPButtons[i].OnStateChange += Filter_OnStateChange;
         }
 
+        float.TryParse(ClubDetailsUIManager.instance.CLubChips.text,out clubChips);
         ClubChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
         SendOutChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
         OpenVIPButton.onClick.RemoveAllListeners();
@@ -335,6 +342,10 @@ public class ClubCounter : MonoBehaviour
     {
         if (TradeListContent.childCount < 10)
             StartCoroutine(ShowPopUp("Cannot exchange with less than 10 members.", 1.29f));
+        else
+        {
+            exchangePanel.SetActive(true);
+        }
     }
 
     IEnumerator ShowPopUp(string msg, float delay)
@@ -382,11 +393,21 @@ public class ClubCounter : MonoBehaviour
                     JsonData data1 = JsonMapper.ToObject(serverResponse);
                     if (data1["success"].Equals(1))
                     {
-                        //MainMenuController.instance.ShowMessage(serverResponse, () =>
-                        //{
-                        //    GetMembersListFromServer();
-                        //    CloseSendOutPanel();
-                        //});
+                        MainMenuController.instance.ShowMessage(data1["message"].ToString(), () =>
+                        {
+                            GetMembersListFromServer();
+                            CloseSendOutPanel();
+                        });
+
+                        clubChips -= sendOutAmount;
+                        ClubDetailsUIManager.instance.CLubChips.text = clubChips.ToString();
+                        ClubChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
+                        SendOutChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
+
+                        for (int i = 0; i < SelectedTradeMembers.Count; i++)
+                        {
+                            SelectedTradeMembers.RemoveAt(i); 
+                        }
                     }
                     else
                     {
@@ -400,11 +421,21 @@ public class ClubCounter : MonoBehaviour
                 JsonData data2 = JsonMapper.ToObject(serverResponse);
                 if (data2["success"].Equals(1))
                 {
-                    //MainMenuController.instance.ShowMessage(serverResponse, () =>
-                    //{
-                    //    GetMembersListFromServer();
-                    //    CloseSendOutPanel();
-                    //});
+                    MainMenuController.instance.ShowMessage(data2["message"].ToString(), () =>
+                    {
+                        GetMembersListFromServer();
+                        CloseSendOutPanel();
+                    });
+
+                    clubChips += claimBackAmount;
+                    ClubDetailsUIManager.instance.CLubChips.text = clubChips.ToString();
+                    //ClubChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
+                    //SendOutChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
+
+                    for (int i = 0; i < SelectedTradeMembers.Count; i++)
+                    {
+                        SelectedTradeMembers.RemoveAt(i);
+                    }
                 }
                 else
                 {
@@ -414,7 +445,7 @@ public class ClubCounter : MonoBehaviour
 
             case RequestType.GetClubMemberList:
                 {
-                    Debug.Log("Response GetClubMemberList: " + serverResponse);
+                    Debug.Log("Response => GetClubMemberListByClubId: " + serverResponse);
                     JsonData data3 = JsonMapper.ToObject(serverResponse);
                     Debug.LogWarning("Club memeber list counter :" + serverResponse);
                     if (data3["status"].Equals(true))
@@ -459,8 +490,11 @@ public class ClubCounter : MonoBehaviour
                         {
                             GameObject gm = Instantiate(TradeRecordPrefab, TradeRecordListContent);
 
-                            if(data["response"][i]["nickName"] != null)
+                            if (data["response"][i]["nickName"] != null)
+                            {
+                                gm.name = data["response"][i]["nickName"].ToString();
                                 gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["nickName"].ToString();
+                            }
                             else
                                 gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["userId"].ToString();
 
@@ -744,11 +778,12 @@ public class ClubCounter : MonoBehaviour
             else
             {
                 SendOutPanel.transform.Find("BG1/Heading/Text").GetComponent<Text>().text = "Claim Back";
-                ConfirmChipsClaimBackButton.onClick.AddListener(ClaimChipsAPIRequest);
                 SendOutPanel.transform.Find("BG1/BG2/Trade/Label").gameObject.SetActive(true);
                 SendOutPanel.transform.Find("BG1/BG2/Trade/Chip1").gameObject.SetActive(false);
                 SendOutPanel.transform.Find("BG1/BG2/Trade/Panel/CommisionText").gameObject.SetActive(false);
                 SendOutPanel.transform.Find("BG1/BG2/Trade/Panel/AllClaimBackToggle").gameObject.SetActive(true);
+                //ConfirmChipsClaimBackButton.onClick.AddListener(ClaimChipsAPIRequest);
+                ConfirmChipsSendButton.onClick.AddListener(ClaimChipsAPIRequest);
             }
 
             SendOutPanel.SetActive(true);
@@ -785,8 +820,13 @@ public class ClubCounter : MonoBehaviour
         AmountToSendInputField.onValueChanged.RemoveAllListeners();
         AmountToSendInputField.onValueChanged.AddListener(UpdateUIForSendAmount);
 
-        //to-d0
+        //to-do
         //1. fill club chips text
+        for (int i = 0; i < SendOutListContent.childCount; i++)
+        {
+            Destroy(SendOutListContent.GetChild(i).gameObject);
+        }
+
         for (int i = 0; i < SelectedTradeMembers.Count; i++)
         {
             ClubMemberDetails clubMemberDetails = SelectedTradeMembers[i];
@@ -803,15 +843,15 @@ public class ClubCounter : MonoBehaviour
             tardeItem.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
             tardeItem.transform.Find("Toggle").GetComponent<Toggle>().SetIsOnWithoutNotify(true);
 
-            tardeItem.transform.Find("Toggle").GetComponent<Toggle>().onValueChanged.AddListener(delegate {
-                AddToSelectedUsersForSendOut(tardeItem.transform.Find("Toggle").GetComponent<Toggle>(), clubMemberDetails);
-            });
+            //tardeItem.transform.Find("Toggle").GetComponent<Toggle>().onValueChanged.AddListener(delegate {
+            //    AddToSelectedUsersForSendOut(tardeItem.transform.Find("Toggle").GetComponent<Toggle>(), clubMemberDetails);
+            //});
 
 
             selectedSendPlayerCount++;
 
             PlayerSelected.text = "x" + selectedSendPlayerCount;
-            selectedMembers += "{\"userId\":\"" + clubMemberDetails.userId + "\"},";
+            selectedMembers += "{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + "Member" + "\"},";
         }
     }
 
@@ -841,7 +881,7 @@ public class ClubCounter : MonoBehaviour
         {
             selectedSendPlayerCount++;
             selectedMembers += "{\"userId\":\"" + clubMemberDetails.userId + "\"," +
-                               "\"role\":\"" + clubMemberDetails.memberRole + "\"},";
+                               "\"role\":\"" + "Member" + "\"},";
         }
         else
         {
@@ -855,16 +895,31 @@ public class ClubCounter : MonoBehaviour
 
     private void ClaimChipsAPIRequest()
     {
-        int amount = 0;
-        int.TryParse(AmountToSendInputField.text, out amount);
+        //int amount = 0;
+        //int.TryParse(AmountToSendInputField.text, out amount);
+
+        float.TryParse(AmountToSendInputField.text, out claimBackAmount);
 
         selectedMembers = selectedMembers.Remove(selectedMembers.Length - 1, 1);
 
+        Debug.Log("Selected Members: " + selectedMembers);
+        Debug.Log("Player ID: " + PlayerManager.instance.GetPlayerGameData().userId);
+
+
+        //OLD REQUEST
+        //string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+        //    "\"role\":\"" + /*MemberListUIManager.instance.GetClubOwnerObject().memberRole*/"Member" + "\"," +
+        //    "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+        //    "\"amount\":\"" + claimBackAmount.ToString() + "\"," +
+        //    "\"membersArray\":[" + selectedMembers + "]}";
+        //"\"membersArray\":[{\"userId\":" + selectedMembers + "}]}";
+
+
+        //NEW REQUEST
         string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-            "\"role\":\"" + MemberListUIManager.instance.GetClubOwnerObject().memberRole + "\"," +
-            "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-            "\"amount\":\"" + amount.ToString() + "\"," +
-            "\"membersArray\":[{\"userId\":" + selectedMembers + "}]}";
+            "\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "," +
+            "\"amount\":" + claimBackAmount.ToString() + "," +
+            "\"membersArray\":[" + selectedMembers + "]}";
 
         Debug.Log("request is - " + request);
         WebServices.instance.SendRequest(RequestType.ClaimBackChips, request, true, OnServerResponseFound);
@@ -874,14 +929,16 @@ public class ClubCounter : MonoBehaviour
     {
         //Debug.Log("User ID:" + PlayerManager.instance.GetPlayerGameData().userId);
 
-        int amount = 0;
-        int.TryParse(AmountToSendInputField.text, out amount);
+        //int amount = 0;
+        //int.TryParse(AmountToSendInputField.text, out amount);
+
+        float.TryParse(AmountToSendInputField.text, out sendOutAmount);
 
         selectedMembers = selectedMembers.Remove(selectedMembers.Length-1, 1);
 
         string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
             "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-            "\"amount\":\"" + amount.ToString() + "\"," +
+            "\"amount\":\"" + sendOutAmount.ToString() + "\"," +
             "\"membersArray\":[" + selectedMembers + "]}";
 
         Debug.Log("request is - " + request);

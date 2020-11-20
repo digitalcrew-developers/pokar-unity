@@ -34,6 +34,7 @@ public class MemberListUIManager : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("MemberListUIManager Start Called...");
         if(ClubDetailsUIManager.instance.playerTypeForClub.Equals("Creater"))
         {
             //Debug.Log("I'm the Owner..");
@@ -46,7 +47,8 @@ public class MemberListUIManager : MonoBehaviour
             //Debug.Log("Not Owner..");
         }
 
-        FetchMembersList();
+        //FetchMembersList();
+        //OnClickOnButton("oldMember");
 
         MemberFilter.onClick.RemoveAllListeners();
         MemberFilter.onClick.AddListener(ToggleOpenMemberListFilter);
@@ -81,6 +83,24 @@ public class MemberListUIManager : MonoBehaviour
 
     public void ToggleScreen(bool isShow)
     {
+        if(isShow)
+        {
+            //Removing Old Members from list
+            for (int i = 0; i < oldMembersList.Count; i++)
+            {
+                oldMembersList.RemoveAt(i);
+            }
+            //Removing New Members from List
+            for (int i = 0; i < newMembersList.Count; i++)
+            {
+                newMembersList.RemoveAt(i);
+            }
+            for (int i = 0; i < oldMembersList.Count; i++)
+            {
+                oldMembersList.RemoveAt(i);
+            }
+            FetchMembersList();
+        }
         memberListScreen.SetActive(isShow);
     }
 
@@ -176,7 +196,7 @@ public class MemberListUIManager : MonoBehaviour
                 gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = oldMembersList[i].userAlias;
                 gm.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "ID : " + oldMembersList[i].userId;
                 gm.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + oldMembersList[i].nickName;
-                gm.transform.Find("Coins").GetComponent<TMPro.TextMeshProUGUI>().text = oldMembersList[i].creditChips;
+                gm.transform.Find("Coins").GetComponent<TMPro.TextMeshProUGUI>().text = /*oldMembersList[i].creditChips*/"0";
                 //string initial = oldMembersList[i].userName.ToUpper();
                 //initial = initial.Substring(0, 2);
                 //gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
@@ -437,7 +457,7 @@ public class MemberListUIManager : MonoBehaviour
 
         if(requestType == RequestType.GetPendingClubJoinRequest)
         {
-            Debug.Log("Response GetPendingClubJoinRequest: " + serverResponse);
+            Debug.Log("Response => GetPendingClubJoinRequest: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
             if (data["status"].Equals(true))
             {
@@ -452,7 +472,8 @@ public class MemberListUIManager : MonoBehaviour
         }
         else if (requestType == RequestType.GetClubMemberList)
         {
-            Debug.Log("Response GetClubMemberList: " + serverResponse);
+            //Debug.Log("Response GetClubDetailsByUserId: " + serverResponse);
+            Debug.Log("Response => GetClubMemberListByClubId: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["status"].Equals(true))
