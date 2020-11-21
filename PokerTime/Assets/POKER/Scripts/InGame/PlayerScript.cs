@@ -28,7 +28,6 @@ public class PlayerScript : MonoBehaviour
     private Text balanceText, lastActionText, userName, localBetPot, RealTimeResulttxt;
     private GameObject foldScreen, parentObject, emptyObject, RealTimeResult, localbetBG;
     private bool isItMe;
-
     public string otheruserId;
 
    
@@ -149,7 +148,7 @@ public class PlayerScript : MonoBehaviour
             RealTimeResult = transform.Find("Bg/RealTime Result").gameObject;
             RealTimeResulttxt = RealTimeResult.GetComponent<Text>();
             lastActionImage.SetActive(false);
-            emptyObject = transform.Find("Empty").gameObject;
+            emptyObject = InGameManager.instance.GetSeatObject(playerData.seatNo); // transform.Find("Empty").gameObject;
             cardsImage = new Image[GameConstants.NUMBER_OF_CARDS_PLAYER_GET_IN_MATCH[(int)GlobalGameManager.instance.GetRoomData().gameMode]];
 
             fx_holder.gameObject.SetActive(false);
@@ -180,14 +179,8 @@ public class PlayerScript : MonoBehaviour
 
     public void TogglePlayerUI(bool isShow)
     {
-
         LoadUI();
-        parentObject.SetActive(isShow);
-
-        if (isShow)
-        {
-            ToggleEmptyObject(false);
-        }
+        parentObject.SetActive(isShow);        
     }
 
     public bool IsPlayerObjectActive()
@@ -197,8 +190,7 @@ public class PlayerScript : MonoBehaviour
             return false;
         }
 
-
-        return parentObject.activeInHierarchy;
+        return gameObject.activeInHierarchy;
     }
 
 
@@ -206,14 +198,13 @@ public class PlayerScript : MonoBehaviour
     {
         if (emptyObject == null)
         {
-            emptyObject = transform.Find("Empty").gameObject;
+            emptyObject = InGameManager.instance.GetSeatObject(playerData.seatNo); //transform.Find("Empty").gameObject;
         }
 
         emptyObject.SetActive(isShow);
         if (isShow == true)
         {
             avtar.sprite = defultavtar;
-
         }
     }
 
@@ -245,7 +236,6 @@ public class PlayerScript : MonoBehaviour
 
     public void ToggleFoldScreen(bool isShow)
     {
-
         LoadUI();
         foldScreen.SetActive(isShow);
 
@@ -290,9 +280,17 @@ public class PlayerScript : MonoBehaviour
 
     public void ResetTurn()
     {
+        //Debug.LogError("Stopping Turn");
         fx_holder.gameObject.SetActive(false);
         timerBar.fillAmount = 0;
-        StopCoroutine("CountDownAnimation");
+        if (lastRoutine != null)
+        {
+            StopCoroutine(lastRoutine);
+        }
+        else
+        {
+            //Debug.LogError("lastRoutine is null");
+        }
         CountDownTimerRunning = false;
     }
 
@@ -375,12 +373,48 @@ public class PlayerScript : MonoBehaviour
     }
     public bool CountDownTimerRunning = false;
 
-    IEnumerator CountDownAnimation()
-    {
+    //public bool PlayedExtraTimeOnce = false;
+    //IEnumerator CountDownAnimation(float time)
+    //{
+    //    Debug.LogError("Starting time : " + time);
+    //    float t = 0;
+    //    fx_holder.gameObject.SetActive(true);
+    //    while (t < time)
+    //    {
+    //        t += Time.deltaTime;
+    //        timerBar.fillAmount = t / time;
+    //        fx_holder.rotation = Quaternion.Euler(new Vector3(0, 0, -(timerBar.fillAmount) * 360));
+    //        CountDownTimerRunning = true;
+    //        yield return null;
+    //    }
+    //    if (!PlayedExtraTimeOnce)
+    //    {
+    //        if (!string.IsNullOrEmpty(playerData.userVIPCard))
+    //        {
+    //            Debug.LogError("playerData.userVIPCard " + playerData.userVIPCard);
+
+    //            int userVIPCard = 0;
+    //            int.TryParse(playerData.userVIPCard, out userVIPCard);
+    //            if(userVIPCard > 0)
+    //            {
+    //                int extraTime = 0;
+    //                int.TryParse(playerData.bufferTime, out extraTime);
+    //                time = extraTime;
+    //                Debug.LogError("Starting extra time");
+    //                ShowRemainingTime(time);
+    //                PlayedExtraTimeOnce = true;
+    //            }
+
+    //        }
+    //    }
+    //    CountDownTimerRunning = false;
+    //}
+
+    IEnumerator CountDownAnimation(float time)
+    {//   if (time == 0) yield break;
         float t = 0;
-        float time = GameConstants.TURN_TIME;
         fx_holder.gameObject.SetActive(true);
-        while (t < time)
+        while (t <= time)
         {
             t += Time.deltaTime;
             timerBar.fillAmount = t / time;
@@ -391,22 +425,36 @@ public class PlayerScript : MonoBehaviour
         CountDownTimerRunning = false;
     }
 
-    public void ShowRemainingTime()
-    {
-       StartCoroutine("CountDownAnimation");      
-    }
+    //public void ShowRemainingTime(float time)
+    //{
+    //    StartCoroutine(CountDownAnimation(time));      
+    //}
 
     public void ShowRemainingTime(int remainingTime)
     {
-        remainingTime = GameConstants.TURN_TIME - remainingTime;
-        // Debug.Log("remainingTime     " + remainingTime);
+        //UnityEngine.Debug.LogError("RemainingTime0 = " + remainingTime);
+
+        int extraTime = 0;
+        int.TryParse(playerData.bufferTime, out extraTime);
+        //UnityEngine.Debug.Log("playerData.bufferTime " + playerData.bufferTime);
+        int totalTime = GameConstants.TURN_TIME + extraTime;
+        //UnityEngine.Debug.LogError("GameConstants.TURN_TIME = " + GameConstants.TURN_TIME);
+        //UnityEngine.Debug.LogError("extraTime = " + extraTime);
+        //UnityEngine.Debug.LogError("totalTime = " + totalTime);
+
+        remainingTime = totalTime - remainingTime;      //10  - 30
+
+        //UnityEngine.Debug.LogError("RemainingTime = " + remainingTime);
+
         if (remainingTime == 0)
         {
-            StartCoroutine("CountDownAnimation");
+            //UnityEngine.Debug.LogError("Starting timer");
+            lastRoutine = StartCoroutine(CountDownAnimation(totalTime));
         }
     }
 
-
+    Coroutine lastRoutine = null;
+    
     /// <summary>
     /// Update details,  usefull when user reconnects
     /// </summary>
@@ -420,6 +468,12 @@ public class PlayerScript : MonoBehaviour
         playerData.balance = dataToAssign.balance;
         playerData.totalBet = dataToAssign.totalBet;
         playerData.isFold = dataToAssign.isFold;
+
+        playerData.bufferTime = dataToAssign.bufferTime;
+        playerData.userVIPCard = dataToAssign.userVIPCard;
+        playerData.cardValidity = dataToAssign.cardValidity;
+        playerData.seatNo = dataToAssign.seatNo;
+
         if (IsMe())
         {
             InGameManager.instance.UpdateAvailableBalance(playerData.balance);
@@ -591,6 +645,8 @@ public class PlayerData
     public float balance, totalBet;
     public CardData[] cards;
     public string avatarurl;
+    public string userVIPCard, cardValidity, bufferTime;
+    public string seatNo;
 }
 
 public class GetData

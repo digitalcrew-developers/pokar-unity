@@ -61,7 +61,6 @@ public class SocketController : MonoBehaviour
 
     public void Connect(bool isReconnecting = false)
     {
-        InGameUiManager.instance.ShowTableMessage("Connecting...");
         ResetConnection(isReconnecting);
         SetSocketState(SocketState.Connecting);
 
@@ -127,10 +126,72 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("playerStatndOut", OnPlayerStandUp);
         socketManager.Socket.On("allTipData", OnAllTipData);
         socketManager.Socket.On("pointUpdate", OnPointUpdate);
-
+        socketManager.Socket.On("minMaxAppEmit", MinimizeAppServer);
+        socketManager.Socket.On("seatObject", SeatObjectsReceived);
+        socketManager.Socket.On("rabbitOpenCards", RabbitCardDataReceived);
         socketManager.Open();
     }
 
+    bool isPaused = false;
+
+    void OnGUI()
+    {
+        if (isPaused)
+            GUI.Label(new Rect(100, 100, 50, 30), "Game paused");
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        isPaused = !hasFocus;
+        if (!isPaused)
+        {
+            MaximizeAppEvent();
+        }
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        isPaused = pauseStatus;
+        if (isPaused)
+        {
+            MinimizeAppEvent();
+        }
+    }
+
+    private void MinimizeAppServer(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log(responseText);
+    }
+
+    private void RabbitCardDataReceived(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError("RabbitCardDataReceived :" + responseText);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.RABBIT_CARDS))
+        {
+            Debug.Log("RABBIT_CARDS = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+        Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.RABBIT_CARDS;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+    private void SeatObjectsReceived(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError(responseText);
+    }
 
     private void HandleSocketResponse()
     {
@@ -195,13 +256,8 @@ public class SocketController : MonoBehaviour
 
 
                 case SocketEvetns.PLAYER_OBJECT:
-
-
-                    Debug.Log("Error of player object----------");
                     if (InGameManager.instance != null)
                     {
-                        Debug.Log("Error of player object---000000000-------");
-
                         if (GetSocketState() == SocketState.ReConnecting)
                         {
                             SetSocketState(SocketState.Game_Running);
@@ -219,6 +275,9 @@ public class SocketController : MonoBehaviour
 
                 case SocketEvetns.ON_OPEN_CARD_DATA_FOUND:
                     InGameManager.instance.OnOpenCardsDataFound(responseObject.data);
+                    break;
+                case SocketEvetns.RABBIT_CARDS:
+                    InGameManager.instance.OnRabbitDataFound(responseObject.data);
                     break;
 
                 //case SocketEvetns.ON_OPEN_CARD_TIMER_FOUND:
@@ -579,6 +638,7 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         InGameManager.instance.Pot.SetActive(false);
+        InGameManager.instance.DeactivateAllPots();
 #if DEBUG
 
 #if UNITY_EDITOR
@@ -601,6 +661,7 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         InGameManager.instance.Pot.SetActive(false);
+        InGameManager.instance.DeactivateAllPots();
 #if DEBUG
 
 #if UNITY_EDITOR
@@ -623,6 +684,7 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         InGameManager.instance.Pot.SetActive(false);
+        InGameManager.instance.DeactivateAllPots();
 #if DEBUG
 
 #if UNITY_EDITOR
@@ -804,6 +866,7 @@ public class SocketController : MonoBehaviour
 
     void OnServerDisconnect(Socket socket, Packet packet, params object[] args)
     {
+        //string responseText = JsonMapper.ToJson(args);
 
 #if DEBUG
 
@@ -995,6 +1058,24 @@ public class SocketController : MonoBehaviour
 
 
     #region EMIT_METHODS
+
+    public void RequestRabbitCard()
+    {
+        RabitData requestData = new RabitData();
+        requestData.tableId = TABLE_ID;
+        requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+
+        string requestStringData = JsonMapper.ToJson(requestData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "rabbitCardData"; //rabbitCardData //rabbitOpenCards
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+    }
+
     public void SendStandUpdata()
     {
         StandUpdata requestData = new StandUpdata();
@@ -1019,7 +1100,6 @@ public class SocketController : MonoBehaviour
     public void SendTopUpRequest(int coinsToAdd)
     {
         string roomId = GlobalGameManager.instance.GetRoomData().roomId;
-
 
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
      "\"tableId\":\"" + TABLE_ID + "\"," +
@@ -1091,6 +1171,31 @@ public class SocketController : MonoBehaviour
         SocketRequest request = new SocketRequest();
         request.emitEvent = "joinRoom";
 
+        Debug.LogError("joinRoom: " + requestStringData);
+
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+    }
+
+    public void SendGameJoinRequestWithSeat(string seatNo)
+    {
+        string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+             "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
+             "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
+             "\"seatNo\":\"" + seatNo + "\"," +
+             "\"playerType\":\"Real\"," +
+             "\"isPrivate\":\"No\"," +
+             "\"isFree\":\"No\"}";
+
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "joinRoom";
+
+        Debug.LogError("joinRoom: " + requestStringData);
+
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
@@ -1120,7 +1225,41 @@ public class SocketController : MonoBehaviour
         request.requestDataStructure = requestStringData;
         socketRequest.Add(request);
     }
+    
+    public void MinimizeAppEvent()
+    {
+        MinEvent requestData = new MinEvent();
+        requestData.appStatus = "minimize";//maximize
 
+        string requestStringData = JsonMapper.ToJson(requestData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest req = new SocketRequest();
+        req.emitEvent = "minMaxApp";
+
+        req.plainDataToBeSend = null;
+        req.jsonDataToBeSend = requestObjectData;
+        req.requestDataStructure = requestStringData;
+        socketRequest.Add(req);
+    }
+
+    public void MaximizeAppEvent()
+    {
+        MinEvent requestData = new MinEvent();
+        requestData.appStatus = "maximize";//maximize
+
+        string requestStringData = JsonMapper.ToJson(requestData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest req = new SocketRequest();
+        req.emitEvent = "minMaxApp";
+
+        req.plainDataToBeSend = null;
+        req.jsonDataToBeSend = requestObjectData;
+        req.requestDataStructure = requestStringData;
+        socketRequest.Add(req);
+    }
+    
 
     public void SendBetData(int betAmount, int totalBetInRound, string userAction, int roundNo)
     {
@@ -1485,9 +1624,16 @@ public enum SocketEvetns
     ON_SEND_WINNING_BOOSTER,
     ON_GET_RANDOM_CARD,
     ON_ALL_TIP_DATA,
-    ON_POINT_UPDATE
+    ON_POINT_UPDATE,
+    RABBIT_CARDS
 }
 
+[System.Serializable]
+public class RabitData
+{
+    public string tableId;
+    public string userId;
+}
 
 [System.Serializable]
 public class StandUpdata
@@ -1534,6 +1680,12 @@ public class FoldData
     public string tableId;
     public string userId;
     public UserBetData userData;
+}
+
+[Serializable]
+public class MinEvent
+{
+    public string appStatus;
 }
 
 [System.Serializable]

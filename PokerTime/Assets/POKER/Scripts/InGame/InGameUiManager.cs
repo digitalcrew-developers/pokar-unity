@@ -113,7 +113,7 @@ public class InGameUiManager : MonoBehaviour
 
     private void SwitchTables(int counter)
     {
-        Debug.LogError("counter is " + counter);
+        //Debug.LogError("counter is " + counter);
         PlayerPrefs.SetInt("TableCount", counter);
 
         foreach (GameObject g in TableImages)
@@ -215,8 +215,8 @@ public class InGameUiManager : MonoBehaviour
     public void OnClickEmoji(int val)
     {
         emojiContainerVal = val;
-        Debug.Log("I AM HERE______________  "+val);
     }
+
     public void OnClickEmojiTransform(Transform val)
     {
         EmojiShowTransform = val;
@@ -265,6 +265,12 @@ public class InGameUiManager : MonoBehaviour
 
         switch (eventName)
         {
+            case "rabbit":
+                {
+                    InGameManager.instance.RabbitButton.SetActive(false);
+                    StartCoroutine(InGameManager.instance.WaitAndShowRabbit());
+                }
+                break;
             case "store":
                 {
                     ShowScreen(InGameScreens.InGameShop);
@@ -290,24 +296,31 @@ public class InGameUiManager : MonoBehaviour
                 break;
             case "fold":
                 {
+                    PlayerScript player = InGameManager.instance.GetMyPlayerObject();
+                    player.ResetTurn();
                     InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Fold, 0, "Fold");
                 }
                 break;
 
             case "call":
                 {
+                    PlayerScript player = InGameManager.instance.GetMyPlayerObject();
+                    player.ResetTurn();
                     InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Call, (int)availableCallAmount, "Call");
                 }
                 break;
             case "allin":
                 {
                     PlayerScript player = InGameManager.instance.GetMyPlayerObject();
+                    player.ResetTurn();
                     InGameManager.instance.OnPlayerActionCompleted(PlayerAction.AllIn, (int)player.GetPlayerData().balance, "AllIn");
                 }
                 break;
 
             case "check":
                 {
+                    PlayerScript player = InGameManager.instance.GetMyPlayerObject();
+                    player.ResetTurn();
                     InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Check, 0, "Check");
                 }
                 break;
@@ -346,6 +359,7 @@ public class InGameUiManager : MonoBehaviour
 
                         if (player != null)
                         {
+                            player.ResetTurn();
                             InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Raise, (int)player.GetPlayerData().balance, "AllIn");
                         }
                         else
@@ -1058,20 +1072,12 @@ public class InGameUiManager : MonoBehaviour
     
     public void OnGetEmoji(string serverResponse)
     {
-        // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
+        Debug.LogError("OnSentEmoji:" + serverResponse);
+
         JsonData data = JsonMapper.ToObject(serverResponse);
        
         if (data[0]["Status"].ToString().Equals("1.0")|| data[0]["Status"].ToString().Equals("1"))
-        {
-            for (int i = 0; i < players.transform.childCount; i++)
-            {
-                if (players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentBy"].ToString())
-                {
-                    EmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
-                   
-                    break;
-                }
-            }
+        {   
             for (int i = 0; i < players.transform.childCount; i++)
             {
                 if (data[0]["sentTo"].ToString().Equals("0"))
@@ -1083,8 +1089,7 @@ public class InGameUiManager : MonoBehaviour
                 {
                     if (players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentTo"].ToString())
                     {
-                       fromEmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
-                        
+                       fromEmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;                        
                         break;
                     }
                 }
