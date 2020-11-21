@@ -167,7 +167,11 @@ public class MemberListUIManager : MonoBehaviour
                 ClubMemberDetails memberDetails = newMembersList[i];
 
                 GameObject gm = Instantiate(newMemberPrefab,container) as GameObject;
-                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = memberDetails.userName + " (" + "ID: " + memberDetails.userId + ")";
+
+                //Set Instantiated Object name to user name
+                gm.name = memberDetails.userAlias;
+
+                gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = memberDetails.userAlias + " (" + "ID: " + memberDetails.userId + ")";
                 gm.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "Referral ID : None ";
                 gm.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + memberDetails.userName;
                 //string initial = memberDetails.userName.ToUpper();
@@ -192,6 +196,9 @@ public class MemberListUIManager : MonoBehaviour
 
                 GameObject gm = Instantiate(oldMemberPrefab, container) as GameObject;
                 gm.SetActive(true);
+
+                //Set Instantiated Object name to user name
+                gm.name = oldMembersList[i].userAlias;
 
                 gm.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = oldMembersList[i].userAlias;
                 gm.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "ID : " + oldMembersList[i].userId;
@@ -354,9 +361,9 @@ public class MemberListUIManager : MonoBehaviour
             clubMemberDetails.userId = data["data"][i]["requestUserId"].ToString();
             clubMemberDetails.userName = data["data"][i]["requestUserName"].ToString();
 
-            if (data["data"][i]["userAlias"] == null)
+            if (data["data"][i]["userAlias"] == null || data["data"][i]["userAlias"].Equals(""))
             {
-                clubMemberDetails.userAlias = "";
+                clubMemberDetails.userAlias = clubMemberDetails.userName;
             }
             else
             {

@@ -758,7 +758,7 @@ public class MemberDetails : MonoBehaviour
         string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
             "\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "," +
             "\"amount\":" + AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text + "," +
-            "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + clubMemberDetails.memberRole + "\"}]}";
+            "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + "}]}";/*",\"role\":\"" + clubMemberDetails.memberRole + "\"}]}";*/
 
         //float totalAmount = 0;
         //float currentAmount = 0;
@@ -820,16 +820,17 @@ public class MemberDetails : MonoBehaviour
 
         //OLD REQUEST
         //string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-        //    "\"role\":\"" + role + "\"," +
+        //    "\"role\":\"" + (role.Equals("Creater") ? "Creater" : "") + "\"," +
         //    "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
         //    "\"amount\":" + claimBackAmount + "," +
         //    "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + "}]}";
 
         //NEW REQUEST
         string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"role\":\"" + (role.Equals("Creater") ? "Creater" : "") + "\"," +
             "\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "," +
-            "\"amount\":" + AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text + "," +
-            "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + role + "\"}]}";
+            "\"amount\":" + claimBackAmount + "," +
+            "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + clubMemberDetails.memberRole + "\"}]}";
 
         Debug.Log("request is - " + request);
         WebServices.instance.SendRequest(RequestType.ClaimBackChips, request, true, OnServerResponseFound);
@@ -971,6 +972,9 @@ public class MemberDetails : MonoBehaviour
         for (int i = 0; i < data["response"].Count; i++)
         {
             GameObject obj = Instantiate(AgentPrefabForDownline, AgentSelectDownlineContainer) as GameObject;
+
+            //Set Instantiated Object name to user name
+            obj.name = data["response"][i]["userAlias"].ToString();
 
             obj.transform.Find("TextName").GetComponent<TMP_Text>().text = data["response"][i]["userAlias"].ToString();
             obj.transform.Find("TextId").GetComponent<TMP_Text>().text = data["response"][i]["requestUserId"].ToString();

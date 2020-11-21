@@ -429,8 +429,8 @@ public class ClubCounter : MonoBehaviour
 
                     clubChips += claimBackAmount;
                     ClubDetailsUIManager.instance.CLubChips.text = clubChips.ToString();
-                    //ClubChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
-                    //SendOutChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
+                    ClubChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
+                    SendOutChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
 
                     for (int i = 0; i < SelectedTradeMembers.Count; i++)
                     {
@@ -638,6 +638,9 @@ public class ClubCounter : MonoBehaviour
             GameObject tardeItem = Instantiate(TradeListItemPrefab, TradeListContent) as GameObject;
             tardeItem.SetActive(true);
 
+            //Set Instantiated Object name to user name
+            tardeItem.name = clubMemberDetails.userName;
+
             tardeItem.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = clubMemberDetails.userName;
             tardeItem.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "ID : " + clubMemberDetails.userId;
             tardeItem.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + clubMemberDetails.nickName;
@@ -665,6 +668,9 @@ public class ClubCounter : MonoBehaviour
 
             GameObject vipItem = Instantiate(SendVIPListItemPrefab, SendVIPContent) as GameObject;
             vipItem.SetActive(true);
+
+            //Set Instantiated Object name to user name
+            vipItem.name = clubMemberDetails.userName;
 
             vipItem.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = clubMemberDetails.userName;
             vipItem.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "ID : " + clubMemberDetails.userId;
@@ -700,23 +706,23 @@ public class ClubCounter : MonoBehaviour
         }
     }
 
-    private void ToggleValueChangedSleep(Toggle sleepItem, ClubMemberDetails clubMemberDetails)
-    {
-        if (sleepItem.isOn)
-        {
-            if (!SelectedSleepMembers.Contains(clubMemberDetails))
-            {
-                SelectedSleepMembers.Add(clubMemberDetails);
-            }
-        }
-        else
-        {
-            if (SelectedSleepMembers.Contains(clubMemberDetails))
-            {
-                SelectedSleepMembers.Remove(clubMemberDetails);
-            }
-        }
-    }
+    //private void ToggleValueChangedSleep(Toggle sleepItem, ClubMemberDetails clubMemberDetails)
+    //{
+    //    if (sleepItem.isOn)
+    //    {
+    //        if (!SelectedSleepMembers.Contains(clubMemberDetails))
+    //        {
+    //            SelectedSleepMembers.Add(clubMemberDetails);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if (SelectedSleepMembers.Contains(clubMemberDetails))
+    //        {
+    //            SelectedSleepMembers.Remove(clubMemberDetails);
+    //        }
+    //    }
+    //}
 
     private void OpenVIPPanel()
     {
@@ -836,6 +842,9 @@ public class ClubCounter : MonoBehaviour
             GameObject tardeItem = Instantiate(TradeListItemPrefab, SendOutListContent) as GameObject;
             tardeItem.SetActive(true);
 
+            //Set Instantiated Object name to user name
+            tardeItem.name = clubMemberDetails.userName;
+
             tardeItem.transform.Find("TextName").GetComponent<TMPro.TextMeshProUGUI>().text = clubMemberDetails.userName;
             tardeItem.transform.Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text = "ID : " + clubMemberDetails.userId;
             tardeItem.transform.Find("TextNickname").GetComponent<TMPro.TextMeshProUGUI>().text = "Nickname : " + clubMemberDetails.nickName;
@@ -905,6 +914,16 @@ public class ClubCounter : MonoBehaviour
         Debug.Log("Selected Members: " + selectedMembers);
         Debug.Log("Player ID: " + PlayerManager.instance.GetPlayerGameData().userId);
 
+        string role = "";
+        if (MemberListUIManager.instance.GetClubOwnerObject().memberRole == ClubMemberRole.Owner)
+        {
+            role = "Creater";
+        }
+        else
+        {
+            role = MemberListUIManager.instance.GetClubOwnerObject().memberRole.ToString();
+        }
+
 
         //OLD REQUEST
         //string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
@@ -917,6 +936,7 @@ public class ClubCounter : MonoBehaviour
 
         //NEW REQUEST
         string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"role\":\"" + (role.Equals("Creater") ? "Creater" : "") + "\"," +
             "\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "," +
             "\"amount\":" + claimBackAmount.ToString() + "," +
             "\"membersArray\":[" + selectedMembers + "]}";
