@@ -35,6 +35,7 @@ public class SearchManager : MonoBehaviour
                 if (container.GetChild(i).name.ToLower().Contains(transform.GetComponent<TMP_InputField>().text.ToLower()))
                 {
                     GameObject obj = Instantiate(container.GetChild(i).gameObject, searchContainer);
+                    obj.GetComponent<Button>().onClick = container.GetChild(i).GetComponent<Button>().onClick;
                 }
             }
             container.gameObject.SetActive(false);

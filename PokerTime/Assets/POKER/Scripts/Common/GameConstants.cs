@@ -32,7 +32,7 @@ public class GameConstants : MonoBehaviour
     public const int API_TIME_OUT_LIMIT = 10;
 
 
-    public const string BASE_URL = "http://192.168.0.151";//"http://3.17.201.78";//"http://3.137.10.123";//// // //"http://18.191.15.121"; // "http://3.6.137.204";
+    public const string BASE_URL = "http://3.17.201.78";//"http://192.168.0.151";//"http://3.137.10.123";//"http://18.191.15.121"; // "http://3.6.137.204";
 
 
     //Testing
@@ -43,7 +43,7 @@ public class GameConstants : MonoBehaviour
     public const string API_URL = BASE_URL + ":3000";// ":3009";
     public const string SOCKET_URL = BASE_URL + ":3333";// ":3008";
 
-    public const string GAME_PORTAL_URL = "http://192.168.0.151";//"http://3.17.201.78";//"http://3.137.10.123";//90// "http://3.17.201.78";//"http://18.191.15.121";//"http://3.6.137.204";
+    public const string GAME_PORTAL_URL = "http://3.17.201.78";//"http://192.168.0.151";//"http://3.137.10.123";//"http://3.17.201.78";//"http://18.191.15.121";//"http://3.6.137.204";
 
 
     public static string[] GAME_URLS =
