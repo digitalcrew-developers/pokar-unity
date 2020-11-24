@@ -7,6 +7,7 @@ public class PlayerSeat : MonoBehaviour
 {
     public string seatNo;
     public Button myButton;
+    public Sprite EmptyImage, PlusImage;
 
     private void Start()
     {
@@ -18,10 +19,12 @@ public class PlayerSeat : MonoBehaviour
     {
         if (InGameManager.instance.AmISpectator)
         {
+            GetComponent<Image>().sprite = PlusImage;
             myButton.interactable = true;
         }
         else
         {
+            GetComponent<Image>().sprite = EmptyImage;
             myButton.interactable = false;
         }
     }

@@ -102,7 +102,14 @@ public class PlayerScript : MonoBehaviour
         if (playerData.userId == PlayerManager.instance.GetPlayerGameData().userId)
         {
             isItMe = true;
-            InGameManager.instance.UpdateAvailableBalance(playerData.balance);
+            if (InGameManager.instance != null)
+            {
+                InGameManager.instance.UpdateAvailableBalance(playerData.balance);
+            }
+            else if(ClubInGameManager.instance!=null)
+            {
+                ClubInGameManager.instance.UpdateAvailableBalance(playerData.balance);
+            }
             RealTimeResult.SetActive(true);
 
         }
@@ -122,15 +129,29 @@ public class PlayerScript : MonoBehaviour
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
         Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
-        userName.text = playerData.userName.Substring(0, 4) + "...";
-        
-       
+        if (playerData.userName.Length > 3)
+        {
+            userName.text = playerData.userName.Substring(0, 4) + "...";
+        }
+        else
+        {
+            userName.text = playerData.userName;
+        }
+
+
         transform.Find("Bg/Dealer").gameObject.SetActive(playerData.isDealer);
         localBetAmount = (int)playerData.totalBet;
 
         if (playerData.totalBet > 0)
         {
-            UpdateLocalPot((int)playerData.totalBet, InGameManager.instance.GetMatchRound());
+            if (InGameManager.instance != null)
+            {
+                UpdateLocalPot((int)playerData.totalBet, InGameManager.instance.GetMatchRound());
+            }
+            else if(ClubInGameManager.instance != null)
+            {
+                UpdateLocalPot((int)playerData.totalBet, ClubInGameManager.instance.GetMatchRound());
+            }
         }
     }
     private void LoadUI()
@@ -148,7 +169,18 @@ public class PlayerScript : MonoBehaviour
             RealTimeResult = transform.Find("Bg/RealTime Result").gameObject;
             RealTimeResulttxt = RealTimeResult.GetComponent<Text>();
             lastActionImage.SetActive(false);
-            emptyObject = InGameManager.instance.GetSeatObject(playerData.seatNo); // transform.Find("Empty").gameObject;
+
+            if (InGameManager.instance != null)
+            {
+                emptyObject = InGameManager.instance.GetSeatObject(playerData.seatNo); // transform.Find("Empty").gameObject;
+
+            }
+            else if (ClubInGameManager.instance != null)
+            {
+                emptyObject = ClubInGameManager.instance.GetSeatObject(playerData.seatNo); // transform.Find("Empty").gameObject;
+            }
+
+
             cardsImage = new Image[GameConstants.NUMBER_OF_CARDS_PLAYER_GET_IN_MATCH[(int)GlobalGameManager.instance.GetRoomData().gameMode]];
 
             fx_holder.gameObject.SetActive(false);
@@ -198,7 +230,14 @@ public class PlayerScript : MonoBehaviour
     {
         if (emptyObject == null)
         {
-            emptyObject = InGameManager.instance.GetSeatObject(playerData.seatNo); //transform.Find("Empty").gameObject;
+            if (InGameManager.instance != null)
+            {
+                emptyObject = InGameManager.instance.GetSeatObject(playerData.seatNo); //transform.Find("Empty").gameObject;
+            }
+            else if (ClubInGameManager.instance != null)
+            {
+                emptyObject = ClubInGameManager.instance.GetSeatObject(playerData.seatNo); //transform.Find("Empty").gameObject;
+            }
         }
 
         emptyObject.SetActive(isShow);
@@ -302,10 +341,21 @@ public class PlayerScript : MonoBehaviour
 
     private void UpdateLocalPot(int amount, int roundNo)
     {
-        if (roundNo != InGameManager.instance.GetMatchRound())
+        if (InGameManager.instance != null)
         {
-            amount = 0;
+            if (roundNo != InGameManager.instance.GetMatchRound())
+            {
+                amount = 0;
+            }
         }
+        else if (ClubInGameManager.instance != null)
+        {
+            if (roundNo != ClubInGameManager.instance.GetMatchRound())
+            {
+                amount = 0;
+            }
+        }
+
 
         if (amount > 0)
         {
@@ -476,7 +526,18 @@ public class PlayerScript : MonoBehaviour
 
         if (IsMe())
         {
-            InGameManager.instance.UpdateAvailableBalance(playerData.balance);
+            if (InGameManager.instance != null)
+            {
+                InGameManager.instance.UpdateAvailableBalance(playerData.balance);
+            }
+            else if(ClubInGameManager.instance!=null)
+            {
+                if (playerData.balance < 1)
+                {
+                    ClubInGameManager.instance.ShowEVChopButtons();
+                }
+                ClubInGameManager.instance.UpdateAvailableBalance(playerData.balance);
+            }
         }
 
         ToggleFoldScreen(playerData.isFold);
@@ -486,14 +547,29 @@ public class PlayerScript : MonoBehaviour
         {
             UpdateLocalPot(totalBetInThisRound, lastActionRoundNo);
 
-            if (lastActionRoundNo == InGameManager.instance.GetMatchRound())
+            if (InGameManager.instance != null)
             {
-                UpdateLastAction(lastPlayerAction);
+                if (lastActionRoundNo == InGameManager.instance.GetMatchRound())
+                {
+                    UpdateLastAction(lastPlayerAction);
+                }
+                else
+                {
+                    UpdateLastAction("");
+                }
             }
-            else
+            else if (ClubInGameManager.instance != null)
             {
-                UpdateLastAction("");
+                if (lastActionRoundNo == ClubInGameManager.instance.GetMatchRound())
+                {
+                    UpdateLastAction(lastPlayerAction);
+                }
+                else
+                {
+                    UpdateLastAction("");
+                }
             }
+
         }
     }
 

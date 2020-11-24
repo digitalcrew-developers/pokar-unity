@@ -129,6 +129,7 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("minMaxAppEmit", MinimizeAppServer);
         socketManager.Socket.On("seatObject", SeatObjectsReceived);
         socketManager.Socket.On("rabbitOpenCards", RabbitCardDataReceived);
+        socketManager.Socket.On("evChopData", EVChopDataReceived);
         socketManager.Open();
     }
 
@@ -162,6 +163,29 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.Log(responseText);
+    }
+
+    private void EVChopDataReceived(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError("EVChopDataReceived :" + responseText);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.EVCHOP))
+        {
+            Debug.Log("EVChopDataReceived = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+        Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.EVCHOP;
+        response.data = responseText;
+        socketResponse.Add(response);
     }
 
     private void RabbitCardDataReceived(Socket socket, Packet packet, object[] args)
@@ -1625,11 +1649,19 @@ public enum SocketEvetns
     ON_GET_RANDOM_CARD,
     ON_ALL_TIP_DATA,
     ON_POINT_UPDATE,
-    RABBIT_CARDS
+    RABBIT_CARDS,
+    EVCHOP
 }
 
 [System.Serializable]
 public class RabitData
+{
+    public string tableId;
+    public string userId;
+}
+
+[System.Serializable]
+public class EVChopData
 {
     public string tableId;
     public string userId;

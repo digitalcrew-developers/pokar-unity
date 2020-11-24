@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using LitJson;
+using DG.Tweening;
 
 public class InGameUiManager : MonoBehaviour
 {
@@ -45,7 +46,7 @@ public class InGameUiManager : MonoBehaviour
 
     public int emojiContainerVal;
     public Transform EmojiShowTransform;
-    public Transform fromEmojiShowTransform;
+    public Transform sentTo, sentBy;
     public GameObject[] EmojiPrefabs;
 
     public GameObject GirlDealerEmoji;
@@ -236,7 +237,6 @@ public class InGameUiManager : MonoBehaviour
                 otherId = int.Parse(InGameUiManager.instance.TempUserID);
             }
         }
-        
     }
 
 
@@ -1012,64 +1012,65 @@ public class InGameUiManager : MonoBehaviour
         {
 
             case "bluffing":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Bluffing], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Bluffing], sentBy) as GameObject;
                 break;
             case "youRaPro":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.YouRaPro], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.YouRaPro], sentBy) as GameObject;
                 break;
             case "beerCheers":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.BeerCheers], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.BeerCheers], sentBy) as GameObject;
                 break;
             case "murgi":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Murgi], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Murgi], sentBy) as GameObject;
                 break;
             case "rocket":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Rocket], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Rocket], sentBy) as GameObject;
                 break;
             case "dung":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Dung], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Dung], sentBy) as GameObject;
                 break;
             case "oscar":
                 Debug.LogError("oscar Emoji From List on Screen 00000*** " + str);
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Oscar], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Oscar], sentBy) as GameObject;
                 break;
             case "donkey":
                 Debug.LogError("donkey Emoji From List on Screen *** " + str);
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Donkey], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Donkey], sentBy) as GameObject;
                 break;
             case "thumbUp":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.ThumbsUp], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.ThumbsUp], sentBy) as GameObject;
                 break;
             case "cherees":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Cherees], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Cherees], sentBy) as GameObject;
                 break;
             case "kiss":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Kiss], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Kiss], sentBy) as GameObject;
                 break;
             case "fish":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Fish], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Fish], sentBy) as GameObject;
                 break;
             case "gun":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Gun], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Gun], sentBy) as GameObject;
                 break;
             case "rose":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Rose], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Rose], sentBy) as GameObject;
                 break;
             case "perfume":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Perfume], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Perfume], sentBy) as GameObject;
                 break;
             case "ring":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Ring], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Ring], sentBy) as GameObject;
                 break;
             case "car":
-                g = Instantiate(EmojiPrefabs[(int)Emoji.Car], EmojiShowTransform) as GameObject;
+                g = Instantiate(EmojiPrefabs[(int)Emoji.Car], sentBy) as GameObject;
                 break;
         }
         g.transform.SetParent(EmojiShowTransform);
-        g.GetComponent<EmojiBehaviour>().target = fromEmojiShowTransform;
+        //g.GetComponent<EmojiBehaviour>().target = fromEmojiShowTransform;
+        g.transform.DOMove(sentTo.position, 3f);
     }
 
-    
+
     public void OnGetEmoji(string serverResponse)
     {
         Debug.LogError("OnSentEmoji:" + serverResponse);
@@ -1082,15 +1083,18 @@ public class InGameUiManager : MonoBehaviour
             {
                 if (data[0]["sentTo"].ToString().Equals("0"))
                 {
-                    fromEmojiShowTransform = GirlDealerEmoji.transform;
+                    sentTo = GirlDealerEmoji.transform;
                     sentToEmojiValue = "Dealer";
                 }
                 else
                 {
                     if (players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentTo"].ToString())
                     {
-                       fromEmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;                        
-                        break;
+                       sentTo = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;                        
+                    }
+                    if(players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentBy"].ToString())
+                    {
+                        sentBy = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
                     }
                 }
             }

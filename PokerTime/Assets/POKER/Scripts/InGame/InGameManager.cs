@@ -56,16 +56,6 @@ public class InGameManager : MonoBehaviour
     private int currentRoundTotalBets = 0;
     private float pot1Amount = 0;
 
-    private float pot2Amount = 0;
-    private float pot3Amount = 0;
-    private float pot4Amount = 0;
-    private float pot5Amount = 0;
-    private float pot6Amount = 0;
-    private float pot7Amount = 0;
-    private float pot8Amount = 0;
-    private float pot9Amount = 0;
-
-
     private bool isRematchRequestSent = false,isTopUpDone = false;
     private float availableBalance = 0;
 
@@ -215,8 +205,15 @@ public class InGameManager : MonoBehaviour
         if (vipCard > 0)
         {
             RabbitButton.SetActive(true);
+            StartCoroutine(DisableRabbitButton());
             OnOpenCardsDataFound(responseText);
         }
+    }
+
+    private IEnumerator DisableRabbitButton()
+    {
+        yield return new WaitForSeconds(2.5f);
+        RabbitButton.SetActive(false);
     }
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
@@ -653,8 +650,7 @@ public class InGameManager : MonoBehaviour
 
         int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
     }
-
-
+    
 
     private void AdjustAllPlayersOnTable(int totalPlayerCount)
     {
@@ -750,7 +746,7 @@ public class InGameManager : MonoBehaviour
         //{
         //    Pot.SetActive(true);
         //}
-        //potText.text = textToShow;
+        potText.text = textToShow;
         foreach(GameObject g in AllPots)
         {
             g.SetActive(false);
@@ -830,7 +826,7 @@ public class InGameManager : MonoBehaviour
         for (int i = 0; i < communityCards.Length; i++)
         {
             if (openCards[i].cardIcon == CardIcon.NONE) {
-                communityCards[i].gameObject.SetActive(false);
+                //communityCards[i].gameObject.SetActive(false);
                 break;
             }
             communityCards[i].sprite = openCards[i].cardsSprite;
@@ -858,7 +854,7 @@ public class InGameManager : MonoBehaviour
                 GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
 
                 gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
-                gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);
+                //gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);
                 Destroy(gm,GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
             }
 
@@ -870,7 +866,7 @@ public class InGameManager : MonoBehaviour
             SoundManager.instance.PlaySound(SoundType.ChipsCollect);
         }
 
-        UpdatePot("" + (int)pot1Amount);
+        UpdatePot("Pot : " + (int)pot1Amount);
 
         switch (MATCH_ROUND)
         {

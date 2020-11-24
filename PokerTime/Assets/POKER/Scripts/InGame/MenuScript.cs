@@ -13,45 +13,92 @@ public class MenuScript : MonoBehaviour
         {
             case "back":
                 {
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                    if (InGameUiManager.instance != null) {
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                    }
+                    else
+                    {
+                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                    }
                 }
                 break;
             case "StandUp":
                 {
-                    /*  InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                      InGameUiManager.instance.ShowScreen(InGameScreens.Tips);*/
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                    InGameManager.instance.OnClickStandupBtn();
+                    if (InGameUiManager.instance != null)
+                    {
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                        InGameManager.instance.OnClickStandupBtn();
+                    }
+                    else
+                    {
+                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                        ClubInGameManager.instance.OnClickStandupBtn();
+                    }
+
                 }
                 break;
 
             case "GameDisplay":
                 {
-                    InGameUiManager.instance.ShowScreen(InGameScreens.GameDisplay);
+                    if (InGameUiManager.instance != null)
+                    {
+                        InGameUiManager.instance.ShowScreen(InGameScreens.GameDisplay);
+                    }
+                    else
+                    {
+                        ClubInGameUIManager.instance.ShowScreen(InGameScreens.GameDisplay);
+                    }
                 }
                 break;
 
             case "SwitchTable":
                 {
-                    StartCoroutine(InGameManager.instance.SwitchTables());
+                    if (InGameUiManager.instance != null)
+                    {
+                        StartCoroutine(InGameManager.instance.SwitchTables());
+                    }
                 }
                 break;
             case "tableSettings":
                 {
-                    InGameUiManager.instance.ShowScreen(InGameScreens.TableSettings);
+                    if (InGameUiManager.instance != null) {
+                        InGameUiManager.instance.ShowScreen(InGameScreens.TableSettings);
+
+                    }
+                    else
+                    {
+                        ClubInGameUIManager.instance.ShowScreen(InGameScreens.TableSettings);
+
+                    }
+
 
                 }
                 break;
 
             case "handRanking":
                 {
-                    InGameUiManager.instance.ShowScreen(InGameScreens.HandRanking);
+                    if (InGameUiManager.instance != null)
+                    {
+                        InGameUiManager.instance.ShowScreen(InGameScreens.HandRanking);
+                    }
+                    else
+                    {
+                        ClubInGameUIManager.instance.ShowScreen(InGameScreens.HandRanking);
+                    }
                 }
                 break;
 
             case "exit":
                 {
-                    InGameManager.instance.LoadMainMenu();
+                    if (InGameUiManager.instance != null)
+                    {
+                        InGameManager.instance.LoadMainMenu();
+                    }
+                    else
+                    {
+                        //exit for club menu
+                        ClubInGameManager.instance.LoadMainMenu();
+                    }
                 }
             break;
 
@@ -61,6 +108,8 @@ public class MenuScript : MonoBehaviour
                     //{
                         if (PlayerManager.instance.GetPlayerGameData().coins > GlobalGameManager.instance.GetRoomData().minBuyIn)
                         {
+                        if (InGameManager.instance != null)
+                        {
                             if (InGameManager.instance.GetMyPlayerObject() != null)
                             {
                                 InGameUiManager.instance.ShowScreen(InGameScreens.TopUp, new object[] { InGameManager.instance.GetMyPlayerObject().GetPlayerData().balance });
@@ -68,9 +117,25 @@ public class MenuScript : MonoBehaviour
                         }
                         else
                         {
-                            InGameUiManager.instance.ShowMessage("You don't have sufficient coins for TopUp");
-                            //TODO show shop screen
+                            if (ClubInGameManager.instance.GetMyPlayerObject() != null)
+                            {
+                                ClubInGameUIManager.instance.ShowScreen(InGameScreens.TopUp, new object[] { InGameManager.instance.GetMyPlayerObject().GetPlayerData().balance });
+                            }
                         }
+                            
+                        }
+                        else
+                        {
+                        if (InGameUiManager.instance != null)
+                        {
+                            InGameUiManager.instance.ShowMessage("You don't have sufficient coins for TopUp");
+                        }
+                        else
+                        {
+                            ClubInGameUIManager.instance.ShowMessage("You don't have sufficient coins for TopUp");
+                        }
+                        //TODO show shop screen
+                    }
                     //}
                     //else
                     //{
