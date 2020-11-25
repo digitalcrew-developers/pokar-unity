@@ -11,7 +11,7 @@ public class SocketController : MonoBehaviour
 {
     public static SocketController instance;
 
-    private const float RESPONSE_READ_DELAY = 0.2f, REQUEST_SEND_DELAY = 0.2f;
+    private const float RESPONSE_READ_DELAY = 0.2f, REQUEST_SEND_DELAY = 0.1f;
     private SocketManager socketManager;
 
     private List<SocketResponse> socketResponse = new List<SocketResponse>();
@@ -138,7 +138,10 @@ public class SocketController : MonoBehaviour
     void OnGUI()
     {
         if (isPaused)
+        {
+            //MinimizeAppEvent();
             GUI.Label(new Rect(100, 100, 50, 30), "Game paused");
+        }
     }
 
     void OnApplicationFocus(bool hasFocus)
@@ -147,6 +150,10 @@ public class SocketController : MonoBehaviour
         if (!isPaused)
         {
             MaximizeAppEvent();
+        }
+        if (isPaused)
+        {
+            MinimizeAppEvent();
         }
     }
 
@@ -314,7 +321,7 @@ public class SocketController : MonoBehaviour
 
                 case SocketEvetns.ON_GAME_OVER_TIMER_FOUND:
                     Debug.LogError("Game Over - " + responseObject.data);
-                    //InGameManager.instance.OnGameOverCountDownFound(responseObject.data);
+                    InGameManager.instance.OnGameOverCountDownFound(responseObject.data);
                     break;
 
                 case SocketEvetns.ON_CALL_TIMER_FOUND:
@@ -421,17 +428,17 @@ public class SocketController : MonoBehaviour
             {
                 socketManager.Socket.Emit(request.emitEvent, request.plainDataToBeSend);
 
-#if DEBUG
+//#if DEBUG
                 Debug.Log("sending Plain request " + request.requestDataStructure + "         event = " + request.emitEvent + "   Time = " + System.DateTime.Now);
-#endif
+//#endif
             }
             else if (request.jsonDataToBeSend != null)
             {
                 socketManager.Socket.Emit(request.emitEvent, request.jsonDataToBeSend);
 
-#if DEBUG
+//#if DEBUG
                 Debug.Log("Send Socket Request " + request.requestDataStructure + "          emitEvent   ==" + request.emitEvent + "  Time = " + System.DateTime.Now);
-#endif
+//#endif
             }
         }
     }
@@ -1254,6 +1261,8 @@ public class SocketController : MonoBehaviour
     {
         MinEvent requestData = new MinEvent();
         requestData.appStatus = "minimize";//maximize
+        requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+        requestData.tableId = TABLE_ID;
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
@@ -1264,13 +1273,19 @@ public class SocketController : MonoBehaviour
         req.plainDataToBeSend = null;
         req.jsonDataToBeSend = requestObjectData;
         req.requestDataStructure = requestStringData;
-        socketRequest.Add(req);
+        //socketRequest.Add(req);
+        //send event immediately
+        socketManager.Socket.Emit(req.emitEvent, req.jsonDataToBeSend);
+        Debug.LogError("Minimize :" + requestStringData);
     }
 
     public void MaximizeAppEvent()
     {
         MinEvent requestData = new MinEvent();
         requestData.appStatus = "maximize";//maximize
+        requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+        requestData.tableId = TABLE_ID;
+
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
@@ -1281,9 +1296,12 @@ public class SocketController : MonoBehaviour
         req.plainDataToBeSend = null;
         req.jsonDataToBeSend = requestObjectData;
         req.requestDataStructure = requestStringData;
-        socketRequest.Add(req);
+        //socketRequest.Add(req);
+        //send event immediately
+        socketManager.Socket.Emit(req.emitEvent, req.jsonDataToBeSend);
+        Debug.LogError("Maximize :" + requestStringData);
     }
-    
+
 
     public void SendBetData(int betAmount, int totalBetInRound, string userAction, int roundNo)
     {
@@ -1366,7 +1384,6 @@ public class SocketController : MonoBehaviour
         requestData.tableId = TABLE_ID;
 
         string requestStringData = JsonMapper.ToJson(requestData);
-        Debug.LogError("[SOCKET EVENT] - leaveMatch" + "[Params]  " + requestStringData);
         object requestObjectData = Json.Decode(requestStringData);
 
         SocketRequest request = new SocketRequest();
@@ -1374,7 +1391,11 @@ public class SocketController : MonoBehaviour
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
-        socketRequest.Add(request);
+        //socketRequest.Add(request);
+        Debug.LogError("[SOCKET EVENT] - leaveMatch" + "[Params]  " + requestStringData);
+        //send the event straight away. dont add to socketRequest list since we are calling this function
+        //on application quit.
+        socketManager.Socket.Emit(request.emitEvent, request.jsonDataToBeSend);
 
         return true;
     }
@@ -1717,6 +1738,8 @@ public class FoldData
 [Serializable]
 public class MinEvent
 {
+    public string tableId;
+    public string userId;
     public string appStatus;
 }
 

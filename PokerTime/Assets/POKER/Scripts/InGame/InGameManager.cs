@@ -343,6 +343,11 @@ public class InGameManager : MonoBehaviour
         return LAST_BET_AMOUNT;
     }
 
+    internal void OnGameOverCountDownFound(string data)
+    {
+        //ResetMatchData();
+    }
+
     public void UpdateAvailableBalance(float balance)
     {
         availableBalance = balance;
@@ -1526,6 +1531,12 @@ public class InGameManager : MonoBehaviour
 
     public void OnPlayerObjectFound(string serverResponse)
     {
+        if(serverResponse == "[[]]")
+        {
+            //clear UI
+            StartCoroutine(WaitAndSendLeaveRequest());
+            return;
+        }
         if (!InGameUiManager.instance.isSelectedWinningBooster)
         {
             SocketController.instance.GetRandomCard();
