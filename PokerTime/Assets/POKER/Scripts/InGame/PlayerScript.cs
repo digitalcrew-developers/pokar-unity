@@ -499,10 +499,21 @@ public class PlayerScript : MonoBehaviour
         if (remainingTime == 0)
         {
             //UnityEngine.Debug.LogError("Starting timer");
-            lastRoutine = StartCoroutine(CountDownAnimation(totalTime));
+            lastRoutine = StartCoroutine(CountDownAnimation(GameConstants.TURN_TIME));
+        }
+        if(remainingTime == GameConstants.TURN_TIME)
+        {   
+            timerBar.fillAmount = 0;
+            if (lastRoutine != null)
+            {
+                StopCoroutine(lastRoutine);
+            }
+            CountDownTimerRunning = false;
+
+            lastRoutine = StartCoroutine(CountDownAnimation(extraTime));
         }
 
-        //if(totalTime > GameConstants.TURN_TIME)
+        //if (totalTime > GameConstants.TURN_TIME)
         //{
         //    //vip user, show extra time
         //    lastRoutine = StartCoroutine(CountDownAnimation(GameConstants.TURN_TIME));
