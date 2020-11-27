@@ -27,13 +27,18 @@ public class MemberListUIManager : MonoBehaviour
     public Button MemberFilter;
     public GameObject MemberFilterPanel;
 
+    //private void Awake()
+    //{
+    //    instance = this;
+    //}
+
     private void Awake()
     {
-        instance = this;
-    }
+        if(instance == null)
+        {
+            instance = this;
+        }
 
-    private void Start()
-    {
         Debug.Log("MemberListUIManager Start Called...");
         if(ClubDetailsUIManager.instance.playerTypeForClub.Equals("Creater"))
         {
@@ -101,7 +106,7 @@ public class MemberListUIManager : MonoBehaviour
             }
             FetchMembersList();
         }
-        memberListScreen.SetActive(isShow);
+        //memberListScreen.SetActive(isShow);
     }
 
 
@@ -240,7 +245,7 @@ public class MemberListUIManager : MonoBehaviour
             if(image!=null)
                 image.sprite = sprite;
 
-            Debug.Log("Successfully Set Player Profile");
+            //Debug.Log("Successfully Set Player Profile");
         }
     }
 

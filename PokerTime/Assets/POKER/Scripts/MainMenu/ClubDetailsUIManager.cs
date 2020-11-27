@@ -35,8 +35,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	[Header("Images")]
 	public Image clubProfileImg;
-	public Image editClubProfileImg;
-	public Image clubNoticeImg;
+	public Image editClubProfileImg;	
 
 	[Header("Text/InputField")]
 	public Text clubName;
@@ -92,8 +91,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 		}
 
 		StartCoroutine(LoadSpriteImageFromUrl(clubProfileImagePath, clubProfileImage));
-		FetchJackpotDetails();
-
+		
 		//DEV_CODE
 		//Debug.Log("Club name: " + nameOfClub);
 		clubName.text = nameOfClub;
@@ -102,12 +100,16 @@ public class ClubDetailsUIManager : MonoBehaviour
 		GetChips();
 		GetNotifications();
 		GetClubTemplates();
+
+		FetchJackpotDetails();
+		ClubAdminManager.instance.RequestJackpotAndMemberData();
+
 		//to-do... get layout from server for this club and update in local string
 	}
-
+	
 	public void FetchJackpotDetails()
 	{
-		string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+		string requestData = "{\"clubId\":\"" + /*ClubDetailsUIManager.instance.*/GetClubId() + "\"}";
 		WebServices.instance.SendRequest(RequestType.GetJackpotDetailByClubId, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
 		{
 			if (errorMessage.Length > 0)
@@ -123,32 +125,35 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 			JsonData data = JsonMapper.ToObject(serverResponse);
 
-			if (data["data"][0]["jackpotStatus"].Equals("Active"))
+			if (data["status"].Equals(true))
 			{
-				if (!jackpotData.activeSelf)
-					jackpotData.SetActive(true);
-
-				int a = data["data"][0]["jackpotAmount"].ToString().Length;
-
-				string str = "";
-				for (int i = 0; i < (9 - a); i++)
+				if (data["data"][0]["jackpotStatus"].Equals("Active"))
 				{
-					if (i == 1)
+					if (!jackpotData.activeSelf)
+						jackpotData.SetActive(true);
+
+					int a = data["data"][0]["jackpotAmount"].ToString().Length;
+
+					string str = "";
+					for (int i = 0; i < (9 - a); i++)
 					{
-						str += ",";
-						continue;
+						if (i == 1)
+						{
+							str += ",";
+							continue;
+						}
+						else if (i == 5)
+						{
+							str += ",";
+							continue;
+						}
+						str += "0";
 					}
-					else if (i == 5)
-					{
-						str += ",";
-						continue;
-					}
-					str += "0";
+
+					str += data["data"][0]["jackpotAmount"].ToString();
+
+					jackpotAmountText.text = str;
 				}
-
-				str += data["data"][0]["jackpotAmount"].ToString();
-
-				jackpotAmountText.text = str;
 			}
 			else
 			{
@@ -175,7 +180,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 			if (image != null)
 				image.sprite = sprite;
 
-			Debug.Log("Successfully Set Player Profile");
+			//Debug.Log("Successfully Set Player Profile");
 		}
 	}
 
@@ -249,7 +254,9 @@ public class ClubDetailsUIManager : MonoBehaviour
 					Debug.Log("Response => GetClubDetails : " + serverResponse);
 					JsonData data = JsonMapper.ToObject(serverResponse);
                     string chipsText = data["data"][0]["ptChips"].ToString();
-                    CLubChips.text = chipsText;					
+                    CLubChips.text = chipsText;
+					
+
 				}
                 break;
 
@@ -334,11 +341,11 @@ public class ClubDetailsUIManager : MonoBehaviour
             }
 			break;
 
-			case "members":
-			{
-				MemberListUIManager.instance.ToggleScreen(true);				
-			}
-			break;
+			//case "members":
+			//{
+			//	MemberListUIManager.instance.ToggleScreen(true);				
+			//}
+			//break;
 
 			case "play1":
 			{

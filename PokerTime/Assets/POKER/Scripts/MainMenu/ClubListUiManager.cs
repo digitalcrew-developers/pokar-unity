@@ -170,7 +170,7 @@ public class ClubListUiManager : MonoBehaviour
 			if (image != null)
 				image.sprite = sprite;
 
-			Debug.Log("Successfully Set Player Profile");
+			//Debug.Log("Successfully Set Player Profile");
 		}
 	}
 }

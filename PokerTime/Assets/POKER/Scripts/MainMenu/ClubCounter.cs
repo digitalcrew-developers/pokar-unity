@@ -67,15 +67,10 @@ public class ClubCounter : MonoBehaviour
             instance = this;
         }
 
-        popUpText.SetActive(false);
-        exchangePanel.SetActive(false);
-    }
-
-    private void Start()
-    {
         Initialise();
-    } 
 
+        popUpText.SetActive(false);        
+    }
     private void Initialise()
     {
         TabTradeBtn.onClick.RemoveAllListeners();
@@ -344,7 +339,7 @@ public class ClubCounter : MonoBehaviour
             StartCoroutine(ShowPopUp("Cannot exchange with less than 10 members.", 1.29f));
         else
         {
-            exchangePanel.SetActive(true);
+            ClubAdminManager.instance.ShowScreen(ClubScreens.Exchange);
         }
     }
 
