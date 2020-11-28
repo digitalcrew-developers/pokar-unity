@@ -221,6 +221,7 @@ public class InGameUiManager : MonoBehaviour
     public void OnClickEmojiTransform(Transform val)
     {
         EmojiShowTransform = val;
+        sentTo = val;
         Debug.Log("I am getting emoji transform   "+val.transform.parent.parent.name);
         if (val.transform.parent.parent.name.Equals("LobbyTable"))
         {
@@ -1005,67 +1006,86 @@ public class InGameUiManager : MonoBehaviour
 
     public void ShowEmojiOnScreen(string str)
     {
-
+        if (sentBy == null) { sentBy = sentTo; }
         //Debug.LogError("Show Emoji From List on Screen *** " + str);
         GameObject g = null;
+        Vector3 scaleValue = new Vector3(1f, 1f, 1f);
         switch (str)
         {
 
             case "bluffing":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Bluffing], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Bluffing].transform.localScale;
                 break;
             case "youRaPro":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.YouRaPro], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.YouRaPro].transform.localScale;
                 break;
             case "beerCheers":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.BeerCheers], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.BeerCheers].transform.localScale;
                 break;
             case "murgi":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Murgi], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Murgi].transform.localScale;
                 break;
             case "rocket":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Rocket], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Rocket].transform.localScale;
                 break;
             case "dung":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Dung], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Dung].transform.localScale;
                 break;
             case "oscar":
                 Debug.LogError("oscar Emoji From List on Screen 00000*** " + str);
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Oscar], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Oscar].transform.localScale;
                 break;
             case "donkey":
                 Debug.LogError("donkey Emoji From List on Screen *** " + str);
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Donkey], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Donkey].transform.localScale;
                 break;
             case "thumbUp":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.ThumbsUp], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.ThumbsUp].transform.localScale;
                 break;
             case "cherees":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Cherees], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Cherees].transform.localScale;
                 break;
             case "kiss":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Kiss], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Kiss].transform.localScale;
                 break;
             case "fish":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Fish], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Fish].transform.localScale;
                 break;
             case "gun":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Gun], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Gun].transform.localScale;
                 break;
             case "rose":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Rose], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Rose].transform.localScale;
                 break;
             case "perfume":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Perfume], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Perfume].transform.localScale;
                 break;
             case "ring":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Ring], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Ring].transform.localScale;
                 break;
             case "car":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Car], sentBy) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Car].transform.localScale;
                 break;
         }
         g.transform.SetParent(EmojiShowTransform);
+        g.transform.localScale = scaleValue;
         //g.GetComponent<EmojiBehaviour>().target = fromEmojiShowTransform;
         g.transform.DOMove(sentTo.position, 3f);
     }

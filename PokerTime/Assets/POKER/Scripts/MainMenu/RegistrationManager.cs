@@ -282,6 +282,7 @@ public class RegistrationManager : MonoBehaviour
                 //JsonData parsedObject = JsonMapper.ToObject(data["result"].ToString().Replace(@"\",""));
 
                 PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
+                if(null == playerData) { playerData = new PlayerGameDetails(); }
                 /*playerData.userId = parsedObject["userId"].ToString();*/
                 playerData.userId = data["result"]["userId"].ToString();
                 playerData.userName = /*tmp_registrationUserName*/registrationUserName.text;

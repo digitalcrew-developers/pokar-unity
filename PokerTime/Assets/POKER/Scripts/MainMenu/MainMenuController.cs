@@ -171,10 +171,13 @@ public class MainMenuController : MonoBehaviour
                 //shop
                 ShopUiManager.instance.ShowScreen();
 
-                FetchUserData();
-                FetchUserLogs();
-                //ProfileScreen
-                ProfileScreenUiManager.instance.InitialiseProfileScreen();
+                if (GameObject.Find("RegistrationManager(Clone)")) { } else
+                {
+                    FetchUserData();
+                    FetchUserLogs();
+                    //ProfileScreen
+                    ProfileScreenUiManager.instance.InitialiseProfileScreen();
+                }
                 break;
             case 1:
                 //forum
@@ -274,19 +277,24 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-
+    public void GetUserDetails(string playerid)
+    {
+        if (GameObject.Find("RegistrationManager(Clone)")) { return; }
+        WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + playerid + "\"}", true, OnServerResponseFound);
+    }
 
     private void FetchUserData()
     {
-        string requestData = "{\"userName\":\"" + PlayerManager.instance.GetPlayerGameData().userName + "\"," +
-            "\"userPassword\":\"" + PlayerManager.instance.GetPlayerGameData().password + "\"," +
-              "\"registrationType\":\"" + "Custom" + "\"," +
-              "\"socialId\":\"" + PlayerManager.instance.GetPlayerGameData().password + "\"}";
+        //string requestData = "{\"userName\":\"" + PlayerManager.instance.GetPlayerGameData().userName + "\"," +
+        //    "\"userPassword\":\"" + PlayerManager.instance.GetPlayerGameData().password + "\"," +
+        //      "\"registrationType\":\"" + "Custom" + "\"," +
+        //      "\"socialId\":\"" + PlayerManager.instance.GetPlayerGameData().password + "\"}";
 
 
-        //ShowScreen(MainMenuScreens.Loading);
-        WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
+        ////ShowScreen(MainMenuScreens.Loading);
+        //WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
 
+        GetUserDetails(PlayerManager.instance.GetPlayerGameData().userId);
         DownloadNotificationMessage();
     }
     private void FetchUserLogs()
@@ -295,8 +303,6 @@ public class MainMenuController : MonoBehaviour
         //{ userId: 2}
 
         //WebServices.instance.SendRequest(RequestType.userLoginLogs, requestData, true, OnServerResponseFound);
-
-
     }
     public void DownloadNotificationMessage()
     {
@@ -558,10 +564,7 @@ public class MainMenuController : MonoBehaviour
             {
                 if (requestType == RequestType.Login)
                 {
-                    ShowMessage(errorMessage, () =>
-                    {
-                        FetchUserData();
-                    });
+
                 }
                 else
                 {
@@ -572,10 +575,25 @@ public class MainMenuController : MonoBehaviour
             return;
         }
 
+        if (requestType == RequestType.GetUserDetails)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+
+            if (data["success"].ToString() == "1")
+            {
+                PlayerGameDetails playerData = Utility.ParseUserDetails(data);
+                playerData.password = PlayerManager.instance.GetPlayerGameData().password;
+                playerData.userName = PlayerManager.instance.GetPlayerGameData().userName;
+                PlayerManager.instance.SetPlayerGameData(playerData);
+            }
+            else
+            {
+                Debug.LogError(data["message"].ToString());
+            }
+        }
 
         if (requestType == RequestType.Login)
         {
-            Debug.Log(serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["success"].ToString() == "1")
@@ -584,11 +602,11 @@ public class MainMenuController : MonoBehaviour
                 playerData.password = PlayerManager.instance.GetPlayerGameData().password;
                 playerData.userName = PlayerManager.instance.GetPlayerGameData().userName;
                 PlayerManager.instance.SetPlayerGameData(playerData);
-
+                //FetchUserData();
                 //SwitchToMainMenu();
             }
             else
-            {
+            {   
                 ShowMessage(data["message"].ToString());
 
                 ShowScreen(MainMenuScreens.Registration);
@@ -604,7 +622,8 @@ public class MainMenuController : MonoBehaviour
             }
             else
             {
-                ShowMessage(data["message"].ToString());
+                Debug.LogError(data["message"].ToString());
+                //ShowMessage(data["message"].ToString());
             }
         }
         else if (requestType == RequestType.userLoginLogs)

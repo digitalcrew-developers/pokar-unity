@@ -53,14 +53,22 @@ public class ClubListUiManager : MonoBehaviour
 
     public Text DebugText;
 
+    public void CleaClubList()
+    {
+        if (container.childCount > 0)
+        {
+            for (int i = 0; i < container.childCount; i++)
+            {
+                Destroy(container.GetChild(i).gameObject);
+            }
+        }
+    }
+
 	private void ShowClubList(JsonData data)
 	{
-		for (int i = 0; i < container.childCount; i++)
-		{
-			Destroy(container.GetChild(i).gameObject);
-		}
+        CleaClubList();
 
-		for (int i = 0; i < data["data"].Count; i++)
+        for (int i = 0; i < data["data"].Count; i++)
 		{
 			if (data["data"][i]["assignRole"].ToString() != "Not Assign")
 			{

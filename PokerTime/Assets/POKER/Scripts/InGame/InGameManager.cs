@@ -877,6 +877,7 @@ public class InGameManager : MonoBehaviour
         {
             case 1:
                 {
+                    //WinnersNameText.text = "";
                     SoundManager.instance.PlaySound(SoundType.CardMove);
 
                     for (int i = 0; i < 3; i++)
@@ -1117,12 +1118,16 @@ public class InGameManager : MonoBehaviour
         }
     }
 
+    public Text WinnersNameText;
+
     private void InstantiateWin(string userId, string name, string winAmount)
     {
         PlayerScript winnerPlayer = GetPlayerObject(userId);
 
         if (winnerPlayer != null)
         {
+            //WinnersNameText.text += "[username=" + winnerPlayer.playerData.userName + ",userId=" + winnerPlayer.playerData.userId + "] ";
+
             GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
             gm.transform.Find("WinBy").GetComponent<Text>().text = name;
             gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;

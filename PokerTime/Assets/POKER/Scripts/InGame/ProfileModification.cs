@@ -7,8 +7,9 @@ using UnityEngine.UI;
 
 public class ProfileModification : MonoBehaviour
 {
-    public static ProfileModification instance;
+    public static ProfileModification instance = null;
 
+    public RawImage profileImageRaw;
     public Image profileImage,countryimage,frameImage;
     
     public Text nickNameHeader, countryRegion;
@@ -19,11 +20,17 @@ public class ProfileModification : MonoBehaviour
 
     //DEV_CODE
     public string profileImagePath;
-    public Text pathText;
-   
+
+    private void Awake()
+    {
+        if (null == instance)
+        {
+            instance = this;
+        }
+    }
+
     public void Start()
     {
-        instance = this;
         nickNameHeader.text = ProfileScreenUiManager.instance.userName.text;
         NickNameinputField.text = ProfileScreenUiManager.instance.userName.text;
         countryRegion.text = ProfileScreenUiManager.instance.countryname;
@@ -74,8 +81,6 @@ public class ProfileModification : MonoBehaviour
     }
     public void OnClickConfirmbtn()
     {
-        UploadProfileImage();
-
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                              "\"soundToggle\":\"" + "1" + "\"," +
                               "\"nickName\":\"" + NickNameinputField.text + "\"," +
@@ -84,22 +89,25 @@ public class ProfileModification : MonoBehaviour
                               "\"avatarID\":\"" + avtarid + "\"}";
 
         WebServices.instance.SendRequest(RequestType.UpdateUserSettings, requestData, true, OnServerResponseFound);
-    }
 
-    public void UploadProfileImage()
-    {
         StartCoroutine(UploadImage());
     }
+    
 
     private IEnumerator UploadImage()
     {
-        Texture2D newTexture = new Texture2D(profileImage.mainTexture.width, profileImage.mainTexture.height);
-        newTexture.LoadRawTextureData(newTexture.GetRawTextureData());
+        RenderTexture rTexture = new RenderTexture(profileImageRaw.texture.width, profileImageRaw.texture.height, 24, RenderTextureFormat.ARGB32);
+        rTexture.Create();
+        Graphics.Blit(profileImageRaw.texture, rTexture, new Vector2(1, 1), new Vector2(0, 0));
+
+        Texture2D newTexture = new Texture2D(rTexture.width, rTexture.height);
+        newTexture.ReadPixels(new Rect(0, 0, rTexture.width, rTexture.height), 0, 0);
         newTexture.Apply();
 
-        byte[] bytes = newTexture.EncodeToJPG();
-        Destroy(newTexture);
+        byte[] bytes = newTexture.EncodeToPNG(); //Can also encode to jpg, just make sure to change the file extensions down below
+                                                 //Destroy(tex);
 
+        Debug.Log("byte array length : " + bytes.Length);
         var form = new WWWForm();
         form.AddField("userId", PlayerManager.instance.GetPlayerGameData().userId);
         form.AddField("userName", PlayerManager.instance.GetPlayerGameData().userName);
@@ -108,22 +116,15 @@ public class ProfileModification : MonoBehaviour
 
         UnityWebRequest www = UnityWebRequest.Post("http://3.17.201.78:3000/updateProfile", form);
 
-        pathText.text ="Uploading!!!";
-        Debug.Log("Uploading !!!!!!");
         yield return www.SendWebRequest();
-
-        pathText.text = "Upload Success....";
-        Debug.Log("Upload Success...");
 
         if (www.isNetworkError || www.isHttpError)
         {
-            pathText.text = www.error.ToString();
-            Debug.Log(www.error);
+            Debug.Log(www.error.ToString());
         }
         else
         {
-            pathText.text = www.downloadHandler.text;
-            //Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
+            Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
         }
     }
 
@@ -150,8 +151,8 @@ public class ProfileModification : MonoBehaviour
                     //   ProfileScreenUiManager.instance.GetProfileURLs(PlayerManager.instance.GetPlayerGameData().userId);
 
                     MainMenuController.instance.DestroyScreen(MainMenuScreens.ProfileModification);
-                    MainMenuController.instance.DestroyScreen(MainMenuScreens.Profile);
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.Profile);
+                    //MainMenuController.instance.DestroyScreen(MainMenuScreens.Profile);
+                    //MainMenuController.instance.ShowScreen(MainMenuScreens.Profile);
                 }
                 MainMenuController.instance.OnClickOnButton("profile");
             }
