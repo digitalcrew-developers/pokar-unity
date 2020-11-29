@@ -1124,7 +1124,8 @@ public class InGameManager : MonoBehaviour
 
         if (winnerPlayer != null)
         {
-            WinnersNameText.text += "[username=" + winnerPlayer.playerData.userName + ",userId=" + winnerPlayer.playerData.userId + "] ";
+            //WinnersNameText.text += "[username=" + winnerPlayer.playerData.userName + 
+             //   ",userId=" + winnerPlayer.playerData.userId +"] ";
 
             GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
             gm.transform.Find("WinBy").GetComponent<Text>().text = name;

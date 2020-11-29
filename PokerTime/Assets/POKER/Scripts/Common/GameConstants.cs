@@ -12,7 +12,7 @@ public class GameConstants : MonoBehaviour
 
 
     #region ANIMATIONS
-    public const float CARD_ANIMATION_DURATION = 0.5f;
+    public const float CARD_ANIMATION_DURATION = 0.6f;
     public const float BET_PLACE_ANIMATION_DURATION = 0.5f;
     public const float LOCAL_BET_ANIMATION_DURATION = 1f;
 
