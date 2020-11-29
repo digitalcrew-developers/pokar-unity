@@ -715,6 +715,12 @@ public class PlayerScript : MonoBehaviour
     {
         RealTimeResulttxt.text = "";
     }
+
+    public void DisablePot()
+    {
+        ToggleLocalPot(false);
+    }
+
     public void ResetAllData()
     {
         RealTimeResulttxt.text = "";

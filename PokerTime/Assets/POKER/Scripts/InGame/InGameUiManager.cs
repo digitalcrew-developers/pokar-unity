@@ -155,7 +155,7 @@ public class InGameUiManager : MonoBehaviour
         {
             if (isShowErrorMessage)
             {
-               ShowMessage(errorMessage);
+               //ShowMessage(errorMessage);
             }
 
             return;
@@ -178,7 +178,7 @@ public class InGameUiManager : MonoBehaviour
             }
             else
             {
-               ShowMessage(data["message"].ToString());
+               //ShowMessage(data["message"].ToString());
             }
         }
        

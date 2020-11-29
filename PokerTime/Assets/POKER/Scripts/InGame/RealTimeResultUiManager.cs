@@ -28,7 +28,7 @@ public class RealTimeResultUiManager : MonoBehaviour
             UnityEngine.Debug.LogError(serverResponse);
             if (errorMessage.Length > 0)
             {
-                InGameUiManager.instance.ShowMessage(errorMessage);
+                //InGameUiManager.instance.ShowMessage(errorMessage);
             }
             else
             {

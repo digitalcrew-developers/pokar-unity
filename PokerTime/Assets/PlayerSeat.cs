@@ -21,7 +21,7 @@ public class PlayerSeat : MonoBehaviour
         {
             GetComponent<Image>().sprite = PlusImage;
             myButton.interactable = true;
-            GetComponent<Transform>().localScale = new Vector3(0.8f, 0.8f, 0.8f);
+            GetComponent<Transform>().localScale = new Vector3(0.7f, 0.7f, 0.7f);
         }
         else
         {
@@ -31,8 +31,16 @@ public class PlayerSeat : MonoBehaviour
         }
     }
 
+    public void DisableButtonClick()
+    {
+        myButton.interactable = false;
+    }
+
     public void OnClick()
     {
-        SocketController.instance.SendGameJoinRequestWithSeat(seatNo);
+        if (InGameManager.instance.AmISpectator)
+        {
+            SocketController.instance.SendGameJoinRequest();
+        }
     }
 }

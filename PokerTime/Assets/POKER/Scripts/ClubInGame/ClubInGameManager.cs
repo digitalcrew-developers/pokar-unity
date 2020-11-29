@@ -4,9 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
 using DG.Tweening;
-using NatCorder;
-using NatCorder.Clocks;
-using NatCorder.Inputs;
 using UnityEditor;
 using System.IO;
 using UnityEngine.Networking;
@@ -77,9 +74,6 @@ public class ClubInGameManager : MonoBehaviour
     public int videoWidth /* = 1280*/;
     public int videoHeight /*= 720*/;
     public bool isRecording = false;
-
-    private MP4Recorder recorder;
-    private CameraInput cameraInput;
 
     //To Store Player Data
     public string cardValue = "";          //To Store Card Number with Card Icon
@@ -1695,17 +1689,19 @@ public class ClubInGameManager : MonoBehaviour
                 if (PlayerManager.instance.GetPlayerGameData().userId == data[0][i]["userId"].ToString())
                 {
                     AmISpectator = false;
-                    myPlayerSeat = data[0][i]["seatNo"].ToString();
+                    break;
+                    //myPlayerSeat = data[0][i]["seatNo"].ToString();
 
-                    Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
-                    Vector3 position2 = GetSeatObject("1").transform.position;
+                    //Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
+                    //Vector3 position2 = GetSeatObject("1").transform.position;
 
-                    GetSeatObject(myPlayerSeat).transform.position = position2;
-                    GetSeatObject("1").transform.position = position1;
+                    //GetSeatObject(myPlayerSeat).transform.position = position2;
+                    //GetSeatObject("1").transform.position = position1;
                 }
             }
+            UpdateSeatClickSettingsAndView();
 
-            GetAvailableSeats();
+            //GetAvailableSeats();
         }
     }
 

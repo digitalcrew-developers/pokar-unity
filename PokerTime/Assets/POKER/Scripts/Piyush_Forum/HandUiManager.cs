@@ -5,12 +5,10 @@ using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using NatCorder;
 using System;
 using UnityEngine.Video;
 using UnityEngine.EventSystems;
 using LitJson;
-using VoxelBusters.Utility;
 using UnityEngine.XR;
 
 public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
