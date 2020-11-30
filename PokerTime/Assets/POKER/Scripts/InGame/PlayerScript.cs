@@ -262,7 +262,7 @@ public class PlayerScript : MonoBehaviour
         transform.Find("Bg/NameBg/Name").GetComponent<Text>().text = playerData.userName;
         transform.Find("Bg/Dealer").gameObject.SetActive(false);
         otheruserId = playerData.userId;
-        ShowAvtars_frame_flag(playerData.userId);
+        //ShowAvtars_frame_flag(playerData.userId);
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
         lastActionImage.SetActive(false);
