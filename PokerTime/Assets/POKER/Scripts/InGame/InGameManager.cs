@@ -1124,8 +1124,8 @@ public class InGameManager : MonoBehaviour
 
         if (winnerPlayer != null)
         {
-            //WinnersNameText.text += "[username=" + winnerPlayer.playerData.userName + 
-             //   ",userId=" + winnerPlayer.playerData.userId +"] ";
+            WinnersNameText.text += "[username=" + winnerPlayer.playerData.userName + 
+                ",userId=" + winnerPlayer.playerData.userId +"] ";
 
             GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
             gm.transform.Find("WinBy").GetComponent<Text>().text = name;
@@ -1519,8 +1519,8 @@ public class InGameManager : MonoBehaviour
                 //if "userData": "" then game has not started
                 if (data[0][0]["userData"].ToString().Length > 0)
                 {
-                    resetGame = true;
-                    StartCoroutine(StartWaitingCountdown());
+                    //resetGame = true;
+                    //StartCoroutine(StartWaitingCountdown());
                     return;
                 }
             }
