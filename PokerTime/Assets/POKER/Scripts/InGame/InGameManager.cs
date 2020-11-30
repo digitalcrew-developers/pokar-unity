@@ -1519,8 +1519,9 @@ public class InGameManager : MonoBehaviour
                 //if "userData": "" then game has not started
                 if (data[0][0]["userData"].ToString().Length > 0)
                 {
-                    //resetGame = true;
-                    //StartCoroutine(StartWaitingCountdown());
+                    resetGame = true;
+                    StartCoroutine(StartWaitingCountdown());
+                    //request server for playerObject packet here//
                     return;
                 }
             }
