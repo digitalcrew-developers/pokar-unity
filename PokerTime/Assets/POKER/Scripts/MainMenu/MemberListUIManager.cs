@@ -52,8 +52,8 @@ public class MemberListUIManager : MonoBehaviour
             //Debug.Log("Not Owner..");
         }
 
-        //FetchMembersList();
-        //OnClickOnButton("oldMember");
+        FetchMembersList();
+        OnClickOnButton("oldMember");
 
         MemberFilter.onClick.RemoveAllListeners();
         MemberFilter.onClick.AddListener(ToggleOpenMemberListFilter);
