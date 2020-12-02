@@ -84,7 +84,7 @@ public class ProfileScreenUiManager : MonoBehaviour
                     //avtarid = int.Parse(data["getData"][i]["avatarID"].ToString()); //this is not coming in data
                     LoadImages(avtarurl, frameurl, flagurl);
                 }
-                MainMenuController.instance.OnClickOnButton("profile");
+                //MainMenuController.instance.OnClickOnButton("profile");
             }
             else
             {

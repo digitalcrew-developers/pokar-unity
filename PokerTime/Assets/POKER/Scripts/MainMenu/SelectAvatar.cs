@@ -22,6 +22,7 @@ public class SelectAvatar : MonoBehaviour
         selectavatar.enabled = true;
         ProfileModification.instance.avtarid = avtarid;
         ProfileModification.instance.profileImage.sprite = avtarimage.sprite;
+        ProfileModification.instance.profileImageRaw.texture = avtarimage.sprite.texture;
     }
     IEnumerator loadSpriteImageFromUrl(string URL)
     {

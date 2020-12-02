@@ -33,11 +33,19 @@ public class EmojiUIScreenManager : MonoBehaviour
 
     private void Start()
     {
+        ClearAll();
         ShowContainer(containerVal);
         if(InGameUiManager.instance.TempUserID!=null)
         {
             GetUserDetails(InGameUiManager.instance.TempUserID);
         }      
+    }
+
+    private void ClearAll()
+    {
+        levletxt.text = "Lvl. " + ">>";
+        userName.text = "";
+        UserId.text = "";
     }
 
     public void OnDealerBtnClick() {
@@ -84,7 +92,8 @@ public class EmojiUIScreenManager : MonoBehaviour
     }
     public void loadImages(string urlAvtar, string urlframe)
     {
-        //   Debug.Log("Success data send");
+        Debug.Log("urlAvtar :" + urlAvtar);
+        Debug.Log("urlframe :" + urlframe);
         StartCoroutine(loadSpriteImageFromUrl(urlAvtar, profileimage));
         StartCoroutine(loadSpriteImageFromUrl(urlframe, frame));
     }

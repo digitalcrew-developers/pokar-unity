@@ -7,7 +7,6 @@ using System;
 using LitJson;
 using System.Net;
 using UnityEngine.Networking;
-using VoxelBusters.Utility;
 
 public class MemberDetails : MonoBehaviour
 {

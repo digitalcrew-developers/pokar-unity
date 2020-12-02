@@ -4,9 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
 using DG.Tweening;
-using NatCorder;
-using NatCorder.Clocks;
-using NatCorder.Inputs;
 using UnityEditor;
 using System.IO;
 using UnityEngine.Networking;
@@ -56,16 +53,6 @@ public class InGameManager : MonoBehaviour
     private int currentRoundTotalBets = 0;
     private float pot1Amount = 0;
 
-    private float pot2Amount = 0;
-    private float pot3Amount = 0;
-    private float pot4Amount = 0;
-    private float pot5Amount = 0;
-    private float pot6Amount = 0;
-    private float pot7Amount = 0;
-    private float pot8Amount = 0;
-    private float pot9Amount = 0;
-
-
     private bool isRematchRequestSent = false,isTopUpDone = false;
     private float availableBalance = 0;
 
@@ -77,8 +64,6 @@ public class InGameManager : MonoBehaviour
     public int videoHeight /*= 720*/;
     public bool isRecording = false;
     
-    private MP4Recorder recorder;
-    private CameraInput cameraInput;
 
     //To Store Player Data
     public string cardValue = "";          //To Store Card Number with Card Icon
@@ -131,7 +116,7 @@ public class InGameManager : MonoBehaviour
         }
         UnityEngine.Debug.Log("table id is :" + GlobalGameManager.instance.GetRoomData().socketTableId);
         TableName.text = "";// GlobalGameManager.instance.GetRoomData().title;
-        AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
+        //AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
     }
 
     public void DeactivateAllPots()
@@ -171,7 +156,7 @@ public class InGameManager : MonoBehaviour
         {
             if (isShowErrorMessage)
             {
-                InGameUiManager.instance.ShowMessage(errorMessage);
+                //InGameUiManager.instance.ShowMessage(errorMessage);
             }
             return;
         }
@@ -189,34 +174,43 @@ public class InGameManager : MonoBehaviour
         Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
         Vector3 position2 = GetSeatObject("1").transform.position;
 
-        GetSeatObject(myPlayerSeat).transform.position = position2;
-        GetSeatObject("1").transform.position = position1;
+        //GetSeatObject(myPlayerSeat).transform.position = position2;
+        //GetSeatObject("1").transform.position = position1;
         foreach (GameObject g in AllSeatButtons)
         {
-            g.SetActive(false);            
+            //g.SetActive(false);            
         }
-        for (int i = 0; i < AllSeats.data.Length; i++)
-        {
-            AllSeatButtons[i].SetActive(true);
-            AllSeatButtons[i].GetComponent<PlayerSeat>().UpdateState();            
-        }
-        GetSeatObject(myPlayerSeat).SetActive(false);
+            for (int i = 0; i < AllSeatButtons.Count; i++)
+            {
+                AllSeatButtons[i].SetActive(true);
+                AllSeatButtons[i].GetComponent<PlayerSeat>().UpdateState();
+            }
+        
+        //GetSeatObject(myPlayerSeat).SetActive(false);
     }
-
+    private bool DontShowCommunityCardAnimation = false;
     public void OnRabbitDataFound(string responseText)
     {
         Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
         Debug.LogError("isFold :" + GetMyPlayerObject().GetPlayerData().isFold);
-
+        InGameUiManager.instance.ToggleSuggestionButton(false);
+        InGameUiManager.instance.ToggleActionButton(false);
         int vipCard = 0;
         int.TryParse(GetMyPlayerObject().GetPlayerData().userVIPCard, out vipCard);
-
         
         if (vipCard > 0)
         {
             RabbitButton.SetActive(true);
+            StartCoroutine(DisableRabbitButton());
             OnOpenCardsDataFound(responseText);
+            DontShowCommunityCardAnimation = true;
         }
+    }
+
+    private IEnumerator DisableRabbitButton()
+    {
+        yield return new WaitForSeconds(2.5f);
+        RabbitButton.SetActive(false);
     }
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
@@ -344,6 +338,11 @@ public class InGameManager : MonoBehaviour
     public int GetLastBetAmount()
     {
         return LAST_BET_AMOUNT;
+    }
+
+    internal void OnGameOverCountDownFound(string data)
+    {
+        //ResetMatchData();
     }
 
     public void UpdateAvailableBalance(float balance)
@@ -613,12 +612,13 @@ public class InGameManager : MonoBehaviour
                 }
                 else
                 {
+                    Debug.LogError("index showing : " + index);
+
                     allPlayersObject[index].TogglePlayerUI(true);
                     allPlayersObject[index].ShowDetailsAsNewPlayer(playerData[i]);
                     allPlayersObject[index].ResetRealtimeResult();
+                    ++index;
                 }
-
-                ++index;
             }
         }
         
@@ -653,8 +653,7 @@ public class InGameManager : MonoBehaviour
 
         int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
     }
-
-
+    
 
     private void AdjustAllPlayersOnTable(int totalPlayerCount)
     {
@@ -721,10 +720,10 @@ public class InGameManager : MonoBehaviour
 /*        Vector3 initialScale = gm.transform.localScale;
         gm.transform.localScale = Vector3.zero;*/
 
-        gm.transform.DOMove(playerScript.transform.position, .5f).SetEase(Ease.Linear);
+        gm.transform.DOMove(playerScript.transform.position, 1.0f).SetEase(Ease.Linear);
        // gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         SoundManager.instance.PlaySound(SoundType.Bet);
-        yield return new WaitForSeconds(.6f);
+        yield return new WaitForSeconds(1.1f);
         Destroy(gm);
         amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         yield return new WaitForSeconds(3f);
@@ -750,7 +749,7 @@ public class InGameManager : MonoBehaviour
         //{
         //    Pot.SetActive(true);
         //}
-        //potText.text = textToShow;
+        potText.text = textToShow;
         foreach(GameObject g in AllPots)
         {
             g.SetActive(false);
@@ -790,51 +789,49 @@ public class InGameManager : MonoBehaviour
         {
             return;
         }
+        if (DontShowCommunityCardAnimation) { return; }
 
         StartCoroutine(WaitAndShowCommunityCardsAnimation());
     }
 
     public IEnumerator WaitAndShowRabbit()
     {
-        for (int i = 0; i < 4; i++)
+        bool allcardsEmpty = false;
+        for (int i = 0; i < communityCards.Length; i++)
         {
             if (openCards[i].cardIcon == CardIcon.NONE) {
-                communityCards[i].gameObject.SetActive(false);
-                break;
+                //communityCards[i].gameObject.SetActive(false);
+                allcardsEmpty = true;
+            }
+            else
+            {
+                allcardsEmpty = false;
             }
             communityCards[i].sprite = openCards[i].cardsSprite;
         }
+        if (allcardsEmpty) { yield break; }
         yield return new WaitForSeconds(1f);
 
         SoundManager.instance.PlaySound(SoundType.CardMove);
 
-        for (int i = 4; i < 5; i++)
+        for (int i = 0; i < communityCards.Length; i++)
         {
             GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-
+            gm.SetActive(true);
             gm.transform.localScale = communityCards[i].transform.localScale;
             gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
             gm.transform.Rotate(0, -90, 0);
             gm.transform.position = communityCards[i].transform.position;
-
             gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
-            gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
-
+            gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);            
             yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
-
             Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
         }
 
-        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
-
         for (int i = 0; i < communityCards.Length; i++)
         {
-            if (openCards[i].cardIcon == CardIcon.NONE) {
-                communityCards[i].gameObject.SetActive(false);
-                break;
-            }
-            communityCards[i].sprite = openCards[i].cardsSprite;
             communityCards[i].gameObject.SetActive(true);
+            communityCards[i].sprite = openCards[i].cardsSprite;
         }
 
     }
@@ -858,7 +855,7 @@ public class InGameManager : MonoBehaviour
                 GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
 
                 gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
-                gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);
+                //gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);
                 Destroy(gm,GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
             }
 
@@ -870,12 +867,13 @@ public class InGameManager : MonoBehaviour
             SoundManager.instance.PlaySound(SoundType.ChipsCollect);
         }
 
-        UpdatePot("" + (int)pot1Amount);
+        UpdatePot("Pot : " + (int)pot1Amount);
 
         switch (MATCH_ROUND)
         {
             case 1:
                 {
+                    WinnersNameText.text = "";
                     SoundManager.instance.PlaySound(SoundType.CardMove);
 
                     for (int i = 0; i < 3; i++)
@@ -962,6 +960,8 @@ public class InGameManager : MonoBehaviour
                         communityCards[i].sprite = openCards[i].cardsSprite;
                     }
                     yield return new WaitForSeconds(1f);
+
+                    if (DontShowCommunityCardAnimation) { yield break; }
 
                     SoundManager.instance.PlaySound(SoundType.CardMove);
 
@@ -1116,12 +1116,17 @@ public class InGameManager : MonoBehaviour
         }
     }
 
+    public Text WinnersNameText;
+
     private void InstantiateWin(string userId, string name, string winAmount)
     {
         PlayerScript winnerPlayer = GetPlayerObject(userId);
 
         if (winnerPlayer != null)
         {
+            WinnersNameText.text += "[username=" + winnerPlayer.playerData.userName + 
+                ",userId=" + winnerPlayer.playerData.userId +"] ";
+
             GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
             gm.transform.Find("WinBy").GetComponent<Text>().text = name;
             gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
@@ -1161,71 +1166,15 @@ public class InGameManager : MonoBehaviour
             return;
         }
 
-        //Debug.LogError("OnResultSuccessFound :" + serverResponse);
-
         MATCH_ROUND = 10; // ToShow all cards
         ShowCommunityCardsAnimation();
-        InGameUiManager.instance.ToggleActionButton(false);
-        InGameUiManager.instance.ToggleSuggestionButton(false);
-
-        //DEV_CODE
-        if (!isScreenshotCaptured)
-        {
-            //Taking Screenshot
-            RenderTexture renderTexture = new RenderTexture(videoWidth, videoHeight, 24);
-            Camera.main.targetTexture = renderTexture;
-
-            screenshot = new Texture2D(videoWidth, videoHeight, TextureFormat.RGB24, false);
-            Camera.main.Render();
-            RenderTexture.active = renderTexture;
-            Rect rect = new Rect(0, 0, videoWidth, videoHeight);
-            screenshot.ReadPixels(rect, 0, 0);
-
-            Camera.main.targetTexture = null;
-            RenderTexture.active = null;
-            Destroy(renderTexture);
-        }
-        isScreenshotCaptured = true;
-
         ResultProcess(serverResponse);
-
-        //JsonData data = JsonMapper.ToObject(serverResponse);
-
-        //if (data[0].Count > 0)
-        //{
-        //    for (int i = 0; i < data[0][0].Count; i++)
-        //    {
-        //        if (data[0][0][i]["isWin"].Equals(true))
-        //        {
-        //            PlayerScript winnerPlayer = GetPlayerObject(data[0][0][i]["userId"].ToString());
-
-        //            if (winnerPlayer != null)
-        //            {
-        //                GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
-        //                gm.transform.Find("WinBy").GetComponent<Text>().text = data[0][0][i]["name"].ToString();
-        //                gm.transform.Find("winAmount").GetComponent<Text>().text="+"+data[0][0][i]["winAmount"].ToString(); 
-        //                if(data[0][0][i]["winAmount"].ToString()=="50000")
-        //                {
-        //                    SoundManager.instance.PlaySound(SoundType.bigWin);
-        //                }
-        //                gm.transform.position = winnerPlayer.gameObject.transform.position;
-        //                gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
-        //                gm.transform.SetSiblingIndex(0);
-        //                Vector3 inititalScale = gm.transform.localScale;
-        //                gm.transform.localScale = Vector3.zero;
-        //                StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer,  data[0][0][i]["winAmount"].ToString(), gm));
-        //               // gm.transform.DOScale(inititalScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        //                winnersObject.Add(gm);
-        //            }
-        //        }
-        //    }
-        //}
-
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
-            onlinePlayersScript[i].ToggleCards(true,true);
-        }
+            onlinePlayersScript[i].ToggleCards(true, true);
+            onlinePlayersScript[i].DisablePot();
+        }   
     }
 
     const float EPSILON = 0.5f;
@@ -1530,6 +1479,12 @@ public class InGameManager : MonoBehaviour
 
     public void OnPlayerObjectFound(string serverResponse)
     {
+        if(serverResponse == "[[]]")
+        {
+            //clear UI
+            StartCoroutine(WaitAndSendLeaveRequest());
+            return;
+        }
         if (!InGameUiManager.instance.isSelectedWinningBooster)
         {
             SocketController.instance.GetRandomCard();
@@ -1566,6 +1521,7 @@ public class InGameManager : MonoBehaviour
                 {
                     resetGame = true;
                     StartCoroutine(StartWaitingCountdown());
+                    //request server for playerObject packet here//
                     return;
                 }
             }
@@ -1643,6 +1599,11 @@ public class InGameManager : MonoBehaviour
                     }
 
                     Init(matchMakingPlayerData);
+                    for (int z = 0; z < AllSeatButtons.Count; z++)
+                    {
+                        AllSeatButtons[z].SetActive(true);
+                        AllSeatButtons[z].GetComponent<PlayerSeat>().DisableButtonClick();
+                    }
                 }
             }
             else if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
@@ -1697,6 +1658,11 @@ public class InGameManager : MonoBehaviour
                         {
                             PlayerManager.instance.GetPlayerGameData().coins = playerObject.playerData.balance;
                             AmISpectator = false;
+                            for (int x = 0; x < AllSeatButtons.Count; x++)
+                            {
+                                AllSeatButtons[x].SetActive(true);
+                                AllSeatButtons[x].GetComponent<PlayerSeat>().DisableButtonClick();
+                            }
                         }
                     }
                 }
@@ -1721,18 +1687,20 @@ public class InGameManager : MonoBehaviour
                 if (PlayerManager.instance.GetPlayerGameData().userId == data[0][i]["userId"].ToString())
                 {
                     AmISpectator = false;
-                    myPlayerSeat = data[0][i]["seatNo"].ToString();
+                    break;
+                    //myPlayerSeat = data[0][i]["seatNo"].ToString();
 
-                    Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
-                    Vector3 position2 = GetSeatObject("1").transform.position;
+                    //Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
+                    //Vector3 position2 = GetSeatObject("1").transform.position;
 
-                    GetSeatObject(myPlayerSeat).transform.position = position2;
-                    GetSeatObject("1").transform.position = position1;
+                    //GetSeatObject(myPlayerSeat).transform.position = position2;
+                    //GetSeatObject("1").transform.position = position1;
                 }
             }
+            UpdateSeatClickSettingsAndView();
 
-            GetAvailableSeats();
-        }        
+            //GetAvailableSeats();
+        }
     }
 
     #endregion
@@ -1741,6 +1709,7 @@ public class InGameManager : MonoBehaviour
 
     private void ResetMatchData()
     {
+        DontShowCommunityCardAnimation = false;
         UpdatePot("");
         isRematchRequestSent = true;
 
@@ -1810,62 +1779,6 @@ public class InGameManager : MonoBehaviour
         SocketController.instance.SendLeaveMatchRequest();
         // StartCoroutine(WaitAndSendLeaveRequest());
 //        LoadMainMenu();  
-    }
-
-    //DEV_CODE
-    public void StartRecording()
-    {
-        isRecording = true;
-        var frameRate = 30;
-
-        // Create a recorder
-        recorder = new MP4Recorder(videoWidth, videoHeight, frameRate);
-        var clock = new RealtimeClock();
-        // And use a `CameraInput` to record the main game camera
-        cameraInput = new CameraInput(recorder, clock, /*InGameUiManager.instance.cameraObj*/Camera.main);
-
-        tableValue = GlobalGameManager.instance.GetRoomData().smallBlind.ToString() + "_" + GlobalGameManager.instance.GetRoomData().bigBlind.ToString();
-        date = System.DateTime.Now.ToString("dd-MM-yyyy");
-        time = System.DateTime.Now.Hour + "_" + System.DateTime.Now.Minute + "_";
-
-        Debug.Log("Recording Started !!!");
-    }
-
-    public async void StopRecording()
-    {
-        Debug.Log("Inside Stopped Recording");
-        isRecording = false;
-        cameraInput.Dispose();
-        var path = await recorder.FinishWriting();
-
-        /*balance = GetMyPlayerObject().GetPlayerData().totalBet.ToString();*/
-
-        if (!Directory.Exists(Path.Combine(Application.persistentDataPath, "Videos")))
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "Videos"));
-
-        //For PC to move file
-#if UNITY_EDITOR
-        Debug.Log("Moving video to folder...");
-        FileUtil.MoveFileOrDirectory(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
-        SaveScreenshot();
-#elif UNITY_ANDROID
-        File.Move(path, Path.Combine(Application.persistentDataPath, "Videos", "Video_" + tableValue + "_" + cardValue + date + "_" + time + ".mp4"));
-        SaveScreenshot();
-#endif
-        Debug.Log("Recording Stopped ...");
-
-        cardValue = "";
-        isCardValueSet = false;
-
-        //Delete Extra files
-        DirectoryInfo dirInfo = new DirectoryInfo(Application.persistentDataPath);
-        FileInfo[] fileInfo = dirInfo.GetFiles("*.mp4");
-        for (int j = 0; j < fileInfo.Length; j++)
-        {
-            File.Delete(fileInfo[j].FullName);
-        }
-        Debug.Log("Deleted Extra files at persistent Data Path..");
-        
     }
 
     void SaveScreenshot()

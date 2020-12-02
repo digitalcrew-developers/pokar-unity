@@ -25,10 +25,10 @@ public class RealTimeResultUiManager : MonoBehaviour
 
         WebServices.instance.SendRequest(RequestType.RealtimeResult, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
         {
-            UnityEngine.Debug.Log(serverResponse);
+            UnityEngine.Debug.LogError(serverResponse);
             if (errorMessage.Length > 0)
             {
-                InGameUiManager.instance.ShowMessage(errorMessage);
+                //InGameUiManager.instance.ShowMessage(errorMessage);
             }
             else
             {
@@ -66,14 +66,16 @@ public class RealTimeResultUiManager : MonoBehaviour
                             gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().color = Color.yellow;
                         }                    
                     }
-
-                    for (int i = 0; i < data["data"]["realTimeArr"].Count; i++)
+                    if(data["data"]["standoutArr"].Count > 0)
                     {
-                        GameObject gm = Instantiate(spectatorPrefab, spectatorContent) as GameObject;
-                        gm.SetActive(true);
+                        for (int i = 0; i < data["data"]["standoutArr"].Count; i++)
+                        {
+                            GameObject gm = Instantiate(spectatorPrefab, spectatorContent) as GameObject;
+                            gm.SetActive(true);
 
-                        gm.transform.Find("Text").GetComponent<Text>().text = data["data"]["standoutArr"][i]["userName"].ToString();
-                        
+                            gm.transform.Find("Text").GetComponent<Text>().text = data["data"]["standoutArr"][i]["userName"].ToString();
+
+                        }
                     }
                 }
                 else

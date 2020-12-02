@@ -57,12 +57,15 @@ public class SettingManager : MonoBehaviour
     public void OnClickLogOutBTN()
     {
         Debug.Log("*********You CLICK ON LOG OUT");
+        if(null!= ClubListUiManager.instance)
+        {
+            ClubListUiManager.instance.CleaClubList();
+        }
         SoundManager.instance.PlaySound(SoundType.Click);
-        PrefsManager.DeletePlayerData();
-        PlayerManager.instance.DeletePlayerGameData();
         PlayerPrefs.DeleteAll();
+        PlayerManager.instance.DeletePlayerGameData();
+        PrefsManager.DeletePlayerData();
         GlobalGameManager.instance.isLoginShow = false;
-
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Profile);
         MainMenuController.instance.ShowScreen(MainMenuScreens.Registration);
     }

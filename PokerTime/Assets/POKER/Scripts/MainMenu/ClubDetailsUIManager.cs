@@ -2,10 +2,12 @@
 using LitJson;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -284,7 +286,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	private void LoadTemplates(JsonData data)
 	{
-		//Debug.Log("Total Templates: " + data["response"].Count);
+		Debug.Log("Total Templates: " + data["response"].Count);
 
 		for (int i = 1; i < clubTablesContainer.transform.childCount; i++)
 		{
@@ -293,9 +295,27 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 		for (int i = 0; i < data["response"].Count; i++)
 		{
+            int index = i;
 			GameObject obj;
 
-			if ((i+1) % 2 == 0)
+            RoomData roomData = new RoomData();
+            roomData.isLobbyRoom = false;
+
+            List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
+                .Split('/').Select(float.Parse).ToList();
+
+            roomData.bigBlind = blinds[1];
+            roomData.smallBlind = blinds[0];
+            roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
+            roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
+            roomData.gameMode = GameMode.NLH;
+            roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
+            roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
+            roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
+            roomData.roomId = data["response"][i]["tableId"].ToString();
+            roomData.title = data["response"][i]["templateName"].ToString();
+
+            if ((i+1) % 2 == 0)
 			{
 				obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;				
 			}
@@ -321,9 +341,31 @@ public class ClubDetailsUIManager : MonoBehaviour
 			
 			obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11,8);
 			obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
-			//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
-		}
-	}
+            //obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
+
+            obj.GetComponent<Button>().onClick.RemoveAllListeners();
+            obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
+
+
+        }
+    }
+
+    private void OnClickOnPlayButton(RoomData data, int gameMode = -1)
+    {
+        SoundManager.instance.PlaySound(SoundType.Click);
+
+        if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
+        {
+
+            return;
+        }
+
+        data.isLobbyRoom = false;
+
+        GlobalGameManager.instance.SetRoomData(data);
+        GameConstants.TURN_TIME = data.callTimer;
+        SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
+    }
 
     public void OnClickOnButton(string eventName)
 	{

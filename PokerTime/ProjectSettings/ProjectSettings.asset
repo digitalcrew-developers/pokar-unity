@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Poker Time
+  companyName: PokerTime
   productName: PokerTime
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -43,7 +43,7 @@ PlayerSettings:
   m_VirtualRealitySplashScreen: {fileID: 0}
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 320
-  defaultScreenHeight: 520
+  defaultScreenHeight: 712
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
   m_StereoRenderingPath: 0
@@ -80,7 +80,7 @@ PlayerSettings:
   bakeCollisionMeshes: 0
   forceSingleInstance: 0
   useFlipModelSwapchain: 1
-  resizableWindow: 1
+  resizableWindow: 0
   useMacAppStoreValidation: 0
   macAppStoreCategory: public.app-category.games
   gpuSkinning: 0
@@ -96,7 +96,7 @@ PlayerSettings:
   xboxEnableHeadOrientation: 0
   xboxEnableGuest: 0
   xboxEnablePIXSampling: 0
-  metalFramebufferOnly: 0
+  metalFramebufferOnly: 1
   xboxOneResolution: 0
   xboxOneSResolution: 0
   xboxOneXResolution: 3
@@ -124,7 +124,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 2.6
+  bundleVersion: 3.0
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -168,8 +168,8 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.game.pokertime
-    Standalone: com.Company.ProductName
+    Android: com.pokerti
+    Standalone: com.pokerTime.dev
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 23
@@ -233,6 +233,7 @@ PlayerSettings:
   metalEditorSupport: 1
   metalAPIValidation: 1
   iOSRenderExtraFrameOnPause: 0
+  iosCopyPluginsCodeInsteadOfSymlink: 0
   appleDeveloperTeamID: 
   iOSManualSigningProvisioningProfileID: 
   tvOSManualSigningProvisioningProfileID: 
@@ -643,18 +644,18 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER;dUI_MANAGER
-    4: USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER;dUI_MANAGER
-    7: ERROR_LOG;DEBUG_LOG;USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER;dUI_MANAGER
-    13: dUI_MANAGER
-    14: USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER;dUI_MANAGER
-    19: dUI_MANAGER
-    21: dUI_MANAGER
-    25: USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER;dUI_MANAGER
-    27: dUI_MANAGER
-    28: dUI_MANAGER
-    29: dUI_MANAGER
-    30: dUI_MANAGER
+    1: USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER
+    4: USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER
+    7: ERROR_LOG;DEBUG_LOG;USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER
+    13: 
+    14: USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER
+    19: 
+    21: 
+    25: USES_MEDIA_LIBRARY;USES_SHARING;USES_WEBVIEW;USES_ADDRESS_BOOK;USES_BILLING;USES_CLOUD_SERVICES;USES_GAME_SERVICES;USES_NETWORK_CONNECTIVITY;USES_NOTIFICATION_SERVICE;USES_TWITTER
+    27: 
+    28: 
+    29: 
+    30: 
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

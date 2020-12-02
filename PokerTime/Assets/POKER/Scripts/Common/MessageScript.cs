@@ -30,6 +30,8 @@ public class MessageScript : MonoBehaviour
 
     public void ShowSingleButtonPopUp(string messageToShow,Action callBack = null,string buttonText = "Ok")
     {
+        Debug.Log("Show meesage :" + messageToShow);
+
         if (messageToShow.Equals("No record found"))
         {
             messageText.text = "";

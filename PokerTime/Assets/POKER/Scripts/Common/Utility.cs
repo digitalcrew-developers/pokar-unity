@@ -70,7 +70,93 @@ public class Utility : MonoBehaviour
         return true;
     }
 
+    public static PlayerGameDetails ParseUserDetails(JsonData jsonObject)
+    {
+        PlayerGameDetails playerData = new PlayerGameDetails();
 
+        JsonData data = jsonObject["getData"][0];
+
+        playerData.userId = data["userId"].ToString();
+        playerData.userName = data["userName"].ToString();
+        playerData.userLevel = data["userLevel"].ToString();
+        if (data["countryName"] != null)
+            playerData.countryName = data["countryName"].ToString();
+        if (data["profileImage"] != null)
+            playerData.avatarURL = data["profileImage"].ToString();
+        if (data["countryFlag"] != null)
+            playerData.CountryURL = data["countryFlag"].ToString();
+        if (data["frameURL"] != null)
+            playerData.FrameUrl = data["frameURL"].ToString();
+        if (data["countryCode"] != null)
+            playerData.countryCode = data["countryCode"].ToString();
+        
+        if (data["referalCode"] != null && data["referalCode"].ToString().Length > 0)
+        {
+            playerData.referralCode = data["referalCode"].ToString();
+        }
+        else
+        {
+            playerData.referralCode = "";
+        }
+
+        if (data["coins"] != null && data["coins"].ToString().Length > 0)
+        {
+            playerData.coins = float.Parse(data["coins"].ToString());
+        }
+        else
+        {
+            playerData.coins = 0;
+        }
+
+        if (data["diamond"] != null && data["diamond"].ToString().Length > 0)
+        {
+            playerData.diamonds = float.Parse(data["diamond"].ToString());
+        }
+        else
+        {
+            playerData.diamonds = 0;
+        }
+
+        if (data["points"] != null && data["points"].ToString().Length > 0)
+        {
+            playerData.points = float.Parse(data["points"].ToString());
+        }
+        else
+        {
+            playerData.points = 0;
+        }
+
+
+        if (data["rabbit"] != null && data["rabbit"].ToString().Length > 0)
+        {
+            playerData.rabit = int.Parse(data["rabbit"].ToString());
+        }
+        else
+        {
+            playerData.rabit = 0;
+        }
+
+        if (data["emoji"] != null && data["emoji"].ToString().Length > 0)
+        {
+            playerData.emoji = int.Parse(data["emoji"].ToString());
+        }
+        else
+        {
+            playerData.emoji = 0;
+        }
+
+        if (data["time"] != null && data["time"].ToString().Length > 0)
+        {
+            playerData.time = int.Parse(data["time"].ToString());
+        }
+        else
+        {
+            playerData.time = 0;
+        }
+
+
+        return playerData;
+    }
 
 
     public static PlayerGameDetails ParsePlayerGameData(JsonData jsonObject)

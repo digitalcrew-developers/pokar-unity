@@ -11,7 +11,7 @@ public class SelectAvatarFrom : MonoBehaviour
 {
     public void OnCloseSelectFrom()
     {
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.SelectFrom);
+        Destroy(gameObject);
     }
     public void OnClickDefaultbtn()
     {
@@ -58,20 +58,32 @@ public class SelectAvatarFrom : MonoBehaviour
 
     void OnImageSelect(string imgPath, ImageAndVideoPicker.ImageOrientation imgOrientation)
     {
-        //Debug.Log("Image Location : " + imgPath);        
+        Debug.Log("Image Location 0: " + imgPath);        
     }
 
     void OnImageLoad(string imgPath, Texture2D tex, ImageAndVideoPicker.ImageOrientation imgOrientation)
     {
-        //Debug.Log("Image Location : " + imgPath);
+        Debug.Log("Image Location 1: " + imgPath);
+        ProfileModification.instance.profileImageRaw.texture = tex;
 
-        ProfileModification.instance.profileImagePath = imgPath;
-        ProfileModification.instance.pathText.text = imgPath;
-
+        if (null == tex)
+        {
+            Debug.Log("tex is null");
+        }
         Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
-        ProfileModification.instance.profileImage.sprite = sprite;
 
-        OnCloseSelectFrom();
+        if(null== ProfileModification.instance)
+        {
+            Debug.Log("profile modification is null");
+        }
+        else
+        {
+            ProfileModification.instance.profileImage.sprite = sprite;
+            ProfileModification.instance.profileImagePath = imgPath;
+        }
+        ProfileScreenUiManager.instance.avtar.sprite = sprite;
+
+        OnCloseSelectFrom();        
     }
 
     void OnError(string errorMsg)

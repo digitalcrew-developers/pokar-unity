@@ -73,7 +73,7 @@ public class ForumListUIManager : MonoBehaviour, IPointerDownHandler
     }
 
     public void ClickBackBtn() {
-        MainMenuController.instance.OnClickOnButton("menu");
+//        MainMenuController.instance.OnClickOnButton("menu");
     }
     public void OnClickVedioOnShowCommentObj()
     {

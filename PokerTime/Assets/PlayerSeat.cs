@@ -7,6 +7,7 @@ public class PlayerSeat : MonoBehaviour
 {
     public string seatNo;
     public Button myButton;
+    public Sprite EmptyImage, PlusImage;
 
     private void Start()
     {
@@ -18,16 +19,28 @@ public class PlayerSeat : MonoBehaviour
     {
         if (InGameManager.instance.AmISpectator)
         {
+            GetComponent<Image>().sprite = PlusImage;
             myButton.interactable = true;
+            GetComponent<Transform>().localScale = new Vector3(0.7f, 0.7f, 0.7f);
         }
         else
         {
+            GetComponent<Image>().sprite = EmptyImage;
             myButton.interactable = false;
+            GetComponent<Transform>().localScale = new Vector3(1f, 1f, 1f);
         }
+    }
+
+    public void DisableButtonClick()
+    {
+        myButton.interactable = false;
     }
 
     public void OnClick()
     {
-        SocketController.instance.SendGameJoinRequestWithSeat(seatNo);
+        if (InGameManager.instance.AmISpectator)
+        {
+            SocketController.instance.SendGameJoinRequest();
+        }
     }
 }
