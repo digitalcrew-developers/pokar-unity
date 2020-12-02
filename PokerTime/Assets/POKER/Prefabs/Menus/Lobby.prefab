@@ -1372,6 +1372,7 @@ GameObject:
   - component: {fileID: 5824966511141813233}
   - component: {fileID: 5824966511141813232}
   - component: {fileID: 4195190509653845437}
+  - component: {fileID: 8938276201774518633}
   m_Layer: 5
   m_Name: FreeCoins
   m_TagString: Untagged
@@ -1502,12 +1503,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f00e57b8809f8e149820f5fbcb0f3133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  freeCoinSprite: {fileID: 21300000, guid: 6570de4a1c339e246bec191d6f5e86c4, type: 3}
   RewardTime: {fileID: 2375659551988461530}
   RewardBtn: {fileID: 5824966511141813232}
   maxTime: 900
   canClaim: 0
   isInitialized: 0
   isStartGame: 0
+--- !u!95 &8938276201774518633
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5824966511141813246}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f20816a09b41c36479d237e10382e9b2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5824966511329038901
 GameObject:
   m_ObjectHideFlags: 0

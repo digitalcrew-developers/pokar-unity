@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class GetFreeCoinReward : MonoBehaviour
 {
+    public Sprite freeCoinSprite;
     public Text RewardTime;
     public Button RewardBtn;
     public DateTime lastRewardTime, now;     // The last time the user clicked in a reward
@@ -48,6 +49,9 @@ public class GetFreeCoinReward : MonoBehaviour
                 timer = TimeSpan.FromSeconds(maxTime);
                 canClaim = false;
                 isStartGame = false;
+
+                GetComponent<Animator>().enabled = false;
+                GetComponent<Image>().sprite = freeCoinSprite;
             }
             else
             {
@@ -102,6 +106,8 @@ public class GetFreeCoinReward : MonoBehaviour
             timer = timer.Subtract(TimeSpan.FromSeconds(Time.unscaledDeltaTime));
             if (timer.TotalSeconds <= 0)
             {
+                GetComponent<Animator>().enabled = true;
+
                 //    Debug.LogError("!!!!!!!!!!!!!!");
                 canClaim = true;
                 RewardBtn.interactable = true;
@@ -118,6 +124,9 @@ public class GetFreeCoinReward : MonoBehaviour
                 //  Debug.LogError(timer);
                 if (timers.TotalSeconds > 0)
                 {
+                    GetComponent<Animator>().enabled = false;
+                    GetComponent<Image>().sprite = freeCoinSprite;
+
                     RewardBtn.interactable = false;
                     RewardTime.text = string.Format("{0:D2}:{1:D2}:{2:D2}", timer.Hours, timer.Minutes, timer.Seconds);
                     isStartGame = false;

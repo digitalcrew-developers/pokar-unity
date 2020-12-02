@@ -12,7 +12,9 @@ public class ClubCounter : MonoBehaviour
 
     private int allPTChips;
     private float sendOutAmount = 0.0f;
+    private float totalAmount = 0.0f;
     private float claimBackAmount = 0.0f;
+    private float totalClaimBackAmount = 0.0f;
     private float clubChips;
 
     public GameObject popUpText;
@@ -394,7 +396,8 @@ public class ClubCounter : MonoBehaviour
                             CloseSendOutPanel();
                         });
 
-                        clubChips -= sendOutAmount;
+                        clubChips -= totalAmount;
+
                         ClubDetailsUIManager.instance.CLubChips.text = clubChips.ToString();
                         ClubChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
                         SendOutChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
@@ -422,7 +425,9 @@ public class ClubCounter : MonoBehaviour
                         CloseSendOutPanel();
                     });
 
-                    clubChips += claimBackAmount;
+                    //clubChips += claimBackAmount;
+                    clubChips += totalAmount;
+
                     ClubDetailsUIManager.instance.CLubChips.text = clubChips.ToString();
                     ClubChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
                     SendOutChipsCount.text = ClubDetailsUIManager.instance.CLubChips.text;
@@ -788,7 +793,7 @@ public class ClubCounter : MonoBehaviour
             }
 
             SendOutPanel.SetActive(true);
-            OpenSendOut();
+            OpenSendOut(claim);
         }
     }
 
@@ -800,11 +805,23 @@ public class ClubCounter : MonoBehaviour
         {
             Destroy(SendOutListContent.GetChild(i).gameObject);        
         }
+
+        for (int i = 0; i < SelectedTradeMembers.Count; i++)
+        {
+            SelectedTradeMembers.RemoveAt(i);
+        }
+
+        for (int i = 0; i < TradeListContent.childCount; i++)
+        {
+            TradeListContent.GetChild(i).Find("Toggle").GetComponent<Toggle>().isOn = false;
+        }
+
         selectedMembers = string.Empty;
         selectedSendPlayerCount = 0;
         AmountToSendInputField.text = string.Empty;
         PlayerSelected.text = string.Empty;
         TotalAmountSendText.text = "Total:";
+        claimBackAmount = 0;
         SendOutPanel.SetActive(false);
     }
 
@@ -812,7 +829,7 @@ public class ClubCounter : MonoBehaviour
     public TextMeshProUGUI PlayerSelected, TotalAmountSendText;
     private int selectedSendPlayerCount = 0;
 
-    private void OpenSendOut()
+    private void OpenSendOut(bool isClaimBack)
     {
         selectedSendPlayerCount = 0;
 
@@ -847,33 +864,87 @@ public class ClubCounter : MonoBehaviour
             tardeItem.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
             tardeItem.transform.Find("Toggle").GetComponent<Toggle>().SetIsOnWithoutNotify(true);
 
-            //tardeItem.transform.Find("Toggle").GetComponent<Toggle>().onValueChanged.AddListener(delegate {
-            //    AddToSelectedUsersForSendOut(tardeItem.transform.Find("Toggle").GetComponent<Toggle>(), clubMemberDetails);
-            //});
-
+            tardeItem.transform.Find("Toggle").GetComponent<Toggle>().onValueChanged.AddListener(delegate
+            {
+                AddToSelectedUsersForSendOut(tardeItem.transform.Find("Toggle").GetComponent<Toggle>(), clubMemberDetails);
+            });
 
             selectedSendPlayerCount++;
 
             PlayerSelected.text = "x" + selectedSendPlayerCount;
             selectedMembers += "{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + "Member" + "\"},";
+
+            if (isClaimBack)
+            {
+                if (TotalAmountSendText.gameObject.activeSelf)
+                    TotalAmountSendText.gameObject.SetActive(false);
+
+                if (claimBackAmount == 0)
+                    float.TryParse(tardeItem.transform.Find("Image/Coins").GetComponent<TMPro.TextMeshProUGUI>().text, out claimBackAmount);
+
+                float amount;
+                float.TryParse(tardeItem.transform.Find("Image/Coins").GetComponent<TMPro.TextMeshProUGUI>().text, out amount);
+                if (claimBackAmount > amount)
+                    claimBackAmount = amount;
+
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Label/ChipsToClaimBack").GetComponent<TMP_Text>().text = claimBackAmount.ToString();
+            }
+            else
+            {
+                if (!TotalAmountSendText.gameObject.activeSelf)
+                    TotalAmountSendText.gameObject.SetActive(true);
+            }
         }
     }
 
     private void UpdateUIForSendAmount(string arg0)
     {
-        float amount = CalculateSenAmountBasedOnPercentage();
+        if (SendOutPanel.transform.Find("BG1/BG2/Trade/Label").gameObject.activeSelf)
+        {
+            int amountEntered = 0;
+            Int32.TryParse(AmountToSendInputField.text, out amountEntered);
+            if (amountEntered > claimBackAmount)
+            {
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Label").GetComponent<TMP_Text>().color = Color.red;
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Label/ChipsToClaimBack").GetComponent<TMP_Text>().color = Color.red;
 
-        PlayerSelected.text = "x" + selectedSendPlayerCount;
-        TotalAmountSendText.text = "Total: " + amount.ToString();
+                ConfirmChipsSendButton.onClick.RemoveAllListeners();
+                ConfirmChipsSendButton.onClick.AddListener(PopUpToShow);
+            }
+            else
+            {
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Label").GetComponent<TMP_Text>().color = Color.white;
+                SendOutPanel.transform.Find("BG1/BG2/Trade/Label/ChipsToClaimBack").GetComponent<TMP_Text>().color = Color.white;
+
+                totalAmount = CalculateSendAmountBasedOnPercentage(true);
+            }
+        }
+        else
+        {
+            totalAmount = CalculateSendAmountBasedOnPercentage(false);
+
+            PlayerSelected.text = "x" + selectedSendPlayerCount;
+            TotalAmountSendText.text = "Total: " + totalAmount.ToString();
+        }
     }
 
-    private float CalculateSenAmountBasedOnPercentage()
+    private void PopUpToShow()
+    {
+        StartCoroutine(ShowPopUp("Insufficient member balance", 1.29f));
+    }
+
+    private float CalculateSendAmountBasedOnPercentage(bool isClaimBack)
     {
         int amountEntered = 0;
         Int32.TryParse(AmountToSendInputField.text, out amountEntered);
         float totalAmount = amountEntered * selectedSendPlayerCount;
-        float percentageFee = 0.05f * totalAmount;
-        totalAmount = totalAmount + percentageFee;
+        
+        if (!isClaimBack)
+        {
+            float percentageFee = 0.05f * totalAmount;
+            totalAmount = totalAmount + percentageFee;
+        }
+
         return totalAmount;
     }
 
@@ -884,8 +955,8 @@ public class ClubCounter : MonoBehaviour
         if (t.isOn)
         {
             selectedSendPlayerCount++;
-            selectedMembers += "{\"userId\":\"" + clubMemberDetails.userId + "\"," +
-                               "\"role\":\"" + "Member" + "\"},";
+            //selectedMembers += "{\"userId\":\"" + clubMemberDetails.userId + "\"," +
+            //                   "\"role\":\"" + "Member" + "\"},";
         }
         else
         {
@@ -895,6 +966,44 @@ public class ClubCounter : MonoBehaviour
         if (selectedSendPlayerCount < 0) { selectedSendPlayerCount = 0; }
 
         PlayerSelected.text = "x" + selectedSendPlayerCount;
+
+        if (SendOutPanel.transform.Find("BG1/BG2/Trade/Label").gameObject.activeSelf)
+        {
+            claimBackAmount = 0;
+            selectedMembers = string.Empty;
+
+            for (int i = 0; i < SendOutListContent.childCount; i++)
+            {
+                if (SendOutListContent.GetChild(i).Find("Toggle").GetComponent<Toggle>().isOn)
+                {
+                    selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text.Substring(5) + "\"," +
+                                       "\"role\":\"" + "Member" + "\"},";
+
+                    if (claimBackAmount == 0)
+                        float.TryParse(SendOutListContent.GetChild(i).Find("Image/Coins").GetComponent<TMP_Text>().text, out claimBackAmount);
+
+                    float amount;
+                    float.TryParse(SendOutListContent.GetChild(i).Find("Image/Coins").GetComponent<TMP_Text>().text, out amount);
+
+                    Debug.Log("ClaimBackAmount : " + claimBackAmount);
+                    Debug.Log("Amount : " + amount);
+                    if (claimBackAmount > amount)
+                        claimBackAmount = amount;
+                }
+            }
+            SendOutPanel.transform.Find("BG1/BG2/Trade/Label/ChipsToClaimBack").GetComponent<TMP_Text>().text = claimBackAmount.ToString();
+        }
+        else
+        {
+            for (int i = 0; i < SendOutListContent.childCount; i++)
+            {
+                if (SendOutListContent.GetChild(i).Find("Toggle").GetComponent<Toggle>().isOn)
+                {
+                    selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text + "\"," +
+                                       "\"role\":\"" + "Member" + "\"},";
+                }
+            }
+        }
     }
 
     private void ClaimChipsAPIRequest()
