@@ -41,7 +41,4 @@ public class ConsecutiveLoginRewardManager : MonoBehaviour
 
         MainMenuController.instance.DestroyScreen(MainMenuScreens.BackPack);
     }
-
-
-   
 }

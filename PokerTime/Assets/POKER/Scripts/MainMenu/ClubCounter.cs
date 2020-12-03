@@ -916,6 +916,9 @@ public class ClubCounter : MonoBehaviour
                 SendOutPanel.transform.Find("BG1/BG2/Trade/Label").GetComponent<TMP_Text>().color = Color.white;
                 SendOutPanel.transform.Find("BG1/BG2/Trade/Label/ChipsToClaimBack").GetComponent<TMP_Text>().color = Color.white;
 
+                ConfirmChipsSendButton.onClick.RemoveAllListeners();
+                ConfirmChipsSendButton.onClick.AddListener(ClaimChipsAPIRequest);
+
                 totalAmount = CalculateSendAmountBasedOnPercentage(true);
             }
         }

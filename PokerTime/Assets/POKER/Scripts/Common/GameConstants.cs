@@ -12,7 +12,7 @@ public class GameConstants : MonoBehaviour
 
 
     #region ANIMATIONS
-    public const float CARD_ANIMATION_DURATION = 0.6f;
+    public const float CARD_ANIMATION_DURATION = 0.27f;/*0.6f;*/
     public const float BET_PLACE_ANIMATION_DURATION = 0.5f;
     public const float LOCAL_BET_ANIMATION_DURATION = 1f;
 
@@ -131,7 +131,8 @@ public class GameConstants : MonoBehaviour
         API_URL+"/getTopUpDetailsByClubId",
         API_URL+"/onOffJackpot",
         API_URL+"/createJackpot",
-        SOCKET_URL + "/getSeatObject"
+        SOCKET_URL + "/getSeatObject",
+        API_URL+"/getGameHistroy"
     };
     #endregion
 
@@ -223,5 +224,6 @@ public enum RequestType
     GetTopUpDetailsByClubId,
     OnOffJackpot,
     CreateJackpot,
-    GetSeatObject
+    GetSeatObject,
+    GetGameHistory
 }

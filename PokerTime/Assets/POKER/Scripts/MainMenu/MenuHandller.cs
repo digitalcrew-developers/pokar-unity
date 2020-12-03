@@ -157,7 +157,13 @@ public class MenuHandller : MonoBehaviour
 			}
 			break;
 
-		case "globalTournament":
+			case "consecutiveLoginReward":
+				{
+					MainMenuController.instance.ShowScreen(MainMenuScreens.ConsecutiveLoginReward);
+				}
+				break;
+
+			case "globalTournament":
 			{
 				MainMenuController.instance.ShowScreen(MainMenuScreens.GlobalTournament);
 			}

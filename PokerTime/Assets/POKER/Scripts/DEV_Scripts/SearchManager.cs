@@ -10,6 +10,7 @@ public class SearchManager : MonoBehaviour
     public static SearchManager instance;
     public ScrollRect scrollRect;
     public Transform container, searchContainer;
+    //public bool isSleepMode;
 
     //private List<GameObject> _searchable = new List<GameObject>();
 
@@ -22,7 +23,7 @@ public class SearchManager : MonoBehaviour
     {
         //DEV_CODE
 
-        if (transform.GetComponent<TMP_InputField>().text.Length > 0)
+        if (transform.GetComponent</*TMP_InputField*/InputField>().text.Length > 0)
         {
             for (int i = 0; i < searchContainer.childCount; i++)
             {
@@ -31,11 +32,17 @@ public class SearchManager : MonoBehaviour
 
             for (int i = 0; i < container.childCount; i++)
             {
-                if (container.GetChild(i).name.ToLower().Contains(transform.GetComponent<TMP_InputField>().text.ToLower()))
-                {
-                    GameObject obj = Instantiate(container.GetChild(i).gameObject, searchContainer);
-                    obj.GetComponent<Button>().onClick = container.GetChild(i).GetComponent<Button>().onClick;
-                }
+                //if (isSleepMode)
+                //{
+                //}
+                //else
+                //{
+                    if (container.GetChild(i).name.ToLower().Contains(transform.GetComponent</*TMP_InputField*/InputField>().text.ToLower()))
+                    {
+                        GameObject obj = Instantiate(container.GetChild(i).gameObject, searchContainer);
+                        obj.GetComponent<Button>().onClick = container.GetChild(i).GetComponent<Button>().onClick;
+                    }
+                //}
             }
             container.gameObject.SetActive(false);
             searchContainer.gameObject.SetActive(true);
