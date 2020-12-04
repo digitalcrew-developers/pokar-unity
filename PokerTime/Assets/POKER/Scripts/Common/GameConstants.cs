@@ -132,7 +132,7 @@ public class GameConstants : MonoBehaviour
         API_URL+"/onOffJackpot",
         API_URL+"/createJackpot",
         SOCKET_URL + "/getSeatObject",
-        API_URL+"/getGameHistroy"
+        SOCKET_URL+"/getGameHistroy"
     };
     #endregion
 

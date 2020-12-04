@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using LitJson;
 
 [RequireComponent(typeof(Image))]
 [RequireComponent(typeof(Mask))]
@@ -12,6 +14,10 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     public static ScrollSnapRect instance;
 
     public Text changeIndexTxt;
+    public Text dayWiseWinOrLoseText;
+    public Text allTimeText;
+    public Text last7DaysText;
+
     public string containerScroll_Name;
 
     [Tooltip("Set starting page index - starting from 0")]
@@ -108,7 +114,8 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             prevButton.GetComponent<Button>().onClick.AddListener(() => { PreviousScreen(); });
 	}
 
-    public void ChangeTxtVal() {
+    public void ChangeTxtVal() 
+    {
         switch (this.gameObject.name)
         {
             case "YearScroll":
@@ -118,12 +125,60 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                 changeIndexTxt.text = "2020 - "+_currentPage + 1 ;
                 break;
             case "DayScroll":
-                changeIndexTxt.text = _currentPage + 1 + "/25";
+                //changeIndexTxt.text = _currentPage + 1 + "/25";
+                //Debug.Log("Setting New Date..");
+                changeIndexTxt.text = CareerManager.instance.currentMonth + "/" + ((CareerManager.instance.currentDate.ToString().Length == 1)? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
                 break;
         }
+
+        string date = CareerManager.instance.currentYear + "-" +
+                      ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) + "-" +
+                      ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
+
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                               "\"date\":\"" + date + "\"," +
+                               "\"endDate\":\"" + date + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.GetGameHistory, requestData, true, OnServerResponseFound);
     }
 
+    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    {
+        Debug.Log(errorMessage);
+        if (errorMessage.Length > 0)
+        {
+            if (isShowErrorMessage)
+            {
+                MainMenuController.instance.ShowMessage(errorMessage);
+            }
 
+            return;
+        }
+
+        if (requestType == RequestType.GetGameHistory)
+        {
+            Debug.Log("Response => GetGameHistory : " + serverResponse);
+
+            //JsonData data = JsonMapper.ToObject(serverResponse);
+
+            //if (data["status"].Equals(true))
+            //{
+
+            //}
+            //else
+            //{
+            //    MainMenuController.instance.ShowMessage("Unable to update request..");
+            //}
+        }
+        else
+        {
+
+#if ERROR_LOG
+            Debug.LogError("Unhadnled response found in  = " + requestType);
+#endif
+        }
+
+    }
 
     //------------------------------------------------------------------------
     void Update() {
@@ -206,14 +261,41 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     }
 
     //------------------------------------------------------------------------
-    private void LerpToPage(int aPageIndex) {
+    private void LerpToPage(int aPageIndex) 
+    {
         aPageIndex = Mathf.Clamp(aPageIndex, 0, _pageCount - 1);
+
+        //Debug.Log("Current Page: " + _currentPage);
+        //Debug.Log("APage: " + aPageIndex);
+
+        if (aPageIndex < _currentPage)
+        {
+            //Debug.Log("Previous Date : " + (CareerManager.instance.currentDate --));
+            if(CareerManager.instance.currentDate < 1)
+            {
+                CareerManager.instance.currentMonth--;
+                CareerManager.instance.currentDate = DateTime.DaysInMonth(CareerManager.instance.currentYear, CareerManager.instance.currentMonth);
+            }
+        }
+        else if (aPageIndex > _currentPage)
+        {
+            //Debug.Log("Next Date : " + (CareerManager.instance.currentDate ++));
+            if(CareerManager.instance.currentDate > DateTime.DaysInMonth(CareerManager.instance.currentYear, CareerManager.instance.currentMonth))
+            {
+                CareerManager.instance.currentMonth++;
+                CareerManager.instance.currentDate = 1;                
+            }
+        }
+        else
+        {
+            //Debug.Log("At Same POS...");
+        }
+
         _lerpTo = _pagePositions[aPageIndex];
         _lerp = true;
         _currentPage = aPageIndex;
 
         ChangeTxtVal();
-      
     }
 
     //------------------------------------------------------------------------
@@ -313,8 +395,10 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             Mathf.Abs(difference) > fastSwipeThresholdDistance &&
             Mathf.Abs(difference) < _fastSwipeThresholdMaxLimit) {
             if (difference > 0) {
+                //Debug.Log("Going to next");
                 NextScreen();
             } else {
+                //Debug.Log("Going to previous");
                 PreviousScreen();
             }
         } else {

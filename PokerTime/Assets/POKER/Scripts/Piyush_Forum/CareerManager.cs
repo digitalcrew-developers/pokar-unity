@@ -1,6 +1,8 @@
 ﻿using LitJson;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +16,8 @@ public class CareerManager : MonoBehaviour
     public List<RequestData> requestDataList = new List<RequestData>();
     public static int requestCounter = -1;
 
+    public int currentDate, currentMonth, currentYear;
+
     public Text headingTxt;
     public GameObject[] DMY_objList;
     public GameObject[] DMY_objfocus;
@@ -26,7 +30,29 @@ public class CareerManager : MonoBehaviour
         {
             GetRequestList();
         }
+
+        currentDate = DateTime.Now.Day;
+        currentMonth = DateTime.Now.Month;
+        currentYear = DateTime.Now.Year;
     }
+
+    //private void FindTotalDays()
+    //{
+        //int startYear = 2020;
+        //int currentYear = DateTime.Now.Year;
+        //int startMonth = 07;
+        //int currentMonth = DateTime.Now.Month;
+        //int startDay = 4;
+        //int currentDay = DateTime.Now.Day;
+
+        //int totalDays = 0;
+
+        //DateTime today = DateTime.Now;
+        //DateTime startDate = new DateTime(startYear,startMonth,startDay);    
+        //TimeSpan elapsed = today.Subtract(startDate);
+        //Debug.Log("Total Days: " +/* DateTime.DaysInMonth(2020,10)*/(int)elapsed.TotalDays);
+    //}
+
     public void OnMenuBtnClick()
     {
         MainMenuController.instance.ShowScreen(MainMenuScreens.CareerMenuScreen);
@@ -42,23 +68,26 @@ public class CareerManager : MonoBehaviour
         MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
     }
 
-    public void OnDMY_BtnClick(string val) {
+    public void OnDMY_BtnClick(string val)
+    {
         for (int i = 0; i < DMY_objList.Length; i++)
         {
             DMY_objList[i].SetActive(false);
             DMY_objfocus[i].SetActive(false);
         }
+    
         switch (val)
         {
             case "day":
                 DMY_objList[0].SetActive(true);
                 DMY_objfocus[0].SetActive(true);
-
                 break;
+
             case "month":
                 DMY_objList[1].SetActive(true);
                 DMY_objfocus[1].SetActive(true);
                 break;
+
             case "year":
                 DMY_objList[2].SetActive(true);
                 DMY_objfocus[2].SetActive(true);

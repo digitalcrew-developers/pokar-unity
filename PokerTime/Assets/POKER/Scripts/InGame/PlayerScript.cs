@@ -655,13 +655,17 @@ public class PlayerScript : MonoBehaviour
                         {
                             if (i == 0)
                             {
-                                cardsImage[i].transform.localPosition = new Vector3(-53, 8);
-                                cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                                cardsImage[i].transform.localPosition = new Vector3(-57, 0);
+                                //cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                                cardsImage[i].transform.localScale = new Vector3(0.7f, 0.7f);
+                                cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                             }
                             if (i == 1)
                             {
-                                cardsImage[i].transform.localPosition = new Vector3(-24, 8);
-                                cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                                cardsImage[i].transform.localPosition = new Vector3(-27, 0);
+                                //cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                                cardsImage[i].transform.localScale = new Vector3(0.7f, 0.7f);
+                                cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                             }
                         }                        
                     }
@@ -682,6 +686,9 @@ public class PlayerScript : MonoBehaviour
                         {
                             cardsImage[i].transform.localPosition = new Vector3(16, 0);
                             cardsImage[i].transform.localScale = new Vector3(0.35f, 0.35f);
+
+                            if (cardsImage[i].transform.localRotation.z == 0)
+                                cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -18.12f);
                         }
                     }
                     cardsImage[i].sprite = CardsManager.instance.GetCardBackSideSprite();
