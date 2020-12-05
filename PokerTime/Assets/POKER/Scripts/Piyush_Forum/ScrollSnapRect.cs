@@ -69,6 +69,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     private int _previousPageSelectionIndex;
     // container with Image components - one Image for each page
     private List<Image> _pageSelectionImages;
+    public GameObject careerDayListPrefab, careerDayListcont;
 
     public void Awake()
     {
@@ -127,7 +128,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             case "DayScroll":
                 //changeIndexTxt.text = _currentPage + 1 + "/25";
                 //Debug.Log("Setting New Date..");
-                changeIndexTxt.text = CareerManager.instance.currentMonth + "/" + ((CareerManager.instance.currentDate.ToString().Length == 1)? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
+                changeIndexTxt.text = CareerManager.instance.currentMonth + "/" + ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
                 break;
         }
 
@@ -139,7 +140,10 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                                "\"date\":\"" + date + "\"," +
                                "\"endDate\":\"" + date + "\"}";
 
+        Debug.LogError("Date : " + date);
         WebServices.instance.SendRequest(RequestType.GetGameHistory, requestData, true, OnServerResponseFound);
+        Debug.LogError("FD1");
+
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -154,21 +158,30 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
 
             return;
         }
-
+        
         if (requestType == RequestType.GetGameHistory)
         {
-            Debug.Log("Response => GetGameHistory : " + serverResponse);
+            //Debug.Log("Response => GetGameHistory : " + serverResponse);
 
-            //JsonData data = JsonMapper.ToObject(serverResponse);
+            JsonData data = JsonMapper.ToObject(serverResponse);
 
-            //if (data["status"].Equals(true))
-            //{
+            /*  if (data["status"].Equals(true))
+              {*/
+                GameObject datelist = Instantiate(careerDayListPrefab, careerDayListcont.transform);
+                
+                datelist.transform.Find("bg Image/hand text").GetComponent<Text>().text ="Hand: "+ data["data"]["totalHand"].ToString();
+                datelist.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
+                datelist.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
+                
+                Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+              
 
-            //}
-            //else
-            //{
-            //    MainMenuController.instance.ShowMessage("Unable to update request..");
-            //}
+            
+            /*}
+            else
+            {
+                MainMenuController.instance.ShowMessage("Unable to update request..");
+            }*/
         }
         else
         {

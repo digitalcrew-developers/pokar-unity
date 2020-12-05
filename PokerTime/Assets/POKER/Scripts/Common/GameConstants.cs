@@ -9,6 +9,13 @@ public class GameConstants : MonoBehaviour
 //IP: 3.137.10.123
 
     public static int TURN_TIME = 20;
+    public static bool playerblind = false;
+    public static bool showmatch = false;
+    public static bool sideShowMatch = false;
+    public static int timerStart = 0;
+    public static int playerbetAmount = 0;
+    public static int sideShowRequesterId = 0;
+    public static bool poker = true;
 
 
     #region ANIMATIONS
@@ -21,6 +28,7 @@ public class GameConstants : MonoBehaviour
     #region GAME_CONSTANTS
     public const int NUMBER_OF_CARDS_IN_DECK = 52;
     public static int[] NUMBER_OF_CARDS_PLAYER_GET_IN_MATCH = { 2, 4, 10 };
+    public static int NUMBER_OF_CARDS_PLAYER_GET_IN_MATCH_IN_TEEN_PATTI = 3;
     public const int NUMBER_OF_COMMUNITY_CARDS = 5;
     public const float BUFFER_TIME = 3f;
     #endregion
@@ -42,6 +50,8 @@ public class GameConstants : MonoBehaviour
     //Production
     public const string API_URL = BASE_URL + ":3000";// ":3009";
     public const string SOCKET_URL = BASE_URL + ":3333";// ":3008";
+
+    public const string SOCKET_URL_FLASH = BASE_URL + ":8888";
 
     public const string GAME_PORTAL_URL = "http://3.17.201.78";// "http://192.168.0.151";//"http://3.17.201.78";//"http://3.137.10.123";//90// "http://3.17.201.78";//"http://18.191.15.121";//"http://3.6.137.204";
 
@@ -133,6 +143,7 @@ public class GameConstants : MonoBehaviour
         API_URL+"/createJackpot",
         SOCKET_URL + "/getSeatObject",
         SOCKET_URL+"/getGameHistroy"
+
     };
     #endregion
 

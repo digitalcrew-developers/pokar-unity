@@ -146,8 +146,15 @@ public class MenuHandller : MonoBehaviour
 
 		case "lobby":
 			{
-			//		Debug.Log("I am here---------");
-				MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
+					//		Debug.Log("I am here---------");
+					if (GameConstants.poker)
+					{
+						MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
+					}
+					else
+					{
+						MainMenuController.instance.ShowScreen(MainMenuScreens.LobbyTeenPatti);
+					}
 			}
 			break;
 

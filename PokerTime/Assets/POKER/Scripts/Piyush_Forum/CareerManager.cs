@@ -22,6 +22,7 @@ public class CareerManager : MonoBehaviour
     public GameObject[] DMY_objList;
     public GameObject[] DMY_objfocus;
 
+  
     private void Awake()
     {
         instance = this;

@@ -163,7 +163,8 @@ public class GlobalGameManager : MonoBehaviour
 public enum Scenes
 {
     MainMenu,
-    InGame
+    InGame,
+    InGameTeenPatti
 }
 
 public enum GameMode

@@ -269,7 +269,15 @@ public class LobbyUiManager: MonoBehaviour
         Debug.Log("data.callTimer " + data.callTimer);
         if (data.gameMode != GameMode.OFC)
         {
-            GlobalGameManager.instance.LoadScene(Scenes.InGame);
+            if(GameConstants.poker)
+            {
+                GlobalGameManager.instance.LoadScene(Scenes.InGame);
+            }
+            else
+            {
+                GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
+            }
+            //GlobalGameManager.instance.LoadScene(Scenes.InGame);
         }
         else
         {

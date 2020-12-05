@@ -13,26 +13,58 @@ public class MenuScript : MonoBehaviour
         {
             case "back":
                 {
-                    if (InGameUiManager.instance != null) {
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                    if (GameConstants.poker)
+                    {
+                        if (InGameUiManager.instance != null)
+                        {
+                            InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                        }
+                        else
+                        {
+                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                        }
                     }
                     else
                     {
-                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                        if (InGameUiManagerTeenPatti.instance != null)
+                        {
+                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                        }
+                        else
+                        {
+                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                        }
                     }
                 }
                 break;
             case "StandUp":
                 {
-                    if (InGameUiManager.instance != null)
+                    if (GameConstants.poker)
                     {
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                        InGameManager.instance.OnClickStandupBtn();
+                        if (InGameUiManager.instance != null)
+                        {
+                            InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                            InGameManager.instance.OnClickStandupBtn();
+                        }
+                        else
+                        {
+                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                            ClubInGameManager.instance.OnClickStandupBtn();
+                        }
                     }
+
                     else
                     {
-                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                        ClubInGameManager.instance.OnClickStandupBtn();
+                        if (InGameUiManagerTeenPatti.instance != null)
+                        {
+                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                            InGameManagerTeenPatti.instance.OnClickStandupBtn();
+                        }
+                        else
+                        {
+                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                            ClubInGameManager.instance.OnClickStandupBtn();
+                        }
                     }
 
                 }
@@ -90,14 +122,29 @@ public class MenuScript : MonoBehaviour
 
             case "exit":
                 {
-                    if (InGameUiManager.instance != null)
+                    if (GameConstants.poker)
                     {
-                        InGameManager.instance.LoadMainMenu();
+                        if (InGameUiManager.instance != null)
+                        {
+                            InGameManager.instance.LoadMainMenu();
+                        }
+                        else
+                        {
+                            //exit for club menu
+                            ClubInGameManager.instance.LoadMainMenu();
+                        }
                     }
                     else
                     {
-                        //exit for club menu
-                        ClubInGameManager.instance.LoadMainMenu();
+                        if (InGameUiManagerTeenPatti.instance != null)
+                        {
+                            InGameManagerTeenPatti.instance.LoadMainMenu();
+                        }
+                        else
+                        {
+                            //exit for club menu
+                            ClubInGameManager.instance.LoadMainMenu();
+                        }
                     }
                 }
             break;

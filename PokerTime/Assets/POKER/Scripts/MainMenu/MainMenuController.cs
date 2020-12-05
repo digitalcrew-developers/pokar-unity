@@ -10,6 +10,7 @@ using UnityEngine.UI.Extensions;
 public class MainMenuController : MonoBehaviour
 {
     public static MainMenuController instance;
+    public GameObject mainMenuPoker, mainMenuFlash;
 
     public GameObject bottomPanel;
 
@@ -48,6 +49,21 @@ public class MainMenuController : MonoBehaviour
         LoadVideoAndScreenshot();
         bottomPanel.GetComponent<PaginationManager>().PageToggleClickEvent += MainMenuController_PageToggleClickEvent;
     }
+
+    public void OnClickPlayFlash()
+    {
+        GameConstants.poker = false;
+        mainMenuFlash.SetActive(true);
+        mainMenuPoker.SetActive(false);
+    }
+
+    public void OnClickPlayPoker()
+    {
+        GameConstants.poker = true;
+        mainMenuPoker.SetActive(true);
+        mainMenuFlash.SetActive(false);
+    }
+
 
     private void LoadVideoAndScreenshot()
     {
@@ -694,7 +710,8 @@ public enum MainMenuScreens
     CareerMenuScreen,
     CareerDataScreen,
     CareerDefinationScreen,
-    HandScreen 
+    HandScreen,
+    LobbyTeenPatti
 }
 
 
