@@ -403,7 +403,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 
 				GlobalGameManager.instance.GetRoomData().isLobbyRoom = false;
-                GlobalGameManager.instance.LoadScene(Scenes.InGame);
+                //GlobalGameManager.instance.LoadScene(Scenes.InGame);
 			}
 			break;
 
@@ -422,7 +422,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 
 				GlobalGameManager.instance.GetRoomData().isLobbyRoom = false;
-				GlobalGameManager.instance.LoadScene(Scenes.InGame);
+				//GlobalGameManager.instance.LoadScene(Scenes.InGame);
 			}
 			break;
 

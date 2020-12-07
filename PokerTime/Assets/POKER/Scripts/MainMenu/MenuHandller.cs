@@ -147,15 +147,18 @@ public class MenuHandller : MonoBehaviour
 		case "lobby":
 			{
 					//		Debug.Log("I am here---------");
-					if (GameConstants.poker)
-					{
-						MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
-					}
-					else
-					{
-						MainMenuController.instance.ShowScreen(MainMenuScreens.LobbyTeenPatti);
-					}
-			}
+					//if (GameConstants.poker)
+					//{
+					//	MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
+					//}
+					//else
+					//{
+					//	MainMenuController.instance.ShowScreen(MainMenuScreens.LobbyTeenPatti);
+					//}
+
+					//DEV_CODE
+					MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
+				}
 			break;
 
 		case "spinUp":

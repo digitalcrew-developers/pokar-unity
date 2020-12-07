@@ -53,6 +53,7 @@ public class PlayerScript : MonoBehaviour
         }
         if (requestType == RequestType.GetUserDetails)
         {
+            Debug.Log("Response => GetUserDetails: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["success"].ToString() == "1")
@@ -77,6 +78,7 @@ public class PlayerScript : MonoBehaviour
  
     IEnumerator loadSpriteImageFromUrl(string URL, Image image)
     {
+        Debug.Log("Going To Set User Profile and Flag");
         UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
         yield return unityWebRequest.SendWebRequest();
 
@@ -262,7 +264,7 @@ public class PlayerScript : MonoBehaviour
         transform.Find("Bg/NameBg/Name").GetComponent<Text>().text = playerData.userName;
         transform.Find("Bg/Dealer").gameObject.SetActive(false);
         otheruserId = playerData.userId;
-        //ShowAvtars_frame_flag(playerData.userId);
+        ShowAvtars_frame_flag(playerData.userId);
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
         lastActionImage.SetActive(false);
@@ -389,6 +391,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void UpdateLastAction(string textToShow)
     {
+        Debug.LogError("@@@@@@@@ : " + textToShow);
         if (textToShow == "" || string.IsNullOrEmpty(textToShow))
         {
             lastActionImage.SetActive(false);
@@ -400,22 +403,28 @@ public class PlayerScript : MonoBehaviour
         switch (textToShow)
         {
             case "Call":
+                Debug.LogError("I've Call");
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[0];
                 break;
             case "Check":
+                Debug.LogError("I've Check");
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[1];
                 break;
             case "Bet":
+                Debug.LogError("I've Bet");
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[2];
                 break;
             case "Raise":
+                Debug.LogError("I've Raised");
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[3];
                 break;
             case "AllIn":
+                Debug.LogError("I've AllIn");
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[4];
                 break;
 
             default:
+                Debug.LogError("No Action");
                 break;
         }
 
@@ -574,13 +583,14 @@ public class PlayerScript : MonoBehaviour
             {
                 if (lastActionRoundNo == InGameManager.instance.GetMatchRound())
                 {
+                    Debug.Log("Update Last Action..");
                     UpdateLastAction(lastPlayerAction);
                 }
                 else
                 {
                     UpdateLastAction("");
                 }
-            }
+            }   
             else if (ClubInGameManager.instance != null)
             {
                 if (lastActionRoundNo == ClubInGameManager.instance.GetMatchRound())

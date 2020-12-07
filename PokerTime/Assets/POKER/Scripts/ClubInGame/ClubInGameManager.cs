@@ -768,7 +768,7 @@ public class ClubInGameManager : MonoBehaviour
         if (resetGame)
         {
             resetGame = false;
-            GlobalGameManager.instance.LoadScene(Scenes.InGame);
+            //GlobalGameManager.instance.LoadScene(Scenes.InGame);
         }
     }
     public float GetPotAmount()
@@ -1491,7 +1491,7 @@ public class ClubInGameManager : MonoBehaviour
             counter--;
         }
         resetGame = false;
-        GlobalGameManager.instance.LoadScene(Scenes.InGame);
+        //GlobalGameManager.instance.LoadScene(Scenes.InGame);
     }
 
     private bool CallOnce = true;

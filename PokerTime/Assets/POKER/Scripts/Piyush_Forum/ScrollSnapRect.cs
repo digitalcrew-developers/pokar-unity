@@ -69,7 +69,8 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     private int _previousPageSelectionIndex;
     // container with Image components - one Image for each page
     private List<Image> _pageSelectionImages;
-    public GameObject careerDayListPrefab, careerDayListcont;
+    public GameObject careerListPrefab, careerDayListContainer, careerMonthListContainer, careerYearListContainer;
+    GameObject listObj; // Add By GP
 
     public void Awake()
     {
@@ -79,7 +80,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
 
     public void OnEnable()
     {
-        ChangeTxtVal();
+        //ChangeTxtVal();//Comment By GP
     }
 
     //------------------------------------------------------------------------
@@ -102,10 +103,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         _lerp = false;
 
         // init
-        SetPagePositions();
-        SetPage(startingPage);
-        InitPageSelection();
-        SetPageSelection(startingPage);
+        UpdatePages();
 
         // prev and next buttons
         if (nextButton)
@@ -120,10 +118,12 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         switch (this.gameObject.name)
         {
             case "YearScroll":
-                changeIndexTxt.text = "202" + _currentPage ;
+                //changeIndexTxt.text = "202" + _currentPage ;
+                changeIndexTxt.text = CareerManager.instance.currentYear.ToString();
                 break;
             case "MonthScroll":
-                changeIndexTxt.text = "2020 - "+_currentPage + 1 ;
+                //changeIndexTxt.text = "2020 - "+_currentPage + 1 ;
+                changeIndexTxt.text = CareerManager.instance.currentYear + "-" + ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString());
                 break;
             case "DayScroll":
                 //changeIndexTxt.text = _currentPage + 1 + "/25";
@@ -131,24 +131,23 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                 changeIndexTxt.text = CareerManager.instance.currentMonth + "/" + ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
                 break;
         }
-
+        //GameObject g = GameObject.Find("Date");//Add By Gp
+        //Destroy(g);//Add By GP
         string date = CareerManager.instance.currentYear + "-" +
                       ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) + "-" +
                       ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
 
-        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+
+        string requestData = "{\"userId\":" + int.Parse(PlayerManager.instance.GetPlayerGameData().userId) + "," +
                                "\"date\":\"" + date + "\"," +
                                "\"endDate\":\"" + date + "\"}";
 
-        Debug.LogError("Date : " + date);
         WebServices.instance.SendRequest(RequestType.GetGameHistory, requestData, true, OnServerResponseFound);
-        Debug.LogError("FD1");
-
+        //Debug.LogError("FD1");
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.Log(errorMessage);
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
@@ -161,27 +160,47 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         
         if (requestType == RequestType.GetGameHistory)
         {
-            //Debug.Log("Response => GetGameHistory : " + serverResponse);
-
+            Debug.Log("Response => GetGameHistory : " + serverResponse);
+            
             JsonData data = JsonMapper.ToObject(serverResponse);
 
-            /*  if (data["status"].Equals(true))
-              {*/
-                GameObject datelist = Instantiate(careerDayListPrefab, careerDayListcont.transform);
-                
-                datelist.transform.Find("bg Image/hand text").GetComponent<Text>().text ="Hand: "+ data["data"]["totalHand"].ToString();
-                datelist.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
-                datelist.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
-                
-                Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
-              
-
-            
-            /*}
-            else
+            if (containerScroll_Name.Equals("DayScroll"))
             {
-                MainMenuController.instance.ShowMessage("Unable to update request..");
-            }*/
+                //if (data["status"].Equals(true))
+                //{
+                    listObj = Instantiate(careerListPrefab, careerDayListContainer.transform);
+                    listObj.name = "Date";
+                    listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
+                    listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
+                    listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
+
+                    Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+                //}
+                //else
+                //{
+                //    MainMenuController.instance.ShowMessage("Unable to update request..");
+                //}
+            }
+            else if(containerScroll_Name.Equals("MonthScroll"))
+            {
+                listObj = Instantiate(careerListPrefab, careerMonthListContainer.transform);
+                //datelist.name = "Date";
+                listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
+                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
+                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
+
+                Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+            }
+            else if (containerScroll_Name.Equals("YearScroll"))
+            {
+                listObj = Instantiate(careerListPrefab, careerYearListContainer.transform);
+                //datelist.name = "Date";
+                listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
+                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
+                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
+
+                Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+            }
         }
         else
         {
@@ -195,6 +214,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
 
     //------------------------------------------------------------------------
     void Update() {
+        
         // if moving to target position
         if (_lerp) {
             // prevent overshooting with values greater than 1
@@ -217,6 +237,15 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     }
 
     //------------------------------------------------------------------------
+    //DEV_CODE
+    public void UpdatePages()
+    {
+        SetPagePositions();
+        SetPage(startingPage);
+        InitPageSelection();
+        SetPageSelection(startingPage);
+    }
+
     private void SetPagePositions() {
         int width = 0;
         int height = 0;
@@ -224,7 +253,6 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         int offsetY = 0;
         int containerWidth = 0;
         int containerHeight = 0;
-
         if (_horizontal) {
             // screen width in pixels of scrollrect window
             width = (int)_scrollRectRect.rect.width;
@@ -280,30 +308,60 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
 
         //Debug.Log("Current Page: " + _currentPage);
         //Debug.Log("APage: " + aPageIndex);
-
+        
         if (aPageIndex < _currentPage)
         {
-            //Debug.Log("Previous Date : " + (CareerManager.instance.currentDate --));
-            if(CareerManager.instance.currentDate < 1)
+            if (containerScroll_Name.Equals("DayScroll"))
+            {
+                //Debug.Log("Previous Date : " + (CareerManager.instance.currentDate--));
+                CareerManager.instance.currentDate--;
+                if (CareerManager.instance.currentDate < 1)
+                {
+                    CareerManager.instance.currentMonth--;
+                    CareerManager.instance.currentDate = DateTime.DaysInMonth(CareerManager.instance.currentYear, CareerManager.instance.currentMonth);
+                }
+            }
+            else if (containerScroll_Name.Equals("MonthScroll"))
             {
                 CareerManager.instance.currentMonth--;
-                CareerManager.instance.currentDate = DateTime.DaysInMonth(CareerManager.instance.currentYear, CareerManager.instance.currentMonth);
+                if(CareerManager.instance.currentMonth <1)
+                {
+                    CareerManager.instance.currentYear--;
+                    CareerManager.instance.currentMonth = 12;
+                }
+            }
+            else if (containerScroll_Name.Equals("YearScroll"))
+            {
+                CareerManager.instance.currentYear--;
             }
         }
         else if (aPageIndex > _currentPage)
         {
-            //Debug.Log("Next Date : " + (CareerManager.instance.currentDate ++));
-            if(CareerManager.instance.currentDate > DateTime.DaysInMonth(CareerManager.instance.currentYear, CareerManager.instance.currentMonth))
+            if (containerScroll_Name.Equals("DayScroll"))
+            {
+                //Debug.Log("Next Date : " + (CareerManager.instance.currentDate++));
+                CareerManager.instance.currentDate++;
+                if (CareerManager.instance.currentDate > DateTime.DaysInMonth(CareerManager.instance.currentYear, CareerManager.instance.currentMonth))
+                {
+                    CareerManager.instance.currentMonth++;
+                    CareerManager.instance.currentDate = 1;
+                }
+            }
+            else if (containerScroll_Name.Equals("MonthScroll"))
             {
                 CareerManager.instance.currentMonth++;
-                CareerManager.instance.currentDate = 1;                
+                if (CareerManager.instance.currentMonth > 12)
+                {
+                    CareerManager.instance.currentYear++;
+                    CareerManager.instance.currentMonth = 1;
+                }
             }
-        }
-        else
-        {
-            //Debug.Log("At Same POS...");
-        }
-
+            else if (containerScroll_Name.Equals("YearScroll"))
+            {
+                CareerManager.instance.currentYear++;                
+            }
+        }     
+        
         _lerpTo = _pagePositions[aPageIndex];
         _lerp = true;
         _currentPage = aPageIndex;

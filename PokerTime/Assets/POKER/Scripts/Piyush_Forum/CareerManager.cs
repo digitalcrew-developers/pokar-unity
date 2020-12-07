@@ -82,16 +82,25 @@ public class CareerManager : MonoBehaviour
             case "day":
                 DMY_objList[0].SetActive(true);
                 DMY_objfocus[0].SetActive(true);
+                ScrollSnapRect.instance.containerScroll_Name = "DayScroll";
+                ScrollSnapRect.instance.startingPage = 29;
+                ScrollSnapRect.instance.UpdatePages();
                 break;
 
             case "month":
                 DMY_objList[1].SetActive(true);
                 DMY_objfocus[1].SetActive(true);
+                ScrollSnapRect.instance.containerScroll_Name = "MonthScroll";
+                ScrollSnapRect.instance.startingPage = 11;
+                ScrollSnapRect.instance.UpdatePages();
                 break;
 
             case "year":
                 DMY_objList[2].SetActive(true);
                 DMY_objfocus[2].SetActive(true);
+                ScrollSnapRect.instance.containerScroll_Name = "YearScroll";
+                ScrollSnapRect.instance.startingPage = 2;
+                ScrollSnapRect.instance.UpdatePages();
                 break;
         }
     }

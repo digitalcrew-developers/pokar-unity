@@ -149,15 +149,15 @@ public class PreviousGameChecker: MonoBehaviour
                 {
                     GlobalGameManager.instance.SetRoomData(roomData);
                     GlobalGameManager.IsJoiningPreviousGame = true;
-                    if (GameConstants.poker)
-                    {
-                        GlobalGameManager.instance.LoadScene(Scenes.InGame);
-                    }
-                    else
-                    {
-                        GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
-                    }
-
+                    //if (GameConstants.poker)
+                    //{
+                    //    GlobalGameManager.instance.LoadScene(Scenes.InGame);
+                    //}
+                    //else
+                    //{
+                    //    GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
+                    //}
+                    GlobalGameManager.instance.LoadScene(Scenes.InGame);
                 }, () =>
                 {
                     SendLeaveMatchRequest();

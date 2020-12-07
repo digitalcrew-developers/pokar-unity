@@ -13,60 +13,66 @@ public class MenuScript : MonoBehaviour
         {
             case "back":
                 {
-                    if (GameConstants.poker)
-                    {
-                        if (InGameUiManager.instance != null)
-                        {
-                            InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                        }
-                        else
-                        {
-                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                        }
-                    }
-                    else
-                    {
-                        if (InGameUiManagerTeenPatti.instance != null)
-                        {
-                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
-                        }
-                        else
-                        {
-                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                        }
-                    }
+                    //if (GameConstants.poker)
+                    //{
+                    //    if (InGameUiManager.instance != null)
+                    //    {
+                    //        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                    //    }
+                    //    else
+                    //    {
+                    //        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    if (InGameUiManagerTeenPatti.instance != null)
+                    //    {
+                    //        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                    //    }
+                    //    else
+                    //    {
+                    //        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                    //    }
+                    //}
+
+                    //DEV_CODE
+                    InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
                 }
                 break;
             case "StandUp":
                 {
-                    if (GameConstants.poker)
-                    {
-                        if (InGameUiManager.instance != null)
-                        {
-                            InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                            InGameManager.instance.OnClickStandupBtn();
-                        }
-                        else
-                        {
-                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                            ClubInGameManager.instance.OnClickStandupBtn();
-                        }
-                    }
+                    //if (GameConstants.poker)
+                    //{
+                    //    if (InGameUiManager.instance != null)
+                    //    {
+                    //        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                    //        InGameManager.instance.OnClickStandupBtn();
+                    //    }
+                    //    else
+                    //    {
+                    //        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                    //        ClubInGameManager.instance.OnClickStandupBtn();
+                    //    }
+                    //}
 
-                    else
-                    {
-                        if (InGameUiManagerTeenPatti.instance != null)
-                        {
-                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
-                            InGameManagerTeenPatti.instance.OnClickStandupBtn();
-                        }
-                        else
-                        {
-                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                            ClubInGameManager.instance.OnClickStandupBtn();
-                        }
-                    }
+                    //else
+                    //{
+                    //    if (InGameUiManagerTeenPatti.instance != null)
+                    //    {
+                    //        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                    //        InGameManagerTeenPatti.instance.OnClickStandupBtn();
+                    //    }
+                    //    else
+                    //    {
+                    //        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                    //        ClubInGameManager.instance.OnClickStandupBtn();
+                    //    }
+                    //}
 
+                    //DEV_CODE
+                    InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                    InGameManager.instance.OnClickStandupBtn();
                 }
                 break;
 
@@ -122,30 +128,33 @@ public class MenuScript : MonoBehaviour
 
             case "exit":
                 {
-                    if (GameConstants.poker)
-                    {
-                        if (InGameUiManager.instance != null)
-                        {
-                            InGameManager.instance.LoadMainMenu();
-                        }
-                        else
-                        {
-                            //exit for club menu
-                            ClubInGameManager.instance.LoadMainMenu();
-                        }
-                    }
-                    else
-                    {
-                        if (InGameUiManagerTeenPatti.instance != null)
-                        {
-                            InGameManagerTeenPatti.instance.LoadMainMenu();
-                        }
-                        else
-                        {
-                            //exit for club menu
-                            ClubInGameManager.instance.LoadMainMenu();
-                        }
-                    }
+                    //if (GameConstants.poker)
+                    //{
+                    //    if (InGameUiManager.instance != null)
+                    //    {
+                    //        InGameManager.instance.LoadMainMenu();
+                    //    }
+                    //    else
+                    //    {
+                    //        //exit for club menu
+                    //        ClubInGameManager.instance.LoadMainMenu();
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    if (InGameUiManagerTeenPatti.instance != null)
+                    //    {
+                    //        InGameManagerTeenPatti.instance.LoadMainMenu();
+                    //    }
+                    //    else
+                    //    {
+                    //        //exit for club menu
+                    //        ClubInGameManager.instance.LoadMainMenu();
+                    //    }
+                    //}
+
+                    //DEV_CODE
+                    InGameManager.instance.LoadMainMenu();
                 }
             break;
 

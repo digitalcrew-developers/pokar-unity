@@ -634,7 +634,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
             resetGame = false;
             if (GameConstants.poker)
             {
-                GlobalGameManager.instance.LoadScene(Scenes.InGame);
+                //GlobalGameManager.instance.LoadScene(Scenes.InGame);
             }
             else
             {
@@ -1325,7 +1325,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
         resetGame = false;
         if (GameConstants.poker)
         {
-            GlobalGameManager.instance.LoadScene(Scenes.InGame);
+            //GlobalGameManager.instance.LoadScene(Scenes.InGame);
         }
         else
         {

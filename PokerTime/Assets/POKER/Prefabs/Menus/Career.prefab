@@ -420,7 +420,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.000061035156, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3682346583024573011
 MonoBehaviour:
@@ -440,7 +440,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 0
+  m_Spacing: 7
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
@@ -3119,6 +3119,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   changeIndexTxt: {fileID: 5073911795778596562}
+  dayWiseWinOrLoseText: {fileID: 0}
+  allTimeText: {fileID: 0}
+  last7DaysText: {fileID: 0}
   containerScroll_Name: 
   startingPage: 29
   fastSwipeThresholdTime: 0.3
@@ -3130,6 +3133,11 @@ MonoBehaviour:
   selectedPage: {fileID: 0}
   pageSelectionIcons: {fileID: 0}
   _currentPage: 0
+  careerListPrefab: {fileID: 6790170306880458773, guid: 4707586ef6a87ac409d26a1ccfe29bef,
+    type: 3}
+  careerDayListContainer: {fileID: 30345923243425770}
+  careerMonthListContainer: {fileID: 3169909366511373352}
+  careerYearListContainer: {fileID: 3602154305234816453}
 --- !u!1 &283251914126323446
 GameObject:
   m_ObjectHideFlags: 0
@@ -9236,7 +9244,7 @@ GameObject:
   - component: {fileID: 7200379805822932466}
   - component: {fileID: 5666494665113322697}
   m_Layer: 5
-  m_Name: Image
+  m_Name: VIPData
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12943,7 +12951,7 @@ GameObject:
   - component: {fileID: 6412464697338540486}
   - component: {fileID: 1430764341741754208}
   m_Layer: 5
-  m_Name: Image
+  m_Name: NoDataContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16081,6 +16089,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   changeIndexTxt: {fileID: 8295438247519727579}
+  dayWiseWinOrLoseText: {fileID: 0}
+  allTimeText: {fileID: 0}
+  last7DaysText: {fileID: 0}
   containerScroll_Name: 
   startingPage: 2
   fastSwipeThresholdTime: 0.3
@@ -16092,6 +16103,11 @@ MonoBehaviour:
   selectedPage: {fileID: 0}
   pageSelectionIcons: {fileID: 0}
   _currentPage: 0
+  careerListPrefab: {fileID: 6790170306880458773, guid: 4707586ef6a87ac409d26a1ccfe29bef,
+    type: 3}
+  careerDayListContainer: {fileID: 30345923243425770}
+  careerMonthListContainer: {fileID: 3169909366511373352}
+  careerYearListContainer: {fileID: 3602154305234816453}
 --- !u!1 &1516485233572250943
 GameObject:
   m_ObjectHideFlags: 0
@@ -50279,6 +50295,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   changeIndexTxt: {fileID: 4249739387577264679}
+  dayWiseWinOrLoseText: {fileID: 0}
+  allTimeText: {fileID: 0}
+  last7DaysText: {fileID: 0}
   containerScroll_Name: 
   startingPage: 11
   fastSwipeThresholdTime: 0.3
@@ -50290,6 +50309,11 @@ MonoBehaviour:
   selectedPage: {fileID: 0}
   pageSelectionIcons: {fileID: 0}
   _currentPage: 0
+  careerListPrefab: {fileID: 6790170306880458773, guid: 4707586ef6a87ac409d26a1ccfe29bef,
+    type: 3}
+  careerDayListContainer: {fileID: 30345923243425770}
+  careerMonthListContainer: {fileID: 3169909366511373352}
+  careerYearListContainer: {fileID: 3602154305234816453}
 --- !u!1 &5188548927544874703
 GameObject:
   m_ObjectHideFlags: 0
@@ -53233,7 +53257,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8999171652542902735
 RectTransform:
   m_ObjectHideFlags: 0

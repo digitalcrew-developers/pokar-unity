@@ -378,10 +378,10 @@ public class SocketController : MonoBehaviour
 
                 case SocketEvetns.ON_MATCH_HISTORY_FOUND:
 
-                    //if (HandHistoryUiManager.instance != null)
-                    //{
-                    //    HandHistoryUiManager.instance.OnMatchHistoryFound(responseObject.data);
-                    //}
+                    if (HandHistoryUiManager.instance != null)
+                    {
+                        HandHistoryUiManager.instance.OnMatchHistoryFound(responseObject.data);
+                    }
                     break;
 
                 case SocketEvetns.ON_PlayerStandUp:
