@@ -168,6 +168,11 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             {
                 //if (data["status"].Equals(true))
                 //{
+                for (int i = 0; i < careerDayListContainer.transform.childCount; i++)
+                {
+                    Destroy(careerDayListContainer.transform.GetChild(i).gameObject);
+                }
+
                     listObj = Instantiate(careerListPrefab, careerDayListContainer.transform);
                     listObj.name = "Date";
                     listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
@@ -183,6 +188,11 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             }
             else if(containerScroll_Name.Equals("MonthScroll"))
             {
+                for (int i = 0; i < careerMonthListContainer.transform.childCount; i++)
+                {
+                    Destroy(careerMonthListContainer.transform.GetChild(i).gameObject);
+                }
+
                 listObj = Instantiate(careerListPrefab, careerMonthListContainer.transform);
                 //datelist.name = "Date";
                 listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
@@ -193,6 +203,11 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             }
             else if (containerScroll_Name.Equals("YearScroll"))
             {
+                for (int i = 0; i < careerYearListContainer.transform.childCount; i++)
+                {
+                    Destroy(careerYearListContainer.transform.GetChild(i).gameObject);
+                }
+
                 listObj = Instantiate(careerListPrefab, careerYearListContainer.transform);
                 //datelist.name = "Date";
                 listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
@@ -297,8 +312,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         aPageIndex = Mathf.Clamp(aPageIndex, 0, _pageCount - 1);
         _container.anchoredPosition = _pagePositions[aPageIndex];
         _currentPage = aPageIndex;
-        ChangeTxtVal();
-      
+        ChangeTxtVal();      
     }
 
     //------------------------------------------------------------------------

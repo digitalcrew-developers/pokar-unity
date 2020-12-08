@@ -32,9 +32,7 @@ public class CareerManager : MonoBehaviour
             GetRequestList();
         }
 
-        currentDate = DateTime.Now.Day;
-        currentMonth = DateTime.Now.Month;
-        currentYear = DateTime.Now.Year;
+        ResetData();
     }
 
     //private void FindTotalDays()
@@ -53,6 +51,14 @@ public class CareerManager : MonoBehaviour
         //TimeSpan elapsed = today.Subtract(startDate);
         //Debug.Log("Total Days: " +/* DateTime.DaysInMonth(2020,10)*/(int)elapsed.TotalDays);
     //}
+
+    public void ResetData()
+    {
+        Debug.Log("Reseting Time Data...");
+        currentDate = DateTime.Now.Day;
+        currentMonth = DateTime.Now.Month;
+        currentYear = DateTime.Now.Year;
+    }
 
     public void OnMenuBtnClick()
     {
@@ -80,27 +86,30 @@ public class CareerManager : MonoBehaviour
         switch (val)
         {
             case "day":
+                ResetData();
                 DMY_objList[0].SetActive(true);
                 DMY_objfocus[0].SetActive(true);
-                ScrollSnapRect.instance.containerScroll_Name = "DayScroll";
-                ScrollSnapRect.instance.startingPage = 29;
-                ScrollSnapRect.instance.UpdatePages();
+                DMY_objList[0].transform.Find("mid/GameObject/DayScroll").GetComponent<ScrollSnapRect>().containerScroll_Name = "DayScroll";
+                DMY_objList[0].transform.Find("mid/GameObject/DayScroll").GetComponent<ScrollSnapRect>().startingPage = 29;
+                DMY_objList[0].transform.Find("mid/GameObject/DayScroll").GetComponent<ScrollSnapRect>().UpdatePages();
                 break;
 
             case "month":
+                ResetData();
                 DMY_objList[1].SetActive(true);
                 DMY_objfocus[1].SetActive(true);
-                ScrollSnapRect.instance.containerScroll_Name = "MonthScroll";
-                ScrollSnapRect.instance.startingPage = 11;
-                ScrollSnapRect.instance.UpdatePages();
+                DMY_objList[1].transform.Find("mid/GameObject/MonthScroll").GetComponent<ScrollSnapRect>().containerScroll_Name = "MonthScroll";
+                DMY_objList[1].transform.Find("mid/GameObject/MonthScroll").GetComponent<ScrollSnapRect>().startingPage = 11;
+                DMY_objList[1].transform.Find("mid/GameObject/MonthScroll").GetComponent<ScrollSnapRect>().UpdatePages();
                 break;
 
             case "year":
+                ResetData();
                 DMY_objList[2].SetActive(true);
                 DMY_objfocus[2].SetActive(true);
-                ScrollSnapRect.instance.containerScroll_Name = "YearScroll";
-                ScrollSnapRect.instance.startingPage = 2;
-                ScrollSnapRect.instance.UpdatePages();
+                DMY_objList[2].transform.Find("mid/GameObject/YearScroll").GetComponent<ScrollSnapRect>().containerScroll_Name = "YearScroll";
+                DMY_objList[2].transform.Find("mid/GameObject/YearScroll").GetComponent<ScrollSnapRect>().startingPage = 2;
+                DMY_objList[2].transform.Find("mid/GameObject/YearScroll").GetComponent<ScrollSnapRect>().UpdatePages();
                 break;
         }
     }
@@ -133,14 +142,14 @@ public class CareerManager : MonoBehaviour
         requestObj.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => OnClickOnRequestStatus(requestDataList[requestCounter].requestId, "Rejected"));
         requestObj.SetActive(true);
         
-        requestDataList.RemoveAt(requestCounter);
-        requestCounter--;
+        //requestDataList.RemoveAt(requestCounter);
+        //requestCounter--;
         /*}*/
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.Log(errorMessage);
+        //Debug.Log(errorMessage);
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
@@ -153,24 +162,26 @@ public class CareerManager : MonoBehaviour
 
         if (requestType == RequestType.UpdateMultiAccountRequestStatus)
         {
+            Debug.Log("Response => UpdateMultiAccountRequestStatus : " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
-            Debug.Log("Update Request Status: " + data.ToString());
 
             if (data["status"].Equals(true))
             {
-                MainMenuController.instance.ShowMessage(data["response"].ToString());
-                //requestObj.SetActive(false);
+                requestDataList.RemoveAt(requestCounter);
+                requestCounter--;
 
-                //Debug.Log("Req Counter:" + requestCounter);
+                MainMenuController.instance.ShowMessage(data["response"].ToString());
+                
+                Debug.Log("Req Counter:" + requestCounter);
                 if (requestDataList.Count > 0)
                 {
-                    dataObj.transform.localPosition = new Vector3(0, 0, 0);
+                    dataObj.transform.localPosition = new Vector3(0, -75, 0);
                     ShowRequestList();
                 }
                 else
                 {
                     requestObj.SetActive(false);
-                    dataObj.transform.localPosition = new Vector3(0, 80, 0);
+                    dataObj.transform.localPosition = new Vector3(0, 15, 0);
                 }
             }
             else
@@ -181,33 +192,58 @@ public class CareerManager : MonoBehaviour
         
         if (requestType == RequestType.GetMultiAccountPendingRequests)
         {
+            Debug.Log("Response => GetMultiAccountPendingRequests : " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
-            Debug.Log("Get Request List: " + data.ToString());
 
             if (data["status"].Equals(true))
             {
-                //MainMenuController.instance.ShowMessage(data["response"].ToString());
-                for (int i = 0; i < data["getData"].Count; i++)
+                if (data["getData"].Count > 0)
                 {
-                    Debug.Log("Request No:" + i);
-                    RequestData reqData = new RequestData();
-                    reqData.requestId = data["getData"][i]["requestId"].ToString();
-                    reqData.byUserId = data["getData"][i]["byUserId"].ToString();
-                    reqData.toUserId = data["getData"][i]["toUserId"].ToString();
+                    Debug.Log("Generating Obj..");
+                    //MainMenuController.instance.ShowMessage(data["response"].ToString());
+                    for (int i = 0; i < data["getData"].Count; i++)
+                    {
+                        Debug.Log("Request No:" + i);
+                        RequestData reqData = new RequestData();
+                        reqData.requestId = data["getData"][i]["requestId"].ToString();
+                        reqData.byUserId = data["getData"][i]["byUserId"].ToString();
+                        reqData.toUserId = data["getData"][i]["toUserId"].ToString();
 
-                    requestDataList.Add(reqData);
-                    requestCounter++;
+                        requestDataList.Add(reqData);
+                        requestCounter++;
 
-                    /*Debug.Log("Request ID:" + reqData.requestId);
-                    Debug.Log("By ID:" + reqData.byUserId);
-                    Debug.Log("To ID:" + reqData.toUserId);*/
+                        /*Debug.Log("Request ID:" + reqData.requestId);
+                        Debug.Log("By ID:" + reqData.byUserId);
+                        Debug.Log("To ID:" + reqData.toUserId);*/
 
-                    /*requestObj.SetActive(true);
-                    requestObj.transform.GetChild(0).GetComponent<Text>().text = "Player " + data["getData"][i]["byUserId"] + " is requesting your career data.";*/
+                        /*requestObj.SetActive(true);
+                        requestObj.transform.GetChild(0).GetComponent<Text>().text = "Player " + data["getData"][i]["byUserId"] + " is requesting your career data.";*/
+
+                        if (requestDataList.Count > 0)
+                        {
+                            dataObj.transform.localPosition = new Vector3(0, -75, 0);
+                            ShowRequestList();
+                        }
+                        else
+                        {
+                            requestObj.SetActive(false);
+                            dataObj.transform.localPosition = new Vector3(0, 15, 0);
+                        }
+                    } 
                 }
-
-                if(requestDataList.Count > 0)
-                    ShowRequestList();
+                else
+                {
+                    //if (requestDataList.Count >= 0)
+                    //{
+                    //    dataObj.transform.localPosition = new Vector3(0, -75, 0);
+                    //    ShowRequestList();
+                    //}
+                    //else
+                    //{
+                        requestObj.SetActive(false);
+                        dataObj.transform.localPosition = new Vector3(0, 15, 0);
+                    //}
+                }
             }
             else
             {

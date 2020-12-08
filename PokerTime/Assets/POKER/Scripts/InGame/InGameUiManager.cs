@@ -307,6 +307,7 @@ public class InGameUiManager : MonoBehaviour
                 {
                     PlayerScript player = InGameManager.instance.GetMyPlayerObject();
                     player.ResetTurn();
+                    Debug.Log("Player Called...");
                     InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Call, (int)availableCallAmount, "Call");
                 }
                 break;
@@ -322,6 +323,7 @@ public class InGameUiManager : MonoBehaviour
                 {
                     PlayerScript player = InGameManager.instance.GetMyPlayerObject();
                     player.ResetTurn();
+                    Debug.Log("Player Checked...");
                     InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Check, 0, "Check");
                 }
                 break;
@@ -780,6 +782,8 @@ public class InGameUiManager : MonoBehaviour
 
             actionButtons[(int)PlayerAction.Check].SetActive(isCheckAvailable);
             actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+            
+            Debug.LogError("call amount  " + callAmount + "  lba  " + lastBetAmount);
 
             if (!isCheckAvailable)
             {

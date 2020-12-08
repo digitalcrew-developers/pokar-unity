@@ -9,6 +9,7 @@ using System.IO;
 using UnityEngine.Networking;
 using System;
 using BestHTTP.SocketIO;
+using System.Security.Cryptography;
 
 public class InGameManager : MonoBehaviour
 {
@@ -1125,7 +1126,12 @@ public class InGameManager : MonoBehaviour
         if (winnerPlayer != null)
         {
             WinnersNameText.text += "[username=" + winnerPlayer.playerData.userName + 
-                ",userId=" + winnerPlayer.playerData.userId +"] ";
+                                    ",userId=" + winnerPlayer.playerData.userId +"] ";
+
+            for (int i = 0; i < animationLayer.childCount; i++)
+            {
+                Destroy(animationLayer.GetChild(i).gameObject);
+            }
 
             GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
             gm.transform.Find("WinBy").GetComponent<Text>().text = name;
@@ -1408,7 +1414,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnOpenCardsDataFound(string serverResponse)
     {
-        Debug.LogError("OpenCardDataFound : " + serverResponse);
+        Debug.LogError("Response => OpenCardDataFound : " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         openCards = new CardData[data[0].Count];
 

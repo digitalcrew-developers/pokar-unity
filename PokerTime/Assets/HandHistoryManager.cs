@@ -31,6 +31,8 @@ public class HandHistoryManager : MonoBehaviour
     public Text SB_BB;
     public Text GameID;
 
+    public Text DebugText;
+
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -100,6 +102,7 @@ public class HandHistoryManager : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        Debug.Log("REspoNSE: " + serverResponse);
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
@@ -114,6 +117,8 @@ public class HandHistoryManager : MonoBehaviour
 
         if (requestType == RequestType.GetTableHandHistory)
         {
+            Debug.Log("Response => GetTableHandHistory :" + serverResponse);
+
             if (!string.IsNullOrEmpty(serverResponse))
             {
                 histories = JsonUtility.FromJson<AllHandHistroy>("{\"histories\":" + serverResponse + "}");

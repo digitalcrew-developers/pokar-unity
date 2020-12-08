@@ -62,14 +62,14 @@ public class CareerMnuScreenManager : MonoBehaviour
 
         if (requestType == RequestType.AddMultiAccountConnectRequest)
         {
+            Debug.Log("Response => AddMultiAccountConnectRequest : " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
-
-            Debug.Log("Add Request: " + data.ToString());
 
             if (data["status"].Equals(true))
             {
                 MainMenuController.instance.ShowMessage(data["response"].ToString());
                 requestedUserID.text = "";
+                CareerManager.instance.GetRequestList();
             }
             else
             {
@@ -78,9 +78,8 @@ public class CareerMnuScreenManager : MonoBehaviour
         }
         else if (requestType == RequestType.GetMyConnectedAccounts)
         {
+            Debug.Log("Response => GetMyConnectedAccounts : " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
-
-            Debug.Log("Get Connected Accounts: " + data.ToString());
 
             if (data["status"].Equals(true))
             {
