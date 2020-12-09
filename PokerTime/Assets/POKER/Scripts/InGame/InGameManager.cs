@@ -82,6 +82,8 @@ public class InGameManager : MonoBehaviour
     bool isScreenshotCaptured = false;
     string myPlayerSeat;
 
+    public Image thunderPointBar;
+
     private void Awake()
     {
         instance = this;
@@ -1513,6 +1515,9 @@ public class InGameManager : MonoBehaviour
         if (data[0].Count > 0)
         {
             //AdjustAllPlayersOnTable(data[0].Count);
+            Debug.Log(data[0][0]["currentSessionPoint"].ToString() + " <color=yellow>playRound</color> " + float.Parse(data[0][0]["playRound"].ToString()) / 10);
+            thunderPointBar.fillAmount = float.Parse(data[0][0]["playRound"].ToString()) / 10;
+            PointEarnedCounter = int.Parse(data[0][0]["currentSessionPoint"].ToString());
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
             //Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
             SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
@@ -1785,6 +1790,11 @@ public class InGameManager : MonoBehaviour
         SocketController.instance.SendLeaveMatchRequest();
         // StartCoroutine(WaitAndSendLeaveRequest());
 //        LoadMainMenu();  
+    }
+
+    private void OnDisable()
+    {
+        thunderPointBar.fillAmount = 0f;
     }
 
     void SaveScreenshot()
