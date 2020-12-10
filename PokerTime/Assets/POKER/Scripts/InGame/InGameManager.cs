@@ -594,10 +594,26 @@ public class InGameManager : MonoBehaviour
 
                 for (int i = startIndex; i < maxIndex && i < allPlayersObject.Length; i++)
                 {
-                    allPlayersObject[i].TogglePlayerUI(true);
+                    /*allPlayersObject[i].TogglePlayerUI(true);
                     allPlayersObject[i].ShowDetailsAsNewPlayer(playerData[index]);
                     allPlayersObject[i].ResetRealtimeResult();
-                    ++index;
+                    ++index;*/
+                    if (playerData[i].userId == PlayerManager.instance.GetPlayerGameData().userId)
+                    {
+                        allPlayersObject[0].TogglePlayerUI(true);
+                        allPlayersObject[0].ShowDetailsAsNewPlayer(playerData[i]);
+                        allPlayersObject[0].ResetRealtimeResult();
+                        ++index;
+                    }
+                    /*else
+                    {
+                        Debug.LogError("index showing : " + index);
+
+                        allPlayersObject[index].TogglePlayerUI(true);
+                        allPlayersObject[index].ShowDetailsAsNewPlayer(playerData[i]);
+                        allPlayersObject[index].ResetRealtimeResult();
+                        ++index;
+                    }*/
                 }
             }
         }
