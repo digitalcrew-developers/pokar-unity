@@ -551,10 +551,7 @@ public class InGameUiManager : MonoBehaviour
                 break;
         }
     }
-
-
-
-
+   
     public void OnSliderValueChange()
     {
         if (slider.value >= slider.maxValue)
@@ -1254,3 +1251,4 @@ public enum Emoji
     Ring,
     Car
 }
+

@@ -93,7 +93,7 @@ public class HandHistoryManager : MonoBehaviour
         OpenScreen("Summary");
 
         //StartCoroutine(LoadDemoCustomJSON("https://api.jsonbin.io/b/5fa11671a03d4a3bab0bd2ad"));
-
+        Debug.Log("))))))))))))))))))))))))  ");
         Debug.LogError("tableId id is :" + GlobalGameManager.instance.GetRoomData().socketTableId);
         string requestData = "{\"tableId\":\"" + GlobalGameManager.instance.GetRoomData().socketTableId + "\"}";
         
@@ -109,6 +109,7 @@ public class HandHistoryManager : MonoBehaviour
         {
             if (isShowErrorMessage)
             {
+                Debug.LogError("ERror hand histry.........................................");
                 MainMenuController.instance.ShowMessage(errorMessage);
             }
 
@@ -117,7 +118,7 @@ public class HandHistoryManager : MonoBehaviour
 
         if (requestType == RequestType.GetTableHandHistory)
         {
-            Debug.Log("Response => GetTableHandHistory :" + serverResponse);
+            Debug.Log("Response ========> GetTableHandHistory :" + serverResponse);
 
             if (!string.IsNullOrEmpty(serverResponse))
             {
