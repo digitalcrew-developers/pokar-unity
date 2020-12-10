@@ -293,7 +293,7 @@ public class PlayerScript : MonoBehaviour
     {
         JsonData data = JsonMapper.ToObject(result);
 
-        Debug.Log("Success data send" + data);
+        //Debug.Log("Success data send" + data);
         //  [{"currentSubRounds":1.0,"currentRounds":0.0,"handType":[{"userId":64.0,"handType":"Straight"},{"userId":65.0,"handType":"Pair"}]}]
         for (int i = 0; i < data[0]["handType"].Count; i++)
         {
@@ -394,7 +394,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void UpdateLastAction(string textToShow)
     {
-        Debug.Log("Last Action: " + textToShow);
+        //Debug.Log("Last Action: " + textToShow);
         if (textToShow == "" || string.IsNullOrEmpty(textToShow))
         {
             lastActionImage.SetActive(false);
@@ -406,10 +406,12 @@ public class PlayerScript : MonoBehaviour
         switch (textToShow)
         {
             case "Call":
+                Debug.LogError("Call Action");
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[0];
                 break;
             case "Check":
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[1];
+                Debug.LogError("Check Action");
                 break;
             case "Bet":
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[2];
@@ -427,7 +429,10 @@ public class PlayerScript : MonoBehaviour
         }
 
         lastActionText.text = textToShow;
+       
+
     }
+
     public bool CountDownTimerRunning = false;
 
     //public bool PlayedExtraTimeOnce = false;
@@ -501,7 +506,7 @@ public class PlayerScript : MonoBehaviour
 
         remainingTime = totalTime - remainingTime;      //10  - 30
 
-        UnityEngine.Debug.LogError("RemainingTime = " + remainingTime);
+        //UnityEngine.Debug.LogError("RemainingTime = " + remainingTime);
 
         if (remainingTime == 0)
         {

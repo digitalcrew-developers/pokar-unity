@@ -412,7 +412,7 @@ public class SocketController : MonoBehaviour
                     Debug.LogError("UnHandlled EventType Found in response eventType = " + responseObject.eventType + "   responseStructure = " + responseObject.data);
                     break;
             }
-       //     Debug.Log("responseObject.data***********" + responseObject.data);
+       //  Debug.LogError("responseObject.data***********" + responseObject.data);
         }
     }
 
