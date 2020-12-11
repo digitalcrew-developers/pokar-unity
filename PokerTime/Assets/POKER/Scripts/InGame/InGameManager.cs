@@ -747,6 +747,9 @@ public class InGameManager : MonoBehaviour
         amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         yield return new WaitForSeconds(3f);
         winnerAnimationFound = false;
+
+
+
         if (resetGame)
         {
             resetGame = false;
@@ -773,6 +776,8 @@ public class InGameManager : MonoBehaviour
         {
             g.SetActive(false);
         }
+
+
         for(int i = 0; i < PotValues.Count; i++)
         {
             string s = PotValues[i].ToString();
@@ -1205,6 +1210,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnNextMatchCountDownFound(string serverResponse)
     {
+        
         //DEV_CODE
         if (isRecording)
         {
@@ -1737,7 +1743,8 @@ public class InGameManager : MonoBehaviour
     private void ResetMatchData()
     {
         DontShowCommunityCardAnimation = false;
-        UpdatePot("");
+        //ClearPotAmount();
+        //UpdatePot("");        
         isRematchRequestSent = true;
 
         SocketController.instance.SetSocketState(SocketState.WaitingForOpponent);
@@ -1758,6 +1765,8 @@ public class InGameManager : MonoBehaviour
         pot1Amount = 0;
         RabbitButton.SetActive(false);
         ClearPotAmount();
+        UpdatePot("");
+        //ClearPotAmount();
         lastPlayerAction = "";
         openCards = null;
         LAST_BET_AMOUNT = 0;
