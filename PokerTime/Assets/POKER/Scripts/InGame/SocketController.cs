@@ -412,7 +412,7 @@ public class SocketController : MonoBehaviour
                     Debug.LogError("UnHandlled EventType Found in response eventType = " + responseObject.eventType + "   responseStructure = " + responseObject.data);
                     break;
             }
-         Debug.LogError("responseObject.data***********" + responseObject.data);
+         //Debug.LogError("responseObject.data***********" + responseObject.data);
         }
     }
 
@@ -525,7 +525,7 @@ public class SocketController : MonoBehaviour
 
     void OnNextRoundTimerFound(Socket socket, Packet packet, params object[] args)
     {
-        string responseText = JsonMapper.ToJson(args);
+         string responseText = JsonMapper.ToJson(args);
 
 #if DEBUG
 

@@ -253,6 +253,7 @@ public class PlayerScript : MonoBehaviour
         //      StartCoroutine("CountDownAnimation");
         WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + userId + "\"}", true, OnServerResponseFound);
     }
+
     public void ShowDetailsAsNewPlayer(PlayerData playerData)
     {
         //    Debug.LogError("Player data "+playerData.userName);
@@ -285,6 +286,8 @@ public class PlayerScript : MonoBehaviour
 
         if (isShow)
         {
+            Debug.Log("Going To Fold Screen...");
+            //UpdateLastAction("Fold");
             ToggleCards(false);
             ResetTurn();
         }
@@ -406,12 +409,10 @@ public class PlayerScript : MonoBehaviour
         switch (textToShow)
         {
             case "Call":
-                Debug.LogError("Call Action");
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[0];
                 break;
             case "Check":
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[1];
-                Debug.LogError("Check Action");
                 break;
             case "Bet":
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[2];
@@ -422,15 +423,16 @@ public class PlayerScript : MonoBehaviour
             case "AllIn":
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[4];
                 break;
+            case "Fold":
+            case "fold":
+                lastActionImage.GetComponent<Image>().sprite = EventSprite[5];
+                break;
 
             default:
-                Debug.LogError("No Action");
                 break;
         }
 
         lastActionText.text = textToShow;
-       
-
     }
 
     public bool CountDownTimerRunning = false;
@@ -473,7 +475,9 @@ public class PlayerScript : MonoBehaviour
     //}
 
     IEnumerator CountDownAnimation(float time)
-    {//   if (time == 0) yield break;
+    {
+        SoundManager.instance.PlaySound(SoundType.TurnSwitch);
+        //   if (time == 0) yield break;
         float t = 0;
         fx_holder.gameObject.SetActive(true);
         while (t <= time)
