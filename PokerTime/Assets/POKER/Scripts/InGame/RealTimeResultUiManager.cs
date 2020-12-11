@@ -54,27 +54,29 @@ public class RealTimeResultUiManager : MonoBehaviour
                         gm.transform.Find("BuyIn").GetComponent<TMPro.TextMeshProUGUI>().text = data["data"]["realTimeArr"][i]["totalCoinInGame"].ToString();
                         gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().text = data["data"]["realTimeArr"][i]["totalWinCoin"].ToString();
 
-                        if (data["data"]["realTimeArr"][i]["totalWinCoin"].ToString().Contains("+"))
-                        {
-                            gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().color = Color.green;
-                        }
-                        if (data["data"]["realTimeArr"][i]["totalWinCoin"].ToString().Contains("-"))
-                        {
-                            gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().color = Color.red;
-                        }else
-                        {
+                        Debug.Log(PrefsManager.GetPlayerData().userName + " = " + data["data"]["realTimeArr"][i]["userName"].ToString());
+                        if (PrefsManager.GetPlayerData().userName == data["data"]["realTimeArr"][i]["userName"].ToString())
                             gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().color = Color.yellow;
-                        }                    
+                        else
+                        {
+                            if (data["data"]["realTimeArr"][i]["totalWinCoin"].ToString().Contains("-"))
+                            {
+                                gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().color = Color.red;
+                            }
+                            else
+                            {
+                                gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().color = Color.green;
+                            }
+                        }
                     }
                     if(data["data"]["standoutArr"].Count > 0)
                     {
                         for (int i = 0; i < data["data"]["standoutArr"].Count; i++)
                         {
                             GameObject gm = Instantiate(spectatorPrefab, spectatorContent) as GameObject;
-                            gm.SetActive(true);
-
+                            gm.GetComponent<DownloadAvatar>().avatarUrl = data["data"]["standoutArr"][i]["profileImage"].ToString();
                             gm.transform.Find("Text").GetComponent<Text>().text = data["data"]["standoutArr"][i]["userName"].ToString();
-
+                            gm.SetActive(true);
                         }
                     }
                 }
