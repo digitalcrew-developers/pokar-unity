@@ -371,7 +371,7 @@ public class InGameManager : MonoBehaviour
 
     private void SwitchTurn(PlayerScript playerScript,bool isCheckAvailable)
     {
-        SoundManager.instance.PlaySound(SoundType.TurnSwitch);
+        //SoundManager.instance.PlaySound(SoundType.TurnSwitch);
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
@@ -441,12 +441,8 @@ public class InGameManager : MonoBehaviour
                 int callAmount = GetLastBetAmount() - (int)GetMyPlayerObject().GetPlayerData().totalBet;
                 InGameUiManager.instance.ToggleSuggestionButton(true, isCheckAvailable, callAmount, GetMyPlayerObject().GetPlayerData().balance);
             }
-        }
-
+        }        
     }
-
-
-
 
     private List<MatchMakingPlayerData> ReArrangePlayersList(List<MatchMakingPlayerData> matchMakingPlayerData)
     {
@@ -1019,12 +1015,32 @@ public class InGameManager : MonoBehaviour
 
             default:
                 {
+                    //for (int i = 0; i < communityCards.Length; i++)
+                    //{
+                    //    GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+
+                        //gm.transform.localScale = communityCards[i].transform.localScale;
+                        //gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                        //gm.transform.Rotate(0, -90, 0);
+                        //gm.transform.position = communityCards[i].transform.position;
+
+                        //gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                    //    gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                    //    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+
+                    //    Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                    //}
 
                     for (int i = 0; i < communityCards.Length; i++)
                     {
                         if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
                         communityCards[i].gameObject.SetActive(true);
+
+                        communityCards[i].transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
                     }
                 }
             break;
@@ -1059,18 +1075,19 @@ public class InGameManager : MonoBehaviour
         Debug.LogError("standUp serverResponse  " + serverResponse);       
         GetMyPlayerObject().StandUp();
     }
+
     public void OnClickStandupBtn()
     {
         AmISpectator = true;
         SocketController.instance.SendStandUpdata();
     }
 
-
-    public void OnPlayerActionCompleted(PlayerAction actionType,int betAmount,string playerAction)
+    public void OnPlayerActionCompleted(PlayerAction actionType, int betAmount, string playerAction)
     {
         // GetMyPlayerObject().ResetTurn();
         PlayerTimerReset();
 
+        //UpdateLastPlayerAction(playerAction);
         InGameUiManager.instance.ToggleActionButton(false);
 
         if (actionType == PlayerAction.Fold)
@@ -1090,14 +1107,10 @@ public class InGameManager : MonoBehaviour
         }
     }
 
-
-
     public void ToggleTopUpDone(bool isDone)
     {
         isTopUpDone = isDone;
     }
-
-
     #region SocketCallBacks
 
     private void ResultProcess(string serverResponse)
@@ -1297,7 +1310,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnTurnCountDownFound(string serverResponse)
     {
-        Debug.LogWarning("OnTurnCountDownFound" + serverResponse);
+        //Debug.LogWarning("OnTurnCountDownFound" + serverResponse);
         //if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         //{
         //    JsonData data = JsonMapper.ToObject(serverResponse);
@@ -1582,7 +1595,7 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
-                         playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
+                        playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
@@ -1702,7 +1715,7 @@ public class InGameManager : MonoBehaviour
 
                 if (playerWhosTurn != null)
                 {
-                    //Debug.LogWarning("Switching turn");
+                    Debug.LogWarning("Switching turn");
                     SwitchTurn(playerWhosTurn, isCheckAvailable);
                 }
                 else
