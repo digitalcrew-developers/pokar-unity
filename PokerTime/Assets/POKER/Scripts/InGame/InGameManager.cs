@@ -741,7 +741,7 @@ public class InGameManager : MonoBehaviour
                 gm.transform.localScale = Vector3.zero;*/
 
         //gm.transform.DOMove(playerScript.transform.position, 1.0f).SetEase(Ease.Linear);
-        gm.transform.DOMove(playerScript.transform.position, 0.5f).SetEase(Ease.Linear);
+        gm.transform.DOMove(playerScript.transform.position, 0.9f).SetEase(Ease.Linear);
         // gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         SoundManager.instance.PlaySound(SoundType.Bet);
         yield return new WaitForSeconds(1.1f);
