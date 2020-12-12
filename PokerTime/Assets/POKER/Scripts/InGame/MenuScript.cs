@@ -71,8 +71,29 @@ public class MenuScript : MonoBehaviour
                     //}
 
                     //DEV_CODE
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                    InGameManager.instance.OnClickStandupBtn();
+                    //Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet() + ", " + InGameManager.instance.GetPotAmount() + ", " + InGameManager.instance.GetMyPlayerObject().GetLocaPot().text);
+                    //return;
+                    InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
+                    if (InGameManager.instance.isGameStart && InGameManager.instance.GetMyPlayerObject().GetTotalBet() > 0)
+                    {
+                        InGameUiManager.instance.ShowMessage("You'll give up the pot if you choose to stand up before this hand ends",
+                        () =>
+                        {
+                            Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet());
+                            InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                            InGameManager.instance.OnClickStandupBtn();
+                        },
+                        () =>
+                        {
+                            InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                        },
+                        "Stand Up", "Cancel"
+                        );
+                    }
+                    else
+                    {
+                        InGameManager.instance.OnClickStandupBtn();
+                    }
                 }
                 break;
 
