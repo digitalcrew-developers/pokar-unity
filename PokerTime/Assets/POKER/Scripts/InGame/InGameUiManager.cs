@@ -262,6 +262,8 @@ public class InGameUiManager : MonoBehaviour
     }
     public void OnClickOnButton(string eventName)
     {
+        Debug.Log(eventName+ " " + InGameManager.instance.AmISpectator);
+
         SoundManager.instance.PlaySound(SoundType.Click);
 
         switch (eventName)
@@ -292,6 +294,8 @@ public class InGameUiManager : MonoBehaviour
                 break;
             case "emojiScreen":
                 {
+                    if (InGameManager.instance.AmISpectator)
+                        return;
                     ShowScreen(InGameScreens.EmojiScreen);
                 }
                 break;
