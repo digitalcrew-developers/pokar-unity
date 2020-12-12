@@ -1092,7 +1092,7 @@ public class InGameUiManager : MonoBehaviour
         g.transform.SetParent(EmojiShowTransform);
         g.transform.localScale = scaleValue;
         //g.GetComponent<EmojiBehaviour>().target = fromEmojiShowTransform;
-        g.transform.DOMove(sentTo.position, 3f);
+        g.transform.DOMove(sentTo.position, 1.5f);
     }
 
 
