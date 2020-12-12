@@ -35,10 +35,12 @@ public class EmojiUIScreenManager : MonoBehaviour
     {
         ClearAll();
         ShowContainer(containerVal);
-        if(InGameUiManager.instance.TempUserID!=null)
+        Debug.Log("Id " + InGameUiManager.instance.TempUserID);
+        if (InGameUiManager.instance.TempUserID != null)
         {
-            GetUserDetails(InGameUiManager.instance.TempUserID);
-        }      
+            //GetUserDetails(InGameUiManager.instance.TempUserID);
+            GetUserDetails(PrefsManager.GetPlayerData().userId);
+        }
     }
 
     private void ClearAll()
