@@ -553,7 +553,7 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < data[0].Count; i++)
         {
-            allPlayersObject[i].transform.GetChild(0).GetComponent<DownloadAvatar>().avatarUrl = data[0][i]["profileImage"].ToString();
+            //allPlayersObject[i].transform.GetChild(0).GetComponent<DownloadAvatar>().avatarUrl = data[0][i]["profileImage"].ToString();
             if (GetPlayerObject(data[0][i]["userId"].ToString()) == null) // player not in our list
             {
                 PlayerData playerDataObject = new PlayerData();
@@ -1601,7 +1601,7 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.userId = data[0][i]["userId"].ToString();
 
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
-                        playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();
+                        //playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
                         playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
