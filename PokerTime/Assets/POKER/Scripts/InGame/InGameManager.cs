@@ -553,6 +553,7 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < data[0].Count; i++)
         {
+            allPlayersObject[i].transform.GetChild(0).GetComponent<DownloadAvatar>().avatarUrl = data[0][i]["profileImage"].ToString();
             if (GetPlayerObject(data[0][i]["userId"].ToString()) == null) // player not in our list
             {
                 PlayerData playerDataObject = new PlayerData();
@@ -858,6 +859,7 @@ public class InGameManager : MonoBehaviour
 
     private IEnumerator WaitAndShowCommunityCardsAnimation()
     {
+        Debug.Log("<color=yellow>MATCH_ROUND " + MATCH_ROUND + "</color>");
         communityCardsAniamtionShowedUpToRound = MATCH_ROUND;
         bool isBetFound = false;
         for (int i = 0; i < onlinePlayersScript.Length; i++)
@@ -1072,7 +1074,7 @@ public class InGameManager : MonoBehaviour
 
     public void StandUpPlayer(string serverResponse)
     {
-        Debug.LogError("standUp serverResponse  " + serverResponse);       
+        Debug.LogError("standUp serverResponse  " + serverResponse);
         GetMyPlayerObject().StandUp();
     }
 
@@ -1554,11 +1556,12 @@ public class InGameManager : MonoBehaviour
             thunderPointBar.fillAmount = float.Parse(data[0][0]["playRound"].ToString()) / 10;
             PointEarnedCounter = int.Parse(data[0][0]["currentSessionPoint"].ToString());
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
+            isGameStart = isMatchStarted;
             //Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
             SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
             InGameUiManager.instance.tableId = data[0][0]["tableId"].ToString();
             ShowNewPlayersOnTable(data, isMatchStarted);
-
+            Debug.Log("<color=yellow>" + isMatchStarted + "</color>");
             if (data[0].Count == 1)
             {
                 Debug.LogWarning("ONE PLAYER-" + serverResponse);
@@ -1593,6 +1596,7 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.userId = data[0][i]["userId"].ToString();
 
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
+                        playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
                         playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
