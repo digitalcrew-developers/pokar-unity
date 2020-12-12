@@ -22,14 +22,14 @@ public class InGameShop : MonoBehaviour
     {
         playerData = PlayerManager.instance.GetPlayerGameData();
 
-     
+        UpdateAlltext(playerData);
 
         OnClickOnButton("item");
         /*playerGold.text= "" + (int)playerData.balance;*/
 
-        pointText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().points);
-        diamondText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().diamonds);
-        coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
+        //pointText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().points);
+        //diamondText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().diamonds);
+        //coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
 
         string requestData = "{\"shopCategoryId\":\"\"}";
         WebServices.instance.SendRequest(RequestType.GetShopValues, requestData, true, OnServerResponseFound);
@@ -37,10 +37,16 @@ public class InGameShop : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("i kdsjffgkdjghghghghghghghghghghghghghfs");
         var colors = menuBtn[0].GetComponent<Button>().colors;
         colors.normalColor = new Color32(255, 255, 255, 255);
         menuBtn[0].GetComponent<Button>().colors = colors;
+    }
+
+    private void UpdateAlltext(PlayerGameDetails playerData)
+    {
+        coinsText.text = Utility.GetTrimmedAmount("" + playerData.coins);
+        diamondText.text = Utility.GetTrimmedAmount("" + playerData.diamonds);
+        pointText.text = Utility.GetTrimmedAmount("" + playerData.points);
     }
 
     public void OnClickOnButton(string eventName)
@@ -237,7 +243,6 @@ public class InGameShop : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.Log("SHOP RESPONSE :" + serverResponse);
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
@@ -255,35 +260,38 @@ public class InGameShop : MonoBehaviour
         }
         if (requestType == RequestType.GetShopValues)
         {
-            JsonData data = JsonMapper.ToObject(serverResponse);
-
-            Debug.Log("Shop Data.." + data.ToJson().ToString());
+            Debug.Log("Response => GetShopValues(InGame): " + serverResponse);
+            JsonData data = JsonMapper.ToObject(serverResponse);            
         }
 
         if (requestType == RequestType.GetUserDetails)
         {
-            Debug.Log("profile :" + serverResponse);
+            Debug.Log("Response => GetUserDetails(InGame): " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["success"].ToString() == "1")
             {
                 for (int i = 0; i < data["getData"].Count; i++)
                 {
-                    PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data["getData"][i]["coins"].ToString());
+                    playerData.coins = float.Parse(data["getData"][i]["coins"].ToString());
+                    playerData.diamonds = float.Parse(data["getData"][i]["diamond"].ToString());
+                    playerData.points = float.Parse(data["getData"][i]["points"].ToString());
+
+                    UpdateAlltext(playerData);
+
                     if (MenuHandller.instance != null)
                     {
                         MenuHandller.instance.UpdateAllText();
                     }
-                    LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);                
+                    //LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);                
                 }
             }
         }
 
         if (requestType == RequestType.GetInGameShopValue)
         {
+            Debug.Log("Response => GetInGameShopValues: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
-
-            Debug.Log("Player Purchase Data.." + data.ToJson().ToString());
 
             if (data["status"].Equals(true))
             {
@@ -298,7 +306,7 @@ public class InGameShop : MonoBehaviour
                     {
                         MenuHandller.instance.UpdateAllText();
                     }
-                    LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
+                    //LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
                 }
                 else
                 {
@@ -315,7 +323,7 @@ public class InGameShop : MonoBehaviour
                     {
                         MenuHandller.instance.UpdateAllText();
                     }
-                    LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
+                    //LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
                 }
                 else
                 {

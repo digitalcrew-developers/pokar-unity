@@ -710,9 +710,10 @@ public class InGameManager : MonoBehaviour
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
-        Debug.Log("Last All in Bet: " + playerScript.GetLocalBetAmount()/*betAmount*/);
+        Debug.Log("Last All in Bet: " + /*playerScript.GetLocalBetAmount()*/betAmount);
+        
         GameObject gm = Instantiate(betAnimationPrefab,animationLayer) as GameObject;
-        gm.transform.GetChild(0).GetComponent<Text>().text = playerScript.GetLocalBetAmount().ToString()/*betAmount*/;
+        gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
         gm.transform.position = playerScript.transform.position;
         Vector3 initialScale = gm.transform.localScale;
         gm.transform.localScale = Vector3.zero;
@@ -730,14 +731,18 @@ public class InGameManager : MonoBehaviour
     {
         winnerAnimationFound = true;
         yield return new WaitForSeconds(.6f);
+
+        SoundManager.instance.PlaySound(SoundType.IncomingPot);
+
         GameObject gm = Instantiate(chipscoine,WinnAnimationpos.transform) as GameObject;
     //    gm.GetComponent<Text>().text = betAmount;
         gm.transform.position = WinnAnimationpos.transform.position;
-/*        Vector3 initialScale = gm.transform.localScale;
-        gm.transform.localScale = Vector3.zero;*/
+        /*        Vector3 initialScale = gm.transform.localScale;
+                gm.transform.localScale = Vector3.zero;*/
 
-        gm.transform.DOMove(playerScript.transform.position, 1.0f).SetEase(Ease.Linear);
-       // gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        //gm.transform.DOMove(playerScript.transform.position, 1.0f).SetEase(Ease.Linear);
+        gm.transform.DOMove(playerScript.transform.position, 0.5f).SetEase(Ease.Linear);
+        // gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         SoundManager.instance.PlaySound(SoundType.Bet);
         yield return new WaitForSeconds(1.1f);
         Destroy(gm);
@@ -1418,8 +1423,8 @@ public class InGameManager : MonoBehaviour
                 if (playerObject != null)
                 {
                     Debug.Log("Current Bet Amount : " + betAmount);
-                    StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
-                    /*StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));*/
+                    //StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
+                    StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));
                 }
                 else
                 {
@@ -1658,8 +1663,6 @@ public class InGameManager : MonoBehaviour
             }
             else if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
             {
-                Debug.Log("Game not started" + isMatchStarted);
-                
                 PlayerScript playerWhosTurn = null;
                 bool isCheckAvailable = false;
                 for (int i = 0; i < data[0].Count; i++)

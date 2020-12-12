@@ -81,6 +81,6 @@ public enum SoundType
     Kiss,
     bigWin,
     spinWheel,
-    Congratulation
-
+    Congratulation,
+    IncomingPot
 }
