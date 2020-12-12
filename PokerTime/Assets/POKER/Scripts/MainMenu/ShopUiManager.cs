@@ -1176,6 +1176,7 @@ public class ShopUiManager: MonoBehaviour
             }
         }
 
+
         if (isChangesMade)
         {
             UpdateUserBalance(playerData);
