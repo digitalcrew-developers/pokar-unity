@@ -54,7 +54,7 @@ public class CareerManager : MonoBehaviour
 
     public void ResetData()
     {
-        Debug.Log("Reseting Time Data...");
+        //Debug.Log("Reseting Time Data...");
         currentDate = DateTime.Now.Day;
         currentMonth = DateTime.Now.Month;
         currentYear = DateTime.Now.Year;

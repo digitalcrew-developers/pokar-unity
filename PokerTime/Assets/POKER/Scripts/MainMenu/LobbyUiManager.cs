@@ -228,7 +228,7 @@ public class LobbyUiManager: MonoBehaviour
 
         if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
         {
-            Debug.LogError("Download failed");
+            //Debug.LogError("Download failed");
         }
         else
         {
@@ -265,8 +265,8 @@ public class LobbyUiManager: MonoBehaviour
         GlobalGameManager.instance.SetRoomData(data);
         GameConstants.TURN_TIME = data.callTimer;
 
-        Debug.Log("GameConstants.TURN_TIME " + GameConstants.TURN_TIME);
-        Debug.Log("data.callTimer " + data.callTimer);
+        //Debug.Log("GameConstants.TURN_TIME " + GameConstants.TURN_TIME);
+        //Debug.Log("data.callTimer " + data.callTimer);
         if (data.gameMode != GameMode.OFC)
         {
             //if(GameConstants.poker)
@@ -341,7 +341,6 @@ public class LobbyUiManager: MonoBehaviour
     
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.Log(serverResponse);
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
@@ -358,6 +357,7 @@ public class LobbyUiManager: MonoBehaviour
 
         if (requestType == RequestType.GetLobbyRooms)
         {
+            //Debug.Log("Response => GetLobbyRooms: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["status"].Equals(true))

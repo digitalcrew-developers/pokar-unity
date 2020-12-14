@@ -117,7 +117,7 @@ public class InGameManager : MonoBehaviour
             allPlayersObject[i].TogglePlayerUI(false);
             allPlayersObject[i].ResetAllData();
         }
-        UnityEngine.Debug.Log("table id is :" + GlobalGameManager.instance.GetRoomData().socketTableId);
+        Debug.Log("table id is :" + GlobalGameManager.instance.GetRoomData().socketTableId);
         TableName.text = "";// GlobalGameManager.instance.GetRoomData().title;
         //AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
     }
@@ -381,6 +381,10 @@ public class InGameManager : MonoBehaviour
         currentPlayer = playerScript;
         if (currentPlayer.IsMe())
         {
+            //Handheld.Vibrate();
+#if UNITY_ANDROID && !UNITY_EDITOR
+            Vibration.Vibrate(500);
+#endif
             InGameUiManager.instance.ToggleSuggestionButton(false);
 
             SuggestionActions selectedSuggestionAction = InGameUiManager.instance.GetSelectedSuggestionAction();
@@ -478,7 +482,7 @@ public class InGameManager : MonoBehaviour
     }
 
 
-    private bool gameExitCalled = false;
+    public bool gameExitCalled = false;
 
     public void LoadMainMenu()
     {
@@ -496,7 +500,7 @@ public class InGameManager : MonoBehaviour
         SocketController.instance.SendLeaveMatchRequest();
         yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
         SocketController.instance.ResetConnection();
-
+        gameExitCalled = true;
         GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
     }
 
@@ -628,7 +632,7 @@ public class InGameManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("index showing : " + index);
+                    //Debug.LogError("index showing : " + index);
 
                     allPlayersObject[index].TogglePlayerUI(true);
                     allPlayersObject[index].ShowDetailsAsNewPlayer(playerData[i]);
@@ -901,6 +905,7 @@ public class InGameManager : MonoBehaviour
             case 1:
                 {
                     WinnersNameText.text = "";
+                    
                     SoundManager.instance.PlaySound(SoundType.CardMove);
 
                     for (int i = 0; i < 3; i++)
@@ -1026,12 +1031,12 @@ public class InGameManager : MonoBehaviour
                     //{
                     //    GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
 
-                        //gm.transform.localScale = communityCards[i].transform.localScale;
-                        //gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
-                        //gm.transform.Rotate(0, -90, 0);
-                        //gm.transform.position = communityCards[i].transform.position;
+                    //gm.transform.localScale = communityCards[i].transform.localScale;
+                    //gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                    //gm.transform.Rotate(0, -90, 0);
+                    //gm.transform.position = communityCards[i].transform.position;
 
-                        //gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                    //gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
                     //    gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
 
                     //    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
@@ -1541,7 +1546,13 @@ public class InGameManager : MonoBehaviour
             //InGameUiManager.instance.isSelectedWinningBooster = true;
         }
 
-        if (gameExitCalled) { return; }
+        Debug.Log("IsExitCalled: " + gameExitCalled);
+        if (gameExitCalled) 
+        {
+            //SocketController.instance.ResetConnection();
+            return;
+        }
+        
         Debug.Log("**[OnPlayerObjectFound] _ 0" + serverResponse);
 
         if (serverResponse.Length < 20)

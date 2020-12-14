@@ -76,7 +76,7 @@ public class PlayerScript : MonoBehaviour
  
     IEnumerator loadSpriteImageFromUrl(string URL, Image image)
     {
-        Debug.Log("Going To Set User Profile and Flag");
+        //Debug.Log("Going To Set User Profile and Flag");
         UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
         yield return unityWebRequest.SendWebRequest();
 
@@ -286,7 +286,7 @@ public class PlayerScript : MonoBehaviour
 
         if (isShow)
         {
-            Debug.Log("Going To Fold Screen...");
+            //Debug.Log("Going To Fold Screen...");
             //UpdateLastAction("Fold");
             ToggleCards(false);
             ResetTurn();
@@ -300,7 +300,7 @@ public class PlayerScript : MonoBehaviour
         //  [{"currentSubRounds":1.0,"currentRounds":0.0,"handType":[{"userId":64.0,"handType":"Straight"},{"userId":65.0,"handType":"Pair"}]}]
         for (int i = 0; i < data[0]["handType"].Count; i++)
         {
-            Debug.Log("Success data send" + data[0]["handType"][i]["userId"].ToString());
+            //Debug.Log("Success data send" + data[0]["handType"][i]["userId"].ToString());
             string userId = (data[0]["handType"][i]["userId"].ToString());
             string handType = (data[0]["handType"][i]["handType"].ToString());
             if (playerData.userId == userId)
