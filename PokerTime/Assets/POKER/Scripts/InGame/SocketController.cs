@@ -146,6 +146,7 @@ public class SocketController : MonoBehaviour
 
     void OnApplicationFocus(bool hasFocus)
     {
+#if !UNITY_EDITOR
         isPaused = !hasFocus;
         if (!isPaused)
         {
@@ -155,7 +156,9 @@ public class SocketController : MonoBehaviour
         {
             MinimizeAppEvent();
         }
+#endif
     }
+
 
     void OnApplicationPause(bool pauseStatus)
     {
@@ -455,7 +458,7 @@ public class SocketController : MonoBehaviour
 
 
 
-    #region LISTNER_METHODS
+#region LISTNER_METHODS
 
     void OnPlayerObjectFound(Socket socket, Packet packet, params object[] args)
     {
@@ -1091,7 +1094,7 @@ public class SocketController : MonoBehaviour
         socketResponse.Add(response);
     }
 
-    #endregion
+#endregion
 
 
 
@@ -1100,7 +1103,7 @@ public class SocketController : MonoBehaviour
     // EMIT_METHODS ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-    #region EMIT_METHODS
+#region EMIT_METHODS
 
     public void RequestRabbitCard()
     {
@@ -1470,7 +1473,7 @@ public class SocketController : MonoBehaviour
         socketRequest.Add(request);
     }
 
-    #endregion
+#endregion
 
 
 
@@ -1546,7 +1549,7 @@ public class SocketController : MonoBehaviour
 
 
 
-    #region ReconnectProtocols
+#region ReconnectProtocols
 
     private void StartReconnectProcedure()
     {
@@ -1646,7 +1649,7 @@ public class SocketController : MonoBehaviour
         }
     }
 
-    #endregion
+#endregion
 
 
 }
