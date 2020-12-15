@@ -311,7 +311,7 @@ public class InGameUiManager : MonoBehaviour
                 {
                     PlayerScript player = InGameManager.instance.GetMyPlayerObject();
                     player.ResetTurn();
-                    Debug.Log("Player Called...");
+                    //Debug.Log("Player Called...");
                     InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Call, (int)availableCallAmount, "Call");
                 }
                 break;
@@ -327,7 +327,7 @@ public class InGameUiManager : MonoBehaviour
                 {
                     PlayerScript player = InGameManager.instance.GetMyPlayerObject();
                     player.ResetTurn();
-                    Debug.Log("Player Checked...");
+                    //Debug.Log("Player Checked...");
                     InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Check, 0, "Check");
                 }
                 break;
@@ -788,7 +788,7 @@ public class InGameUiManager : MonoBehaviour
 
             if (!isCheckAvailable)
             {
-                if (callAmount >= 0) // amount availabel to bet
+                if (callAmount > 0) // amount available to bet
                 {
                     if(lastBetAmount > availableBalance)
                     {
@@ -808,14 +808,15 @@ public class InGameUiManager : MonoBehaviour
                     actionButtons[(int)PlayerAction.Call].SetActive(false);
                     actionButtons[(int)PlayerAction.Raise].SetActive(false);
                 }
-                if(callAmount==0)
+               
+                if (callAmount == 0)
                 {
                     callAmountText.text = "";
-                    actionButtons[(int)PlayerAction.Call].SetActive(false);
-                    actionButtons[(int)PlayerAction.Raise].SetActive(false);
-                    actionButtons[(int)PlayerAction.Check].SetActive(false);
-                    actionButtons[(int)PlayerAction.AllIn].SetActive(false);
-                    actionButtons[(int)PlayerAction.Fold].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Check].SetActive(false);
+                    //actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Fold].SetActive(false);
                 }
             }
 
@@ -1179,8 +1180,6 @@ public class InGameUiManager : MonoBehaviour
 
             }
         }
-
-        
     }
 
 }

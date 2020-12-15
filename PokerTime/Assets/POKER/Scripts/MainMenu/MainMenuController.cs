@@ -638,15 +638,15 @@ public class MainMenuController : MonoBehaviour
             }
             else
             {
-                Debug.LogError(data["message"].ToString());
+                //Debug.LogError(data["message"].ToString());
                 //ShowMessage(data["message"].ToString());
             }
         }
         else if (requestType == RequestType.userLoginLogs)
         {
+            Debug.Log("Response => UserLoginLogs" + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
-            Debug.Log("USER LOGIN LOGS____________  ");
             if (data["success"].ToString() == "1")
             {
                 //PraseNotificationMessage(data);

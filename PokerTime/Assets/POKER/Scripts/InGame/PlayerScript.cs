@@ -61,9 +61,9 @@ public class PlayerScript : MonoBehaviour
                 {
                     string av_url = (data["getData"][i]["profileImage"].ToString());
                     string flag_url = (data["getData"][i]["countryFlag"].ToString());
-                    string frame_url = (data["getData"][i]["frameURL"].ToString());
-                    StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
-                    StartCoroutine(loadSpriteImageFromUrl(flag_url, flag));
+                    //string frame_url = (data["getData"][i]["frameURL"].ToString());
+                    //StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
+                    //StartCoroutine(loadSpriteImageFromUrl(flag_url, flag));
                     //StartCoroutine(loadSpriteImageFromUrl(frame_url, frame));
                 }
             }
@@ -76,7 +76,7 @@ public class PlayerScript : MonoBehaviour
  
     IEnumerator loadSpriteImageFromUrl(string URL, Image image)
     {
-        Debug.Log("Going To Set User Profile and Flag");
+        //Debug.Log("Going To Set User Profile and Flag");
         UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
         yield return unityWebRequest.SendWebRequest();
 
@@ -247,12 +247,12 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public void ShowAvtars_frame_flag(string userId)
-    {
-        //  Debug.LogError("*****=> user id " + userId);
-        //      StartCoroutine("CountDownAnimation");
-        WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + userId + "\"}", true, OnServerResponseFound);
-    }
+    //public void ShowAvtars_frame_flag(string userId)
+    //{
+    //    //  Debug.LogError("*****=> user id " + userId);
+    //    //      StartCoroutine("CountDownAnimation");
+    //    WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + userId + "\"}", true, OnServerResponseFound);
+    //}
 
     public void ShowDetailsAsNewPlayer(PlayerData playerData)
     {
@@ -286,7 +286,7 @@ public class PlayerScript : MonoBehaviour
 
         if (isShow)
         {
-            Debug.Log("Going To Fold Screen...");
+            //Debug.Log("Going To Fold Screen...");
             //UpdateLastAction("Fold");
             ToggleCards(false);
             ResetTurn();
@@ -300,7 +300,7 @@ public class PlayerScript : MonoBehaviour
         //  [{"currentSubRounds":1.0,"currentRounds":0.0,"handType":[{"userId":64.0,"handType":"Straight"},{"userId":65.0,"handType":"Pair"}]}]
         for (int i = 0; i < data[0]["handType"].Count; i++)
         {
-            Debug.Log("Success data send" + data[0]["handType"][i]["userId"].ToString());
+            //Debug.Log("Success data send" + data[0]["handType"][i]["userId"].ToString());
             string userId = (data[0]["handType"][i]["userId"].ToString());
             string handType = (data[0]["handType"][i]["handType"].ToString());
             if (playerData.userId == userId)
@@ -477,6 +477,12 @@ public class PlayerScript : MonoBehaviour
     IEnumerator CountDownAnimation(float time)
     {
         SoundManager.instance.PlaySound(SoundType.TurnSwitch);
+
+        //Handheld.Vibrate();
+#if UNITY_ANDROID && !UNITY_EDITOR
+        Vibration.Vibrate(500);
+#endif
+
         //   if (time == 0) yield break;
         float t = 0;
         fx_holder.gameObject.SetActive(true);

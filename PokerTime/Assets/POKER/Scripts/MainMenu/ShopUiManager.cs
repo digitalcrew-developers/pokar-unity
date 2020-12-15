@@ -1108,6 +1108,7 @@ public class ShopUiManager: MonoBehaviour
                         if (playerData.points >= float.Parse(itemData.purchaseValue))
                         {
                             playerData.points -= purchaseValue;
+                            if (playerData.points < 0f) { playerData.points = 0f; }
                             playerData.diamonds += float.Parse(itemData.getValue);
                             isChangesMade = true;
                         }
@@ -1143,6 +1144,7 @@ public class ShopUiManager: MonoBehaviour
                         if (playerData.diamonds >= purchaseValue)
                         {
                             playerData.diamonds -= purchaseValue;
+                            if (playerData.diamonds < 0f) { playerData.diamonds = 0f; }
                             playerData.coins += float.Parse(itemData.getValue);
                             isChangesMade = true;
                         }
@@ -1160,6 +1162,7 @@ public class ShopUiManager: MonoBehaviour
                         if (playerData.points >= purchaseValue)
                         {
                             playerData.points -= purchaseValue;
+                            if (playerData.points < 0f) { playerData.points = 0f; }
                             playerData.coins += float.Parse(itemData.getValue);
                             isChangesMade = true;
                         }
@@ -1173,6 +1176,79 @@ public class ShopUiManager: MonoBehaviour
 
                 default:
                 break;
+            }
+        }
+        else if (itemData.purchaseItem == PurchaseItem.Card)
+        {
+            float purchaseValue = float.Parse(itemData.purchaseValue);
+
+            switch (itemData.purchaseCurrency)
+            {
+                case PurchaseCurrency.Dollar:
+                    {
+                        if (itemData.vipCard.ToString().Equals("Bronze"))
+                            Debug.Log("Purchasing Bronze card Using Dollar...");
+                        if (itemData.vipCard.ToString().Equals("Silver"))
+                            Debug.Log("Purchasing Silver card Using Dollar...");
+                        if (itemData.vipCard.ToString().Equals("Platinum"))
+                            Debug.Log("Purchasing Platinum card Using Dollar...");
+
+                        isChangesMade = true;
+                    }
+                    break;
+
+
+                case PurchaseCurrency.Diamond:
+                    {
+                        if (playerData.diamonds >= purchaseValue)
+                        {
+                            playerData.diamonds -= purchaseValue;
+                            if (playerData.diamonds < 0f) { playerData.diamonds = 0f; }
+
+                            if (itemData.vipCard.ToString().Equals("Bronze"))
+                                Debug.Log("Purchasing Bronze card Using Diamonds...");
+                            if (itemData.vipCard.ToString().Equals("Silver"))
+                                Debug.Log("Purchasing Silver card Using Diamonds...");
+                            if (itemData.vipCard.ToString().Equals("Platinum"))
+                                Debug.Log("Purchasing Platinum card Using Diamonds...");
+
+                            isChangesMade = true;
+                        }
+                        else
+                        {
+                            //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
+                            MainMenuController.instance.ShowMessage("Insufficient Diamonds");
+                        }
+                    }
+                    break;
+
+
+                case PurchaseCurrency.Point:
+                    {
+                        if (playerData.points >= purchaseValue)
+                        {
+                            playerData.points -= purchaseValue;
+                            if (playerData.points < 0f) { playerData.points = 0f; }
+
+                            if (itemData.vipCard.ToString().Equals("Bronze"))
+                                Debug.Log("Purchasing Bronze card Using Points...");
+                            if (itemData.vipCard.ToString().Equals("Silver"))
+                                Debug.Log("Purchasing Silver card Using Points...");
+                            if (itemData.vipCard.ToString().Equals("Platinum"))
+                                Debug.Log("Purchasing Platinum card Using Points...");
+
+                            isChangesMade = true;
+                        }
+                        else
+                        {
+                            //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
+                            MainMenuController.instance.ShowMessage("Insufficient Points to purchase Cards...");
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
 

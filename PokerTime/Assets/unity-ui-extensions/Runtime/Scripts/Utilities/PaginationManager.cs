@@ -83,7 +83,7 @@ namespace UnityEngine.UI.Extensions
         /// <param name="pageNo"></param>
         public void GoToScreen(int pageNo)
         {
-            Debug.Log("GO TO SCREEN");
+            //Debug.Log("GO TO SCREEN");
             scrollSnap.GoToScreen(pageNo);
         }
 

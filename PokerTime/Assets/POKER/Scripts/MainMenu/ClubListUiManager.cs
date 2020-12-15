@@ -140,7 +140,7 @@ public class ClubListUiManager : MonoBehaviour
 
 		if (requestType == RequestType.GetClubList)
 		{
-			Debug.Log("On Club List Found: " + serverResponse.ToString());
+			Debug.Log("Response => GetClubList: " + serverResponse);
 
 			JsonData data = JsonMapper.ToObject(serverResponse);
 

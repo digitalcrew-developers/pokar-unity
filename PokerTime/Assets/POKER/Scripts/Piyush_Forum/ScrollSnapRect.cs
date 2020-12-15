@@ -179,7 +179,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                     listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
                     listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
 
-                    Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+                    //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
                 //}
                 //else
                 //{
@@ -199,7 +199,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                 listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
                 listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
 
-                Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+                //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
             }
             else if (containerScroll_Name.Equals("YearScroll"))
             {
@@ -214,7 +214,7 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                 listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
                 listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
 
-                Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+                //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
             }
         }
         else

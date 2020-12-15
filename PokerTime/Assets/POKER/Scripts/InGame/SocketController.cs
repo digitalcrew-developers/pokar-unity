@@ -221,7 +221,9 @@ public class SocketController : MonoBehaviour
     private void SeatObjectsReceived(Socket socket, Packet packet, object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
-        Debug.LogError(responseText);
+        Debug.LogError("Response => Seat of Player: " + responseText);
+
+        InGameManager.instance.gameExitCalled = true;
     }
 
     private void HandleSocketResponse()
@@ -236,7 +238,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
             //if (GlobalGameManager.instance.CanDebugThis(responseObject.eventType))
             //{
-            //    Debug.Log("---------------Handling ServerResponse = " + responseObject.eventType + "  socketState = " + socketState + "   data = " + responseObject.data);
+            //Debug.LogError("---------------Handling ServerResponse = " + responseObject.eventType + "  socketState = " + socketState + "   data = " + responseObject.data);
             //}
 #else
             Debug.LogError("Handling ServerResponse = " + responseObject.eventType + "  socketState = " + socketState + "   data = " + responseObject.data);
@@ -289,6 +291,8 @@ public class SocketController : MonoBehaviour
                 case SocketEvetns.PLAYER_OBJECT:
                     if (InGameManager.instance != null)
                     {
+                        //Debug.LogError("Current Socket State: " + GetSocketState());
+
                         if (GetSocketState() == SocketState.ReConnecting)
                         {
                             SetSocketState(SocketState.Game_Running);
@@ -399,13 +403,13 @@ public class SocketController : MonoBehaviour
                 case SocketEvetns.ON_GET_RANDOM_CARD:
                     //InGameUiManager.instance.DeductCoinPostServer(InGameUiManager.instance.winnigBoosterAmount, responseObject.data.Substring(2, 2));
                     string cardName = responseObject.data.Substring(2, 2);
-                    Debug.Log("Card Name FUll: " + cardName);
+                    //Debug.Log("Card Name FUll: " + cardName);
 
                     CardData cardDt = CardsManager.instance.GetCardData(cardName);
                     InGameUiManager.instance.winningBoosterCardName = cardDt.cardNumber.ToString();
                     InGameUiManager.instance.arrowPopUpText.text += InGameUiManager.instance.winningBoosterCardName;
 
-                    Debug.Log("Name: " + cardDt.cardNumber);
+                    //Debug.Log("Name: " + cardDt.cardNumber);
                     break;
 
                 default:
@@ -538,6 +542,14 @@ public class SocketController : MonoBehaviour
         Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
 #endif
 #endif
+
+        //DEV_CODE
+        if (InGameUiManager.instance.actionButtonParent.activeSelf)
+            InGameUiManager.instance.actionButtonParent.SetActive(false);
+        
+        if (InGameUiManager.instance.suggestionButtonParent.activeSelf)
+            InGameUiManager.instance.suggestionButtonParent.SetActive(false);
+        //***********************************************
 
         SocketResponse response = new SocketResponse();
         response.eventType = SocketEvetns.ON_NEXT_ROUND_TIMER_FOUND;
