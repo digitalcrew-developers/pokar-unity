@@ -381,10 +381,6 @@ public class InGameManager : MonoBehaviour
         currentPlayer = playerScript;
         if (currentPlayer.IsMe())
         {
-            //Handheld.Vibrate();
-#if UNITY_ANDROID && !UNITY_EDITOR
-            Vibration.Vibrate(500);
-#endif
             InGameUiManager.instance.ToggleSuggestionButton(false);
 
             SuggestionActions selectedSuggestionAction = InGameUiManager.instance.GetSelectedSuggestionAction();
@@ -1264,6 +1260,7 @@ public class InGameManager : MonoBehaviour
                     if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
                     {
                         ToggleTopUpDone(false);
+                        Debug.Log("<color=pink>" + "MinBuyIn: " + GlobalGameManager.instance.GetRoomData().minBuyIn + " and Available Balance: " + availableBalance + "</color>");
                         SocketController.instance.SendReMatchRequest("Yes", "0");
                     }
                     else
@@ -1278,6 +1275,7 @@ public class InGameManager : MonoBehaviour
                         //if (userMainBalance >= balanceToAdd)
                         if (userMainBalance < EPSILON)
                         {
+                            Debug.Log("<color=pink>" + "UserMainBalance: " + userMainBalance  + " </color>");
                             SocketController.instance.SendReMatchRequest("Yes", "0");
                             //send topup request with the below api.. for clarification contact Pradeep - Digital Crew
                             SocketController.instance.SendTopUpRequest(balanceToAdd);
@@ -1292,6 +1290,7 @@ public class InGameManager : MonoBehaviour
                         {
                             if (availableBalance > GlobalGameManager.instance.GetRoomData().smallBlind)
                             {
+                                Debug.Log("<color=pink>" + "SmallBlind: " + GlobalGameManager.instance.GetRoomData().smallBlind + " and Available Balance: " + availableBalance + "</color>");
                                 SocketController.instance.SendReMatchRequest("Yes", "0");
                             }
                             else
@@ -1305,6 +1304,7 @@ public class InGameManager : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("<color=pink>Remaining Time and buffer time not matched...</color>");
                     SocketController.instance.SendReMatchRequest("No", "0");
                 }
             }

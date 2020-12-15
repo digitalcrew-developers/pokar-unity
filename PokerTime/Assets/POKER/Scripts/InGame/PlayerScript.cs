@@ -61,9 +61,9 @@ public class PlayerScript : MonoBehaviour
                 {
                     string av_url = (data["getData"][i]["profileImage"].ToString());
                     string flag_url = (data["getData"][i]["countryFlag"].ToString());
-                    string frame_url = (data["getData"][i]["frameURL"].ToString());
-                    StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
-                    StartCoroutine(loadSpriteImageFromUrl(flag_url, flag));
+                    //string frame_url = (data["getData"][i]["frameURL"].ToString());
+                    //StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
+                    //StartCoroutine(loadSpriteImageFromUrl(flag_url, flag));
                     //StartCoroutine(loadSpriteImageFromUrl(frame_url, frame));
                 }
             }
@@ -247,12 +247,12 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public void ShowAvtars_frame_flag(string userId)
-    {
-        //  Debug.LogError("*****=> user id " + userId);
-        //      StartCoroutine("CountDownAnimation");
-        WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + userId + "\"}", true, OnServerResponseFound);
-    }
+    //public void ShowAvtars_frame_flag(string userId)
+    //{
+    //    //  Debug.LogError("*****=> user id " + userId);
+    //    //      StartCoroutine("CountDownAnimation");
+    //    WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + userId + "\"}", true, OnServerResponseFound);
+    //}
 
     public void ShowDetailsAsNewPlayer(PlayerData playerData)
     {
@@ -477,6 +477,12 @@ public class PlayerScript : MonoBehaviour
     IEnumerator CountDownAnimation(float time)
     {
         SoundManager.instance.PlaySound(SoundType.TurnSwitch);
+
+        //Handheld.Vibrate();
+#if UNITY_ANDROID && !UNITY_EDITOR
+        Vibration.Vibrate(500);
+#endif
+
         //   if (time == 0) yield break;
         float t = 0;
         fx_holder.gameObject.SetActive(true);

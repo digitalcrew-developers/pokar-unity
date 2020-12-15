@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using LitJson;
 using TMPro;
 using UnityEngine;
@@ -19,6 +20,12 @@ public class RegistrationManager : MonoBehaviour
     public TMP_InputField tmp_registrationUserName, tmp_registrationPassword, tmp_registrationConfirmPassword;
     public TMP_InputField tmp_loginUserName, tmp_loginPassword;
 
+    [Header("Forgot Password")]
+    public InputField verificationCodeInputField;
+    public Button GetVerificationCode;
+    
+    private float timer = 1;
+
     private void Awake()
     {
         if (null== instance)
@@ -29,6 +36,7 @@ public class RegistrationManager : MonoBehaviour
 
     private void OnEnable()
     {
+        verificationCodeInputField.interactable = true;
         popUpText.gameObject.SetActive(false);
         wrongPasswordText.gameObject.SetActive(false);
         forgotPassword.SetActive(false);
@@ -46,10 +54,50 @@ public class RegistrationManager : MonoBehaviour
         }
     }
 
+
+    private void FixedUpdate()
+    {
+        if (timer > 1)
+        {
+            verificationCodeInputField.interactable = true;
+            timer -= Time.deltaTime;
+            GetVerificationCode.transform.GetChild(0).GetComponent<Text>().text = "Resend After " + timer.ToString("f0") + "s";
+        }
+        else if (timer < 1)
+        {
+            GetVerificationCode.interactable = true;
+            verificationCodeInputField.transform.Find("WrongVeriCode").gameObject.SetActive(false);
+            GetVerificationCode.transform.GetChild(0).GetComponent<Text>().text = "Resend";
+            GetVerificationCode.transform.GetChild(0).GetComponent<Text>().color = new Color32(140, 224, 240, 255);
+        }
+
+        if (verificationCodeInputField.text.Length > 0 && forgotPassword.transform.Find("Email").GetComponent<InputField>().text.Length > 0)
+        {
+            forgotPassword.transform.Find("Submit").GetComponent<Button>().interactable = true;
+            //OLD CODE TO ENABLE/DISABLE LINK BUTTON
+            //isColorBtnLinkEmail = true;
+            //colorImgBtnLinkEmail.color = new Color32(52, 140, 52, 255);
+            //btnLinkEmail.GetComponent<Button>().enabled = true;
+        }
+        else
+        {
+            forgotPassword.transform.Find("Submit").GetComponent<Button>().interactable = false;
+        }
+    }
+
+
+    public void OnValueChangedEmail()
+    {
+        if (forgotPassword.transform.Find("WrongEmail").gameObject.activeSelf)
+        {
+            forgotPassword.transform.Find("WrongEmail").GetComponent<Text>().text = "";
+            forgotPassword.transform.Find("WrongEmail").gameObject.SetActive(false);
+        }
+    }
+
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
-
 
         switch (eventName)
         {
@@ -164,10 +212,41 @@ public class RegistrationManager : MonoBehaviour
             case "forgotpwd":
                 {
                     forgotPassword.SetActive(true);
-
+                    forgotPassword.transform.Find("Submit").GetComponent<Button>().interactable = false;
                     loginScreen.SetActive(false);
                     registrationScreen.SetActive(false);
                     signUpScreen.SetActive(false);
+                }
+                break;
+
+            case "closeForgotPwd":
+                {
+                    forgotPassword.SetActive(false);
+                    ResetForgotPwdScreen();
+                    loginScreen.SetActive(true);
+                    registrationScreen.SetActive(false);
+                    signUpScreen.SetActive(false);
+                    verificationCodeInputField.transform.Find("WrongVeriCode").gameObject.SetActive(true);
+                }
+                break;
+
+            case "closeLogin":
+                {
+                    forgotPassword.SetActive(false);
+                    ResetLoginScreen();
+                    loginScreen.SetActive(false);
+                    registrationScreen.SetActive(false);
+                    signUpScreen.SetActive(true);
+                }
+                break;
+
+            case "closeRegistration":
+                {
+                    forgotPassword.SetActive(false);
+                    ResetRegistrationScreen();
+                    loginScreen.SetActive(false);
+                    registrationScreen.SetActive(false);
+                    signUpScreen.SetActive(true);
                 }
                 break;
 
@@ -177,22 +256,21 @@ public class RegistrationManager : MonoBehaviour
         }
     }
 
-    public void SubmitEmailForForgotPassword()
+    public void GetVerificationCodeOnEmail()
     {
-
-        bool hasAt = forgotPassword.transform.Find("Email").GetComponent<InputField>().text.IndexOf('@') > 0;
-        if (hasAt)
+        if (forgotPassword.transform.Find("Email").GetComponent<InputField>().text.Length > 0)
         {
             forgotPassword.transform.Find("WrongEmail").gameObject.SetActive(false);
-            FetchUserData();
+            FetchOTPOnEmail();
         }
         else
         {
+            forgotPassword.transform.Find("WrongEmail").GetComponent<Text>().text = "*Content cannot be empty";
             forgotPassword.transform.Find("WrongEmail").gameObject.SetActive(true);
         }
     }
 
-    void FetchUserData()
+    void FetchOTPOnEmail()
     {
         string requestData = "{\"email\":\"" + forgotPassword.transform.Find("Email").GetComponent<InputField>().text + "\"}";
 
@@ -213,6 +291,11 @@ public class RegistrationManager : MonoBehaviour
         /*tmp_registrationUserName*/registrationUserName.text = "";
         /*tmp_registrationPassword*/registrationPassword.text = "";
         /*tmp_registrationConfirmPassword*/registrationConfirmPassword.text = "";
+    }
+
+    private void ResetForgotPwdScreen()
+    {
+        forgotPassword.transform.Find("WrongEmail").GetComponent<Text>().text = "";
     }
 
     public Sprite EyeOff, EyeOn;
@@ -252,9 +335,9 @@ public class RegistrationManager : MonoBehaviour
             this./*tmp_loginPassword*/loginPassword.ForceLabelUpdate();
         }
     }
+
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        Debug.LogWarning("SERVER RESPONSE :" + serverResponse);
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
@@ -271,7 +354,7 @@ public class RegistrationManager : MonoBehaviour
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
 
-            Debug.Log("data " + JsonMapper.ToJson(data));
+            Debug.Log("Response => Registration: " + JsonMapper.ToJson(data));
 
             //Debug.Log("User Success Status:" + data.Count);
 
@@ -282,7 +365,7 @@ public class RegistrationManager : MonoBehaviour
                 //JsonData parsedObject = JsonMapper.ToObject(data["result"].ToString().Replace(@"\",""));
 
                 PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
-                if(null == playerData) { playerData = new PlayerGameDetails(); }
+                if (null == playerData) { playerData = new PlayerGameDetails(); }
                 /*playerData.userId = parsedObject["userId"].ToString();*/
                 playerData.userId = data["result"]["userId"].ToString();
                 playerData.userName = /*tmp_registrationUserName*/registrationUserName.text;
@@ -318,8 +401,10 @@ public class RegistrationManager : MonoBehaviour
         }
         else if (requestType == RequestType.Login)
         {
+            //Debug.Log("Response => Login: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
-            Debug.LogWarning(serverResponse);
+            Debug.Log("Response => Login: " + JsonMapper.ToJson(data));
+
             if (data["success"].ToString() == "1")
             {
                 PlayerGameDetails playerData = Utility.ParsePlayerGameData(data);
@@ -328,7 +413,7 @@ public class RegistrationManager : MonoBehaviour
                 playerData.password = /*tmp_loginPassword*/loginPassword.text;
 
                 PlayerManager.instance.SetPlayerGameData(playerData);
-                
+
                 MainMenuController.instance.SwitchToMainMenu();
             }
             else
@@ -339,19 +424,43 @@ public class RegistrationManager : MonoBehaviour
         }
         else if (requestType == RequestType.ForgotPassword)
         {
+            Debug.Log("Response => ForgotPassword: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
-            if (data["success"].ToString() == "1")
+            //if (data["success"].ToString() == "1")
+            //{
+            //    MainMenuController.instance.ShowMessage(data["response"].ToString());
+            //    ResetLoginScreen();
+            //    forgotPassword.SetActive(false);
+            //}
+            //else
+            //{
+            //    MainMenuController.instance.ShowMessage(data["response"].ToString());
+            //    ResetLoginScreen();
+            //    forgotPassword.SetActive(false);
+            //    Debug.Log("Unable to process");
+            //}
+
+            if (data["status"].Equals(true))
             {
+                //ResetForgotPwdScreen();
+                //ResetLoginScreen();
+                //forgotPassword.SetActive(false);
+                //OnClickOnButton("openLogin");
+                timer = 60;
+                GetVerificationCode.interactable = false;
+                verificationCodeInputField.transform.Find("WrongVeriCode").GetComponent<Text>().text = "Verification code sent";
+                verificationCodeInputField.transform.Find("WrongVeriCode").GetComponent<Text>().color = GetVerificationCode.transform.GetChild(0).GetComponent<Text>().color;
+                verificationCodeInputField.transform.Find("WrongVeriCode").gameObject.SetActive(true);
                 MainMenuController.instance.ShowMessage(data["response"].ToString());
-                ResetLoginScreen();
-                forgotPassword.SetActive(false);
             }
             else
             {
-                MainMenuController.instance.ShowMessage(data["response"].ToString());
-                ResetLoginScreen();
-                forgotPassword.SetActive(false);
-                Debug.Log("Unable to process");
+                //forgotPassword.SetActive(false);
+                //MainMenuController.instance.ShowMessage(data["response"].ToString());
+                ////ResetLoginScreen();
+                //OnClickOnButton("forgotpwd");
+                forgotPassword.transform.Find("WrongEmail").GetComponent<Text>().text = "Email address has yet to be linked";
+                forgotPassword.transform.Find("WrongEmail").gameObject.SetActive(true);
             }
         }
         else

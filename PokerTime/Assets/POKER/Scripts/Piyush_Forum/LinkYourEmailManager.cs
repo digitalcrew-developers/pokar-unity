@@ -35,8 +35,6 @@ public class LinkYourEmailManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Helloooo");
-
         if (!PlayerPrefs.HasKey("USER_EMAIL"))
         {
             forLinkEmail.SetActive(true);
@@ -113,8 +111,8 @@ public class LinkYourEmailManager : MonoBehaviour
         {
             wrongEmail.SetActive(true);
         }
-
     }
+
     public void OnClickLinkEmail()
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -129,7 +127,6 @@ public class LinkYourEmailManager : MonoBehaviour
         {
             wrongEmail.SetActive(true);
         }
-
     }
 
 
@@ -139,8 +136,6 @@ public class LinkYourEmailManager : MonoBehaviour
 
         MainMenuController.instance.ShowScreen(MainMenuScreens.UnlinkYourEmail);
     }
-
-
 
     private void FetchUserData()
     {

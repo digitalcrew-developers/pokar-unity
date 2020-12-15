@@ -63,4 +63,7 @@ public class PlayerGameDetails
     public string countryCode;
     public float coins, diamonds, points;
     public int rabit, emoji, time;
+    public bool isSilverCardPurchased;
+    public bool isBronzeCardPurchased;
+    public bool isPlatinumCardPurchased;
 }
