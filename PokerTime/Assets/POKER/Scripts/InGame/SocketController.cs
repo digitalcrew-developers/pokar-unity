@@ -201,7 +201,7 @@ public class SocketController : MonoBehaviour
     private void RabbitCardDataReceived(Socket socket, Packet packet, object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
-        Debug.LogError("RabbitCardDataReceived :" + responseText);
+        //Debug.LogError("RabbitCardDataReceived :" + responseText);
 
 #if DEBUG
 
@@ -436,7 +436,7 @@ public class SocketController : MonoBehaviour
                 socketManager.Socket.Emit(request.emitEvent, request.plainDataToBeSend);
 
 //#if DEBUG
-                Debug.Log("sending Plain request " + request.requestDataStructure + "         event = " + request.emitEvent + "   Time = " + System.DateTime.Now);
+                //Debug.Log("sending Plain request " + request.requestDataStructure + "         event = " + request.emitEvent + "   Time = " + System.DateTime.Now);
 //#endif
             }
             else if (request.jsonDataToBeSend != null)
@@ -444,7 +444,7 @@ public class SocketController : MonoBehaviour
                 socketManager.Socket.Emit(request.emitEvent, request.jsonDataToBeSend);
 
 //#if DEBUG
-                Debug.Log("Send Socket Request " + request.requestDataStructure + "          emitEvent   ==" + request.emitEvent + "  Time = " + System.DateTime.Now);
+                //Debug.Log("Send Socket Request " + request.requestDataStructure + "          emitEvent   ==" + request.emitEvent + "  Time = " + System.DateTime.Now);
 //#endif
             }
         }
@@ -469,7 +469,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.PLAYER_OBJECT))
         {
-            Debug.Log("OnPlayerObjectFound = " + responseText + "  Time = " + System.DateTime.Now);
+            //Debug.Log("OnPlayerObjectFound = " + responseText + "  Time = " + System.DateTime.Now);
            
         }
 #else
@@ -489,7 +489,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_OPEN_CARD_DATA_FOUND))
         {
-            Debug.Log("OnOpenCardDataFound = " + responseText + "  Time = " + System.DateTime.Now);
+            //Debug.Log("OnOpenCardDataFound = " + responseText + "  Time = " + System.DateTime.Now);
            
         }
 #else
@@ -539,7 +539,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_NEXT_ROUND_TIMER_FOUND))
         {
-            Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+            //Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
         }
 #else
         Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -645,7 +645,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_ROUND_NO_FOUND))
         {
-            Debug.Log("OnRoundNoFound = " + responseText + "  Time = " + System.DateTime.Now);
+            //Debug.Log("OnRoundNoFound = " + responseText + "  Time = " + System.DateTime.Now);
         }
 #else
         Debug.Log("OnRoundNoFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -736,7 +736,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_RESULT_FOUND))
         {
-            Debug.Log("OnResultDataFound = " + responseText + "  Time = " + System.DateTime.Now);
+            //Debug.Log("OnResultDataFound = " + responseText + "  Time = " + System.DateTime.Now);
         }
 #else
         Debug.Log("OnResultDataFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -919,7 +919,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.DISCONNECT))
         {
-            Debug.Log("Enter in OnServerDisconnect Time = " + System.DateTime.Now);
+            //Debug.Log("Enter in OnServerDisconnect Time = " + System.DateTime.Now);
         }
 #else
         Debug.Log("Enter in OnServerDisconnect Time = " + System.DateTime.Now);
@@ -1507,7 +1507,7 @@ public class SocketController : MonoBehaviour
         TABLE_ID = tableIdToAssign;
 
         PrefsManager.SetData(PrefsKey.RoomData, JsonUtility.ToJson(GlobalGameManager.instance.GetRoomData()));
-        Debug.Log("Table ID Is :" + TABLE_ID);
+        //Debug.Log("Table ID Is :" + TABLE_ID);
     }
 
     public string GetTableID()
