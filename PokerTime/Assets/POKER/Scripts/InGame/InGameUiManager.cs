@@ -262,7 +262,7 @@ public class InGameUiManager : MonoBehaviour
     }
     public void OnClickOnButton(string eventName)
     {
-        Debug.Log(eventName+ " " + InGameManager.instance.AmISpectator);
+        //Debug.Log(eventName+ " " + InGameManager.instance.AmISpectator);
 
         SoundManager.instance.PlaySound(SoundType.Click);
 
@@ -784,7 +784,7 @@ public class InGameUiManager : MonoBehaviour
             actionButtons[(int)PlayerAction.Check].SetActive(isCheckAvailable);
             actionButtons[(int)PlayerAction.AllIn].SetActive(false);
             
-            Debug.LogError("call amount  " + callAmount + "  lba  " + lastBetAmount);
+            //Debug.LogError("call amount  " + callAmount + "  lba  " + lastBetAmount);
 
             if (!isCheckAvailable)
             {
