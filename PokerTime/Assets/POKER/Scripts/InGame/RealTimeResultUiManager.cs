@@ -66,6 +66,8 @@ public class RealTimeResultUiManager : MonoBehaviour
                             else
                             {
                                 gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().color = Color.green;
+                                if(float.Parse(data["data"]["realTimeArr"][i]["totalWinCoin"].ToString()) > 0)
+                                    gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().text = "+" + data["data"]["realTimeArr"][i]["totalWinCoin"].ToString();
                             }
                         }
                     }
