@@ -128,7 +128,7 @@ public class PlayerScript : MonoBehaviour
         lastActionText.text = "";
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
-        Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
+        //Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
         if (playerData.userName.Length > 3)
         {
             userName.text = playerData.userName.Substring(0, 4) + "...";
