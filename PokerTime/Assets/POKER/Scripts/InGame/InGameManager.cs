@@ -194,8 +194,8 @@ public class InGameManager : MonoBehaviour
     private bool DontShowCommunityCardAnimation = false;
     public void OnRabbitDataFound(string responseText)
     {
-        Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
-        Debug.LogError("isFold :" + GetMyPlayerObject().GetPlayerData().isFold);
+        //Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
+        //Debug.LogError("isFold :" + GetMyPlayerObject().GetPlayerData().isFold);
         InGameUiManager.instance.ToggleSuggestionButton(false);
         InGameUiManager.instance.ToggleActionButton(false);
         int vipCard = 0;
@@ -710,7 +710,7 @@ public class InGameManager : MonoBehaviour
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
-        Debug.Log("Last All in Bet: " + /*playerScript.GetLocalBetAmount()*/betAmount);
+        //Debug.Log("Last All in Bet: " + /*playerScript.GetLocalBetAmount()*/betAmount);
         
         GameObject gm = Instantiate(betAnimationPrefab,animationLayer) as GameObject;
         gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
@@ -1131,8 +1131,8 @@ public class InGameManager : MonoBehaviour
 
 
         AllShowdownSidePots showdownSidePot = JsonUtility.FromJson<AllShowdownSidePots>(s);
-        Debug.LogWarning("side pot count : " + showdownSidePot.sidePot.Count);
-        Debug.LogWarning("side pot count amount: " + showdownSidePot.sidePot[0].amount);
+        //Debug.LogWarning("side pot count : " + showdownSidePot.sidePot.Count);
+        //Debug.LogWarning("side pot count amount: " + showdownSidePot.sidePot[0].amount);
 
         //int outerLoopCount = 1;
         //if(showdownSidePot.sidePot.Count > 1)
@@ -1145,25 +1145,26 @@ public class InGameManager : MonoBehaviour
         //}
 
 
-        for (int i=0;i< showdownSidePot.sidePot.Count; i++)
+        for (int i = 0; i < showdownSidePot.sidePot.Count; i++)
         {
-            for(int j = 0; j < showdownSidePot.sidePot[i].winners.Count; j++)
+            for (int j = 0; j < showdownSidePot.sidePot[i].winners.Count; j++)
             {
                 Debug.LogWarning(showdownSidePot.sidePot[i].winners[j].isWin);
                 //if winner count is greater than 0 then it is a split pot.
-                if (showdownSidePot.sidePot[i].winners[j].isWin)
+                //if (showdownSidePot.sidePot[i].winners[j].isWin)
                 {
                     InstantiateWin(showdownSidePot.sidePot[i].winners[j].userId.ToString(),
                         showdownSidePot.sidePot[i].winners[j].name,
-                        showdownSidePot.sidePot[i].winners[j].winAmount.ToString());
+                        showdownSidePot.sidePot[i].winners[j].winAmount.ToString(), showdownSidePot.sidePot[i].winners[j].isWin);
                 }
             }
+
         }
     }
 
     public Text WinnersNameText;
 
-    private void InstantiateWin(string userId, string name, string winAmount)
+    private void InstantiateWin(string userId, string name, string winAmount, bool isWin)
     {
         PlayerScript winnerPlayer = GetPlayerObject(userId);
 
@@ -1178,27 +1179,34 @@ public class InGameManager : MonoBehaviour
             }
 
             GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
-            gm.transform.Find("WinBy").GetComponent<Text>().text = name;
-            gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
-            if (string.IsNullOrEmpty(name))
+            if (isWin)
             {
-                gm.transform.Find("WinBy").gameObject.SetActive(false);
-                gm.transform.Find("Image").gameObject.SetActive(false);
+                gm.transform.Find("WinBy").GetComponent<Text>().text = name;
+                gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
+                if (string.IsNullOrEmpty(name))
+                {
+                    gm.transform.Find("WinBy").gameObject.SetActive(false);
+                    gm.transform.Find("Image").gameObject.SetActive(false);
+                }
+                else
+                {
+                    gm.transform.Find("WinBy").gameObject.SetActive(true);
+                    gm.transform.Find("Image").gameObject.SetActive(true);
+                }
+                if (winAmount.ToCharArray().Length > 5)
+                {
+                    SoundManager.instance.PlaySound(SoundType.bigWin);
+                }
+                gm.transform.position = winnerPlayer.gameObject.transform.position;
+                gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
+                gm.transform.SetSiblingIndex(0);
+                Vector3 inititalScale = gm.transform.localScale;
+                gm.transform.localScale = Vector3.zero;
             }
             else
             {
-                gm.transform.Find("WinBy").gameObject.SetActive(true);
-                gm.transform.Find("Image").gameObject.SetActive(true);
+                gm.SetActive(false);
             }
-            if (winAmount.ToCharArray().Length > 5)
-            {
-                SoundManager.instance.PlaySound(SoundType.bigWin);
-            }
-            gm.transform.position = winnerPlayer.gameObject.transform.position;
-            gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
-            gm.transform.SetSiblingIndex(0);
-            Vector3 inititalScale = gm.transform.localScale;
-            gm.transform.localScale = Vector3.zero;
             StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer, winAmount, gm));
             // gm.transform.DOScale(inititalScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
             winnersObject.Add(gm);
@@ -1207,7 +1215,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnResultResponseFound(string serverResponse)
     {
-        Debug.LogWarning("RESULT RESPONSE :" + serverResponse);
+        //Debug.LogWarning("RESULT RESPONSE :" + serverResponse);
         InGameUiManager.instance.ToggleSuggestionButton(false);
         InGameUiManager.instance.ToggleActionButton(false);
 
@@ -1244,8 +1252,8 @@ public class InGameManager : MonoBehaviour
         }
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
-        Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
-        Debug.LogWarning("NEXT ROUND In: " + remainingTime);
+        //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
+        //Debug.LogWarning("NEXT ROUND In: " + remainingTime);
         if (remainingTime > 1)
         {
            //InGameUiManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
@@ -1260,7 +1268,7 @@ public class InGameManager : MonoBehaviour
                     if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
                     {
                         ToggleTopUpDone(false);
-                        Debug.Log("<color=pink>" + "MinBuyIn: " + GlobalGameManager.instance.GetRoomData().minBuyIn + " and Available Balance: " + availableBalance + "</color>");
+                        //Debug.Log("<color=pink>" + "MinBuyIn: " + GlobalGameManager.instance.GetRoomData().minBuyIn + " and Available Balance: " + availableBalance + "</color>");
                         SocketController.instance.SendReMatchRequest("Yes", "0");
                     }
                     else
@@ -1385,7 +1393,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnBetDataFound(string serverResponse)
     {
-        Debug.LogWarning("serverResponse BETDATAFOUND " + serverResponse);
+        //Debug.LogWarning("serverResponse BETDATAFOUND " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         LAST_BET_AMOUNT = (int)float.Parse(data[0]["lastBet"].ToString());
         string userId = data[0]["userId"].ToString();
@@ -1394,11 +1402,11 @@ public class InGameManager : MonoBehaviour
 
         string s = serverResponse.Remove(serverResponse.Length - 1, 1);
         s = s.Remove(0, 1);
-        Debug.LogWarning("s" + s);
+        //Debug.LogWarning("s" + s);
 
         MyBetData betData = JsonUtility.FromJson<MyBetData>(s);
 
-        Debug.LogWarning("side pot length; " + betData.sidePot.Count);
+        //Debug.LogWarning("side pot length; " + betData.sidePot.Count);
         PotValues.Clear();
         for (int i=0;i< betData.sidePot.Count; i++)
         {
@@ -1427,7 +1435,7 @@ public class InGameManager : MonoBehaviour
 
                 if (playerObject != null)
                 {
-                    Debug.Log("Current Bet Amount : " + betAmount);
+                    //Debug.Log("Current Bet Amount : " + betAmount);
                     //StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
                     StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));
                 }
@@ -1546,14 +1554,14 @@ public class InGameManager : MonoBehaviour
             //InGameUiManager.instance.isSelectedWinningBooster = true;
         }
 
-        Debug.Log("IsExitCalled: " + gameExitCalled);
+        //Debug.Log("IsExitCalled: " + gameExitCalled);
         if (gameExitCalled) 
         {
             //SocketController.instance.ResetConnection();
             return;
         }
         
-        Debug.Log("**[OnPlayerObjectFound] _ 0" + serverResponse);
+        Debug.Log("[OnPlayerObjectFound] " + serverResponse);
 
         if (serverResponse.Length < 20)
         {
@@ -1568,7 +1576,7 @@ public class InGameManager : MonoBehaviour
         if (data[0].Count > 0)
         {
             //AdjustAllPlayersOnTable(data[0].Count);
-            Debug.Log(data[0][0]["currentSessionPoint"].ToString() + " <color=yellow>playRound</color> " + float.Parse(data[0][0]["playRound"].ToString()) / 10);
+            //Debug.Log(data[0][0]["currentSessionPoint"].ToString() + " <color=yellow>playRound</color> " + float.Parse(data[0][0]["playRound"].ToString()) / 10);
             thunderPointBar.fillAmount = float.Parse(data[0][0]["playRound"].ToString()) / 10;
             PointEarnedCounter = int.Parse(data[0][0]["currentSessionPoint"].ToString());
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
@@ -1577,7 +1585,7 @@ public class InGameManager : MonoBehaviour
             SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
             InGameUiManager.instance.tableId = data[0][0]["tableId"].ToString();
             ShowNewPlayersOnTable(data, isMatchStarted);
-            Debug.Log("<color=yellow>" + isMatchStarted + "</color>");
+            //Debug.Log("<color=yellow>" + isMatchStarted + "</color>");
             if (data[0].Count == 1)
             {
                 Debug.LogWarning("ONE PLAYER-" + serverResponse);
@@ -1597,7 +1605,7 @@ public class InGameManager : MonoBehaviour
 
                 if (isMatchStarted) // Match is started
                 {
-                    Debug.Log("isMatchStarted" + isMatchStarted);
+                    //Debug.Log("isMatchStarted" + isMatchStarted);
 
                     List<MatchMakingPlayerData> matchMakingPlayerData = new List<MatchMakingPlayerData>();
 
@@ -1632,7 +1640,7 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
 
-                        Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
+                        //Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
                         if (playerData.isTurn)
                         {
@@ -1733,7 +1741,7 @@ public class InGameManager : MonoBehaviour
 
                 if (playerWhosTurn != null)
                 {
-                    Debug.LogWarning("Switching turn");
+                    //Debug.LogWarning("Switching turn");
                     SwitchTurn(playerWhosTurn, isCheckAvailable);
                 }
                 else
