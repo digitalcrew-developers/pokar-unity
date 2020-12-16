@@ -10,9 +10,10 @@ public class RegistrationManager : MonoBehaviour
 {
     public static RegistrationManager instance = null;
 
-    public GameObject registrationScreen, loginScreen,signUpScreen, forgotPassword;
+    public GameObject registrationScreen, loginScreen,signUpScreen, forgotPassword, resetPassword;
     public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
+    public InputField newPassword;
 
     public Text popUpText, wrongPasswordText;
 
@@ -25,6 +26,7 @@ public class RegistrationManager : MonoBehaviour
     public Button GetVerificationCode;
     
     private float timer = 1;
+    private string verificationCode = string.Empty;
 
     private void Awake()
     {
@@ -74,10 +76,6 @@ public class RegistrationManager : MonoBehaviour
         if (verificationCodeInputField.text.Length > 0 && forgotPassword.transform.Find("Email").GetComponent<InputField>().text.Length > 0)
         {
             forgotPassword.transform.Find("Submit").GetComponent<Button>().interactable = true;
-            //OLD CODE TO ENABLE/DISABLE LINK BUTTON
-            //isColorBtnLinkEmail = true;
-            //colorImgBtnLinkEmail.color = new Color32(52, 140, 52, 255);
-            //btnLinkEmail.GetComponent<Button>().enabled = true;
         }
         else
         {
@@ -178,6 +176,25 @@ public class RegistrationManager : MonoBehaviour
                             WebServices.instance.SendRequest(RequestType.Registration, requestData, true, OnServerResponseFound);
                         }
                     }
+                    else if(forgotPassword.activeInHierarchy)
+                    {
+                        if (verificationCodeInputField.text.Equals(verificationCode) && forgotPassword.transform.Find("Email").GetComponent<InputField>().text.Length > 0)
+                        {
+                            resetPassword.SetActive(true);
+                            ResetForgotPwdScreen();
+                            forgotPassword.SetActive(false);
+                        }
+                        else
+                        {
+                            verificationCodeInputField.transform.Find("WrongVeriCode").GetComponent<Text>().text = "Wrong verification code";
+                            verificationCodeInputField.transform.Find("WrongVeriCode").GetComponent<Text>().color = Color.red;
+                            verificationCodeInputField.transform.Find("WrongVeriCode").gameObject.SetActive(true);
+                        }
+                    }
+                    else if(resetPassword.activeInHierarchy)
+                    {
+                        MainMenuController.instance.ShowMessage("Going To Reset Password...");
+                    }
                     else
                     {
 #if ERROR_LOG
@@ -191,7 +208,8 @@ public class RegistrationManager : MonoBehaviour
             case "openLogin":
                 {
                     ResetLoginScreen();
-
+                    resetPassword.SetActive(false);
+                    forgotPassword.SetActive(false);
                     loginScreen.SetActive(true);
                     registrationScreen.SetActive(false);
                     signUpScreen.SetActive(false);
@@ -202,7 +220,8 @@ public class RegistrationManager : MonoBehaviour
             case "openRegistration":
                 {
                     ResetRegistrationScreen();
-
+                    resetPassword.SetActive(false);
+                    forgotPassword.SetActive(false);
                     loginScreen.SetActive(false);
                     registrationScreen.SetActive(true);
                     signUpScreen.SetActive(false);
@@ -211,22 +230,23 @@ public class RegistrationManager : MonoBehaviour
 
             case "forgotpwd":
                 {
-                    forgotPassword.SetActive(true);
-                    forgotPassword.transform.Find("Submit").GetComponent<Button>().interactable = false;
+                    resetPassword.SetActive(false);
                     loginScreen.SetActive(false);
                     registrationScreen.SetActive(false);
                     signUpScreen.SetActive(false);
+                    forgotPassword.SetActive(true);
+                    forgotPassword.transform.Find("Submit").GetComponent<Button>().interactable = false;
                 }
                 break;
 
             case "closeForgotPwd":
                 {
+                    resetPassword.SetActive(false);
                     forgotPassword.SetActive(false);
                     ResetForgotPwdScreen();
                     loginScreen.SetActive(true);
                     registrationScreen.SetActive(false);
                     signUpScreen.SetActive(false);
-                    verificationCodeInputField.transform.Find("WrongVeriCode").gameObject.SetActive(true);
                 }
                 break;
 
@@ -237,6 +257,7 @@ public class RegistrationManager : MonoBehaviour
                     loginScreen.SetActive(false);
                     registrationScreen.SetActive(false);
                     signUpScreen.SetActive(true);
+                    resetPassword.SetActive(false);
                 }
                 break;
 
@@ -247,6 +268,18 @@ public class RegistrationManager : MonoBehaviour
                     loginScreen.SetActive(false);
                     registrationScreen.SetActive(false);
                     signUpScreen.SetActive(true);
+                    resetPassword.SetActive(false);
+                }
+                break;
+
+            case "closeResetPassword":
+                {
+                    forgotPassword.SetActive(false);
+                    ResetResetPwdScreen();
+                    loginScreen.SetActive(true);
+                    registrationScreen.SetActive(false);
+                    signUpScreen.SetActive(false);
+                    resetPassword.SetActive(false);
                 }
                 break;
 
@@ -293,13 +326,28 @@ public class RegistrationManager : MonoBehaviour
         /*tmp_registrationConfirmPassword*/registrationConfirmPassword.text = "";
     }
 
+    private void ResetResetPwdScreen()
+    {
+        newPassword.text = "";
+    }
+
     private void ResetForgotPwdScreen()
     {
+        timer = 1;
+
+        verificationCodeInputField.text = "";
+        verificationCodeInputField.transform.Find("WrongVeriCode").gameObject.SetActive(false);
+        verificationCodeInputField.transform.Find("WrongVeriCode").GetComponent<Text>().text = "";
+
+        GetVerificationCode.interactable = true;
+        GetVerificationCode.transform.GetChild(0).GetComponent<Text>().text = "Get Verification Code";
+
+        forgotPassword.transform.Find("Email").GetComponent<InputField>().text = "";
         forgotPassword.transform.Find("WrongEmail").GetComponent<Text>().text = "";
     }
 
     public Sprite EyeOff, EyeOn;
-    public Image RegisterPasswordEye, LoginPasswordEye;
+    public Image RegisterPasswordEye, LoginPasswordEye, NewPasswordEye;
 
     public void RegisterEyeClick() {
         if (this./*tmp_registrationPassword*/registrationPassword != null)
@@ -333,6 +381,25 @@ public class RegistrationManager : MonoBehaviour
             }
 
             this./*tmp_loginPassword*/loginPassword.ForceLabelUpdate();
+        }
+    }
+
+    public void NewPwdEyeClick()
+    {
+        if(this.newPassword!=null)
+        {
+            if(this.newPassword.contentType==InputField.ContentType.Password)
+            {
+                NewPasswordEye.sprite = EyeOn;
+                this.newPassword.contentType = InputField.ContentType.Standard;
+            }
+            else
+            {
+                NewPasswordEye.sprite = EyeOff;
+                this.newPassword.contentType = InputField.ContentType.Password;
+            }
+
+            this.newPassword.ForceLabelUpdate();
         }
     }
 
@@ -442,16 +509,20 @@ public class RegistrationManager : MonoBehaviour
 
             if (data["status"].Equals(true))
             {
+                //MainMenuController.instance.ShowMessage(data["response"].ToString());
                 //ResetForgotPwdScreen();
                 //ResetLoginScreen();
                 //forgotPassword.SetActive(false);
                 //OnClickOnButton("openLogin");
+
+                if(data["otp"]!=null)
+                    verificationCode = data["otp"].ToString();
+
                 timer = 60;
                 GetVerificationCode.interactable = false;
                 verificationCodeInputField.transform.Find("WrongVeriCode").GetComponent<Text>().text = "Verification code sent";
                 verificationCodeInputField.transform.Find("WrongVeriCode").GetComponent<Text>().color = GetVerificationCode.transform.GetChild(0).GetComponent<Text>().color;
                 verificationCodeInputField.transform.Find("WrongVeriCode").gameObject.SetActive(true);
-                MainMenuController.instance.ShowMessage(data["response"].ToString());
             }
             else
             {
