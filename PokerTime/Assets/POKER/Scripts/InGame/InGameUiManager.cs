@@ -104,7 +104,7 @@ public class InGameUiManager : MonoBehaviour
         }
 
 
-        tableInfoText.text = "Blinds " + GlobalGameManager.instance.GetRoomData().smallBlind + "/" + GlobalGameManager.instance.GetRoomData().bigBlind + " Ante";
+        tableInfoText.text = "Blinds " + GlobalGameManager.instance.GetRoomData().smallBlind + "/" + GlobalGameManager.instance.GetRoomData().bigBlind + " Ante " + GlobalGameManager.instance.GetRoomData().smallBlind;
         ToggleActionButton(false);
         ToggleSuggestionButton(false);
 
