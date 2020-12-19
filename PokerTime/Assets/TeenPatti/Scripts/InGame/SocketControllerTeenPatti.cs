@@ -133,7 +133,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
         socketManager.Socket.On("playerStatndOut", OnPlayerStandUp);
         socketManager.Socket.On("seenData", OnCardSeen);
         socketManager.Socket.On("seatObject", OnSeatObject);
-        socketManager.Socket.On("cardData", OnShowMatch);
+        socketManager.Socket.On("showData", OnShowMatch);
 
 
         socketManager.Socket.On("sideShowRequest", OnSideShow);
