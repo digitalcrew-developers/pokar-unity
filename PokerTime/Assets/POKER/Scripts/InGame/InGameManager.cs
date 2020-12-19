@@ -494,10 +494,12 @@ public class InGameManager : MonoBehaviour
         Debug.LogError("WaitAndSendLeaveRequest");
         yield return new WaitForEndOfFrame();
         SocketController.instance.SendLeaveMatchRequest();
-        yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
+        yield return new WaitForSeconds(7f);
+        InGameUiManager.instance.ShowScreen(InGameScreens.Menu);
+        /*yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
         SocketController.instance.ResetConnection();
         gameExitCalled = true;
-        GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
+        GlobalGameManager.instance.LoadScene(Scenes.MainMenu);*/
     }
 
     public IEnumerator SwitchToAnotherTableReset()
@@ -741,17 +743,19 @@ public class InGameManager : MonoBehaviour
                 gm.transform.localScale = Vector3.zero;*/
 
         //gm.transform.DOMove(playerScript.transform.position, 1.0f).SetEase(Ease.Linear);
-        gm.transform.DOMove(playerScript.transform.position, 0.9f).SetEase(Ease.Linear);
+        gm.transform.DOMove(playerScript.transform.position, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            SoundManager.instance.PlaySound(SoundType.Bet);
+            Destroy(gm);
+            amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        });
         // gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        SoundManager.instance.PlaySound(SoundType.Bet);
+        /*SoundManager.instance.PlaySound(SoundType.Bet);
         yield return new WaitForSeconds(1.1f);
         Destroy(gm);
-        amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);*/
         yield return new WaitForSeconds(3f);
         winnerAnimationFound = false;
-
-
-
         if (resetGame)
         {
             resetGame = false;
@@ -901,8 +905,6 @@ public class InGameManager : MonoBehaviour
             case 1:
                 {
                     WinnersNameText.text = "";
-                    
-                    SoundManager.instance.PlaySound(SoundType.CardMove);
 
                     for (int i = 0; i < 3; i++)
                     {
@@ -910,6 +912,7 @@ public class InGameManager : MonoBehaviour
                         communityCards[i].sprite = openCards[i].cardsSprite;
                     }
                     yield return new WaitForSeconds(1f);
+                    SoundManager.instance.PlaySound(SoundType.CardMove);
 
                     for (int i = 0; i < 3; i++)
                     {
@@ -1716,6 +1719,7 @@ public class InGameManager : MonoBehaviour
 
                         if (data[0][i]["userData"] != null && data[0][i]["userData"].ToString().Length > 0)
                         {
+                            //Debug.Log("isBlock " + data[0][i]["isBlocked"]);
                             string playerAction = data[0][i]["userData"]["playerAction"].ToString();
                             int betAmount = (int)float.Parse(data[0][i]["userData"]["betData"].ToString());
                             int roundNo = (int)float.Parse(data[0][i]["userData"]["roundNo"].ToString());
