@@ -13,87 +13,98 @@ public class MenuScript : MonoBehaviour
         {
             case "back":
                 {
-                    //if (GameConstants.poker)
-                    //{
-                    //    if (InGameUiManager.instance != null)
-                    //    {
-                    //        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                    //    }
-                    //    else
-                    //    {
-                    //        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if (InGameUiManagerTeenPatti.instance != null)
-                    //    {
-                    //        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
-                    //    }
-                    //    else
-                    //    {
-                    //        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                    //    }
-                    //}
+                    if (GameConstants.poker)
+                    {
+                        if (InGameUiManager.instance != null)
+                        {
+                            InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                        }
+                        else
+                        {
+                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                        }
+                    }
+                    else
+                    {
+                        if (InGameUiManagerTeenPatti.instance != null)
+                        {
+                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                        }
+                        else
+                        {
+                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                        }
+                    }
 
                     //DEV_CODE
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                  //  InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
                 }
                 break;
             case "StandUp":
                 {
-                    //if (GameConstants.poker)
-                    //{
-                    //    if (InGameUiManager.instance != null)
-                    //    {
-                    //        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                    //        InGameManager.instance.OnClickStandupBtn();
-                    //    }
-                    //    else
-                    //    {
-                    //        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                    //        ClubInGameManager.instance.OnClickStandupBtn();
-                    //    }
-                    //}
+                    if (GameConstants.poker)
+                    {
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
+                        if (InGameManager.instance.isGameStart && InGameManager.instance.GetMyPlayerObject().GetTotalBet() > 0)
+                        {
+                            InGameUiManager.instance.ShowMessage("You'll give up the pot if you choose to stand up before this hand ends",
+                            () =>
+                            {
+                                Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet());
+                                InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                                InGameManager.instance.OnClickStandupBtn();
+                            },
+                            () =>
+                            {
+                                InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                            },
+                            "Stand Up", "Cancel"
+                            );
+                        }
+                        else
+                        {
+                            InGameManager.instance.OnClickStandupBtn();
+                        }
+                    }
 
-                    //else
-                    //{
-                    //    if (InGameUiManagerTeenPatti.instance != null)
-                    //    {
-                    //        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
-                    //        InGameManagerTeenPatti.instance.OnClickStandupBtn();
-                    //    }
-                    //    else
-                    //    {
-                    //        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                    //        ClubInGameManager.instance.OnClickStandupBtn();
-                    //    }
-                    //}
+                    else
+                    {
+                        if (InGameUiManagerTeenPatti.instance != null)
+                        {
+                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                            InGameManagerTeenPatti.instance.OnClickStandupBtn();
+                        }
+                        else
+                        {
+                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                            ClubInGameManager.instance.OnClickStandupBtn();
+                        }
+                    }
 
                     //DEV_CODE
                     //Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet() + ", " + InGameManager.instance.GetPotAmount() + ", " + InGameManager.instance.GetMyPlayerObject().GetLocaPot().text);
                     //return;
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
-                    if (InGameManager.instance.isGameStart && InGameManager.instance.GetMyPlayerObject().GetTotalBet() > 0)
-                    {
-                        InGameUiManager.instance.ShowMessage("You'll give up the pot if you choose to stand up before this hand ends",
-                        () =>
-                        {
-                            Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet());
-                            InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                            InGameManager.instance.OnClickStandupBtn();
-                        },
-                        () =>
-                        {
-                            InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                        },
-                        "Stand Up", "Cancel"
-                        );
-                    }
-                    else
-                    {
-                        InGameManager.instance.OnClickStandupBtn();
-                    }
+                    //InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
+                    //if (InGameManager.instance.isGameStart && InGameManager.instance.GetMyPlayerObject().GetTotalBet() > 0)
+                    //{
+                    //    InGameUiManager.instance.ShowMessage("You'll give up the pot if you choose to stand up before this hand ends",
+                    //    () =>
+                    //    {
+                    //        Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet());
+                    //        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                    //        InGameManager.instance.OnClickStandupBtn();
+                    //    },
+                    //    () =>
+                    //    {
+                    //        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                    //    },
+                    //    "Stand Up", "Cancel"
+                    //    );
+                    //}
+                    //else
+                    //{
+                    //    InGameManager.instance.OnClickStandupBtn();
+                    //}
                 }
                 break;
 
