@@ -1223,11 +1223,14 @@ public class ClubSocketController : MonoBehaviour
         socketRequest.Add(request);
     }
 
+    //clubId
+    //
     public void SendClubGameJoinRequest()
     {
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
             "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
             "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
+            "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
             "\"seatNo\":\"" + "" + "\"," +
             "\"gameType\":\"" + "club" + "\"," +
             "\"playerType\":\"Real\"," +
@@ -1521,14 +1524,7 @@ public class ClubSocketController : MonoBehaviour
             SetSocketState(SocketState.NULL);
         }
     }
-
-
-
-
-
-
-
-
+    
 
     #region ReconnectProtocols
 
