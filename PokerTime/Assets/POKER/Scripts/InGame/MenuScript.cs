@@ -149,33 +149,30 @@ public class MenuScript : MonoBehaviour
 
             case "exit":
                 {
-                    //if (GameConstants.poker)
-                    //{
-                    //    if (InGameUiManager.instance != null)
-                    //    {
-                    //        InGameManager.instance.LoadMainMenu();
-                    //    }
-                    //    else
-                    //    {
-                    //        //exit for club menu
-                    //        ClubInGameManager.instance.LoadMainMenu();
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if (InGameUiManagerTeenPatti.instance != null)
-                    //    {
-                    //        InGameManagerTeenPatti.instance.LoadMainMenu();
-                    //    }
-                    //    else
-                    //    {
-                    //        //exit for club menu
-                    //        ClubInGameManager.instance.LoadMainMenu();
-                    //    }
-                    //}
-
-                    //DEV_CODE
-                    InGameManager.instance.LoadMainMenu();
+                    if (GameConstants.poker)
+                    {
+                        if (InGameUiManager.instance != null)
+                        {
+                            InGameManager.instance.LoadMainMenu();
+                        }
+                        else
+                        {
+                            //exit for club menu
+                            ClubInGameManager.instance.LoadMainMenu();
+                        }
+                    }
+                    else
+                    {
+                        if (InGameUiManagerTeenPatti.instance != null)
+                        {
+                            InGameManagerTeenPatti.instance.LoadMainMenu();
+                        }
+                        else
+                        {
+                            //exit for club menu
+                            ClubInGameManager.instance.LoadMainMenu();
+                        }
+                    }
                 }
             break;
 
