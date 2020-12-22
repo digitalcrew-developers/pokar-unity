@@ -176,7 +176,7 @@ public class ClubInGameManager : MonoBehaviour
         {
             //Debug.LogError("Seats available 1:" + serverResponse);
             AllSeats = JsonUtility.FromJson<TableSeats>(serverResponse);
-            UpdateSeatClickSettingsAndView();
+            //UpdateSeatClickSettingsAndView();
         }
     }
 
@@ -191,6 +191,7 @@ public class ClubInGameManager : MonoBehaviour
         {
             g.SetActive(false);
         }
+
         for (int i = 0; i < AllSeats.data.Length; i++)
         {
             AllSeatButtons[i].SetActive(true);
@@ -1699,7 +1700,7 @@ public class ClubInGameManager : MonoBehaviour
                     //GetSeatObject("1").transform.position = position1;
                 }
             }
-            UpdateSeatClickSettingsAndView();
+            //UpdateSeatClickSettingsAndView();
 
             //GetAvailableSeats();
         }
