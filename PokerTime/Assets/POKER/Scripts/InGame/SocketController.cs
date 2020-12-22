@@ -130,6 +130,7 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("seatObject", SeatObjectsReceived);
         socketManager.Socket.On("rabbitOpenCards", RabbitCardDataReceived);
         socketManager.Socket.On("evChopData", EVChopDataReceived);
+        socketManager.Socket.On("playerExit", PlayerExit);
         socketManager.Open();
     }
 
@@ -225,8 +226,17 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.LogError("Response => Seat of Player: " + responseText);
+        //InGameManager.instance.gameExitCalled = true;
+        //ResetConnection();
+    }
+
+    private void PlayerExit(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError("Response => PlayerExit: " + responseText);
 
         InGameManager.instance.gameExitCalled = true;
+        ResetConnection();
     }
 
     private void HandleSocketResponse()
@@ -248,7 +258,6 @@ public class SocketController : MonoBehaviour
 #endif
 
 #endif
-
             switch (responseObject.eventType)
             {
                 case SocketEvetns.CONNECT:
@@ -292,6 +301,7 @@ public class SocketController : MonoBehaviour
 
 
                 case SocketEvetns.PLAYER_OBJECT:
+                    Debug.Log("<color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
                     if (InGameManager.instance != null)
                     {
                         //Debug.LogError("Current Socket State: " + GetSocketState());
@@ -575,7 +585,7 @@ public class SocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_GAME_OVER_TIMER_FOUND))
         {
-            Debug.Log("OnGameOverTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+            //Debug.Log("OnGameOverTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
         }
 #else
         Debug.Log("OnGameOverTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -1129,7 +1139,7 @@ public class SocketController : MonoBehaviour
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.isStatndOut = 1;
 
-        //Debug.LogError(requestData.userId + "  <Stand up User ID table id >" + TABLE_ID);
+        Debug.LogError(requestData.userId + "  <Stand up User ID table id >" + TABLE_ID);
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
@@ -1539,6 +1549,8 @@ public class SocketController : MonoBehaviour
 
             SetSocketState(SocketState.NULL);
         }
+        if (InGameManager.instance.gameExitCalled)
+            GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
     }
 
 

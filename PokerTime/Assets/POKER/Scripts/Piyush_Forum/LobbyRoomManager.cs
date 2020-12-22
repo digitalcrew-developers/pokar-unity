@@ -2,10 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LobbyRoomManager : MonoBehaviour
 {
     public GameObject insufficentPopUp;
+
+    public Sprite[] roomTypeImages; 
     public void CallInsufficientCoin(RoomData data) {
         if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
         {

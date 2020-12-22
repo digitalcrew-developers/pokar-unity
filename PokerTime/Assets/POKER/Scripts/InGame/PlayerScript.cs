@@ -397,7 +397,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void UpdateLastAction(string textToShow)
     {
-        //Debug.Log("Last Action: " + textToShow);
+        //Debug.Log(playerData.userName + "Last Action: " + textToShow + ", " + playerData.isFold + "" + InGameManager.instance.isGameStart);
         if (textToShow == "" || string.IsNullOrEmpty(textToShow))
         {
             lastActionImage.SetActive(false);
@@ -474,14 +474,18 @@ public class PlayerScript : MonoBehaviour
     //    CountDownTimerRunning = false;
     //}
 
-    IEnumerator CountDownAnimation(float time)
+    IEnumerator CountDownAnimation(float time, bool isSound)
     {
-        SoundManager.instance.PlaySound(SoundType.TurnSwitch);
-
-        //Handheld.Vibrate();
+        UnityEngine.Debug.LogError("Starting timer " + time);
+        if (isSound)
+            SoundManager.instance.PlaySound(SoundType.TurnSwitch);
+        else
+        {
+            //Handheld.Vibrate();
 #if UNITY_ANDROID && !UNITY_EDITOR
-        Vibration.Vibrate(500);
+        Vibration.Vibrate(400);
 #endif
+        }
 
         //   if (time == 0) yield break;
         float t = 0;
@@ -521,7 +525,9 @@ public class PlayerScript : MonoBehaviour
         if (remainingTime == 0)
         {
             //UnityEngine.Debug.LogError("Starting timer");
-            lastRoutine = StartCoroutine(CountDownAnimation(GameConstants.TURN_TIME));
+            if (PrefsManager.GetPlayerData().userId == playerData.userId)
+                lastRoutine = StartCoroutine(CountDownAnimation(GameConstants.TURN_TIME, true));
+            //Time.timeScale = 0;
         }
         if(remainingTime == GameConstants.TURN_TIME)
         {   
@@ -531,8 +537,9 @@ public class PlayerScript : MonoBehaviour
                 StopCoroutine(lastRoutine);
             }
             CountDownTimerRunning = false;
-
-            lastRoutine = StartCoroutine(CountDownAnimation(extraTime));
+            //UnityEngine.Debug.LogError("Starting timer " + extraTime);
+            if (PrefsManager.GetPlayerData().userId == playerData.userId)
+                lastRoutine = StartCoroutine(CountDownAnimation(extraTime, false));
         }
 
         //if (totalTime > GameConstants.TURN_TIME)
@@ -594,13 +601,17 @@ public class PlayerScript : MonoBehaviour
 
             if (InGameManager.instance != null)
             {
+                Debug.Log(lastActionRoundNo + " " + InGameManager.instance.GetMatchRound());
                 if (lastActionRoundNo == InGameManager.instance.GetMatchRound())
                 {
                     UpdateLastAction(lastPlayerAction);
                 }
                 else
                 {
-                    UpdateLastAction("");
+                    if (playerData.isFold)
+                        UpdateLastAction("fold");
+                    else
+                        UpdateLastAction("");
                 }
             }   
             else if (ClubInGameManager.instance != null)
