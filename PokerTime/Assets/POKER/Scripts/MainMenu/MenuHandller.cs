@@ -163,8 +163,8 @@ public class MenuHandller : MonoBehaviour
 
 		case "spinUp":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.GlobalTournament,new object[] {"spinUp"});
-			}
+					MainMenuController.instance.ShowScreen(MainMenuScreens.GlobalTournament, new object[] { "spinUp" });
+				}
 			break;
 
 			case "consecutiveLoginReward":
