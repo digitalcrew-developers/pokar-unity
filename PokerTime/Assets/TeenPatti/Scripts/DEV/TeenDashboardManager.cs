@@ -1,18 +1,32 @@
-﻿using System.Collections;
+﻿using Org.BouncyCastle.Crypto.Engines;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TeenDashboardManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static TeenDashboardManager instance;
+
+    private void Awake()
     {
-        
+        instance = this;   
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnClickOnButton(string eventName)
     {
-        
+        switch (eventName)
+        {
+            case "lobbyTeen":
+                {
+                    MainMenuController.instance.ShowScreen(MainMenuScreens.LobbyTeenPatti);
+                }
+                break;
+
+            case "mainMenuTeen":
+                {
+                    MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenuTeenPatti);
+                }
+                break;
+        }
     }
 }
