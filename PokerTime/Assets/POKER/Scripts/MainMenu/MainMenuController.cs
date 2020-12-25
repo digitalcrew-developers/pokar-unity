@@ -711,7 +711,8 @@ public enum MainMenuScreens
     CareerDataScreen,
     CareerDefinationScreen,
     HandScreen,
-    LobbyTeenPatti
+    LobbyTeenPatti,
+    MainMenuTeenPatti,
 }
 
 
