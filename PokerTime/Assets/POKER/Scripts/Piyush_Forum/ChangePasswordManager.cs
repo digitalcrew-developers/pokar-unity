@@ -95,8 +95,10 @@ public class ChangePasswordManager : MonoBehaviour
                     MainMenuController.instance.DestroyScreen(MainMenuScreens.ProfileSetting);
 
                     //Deactivate bottom panel
-                    if (MainMenuController.instance.bottomPanel.activeSelf)
+                    if (MainMenuController.instance.bottomPanel.activeSelf && GameConstants.poker)
                         MainMenuController.instance.bottomPanel.SetActive(false);
+                    else if (MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
+                        MainMenuController.instance.bottomPanelTeen.SetActive(false);
 
                     MainMenuController.instance.ShowScreen(MainMenuScreens.Registration);
                 }

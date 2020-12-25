@@ -18,13 +18,21 @@ public class TeenDashboardManager : MonoBehaviour
         {
             case "lobbyTeen":
                 {
+                    //MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.LobbyTeenPatti);
                     MainMenuController.instance.ShowScreen(MainMenuScreens.LobbyTeenPatti);
                 }
                 break;
 
             case "mainMenuTeen":
                 {
+                    //MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.MainMenuTeenPatti);
                     MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenuTeenPatti);
+                }
+                break;
+            case "playPoker":
+                {
+                    //GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
+                    MainMenuController.instance.OnClickPlayPoker();
                 }
                 break;
         }

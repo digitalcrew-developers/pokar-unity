@@ -164,6 +164,7 @@ public enum Scenes
 {
     MainMenu,
     InGame,
+    MainMenuTeenPatti,
     InGameTeenPatti
 }
 

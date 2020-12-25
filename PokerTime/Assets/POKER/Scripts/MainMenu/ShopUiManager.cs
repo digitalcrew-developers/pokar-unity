@@ -46,8 +46,16 @@ public class ShopUiManager: MonoBehaviour
             instance = this;
         }
 
-        if (!MainMenuController.instance.bottomPanel.activeSelf)
+        if (!MainMenuController.instance.bottomPanel.activeSelf && GameConstants.poker)
+        {
             MainMenuController.instance.bottomPanel.SetActive(true);
+            MainMenuController.instance.bottomPanelTeen.SetActive(false);
+        }
+        else if (!MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
+        {
+            MainMenuController.instance.bottomPanelTeen.SetActive(true);
+            MainMenuController.instance.bottomPanel.SetActive(false);
+        }
     }
 
     private void Awake()

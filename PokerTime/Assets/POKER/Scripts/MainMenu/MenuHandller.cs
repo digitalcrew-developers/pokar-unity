@@ -35,8 +35,16 @@ public class MenuHandller : MonoBehaviour
 		createClubPopUp.SetActive(false);
 		joinClubPopUp.SetActive(false);
 
-		if (!MainMenuController.instance.bottomPanel.activeSelf)
+		if (!MainMenuController.instance.bottomPanel.activeSelf && GameConstants.poker)
+		{
 			MainMenuController.instance.bottomPanel.SetActive(true);
+			MainMenuController.instance.bottomPanelTeen.SetActive(false);
+		}
+		else if (!MainMenuController.instance.bottomPanelTeen.activeSelf && !GameConstants.poker)
+		{
+			MainMenuController.instance.bottomPanel.SetActive(false);
+			MainMenuController.instance.bottomPanelTeen.SetActive(true);
+		}
 
 		UpdateAllText();
 		UpdateNotificationData(MainMenuController.instance.GetNotificationDetails().unreadMessageCount);

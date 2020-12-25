@@ -45,11 +45,19 @@ public class Swipe : MonoBehaviour
             {
                 //Debug.LogWarning("Current Selected Level" + i);
                 transform.GetChild(i).localScale = Vector2.Lerp(transform.GetChild(i).localScale, new Vector2(1.8f, 1.8f), 0.1f);
+                
                 for (int j = 0; j < pos.Length; j++)
                 {
                     if (j != i)
                     {
                         transform.GetChild(j).localScale = Vector2.Lerp(transform.GetChild(j).localScale, new Vector2(1f, 1f), 0.1f);
+                        transform.GetChild(j).Find("Button2").gameObject.SetActive(false);
+                        transform.GetChild(j).Find("Button1").gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        transform.GetChild(j).Find("Button2").gameObject.SetActive(true);
+                        transform.GetChild(j).Find("Button1").gameObject.SetActive(false);
                     }
                 }
             }

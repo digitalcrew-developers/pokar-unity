@@ -34,10 +34,12 @@ public class LobbyUiManager: MonoBehaviour
     private void OnEnable()
     {
         //Deactivate Bottom Panel
-        if (MainMenuController.instance.bottomPanel.activeSelf)
+        if (MainMenuController.instance.bottomPanel.activeSelf && GameConstants.poker)
             MainMenuController.instance.bottomPanel.SetActive(false);
+        else if(MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
+            MainMenuController.instance.bottomPanelTeen.SetActive(false);
 
-        missionBtn.onClick.AddListener(() => ShowMissonScreen());
+                missionBtn.onClick.AddListener(() => ShowMissonScreen());
         topPlayerBtn.onClick.AddListener(() => ShowTopPlayerScreen());
         shopBtn.onClick.AddListener(() => ShowShopScreen());
         BagPackBtn.onClick.AddListener(() => ShowBackPackScreen());

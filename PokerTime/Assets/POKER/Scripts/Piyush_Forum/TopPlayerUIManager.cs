@@ -17,6 +17,9 @@ public class TopPlayerUIManager : MonoBehaviour
     public Image[] onfocusImageAry;
     public Texture2D loadingSpr, errorSpr;
 
+    //DEV_CODE
+    public Sprite[] playerBG;
+
     string playerTypeVal;
 
     void Start()
