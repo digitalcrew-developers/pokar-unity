@@ -44,29 +44,37 @@ public class MenuScript : MonoBehaviour
                 {
                     if (GameConstants.poker)
                     {
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
-                        if (InGameManager.instance.isGameStart && InGameManager.instance.GetMyPlayerObject().GetTotalBet() > 0)
+                        if (InGameUiManager.instance != null)
                         {
-                            InGameUiManager.instance.ShowMessage("You'll give up the pot if you choose to stand up before this hand ends",
-                            () =>
+                            InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
+                            if (InGameManager.instance.isGameStart && InGameManager.instance.GetMyPlayerObject().GetTotalBet() > 0)
                             {
-                                Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet());
-                                InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                                InGameUiManager.instance.ShowMessage("You'll give up the pot if you choose to stand up before this hand ends",
+                                () =>
+                                {
+                                    Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet());
+                                    InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                                    InGameManager.instance.OnClickStandupBtn();
+                                },
+                                () =>
+                                {
+                                    InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                                },
+                                "Stand Up", "Cancel"
+                                );
+                            }
+                            else
+                            {
                                 InGameManager.instance.OnClickStandupBtn();
-                            },
-                            () =>
-                            {
-                                InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                            },
-                            "Stand Up", "Cancel"
-                            );
+                            }
                         }
                         else
                         {
-                            InGameManager.instance.OnClickStandupBtn();
+                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                            ClubInGameManager.instance.OnClickStandupBtn();
                         }
-                    }
 
+                    }
                     else
                     {
                         if (InGameUiManagerTeenPatti.instance != null)
@@ -74,37 +82,7 @@ public class MenuScript : MonoBehaviour
                             InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
                             InGameManagerTeenPatti.instance.OnClickStandupBtn();
                         }
-                        else
-                        {
-                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                            ClubInGameManager.instance.OnClickStandupBtn();
-                        }
-                    }
-
-                    //DEV_CODE
-                    //Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet() + ", " + InGameManager.instance.GetPotAmount() + ", " + InGameManager.instance.GetMyPlayerObject().GetLocaPot().text);
-                    //return;
-                    //InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
-                    //if (InGameManager.instance.isGameStart && InGameManager.instance.GetMyPlayerObject().GetTotalBet() > 0)
-                    //{
-                    //    InGameUiManager.instance.ShowMessage("You'll give up the pot if you choose to stand up before this hand ends",
-                    //    () =>
-                    //    {
-                    //        Debug.Log(InGameManager.instance.GetMyPlayerObject().GetTotalBet());
-                    //        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                    //        InGameManager.instance.OnClickStandupBtn();
-                    //    },
-                    //    () =>
-                    //    {
-                    //        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
-                    //    },
-                    //    "Stand Up", "Cancel"
-                    //    );
-                    //}
-                    //else
-                    //{
-                    //    InGameManager.instance.OnClickStandupBtn();
-                    //}
+                    }                    
                 }
                 break;
 
@@ -138,10 +116,7 @@ public class MenuScript : MonoBehaviour
                     else
                     {
                         ClubInGameUIManager.instance.ShowScreen(InGameScreens.TableSettings);
-
                     }
-
-
                 }
                 break;
 
@@ -193,32 +168,32 @@ public class MenuScript : MonoBehaviour
                     //{
                         if (PlayerManager.instance.GetPlayerGameData().coins > GlobalGameManager.instance.GetRoomData().minBuyIn)
                         {
-                        if (InGameManager.instance != null)
-                        {
-                            if (InGameManager.instance.GetMyPlayerObject() != null)
+                            if (InGameManager.instance != null)
                             {
-                                InGameUiManager.instance.ShowScreen(InGameScreens.TopUp, new object[] { InGameManager.instance.GetMyPlayerObject().GetPlayerData().balance });
+                                if (InGameManager.instance.GetMyPlayerObject() != null)
+                                {
+                                    InGameUiManager.instance.ShowScreen(InGameScreens.TopUp, new object[] { InGameManager.instance.GetMyPlayerObject().GetPlayerData().balance });
+                                }
                             }
-                        }
-                        else
-                        {
-                            if (ClubInGameManager.instance.GetMyPlayerObject() != null)
+                            else
                             {
-                                ClubInGameUIManager.instance.ShowScreen(InGameScreens.TopUp, new object[] { InGameManager.instance.GetMyPlayerObject().GetPlayerData().balance });
+                                if (ClubInGameManager.instance.GetMyPlayerObject() != null)
+                                {
+                                    ClubInGameUIManager.instance.ShowScreen(InGameScreens.TopUp, new object[] { ClubInGameManager.instance.GetMyPlayerObject().GetPlayerData().balance });
+                                }
                             }
-                        }
                             
                         }
                         else
                         {
-                        if (InGameUiManager.instance != null)
-                        {
-                            InGameUiManager.instance.ShowMessage("You don't have sufficient coins for TopUp");
-                        }
-                        else
-                        {
-                            ClubInGameUIManager.instance.ShowMessage("You don't have sufficient coins for TopUp");
-                        }
+                            if (InGameUiManager.instance != null)
+                            {
+                                InGameUiManager.instance.ShowMessage("You don't have sufficient coins for TopUp");
+                            }
+                            else
+                            {
+                                ClubInGameUIManager.instance.ShowMessage("You don't have sufficient coins for TopUp");
+                            }
                         //TODO show shop screen
                     }
                     //}
