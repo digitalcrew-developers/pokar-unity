@@ -144,7 +144,9 @@ public class GameConstants : MonoBehaviour
         API_URL+"/onOffJackpot",
         API_URL+"/createJackpot",
         SOCKET_URL + "/getSeatObject",
-        SOCKET_URL+"/getGameHistroy"
+        SOCKET_URL+"/getGameHistroy",
+        API_URL+"/beforPayment",
+        API_URL+"/afterPayment"
 
     };
     #endregion
@@ -238,5 +240,7 @@ public enum RequestType
     OnOffJackpot,
     CreateJackpot,
     GetSeatObject,
-    GetGameHistory
+    GetGameHistory,
+    BeforePayment,
+    AfterPayment
 }
