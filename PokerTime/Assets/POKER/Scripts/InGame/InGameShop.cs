@@ -17,6 +17,8 @@ public class InGameShop : MonoBehaviour
     public Text playerGold;
 
     public Button[] menuBtn;
+    public GameObject UniWebViewObject;
+    public UniWebView UniWebView;
 
     public void OnEnable()
     {
@@ -33,6 +35,66 @@ public class InGameShop : MonoBehaviour
 
         string requestData = "{\"shopCategoryId\":\"\"}";
         WebServices.instance.SendRequest(RequestType.GetShopValues, requestData, true, OnServerResponseFound);
+    }
+
+    public void SendPrepaymentRequest(int shopID, string amount)
+    {
+        string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+               "\"shopId\":\"" + shopID + "\"," +
+               "\"amount\":\"" + amount + "\"," +
+               "\"amountType\":\"" + "Online" + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.BeforePayment, requestData, true, OnServerResponseFound);
+    }
+
+    public void SendAfterPayment(string response)
+    {
+        string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+               "\"transactionId\":\"" + response + "\"," +
+               "\"paymentId\":\"" + "Online" + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.AfterPayment, requestData, true, OnServerResponseFound);
+        //get updated profile
+        WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" +
+        PlayerManager.instance.GetPlayerGameData().userId + "\"}", true, OnServerResponseFound);
+    }
+
+    public void InitialiseWebView()
+    {
+        UniWebViewObject.SetActive(true);
+        UniWebView.SetShowSpinnerWhileLoading(true);
+        UniWebView.SetSpinnerText("Loading. Please do not close or go back.");
+        UniWebView.OnPageFinished += (view, statusCode, url) => {
+                UniWebView.AddJavaScript("function GetResponse() { var urlParams = new URLSearchParams(window.location.search); var sessionId = urlParams.get('session_id'); if (sessionId) { fetch('/checkout-session?sessionId=' + sessionId) .then(function (result) { return result.json(); }) }else { return \"no id\"; } }"
+                    , (payload) => {
+                        UniWebView.EvaluateJavaScript("GetResponse();", (payload1) => {
+                            if (payload1.resultCode.Equals("0"))
+                            {
+                                Debug.Log("PayLoad Data" + payload1.data);
+                                //after payment api is used from inside webview
+                                //
+                                //get updated profile
+                                WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" +
+                                    PlayerManager.instance.GetPlayerGameData().userId + "\"}", true, OnServerResponseFound);
+                            }
+                        });
+                    });
+            };
+        UniWebView.SetVerticalScrollBarEnabled(true);
+        UniWebView.SetShowToolbar(
+            true,  // Show or hide?         true  = show
+            false, // With animation?       false = no animation
+            true,  // Is it on top?         true  = top
+            true  // Should adjust insets? true  = avoid overlapping to web view
+        );
+        UniWebView.Load("http://3.17.201.78:3000/makePayment");
+        UniWebView.Show(true);
+    }
+
+    public void CloseWebView()
+    {
+        UniWebViewObject.SetActive(false);
+        UniWebView.Hide(true);
     }
 
     private void Start()
@@ -181,31 +243,34 @@ public class InGameShop : MonoBehaviour
             case "diamond_one":
                 {
                     Debug.Log("Diamond One");
-                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
-                                "\"shopId\":\"" + 23 + "\"," +
-                                "\"itemType\":\"" + "DIAMOND" + "\"}";
+                    SendPrepaymentRequest(23,"$0.99");
+                    //string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                    //            "\"shopId\":\"" + 23 + "\"," +
+                    //            "\"itemType\":\"" + "DIAMOND" + "\"}";
 
-                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                    //WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
                 }
                 break;
             case "diamond_two":
                 {
                     Debug.Log("Diamond Two");
-                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
-                                "\"shopId\":\"" + 24 + "\"," +
-                                "\"itemType\":\"" + "DIAMOND" + "\"}";
+                    SendPrepaymentRequest(24, "$4.99");
+                    //string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                    //            "\"shopId\":\"" + 24 + "\"," +
+                    //            "\"itemType\":\"" + "DIAMOND" + "\"}";
 
-                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                    //WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
                 }
                 break;
             case "diamond_three":
                 {
                     Debug.Log("Diamond Three");
-                    string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
-                                "\"shopId\":\"" + 23 + "\"," +
-                                "\"itemType\":\"" + "DIAMOND" + "\"}";
+                    SendPrepaymentRequest(24, "$12.99");
+                    //string requestData = "{\"userId\":\"" + playerData.userId + "\"," +
+                    //            "\"shopId\":\"" + 23 + "\"," +
+                    //            "\"itemType\":\"" + "DIAMOND" + "\"}";
 
-                    WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
+                    //WebServices.instance.SendRequest(RequestType.GetInGameShopValue, requestData, true, OnServerResponseFound);
                 }
                 break;
             case "point_one":
@@ -258,6 +323,13 @@ public class InGameShop : MonoBehaviour
             }
             return;
         }
+
+        if(requestType == RequestType.BeforePayment)
+        {
+            Debug.Log("Response => BeforePayment(InGame): " + serverResponse);
+            InitialiseWebView();
+        }
+
         if (requestType == RequestType.GetShopValues)
         {
             Debug.Log("Response => GetShopValues(InGame): " + serverResponse);
