@@ -5,9 +5,9 @@ using UnityEngine.UI;
 using LitJson;
 using System.Linq;
 
-public class ShopUiManager: MonoBehaviour
+public class ShopUiManagerTeen: MonoBehaviour
 {
-    public static ShopUiManager instance = null;
+    public static ShopUiManagerTeen instance = null;
 
     public Button itemButton, diamondButton, pointButton;
     public Text coinsText, diamondText, pointText;
@@ -33,7 +33,7 @@ public class ShopUiManager: MonoBehaviour
     public GameObject goldObj;
 
 
-    private ShopData shopData = new ShopData();
+    private ShopDataTeen shopData = new ShopDataTeen();
 
     private bool isListDownloaded = false;
     private string screenToShow = "";
@@ -46,16 +46,19 @@ public class ShopUiManager: MonoBehaviour
             instance = this;
         }
 
-        if (!MainMenuController.instance.bottomPanel.activeSelf /*&& GameConstants.poker*/)
-        {
-            MainMenuController.instance.bottomPanel.SetActive(true);
-            //MainMenuController.instance.bottomPanelTeen.SetActive(false);
-        }
-        //else if (!MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
+        //if (!MainMenuControllerTeen.instance.bottomPanel.activeSelf && GameConstants.poker)
         //{
-        //    MainMenuController.instance.bottomPanelTeen.SetActive(true);
-        //    MainMenuController.instance.bottomPanel.SetActive(false);
+        //    MainMenuControllerTeen.instance.bottomPanel.SetActive(true);
+        //    MainMenuControllerTeen.instance.bottomPanelTeen.SetActive(false);
         //}
+        //else if (!MainMenuControllerTeen.instance.bottomPanel.activeSelf && !GameConstants.poker)
+        //{
+        //    MainMenuControllerTeen.instance.bottomPanelTeen.SetActive(true);
+        //    MainMenuControllerTeen.instance.bottomPanel.SetActive(false);
+        //}
+
+        if (!MainMenuControllerTeen.instance.bottomPanel.activeSelf)
+            MainMenuControllerTeen.instance.bottomPanel.SetActive(true);
     }
 
     private void Awake()
@@ -103,7 +106,7 @@ public class ShopUiManager: MonoBehaviour
         {
             case "back":
                 {
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+                    MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.MainMenu);
                 }
                 break;
 
@@ -141,8 +144,8 @@ public class ShopUiManager: MonoBehaviour
                 break;
 
             case "vip":
-                MainMenuController.instance.isVIPFromShop = true;
-                MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
+                MainMenuControllerTeen.instance.isVIPFromShop = true;
+                MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.VIP_Privilege);
                 break;
 
             default:
@@ -185,22 +188,22 @@ public class ShopUiManager: MonoBehaviour
         pointButton.interactable = true;
 
 
-        List<ShopItem> shopList = null;
+        List<ShopItemTeen> shopList = null;
 
         if (shopCategory == ShopCategory.Item)
         {
             itemButton.interactable = false;
-            shopList = new List<ShopItem>(shopData.itemsList);
+            shopList = new List<ShopItemTeen>(shopData.itemsList);
         }
         else if (shopCategory == ShopCategory.Diamond)
         {
             diamondButton.interactable = false;
-            shopList = new List<ShopItem>(shopData.diamondsList);
+            shopList = new List<ShopItemTeen>(shopData.diamondsList);
         }
         else
         {
             pointButton.interactable = false;
-            shopList = new List<ShopItem>(shopData.pointsList);
+            shopList = new List<ShopItemTeen>(shopData.pointsList);
         }
 
 
@@ -234,7 +237,7 @@ public class ShopUiManager: MonoBehaviour
             {
                 switch (shopList[i].purchaseItem)
                 {
-                    case PurchaseItem.Card:
+                    case PurchaseItemTeen.Card:
                         {
                             GameObject gm = Instantiate(vipCardPrefab, container) as GameObject;
                             gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
@@ -251,7 +254,7 @@ public class ShopUiManager: MonoBehaviour
                             *//*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*//*
                             gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
 
-                            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                            if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                             {
                                 gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                 gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -269,7 +272,7 @@ public class ShopUiManager: MonoBehaviour
                             {
                                 gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                             }
-                            ShopItem itemData = shopList[i];
+                            ShopItemTeen itemData = shopList[i];
                             gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
                         }
 
@@ -277,7 +280,7 @@ public class ShopUiManager: MonoBehaviour
 
 
 
-                    case PurchaseItem.Diamond:
+                    case PurchaseItemTeen.Diamond:
                         {
                             int index = 0;
 
@@ -300,7 +303,7 @@ public class ShopUiManager: MonoBehaviour
                             GameObject gm = Instantiate(diamondPrefab[index], container) as GameObject;
                             gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-                            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                            if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                             {
                                 gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                 gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -319,19 +322,19 @@ public class ShopUiManager: MonoBehaviour
                                 gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                             }
 
-                            ShopItem itemData = shopList[i];
+                            ShopItemTeen itemData = shopList[i];
                             gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
 
 
                         }
                         break;
 
-                    case PurchaseItem.Coins:
+                    case PurchaseItemTeen.Coins:
                         {
                             GameObject gm = Instantiate(coinsPrefab, container) as GameObject;
                             gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-                            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                            if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                             {
                                 gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                 gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -350,14 +353,14 @@ public class ShopUiManager: MonoBehaviour
                                 gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                             }
 
-                            ShopItem itemData = shopList[i];
+                            ShopItemTeen itemData = shopList[i];
                             gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
 
                         }
                         break;
 
 
-                    case PurchaseItem.Other:
+                    case PurchaseItemTeen.Other:
                         {
                             GameObject gm = Instantiate(featuredItemsPrefab[(int)shopList[i].featureItem], container) as GameObject;
                             gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].featureItem;
@@ -373,7 +376,7 @@ public class ShopUiManager: MonoBehaviour
 
 
 
-                            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                            if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                             {
                                 gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                 gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -406,7 +409,7 @@ public class ShopUiManager: MonoBehaviour
         }*/
     }
 
-    private void LoadShopItemData(List<ShopItem> shopList)
+    private void LoadShopItemData(List<ShopItemTeen> shopList)
     {
         int coinPrefabCounter = 0;
 
@@ -420,7 +423,7 @@ public class ShopUiManager: MonoBehaviour
                 case 2:
                     switch (shopList[i].purchaseItem)
                     {
-                        case PurchaseItem.Card:
+                        case PurchaseItemTeen.Card:
                             {
                                 GameObject gm = Instantiate(vipCardPrefab, hotPickContainer) as GameObject;
                                 gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
@@ -437,7 +440,7 @@ public class ShopUiManager: MonoBehaviour
                                 /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
                                 gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -455,7 +458,7 @@ public class ShopUiManager: MonoBehaviour
                                 {
                                     gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                                 }
-                                ShopItem itemData = shopList[i];
+                                ShopItemTeen itemData = shopList[i];
                                 gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
                             }
 
@@ -463,7 +466,7 @@ public class ShopUiManager: MonoBehaviour
 
 
 
-                        case PurchaseItem.Diamond:
+                        case PurchaseItemTeen.Diamond:
                             {
                                 int index = 0;
 
@@ -486,7 +489,7 @@ public class ShopUiManager: MonoBehaviour
                                 GameObject gm = Instantiate(diamondPrefab[index], hotPickContainer) as GameObject;
                                 gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -505,19 +508,19 @@ public class ShopUiManager: MonoBehaviour
                                     gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                                 }
 
-                                ShopItem itemData = shopList[i];
+                                ShopItemTeen itemData = shopList[i];
                                 gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
 
 
                             }
                             break;
 
-                        case PurchaseItem.Coins:
+                        case PurchaseItemTeen.Coins:
                             {
                                 GameObject gm = Instantiate(coinsPrefab[coinPrefabCounter], hotPickContainer) as GameObject;
                                 gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -536,7 +539,7 @@ public class ShopUiManager: MonoBehaviour
                                     gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                                 }
 
-                                ShopItem itemData = shopList[i];
+                                ShopItemTeen itemData = shopList[i];
                                 gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
 
                                 if(coinPrefabCounter<3)
@@ -545,12 +548,12 @@ public class ShopUiManager: MonoBehaviour
                             break;
 
 
-                        case PurchaseItem.Other:
+                        case PurchaseItemTeen.Other:
                             {
                                 GameObject gm = Instantiate(featuredItemsPrefab[(int)shopList[i].featureItem], hotPickContainer) as GameObject;
                                 gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].featureItem;
 
-                                if (shopList[i].featureItem == ShopFeaturedItem.Rabit)
+                                if (shopList[i].featureItem == ShopFeaturedItemTeen.Rabit)
                                 {
                                     gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
                                 }
@@ -561,7 +564,7 @@ public class ShopUiManager: MonoBehaviour
 
 
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -599,7 +602,7 @@ public class ShopUiManager: MonoBehaviour
                 case 5:
                     switch (shopList[i].purchaseItem)
                     {
-                        case PurchaseItem.Card:
+                        case PurchaseItemTeen.Card:
                             {
                                 GameObject gm = Instantiate(vipCardPrefab, vipCardContainer) as GameObject;
                                 gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
@@ -616,7 +619,7 @@ public class ShopUiManager: MonoBehaviour
                                 /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
                                 gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -634,7 +637,7 @@ public class ShopUiManager: MonoBehaviour
                                 {
                                     gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                                 }
-                                ShopItem itemData = shopList[i];
+                                ShopItemTeen itemData = shopList[i];
                                 gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
                             }
 
@@ -642,7 +645,7 @@ public class ShopUiManager: MonoBehaviour
 
 
 
-                        case PurchaseItem.Diamond:
+                        case PurchaseItemTeen.Diamond:
                             {
                                 int index = 0;
 
@@ -665,7 +668,7 @@ public class ShopUiManager: MonoBehaviour
                                 GameObject gm = Instantiate(diamondPrefab[index], vipCardContainer) as GameObject;
                                 gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -684,19 +687,19 @@ public class ShopUiManager: MonoBehaviour
                                     gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                                 }
 
-                                ShopItem itemData = shopList[i];
+                                ShopItemTeen itemData = shopList[i];
                                 gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
 
 
                             }
                             break;
 
-                        case PurchaseItem.Coins:
+                        case PurchaseItemTeen.Coins:
                             {
                                 GameObject gm = Instantiate(coinsPrefab[0], vipCardContainer) as GameObject;
                                 gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -715,19 +718,19 @@ public class ShopUiManager: MonoBehaviour
                                     gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                                 }
 
-                                ShopItem itemData = shopList[i];
+                                ShopItemTeen itemData = shopList[i];
                                 gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
 
                             }
                             break;
 
 
-                        case PurchaseItem.Other:
+                        case PurchaseItemTeen.Other:
                             {
                                 GameObject gm = Instantiate(featuredItemsPrefab[(int)shopList[i].featureItem], vipCardContainer) as GameObject;
                                 gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].featureItem;
 
-                                if (shopList[i].featureItem == ShopFeaturedItem.Rabit)
+                                if (shopList[i].featureItem == ShopFeaturedItemTeen.Rabit)
                                 {
                                     gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
                                 }
@@ -738,7 +741,7 @@ public class ShopUiManager: MonoBehaviour
 
 
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -772,7 +775,7 @@ public class ShopUiManager: MonoBehaviour
                 default:
                     switch (shopList[i].purchaseItem)
                     {
-                        case PurchaseItem.Card:
+                        case PurchaseItemTeen.Card:
                             {
                                 GameObject gm = Instantiate(vipCardPrefab, goldContainer) as GameObject;
                                 gm.transform.Find("Icon").GetComponent<Image>().sprite = vipCardSprites[(int)shopList[i].vipCard];
@@ -789,7 +792,7 @@ public class ShopUiManager: MonoBehaviour
                                 /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
                                 gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -807,7 +810,7 @@ public class ShopUiManager: MonoBehaviour
                                 {
                                     gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                                 }
-                                ShopItem itemData = shopList[i];
+                                ShopItemTeen itemData = shopList[i];
                                 gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
                             }
 
@@ -815,7 +818,7 @@ public class ShopUiManager: MonoBehaviour
 
 
 
-                        case PurchaseItem.Diamond:
+                        case PurchaseItemTeen.Diamond:
                             {
                                 int index = 0;
 
@@ -838,7 +841,7 @@ public class ShopUiManager: MonoBehaviour
                                 GameObject gm = Instantiate(diamondPrefab[index], goldContainer) as GameObject;
                                 gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -857,19 +860,19 @@ public class ShopUiManager: MonoBehaviour
                                     gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                                 }
 
-                                ShopItem itemData = shopList[i];
+                                ShopItemTeen itemData = shopList[i];
                                 gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
 
 
                             }
                             break;
 
-                        case PurchaseItem.Coins:
+                        case PurchaseItemTeen.Coins:
                             {
                                 GameObject gm = Instantiate(coinsPrefab[0], goldContainer) as GameObject;
                                 gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -888,19 +891,19 @@ public class ShopUiManager: MonoBehaviour
                                     gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
                                 }
 
-                                ShopItem itemData = shopList[i];
+                                ShopItemTeen itemData = shopList[i];
                                 gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
 
                             }
                             break;
 
 
-                        case PurchaseItem.Other:
+                        case PurchaseItemTeen.Other:
                             {
                                 GameObject gm = Instantiate(featuredItemsPrefab[(int)shopList[i].featureItem], goldContainer) as GameObject;
                                 gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].featureItem;
 
-                                if (shopList[i].featureItem == ShopFeaturedItem.Rabit)
+                                if (shopList[i].featureItem == ShopFeaturedItemTeen.Rabit)
                                 {
                                     gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
                                 }
@@ -911,7 +914,7 @@ public class ShopUiManager: MonoBehaviour
 
 
 
-                                if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+                                if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
                                 {
                                     gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                                     gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -945,7 +948,7 @@ public class ShopUiManager: MonoBehaviour
         }
     }
 
-    private void LoadDiamondData(List<ShopItem> shopList)
+    private void LoadDiamondData(List<ShopItemTeen> shopList)
     {
         container.GetComponent<GridLayoutGroup>().padding.top = 0;
 
@@ -973,7 +976,7 @@ public class ShopUiManager: MonoBehaviour
             gm = Instantiate(diamondPrefab[i], container) as GameObject;
             gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+            if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
             {
                 gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                 gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -992,14 +995,14 @@ public class ShopUiManager: MonoBehaviour
                 gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
             }
 
-            ShopItem itemData = shopList[i];
+            ShopItemTeen itemData = shopList[i];
             gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
 
         }
         
     }
 
-    private void LoadPointData(List<ShopItem> shopList)
+    private void LoadPointData(List<ShopItemTeen> shopList)
     {
         Debug.Log("Total Items for Points:" + shopList.Count);
         container.GetComponent<GridLayoutGroup>().padding.top = 40;
@@ -1011,7 +1014,7 @@ public class ShopUiManager: MonoBehaviour
             gm = Instantiate(coinsPrefab[i], container) as GameObject;
             gm.transform.Find("Prize").GetComponent<Text>().text = "" + GetTrimmedAmount(shopList[i].getValue);
 
-            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+            if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
             {
                 gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                 gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -1030,7 +1033,7 @@ public class ShopUiManager: MonoBehaviour
                 gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
             }
 
-            ShopItem itemData = shopList[i];
+            ShopItemTeen itemData = shopList[i];
             gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
         }
 
@@ -1051,7 +1054,7 @@ public class ShopUiManager: MonoBehaviour
             /*gm.transform.Find("Prize").GetComponent<Text>().text = "" + shopList[i].vipCard + " Card";*/
             gm.transform.Find("Validity").GetComponent<Text>().text = "" + shopList[i].validity + " Days";
 
-            if (shopList[i].purchaseCurrency == PurchaseCurrency.Dollar)
+            if (shopList[i].purchaseCurrency == PurchaseCurrencyTeen.Dollar)
             {
                 gm.transform.Find("Buy/Icon").gameObject.SetActive(false);
                 gm.transform.Find("Buy/Text").gameObject.GetComponent<Text>().text = "$" + GetTrimmedAmount(shopList[i].purchaseValue);
@@ -1069,32 +1072,32 @@ public class ShopUiManager: MonoBehaviour
             {
                 gm.transform.Find("Offer/Text").gameObject.GetComponent<Text>().text = shopList[i].offerValue + "% OFF";
             }
-            ShopItem itemData = shopList[i];
+            ShopItemTeen itemData = shopList[i];
             gm.transform.Find("Buy").GetComponent<Button>().onClick.AddListener(() => OnClickOnBuyButton(itemData));
         }
 
     }
 
-    private void OnClickOnBuyButton(ShopItem itemData)
+    private void OnClickOnBuyButton(ShopItemTeen itemData)
     {
         PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
         bool isChangesMade = false;
 
-        if (itemData.purchaseItem == PurchaseItem.Diamond)
+        if (itemData.purchaseItem == PurchaseItemTeen.Diamond)
         {
             float purchaseValue = float.Parse(itemData.purchaseValue);
 
 
             switch (itemData.purchaseCurrency)
             {
-                case PurchaseCurrency.Dollar:
+                case PurchaseCurrencyTeen.Dollar:
                     {
                         playerData.diamonds += float.Parse(itemData.getValue);
                         isChangesMade = true;
                     }
                     break;
 
-                case PurchaseCurrency.Coins:
+                case PurchaseCurrencyTeen.Coins:
                     {
                         if (playerData.coins >= float.Parse(itemData.purchaseValue))
                         {
@@ -1106,12 +1109,12 @@ public class ShopUiManager: MonoBehaviour
                         else
                         {
                             // NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient coins");
-                            MainMenuController.instance.ShowMessage("Insufficient Diamonds");
+                            MainMenuControllerTeen.instance.ShowMessage("Insufficient Diamonds");
                         }
                     }
                 break;
 
-                case PurchaseCurrency.Point:
+                case PurchaseCurrencyTeen.Point:
                     {
                         if (playerData.points >= float.Parse(itemData.purchaseValue))
                         {
@@ -1123,7 +1126,7 @@ public class ShopUiManager: MonoBehaviour
                         else
                         {
                             // NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
-                            MainMenuController.instance.ShowMessage("Insufficient Diamonds");
+                            MainMenuControllerTeen.instance.ShowMessage("Insufficient Diamonds");
                         }
                     }
                 break;
@@ -1133,13 +1136,13 @@ public class ShopUiManager: MonoBehaviour
             }
 
         }
-        else if (itemData.purchaseItem == PurchaseItem.Coins)
+        else if (itemData.purchaseItem == PurchaseItemTeen.Coins)
         {
             float purchaseValue = float.Parse(itemData.purchaseValue);
 
             switch (itemData.purchaseCurrency)
             {
-                case PurchaseCurrency.Dollar:
+                case PurchaseCurrencyTeen.Dollar:
                     {
                         playerData.coins += float.Parse(itemData.getValue);
                         isChangesMade = true;
@@ -1147,7 +1150,7 @@ public class ShopUiManager: MonoBehaviour
                     break;
 
 
-                case PurchaseCurrency.Diamond:
+                case PurchaseCurrencyTeen.Diamond:
                     {
                         if (playerData.diamonds >= purchaseValue)
                         {
@@ -1159,13 +1162,13 @@ public class ShopUiManager: MonoBehaviour
                         else
                         {
                             //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
-                            MainMenuController.instance.ShowMessage("Insufficient Diamonds");
+                            MainMenuControllerTeen.instance.ShowMessage("Insufficient Diamonds");
                         }
                     }
                     break;
 
 
-                case PurchaseCurrency.Point:
+                case PurchaseCurrencyTeen.Point:
                     {
                         if (playerData.points >= purchaseValue)
                         {
@@ -1177,7 +1180,7 @@ public class ShopUiManager: MonoBehaviour
                         else
                         {
                             //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
-                            MainMenuController.instance.ShowMessage("Insufficient Points");
+                            MainMenuControllerTeen.instance.ShowMessage("Insufficient Points");
                         }
                     }
                     break;
@@ -1186,13 +1189,13 @@ public class ShopUiManager: MonoBehaviour
                 break;
             }
         }
-        else if (itemData.purchaseItem == PurchaseItem.Card)
+        else if (itemData.purchaseItem == PurchaseItemTeen.Card)
         {
             float purchaseValue = float.Parse(itemData.purchaseValue);
 
             switch (itemData.purchaseCurrency)
             {
-                case PurchaseCurrency.Dollar:
+                case PurchaseCurrencyTeen.Dollar:
                     {
                         if (itemData.vipCard.ToString().Equals("Bronze"))
                             Debug.Log("Purchasing Bronze card Using Dollar...");
@@ -1206,7 +1209,7 @@ public class ShopUiManager: MonoBehaviour
                     break;
 
 
-                case PurchaseCurrency.Diamond:
+                case PurchaseCurrencyTeen.Diamond:
                     {
                         if (playerData.diamonds >= purchaseValue)
                         {
@@ -1225,13 +1228,13 @@ public class ShopUiManager: MonoBehaviour
                         else
                         {
                             //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
-                            MainMenuController.instance.ShowMessage("Insufficient Diamonds");
+                            MainMenuControllerTeen.instance.ShowMessage("Insufficient Diamonds");
                         }
                     }
                     break;
 
 
-                case PurchaseCurrency.Point:
+                case PurchaseCurrencyTeen.Point:
                     {
                         if (playerData.points >= purchaseValue)
                         {
@@ -1250,7 +1253,7 @@ public class ShopUiManager: MonoBehaviour
                         else
                         {
                             //NativeFunctionalityIntegration.SharedInstance.showToastMessage("Insufficient points");
-                            MainMenuController.instance.ShowMessage("Insufficient Points to purchase Cards...");
+                            MainMenuControllerTeen.instance.ShowMessage("Insufficient Points to purchase Cards...");
                         }
                     }
                     break;
@@ -1269,13 +1272,13 @@ public class ShopUiManager: MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Loading);
 
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                MainMenuControllerTeen.instance.ShowMessage(errorMessage);
             }
 
             return;
@@ -1289,7 +1292,7 @@ public class ShopUiManager: MonoBehaviour
             {
                 for (int i = 0; i < data["response"].Count; i++)
                 {
-                    ShopItem shopItem = new ShopItem();
+                    ShopItemTeen shopItem = new ShopItemTeen();
                     shopItem.shopId = data["response"][i]["shopId"].ToString();
 
                     shopItem.purchaseValue = data["response"][i]["purchaseValue"].ToString();
@@ -1303,19 +1306,19 @@ public class ShopUiManager: MonoBehaviour
                     {
                         case "ITEM":
                             {
-                                shopItem.shopCategory = ShopCategory.Item;
+                                shopItem.shopCategory = ShopCategoryTeen.Item;
                             }
                             break;
 
                         case "DIAMOND":
                             {
-                                shopItem.shopCategory = ShopCategory.Diamond;
+                                shopItem.shopCategory = ShopCategoryTeen.Diamond;
                             }
                             break;
 
                         default:
                             {
-                                shopItem.shopCategory = ShopCategory.Point;
+                                shopItem.shopCategory = ShopCategoryTeen.Point;
                             }
                             break;
                     }
@@ -1325,25 +1328,25 @@ public class ShopUiManager: MonoBehaviour
                     {
                         case "Doller":
                             {
-                                shopItem.purchaseCurrency = PurchaseCurrency.Dollar;
+                                shopItem.purchaseCurrency = PurchaseCurrencyTeen.Dollar;
                             }
                             break;
 
                         case "Coins":
                             {
-                                shopItem.purchaseCurrency = PurchaseCurrency.Coins;
+                                shopItem.purchaseCurrency = PurchaseCurrencyTeen.Coins;
                             }
                             break;
 
                         case "Diamond":
                             {
-                                shopItem.purchaseCurrency = PurchaseCurrency.Diamond;
+                                shopItem.purchaseCurrency = PurchaseCurrencyTeen.Diamond;
                             }
                             break;
 
                         default:
                             {
-                                shopItem.purchaseCurrency = PurchaseCurrency.Point;
+                                shopItem.purchaseCurrency = PurchaseCurrencyTeen.Point;
                             }
                             break;
                     }
@@ -1353,49 +1356,49 @@ public class ShopUiManager: MonoBehaviour
                     {
                         case "Point":
                             {
-                                shopItem.purchaseItem = PurchaseItem.Point;
+                                shopItem.purchaseItem = PurchaseItemTeen.Point;
                             }
                             break;
 
                         case "Coins":
                             {
-                                shopItem.purchaseItem = PurchaseItem.Coins;
+                                shopItem.purchaseItem = PurchaseItemTeen.Coins;
                             }
                             break;
 
                         case "Diamond":
                             {
-                                shopItem.purchaseItem = PurchaseItem.Diamond;
+                                shopItem.purchaseItem = PurchaseItemTeen.Diamond;
                             }
                             break;
 
                         case "Card":
                             {
-                                shopItem.purchaseItem = PurchaseItem.Card;
+                                shopItem.purchaseItem = PurchaseItemTeen.Card;
                             }
                             break;
 
                         default:
                             {
-                                shopItem.purchaseItem = PurchaseItem.Other;
+                                shopItem.purchaseItem = PurchaseItemTeen.Other;
 
                                 switch (data["response"][i]["featuredItem"].ToString())
                                 {
                                     case "Emoji":
                                         {
-                                            shopItem.featureItem = ShopFeaturedItem.Emoji;
+                                            shopItem.featureItem = ShopFeaturedItemTeen.Emoji;
                                         }
                                         break;
 
                                     case "Time Bank":
                                         {
-                                            shopItem.featureItem = ShopFeaturedItem.TimeBank;
+                                            shopItem.featureItem = ShopFeaturedItemTeen.TimeBank;
                                         }
                                         break;
 
                                     default:
                                         {
-                                            shopItem.featureItem = ShopFeaturedItem.Rabit;
+                                            shopItem.featureItem = ShopFeaturedItemTeen.Rabit;
                                         }
                                         break;
                                 }
@@ -1409,29 +1412,29 @@ public class ShopUiManager: MonoBehaviour
                     {
                         case "Platinum":
                             {
-                                shopItem.vipCard = VIPCard.Platinum;
+                                shopItem.vipCard = VIPCardTeen.Platinum;
                             }
                             break;
 
                         case "Silver":
                             {
-                                shopItem.vipCard = VIPCard.Silver;
+                                shopItem.vipCard = VIPCardTeen.Silver;
                             }
                             break;
 
                         default:
                             {
-                                shopItem.vipCard = VIPCard.Bronze;
+                                shopItem.vipCard = VIPCardTeen.Bronze;
                             }
                             break;
                     }
 
 
-                    if (shopItem.shopCategory == ShopCategory.Item)
+                    if (shopItem.shopCategory == ShopCategoryTeen.Item)
                     {
                         shopData.itemsList.Add(shopItem);
                     }
-                    else if (shopItem.shopCategory == ShopCategory.Diamond)
+                    else if (shopItem.shopCategory == ShopCategoryTeen.Diamond)
                     {
                         shopData.diamondsList.Add(shopItem);
                     }
@@ -1449,9 +1452,9 @@ public class ShopUiManager: MonoBehaviour
             }
             else
             {
-                MainMenuController.instance.ShowMessage(data["message"].ToString(), () =>
+                MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString(), () =>
                 {
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+                    MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.MainMenu);
                 });
             }
         }
@@ -1513,15 +1516,15 @@ public class ShopUiManager: MonoBehaviour
             "\"day\":\"0\"," +
             "\"playerProgress\":\"\"}";
 
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Loading);
 
         WebServices.instance.SendRequest(RequestType.UpdateUserBalance, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
         {
-            MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+            MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Loading);
 
             if (errorMessage.Length > 0)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                MainMenuControllerTeen.instance.ShowMessage(errorMessage);
             }
             else
             {
@@ -1530,18 +1533,18 @@ public class ShopUiManager: MonoBehaviour
                 {
                     PlayerManager.instance.SetPlayerGameData(updatedData);
                     UpdateAlltext(updatedData);
-                    if (MenuHandller.instance != null)
+                    if (MenuHandllerTeen.instance != null)
                     {
-                        MenuHandller.instance.UpdateAllText();
+                        MenuHandllerTeen.instance.UpdateAllText();
                     }
                     LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
                 }
                 else
                 {
-                    MainMenuController.instance.ShowMessage(data["message"].ToString());
-                    if (MenuHandller.instance != null)
+                    MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
+                    if (MenuHandllerTeen.instance != null)
                     {
-                        MenuHandller.instance.UpdateAllText();
+                        MenuHandllerTeen.instance.UpdateAllText();
                     }
                 }
             }
@@ -1552,26 +1555,26 @@ public class ShopUiManager: MonoBehaviour
 
 
 [System.Serializable]
-public class ShopData
+public class ShopDataTeen
 {
-    public List<ShopItem> itemsList = new List<ShopItem>();
-    public List<ShopItem> diamondsList = new List<ShopItem>();
-    public List<ShopItem> pointsList = new List<ShopItem>();
+    public List<ShopItemTeen> itemsList = new List<ShopItemTeen>();
+    public List<ShopItemTeen> diamondsList = new List<ShopItemTeen>();
+    public List<ShopItemTeen> pointsList = new List<ShopItemTeen>();
 }
 
 
 [System.Serializable]
-public class ShopItem
+public class ShopItemTeen
 {
     public string shopId;
-    public ShopCategory shopCategory;
-    public PurchaseCurrency purchaseCurrency;
-    public PurchaseItem purchaseItem;
-    public VIPCard vipCard;
+    public ShopCategoryTeen shopCategory;
+    public PurchaseCurrencyTeen purchaseCurrency;
+    public PurchaseItemTeen purchaseItem;
+    public VIPCardTeen vipCard;
 
     public string purchaseValue;
     public string shopSubTitle;
-    public ShopFeaturedItem featureItem;
+    public ShopFeaturedItemTeen featureItem;
     public string getValue;
     public string validity;
     public bool isOffer;
@@ -1580,7 +1583,7 @@ public class ShopItem
 
 
 [System.Serializable]
-public enum ShopCategory
+public enum ShopCategoryTeen
 {
     Item,
     Diamond,
@@ -1589,7 +1592,7 @@ public enum ShopCategory
 
 
 [System.Serializable]
-public enum PurchaseCurrency
+public enum PurchaseCurrencyTeen
 {
     Diamond,
     Point,
@@ -1599,7 +1602,7 @@ public enum PurchaseCurrency
 
 
 [System.Serializable]
-public enum PurchaseItem
+public enum PurchaseItemTeen
 {
     Coins,
     Diamond,
@@ -1610,7 +1613,7 @@ public enum PurchaseItem
 
 
 [System.Serializable]
-public enum ShopFeaturedItem
+public enum ShopFeaturedItemTeen
 {
     Rabit,
     Emoji,

@@ -7,10 +7,10 @@ using System.IO;
 using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
 
-public class MainMenuController : MonoBehaviour
+public class MainMenuControllerTeen : MonoBehaviour
 {
-    public static MainMenuController instance;
-    public GameObject mainMenuPoker, mainMenuFlash;
+    public static MainMenuControllerTeen instance;
+    //public GameObject mainMenuPoker, mainMenuFlash;
 
     public GameObject bottomPanel/*, bottomPanelTeen*/;
 
@@ -23,7 +23,7 @@ public class MainMenuController : MonoBehaviour
     public bool isVIPFromShop = false;
     public bool isVIPFromProfile = false;
 
-    private List<MainMenuActiveScreen> mainMenuActiveScreens = new List<MainMenuActiveScreen>();
+    private List<MainMenuActiveScreenTeen> mainMenuActiveScreens = new List<MainMenuActiveScreenTeen>();
     private NotificationDetails notificationDetails = new NotificationDetails();
 
 
@@ -43,19 +43,11 @@ public class MainMenuController : MonoBehaviour
         }
         else
         {            
-            ShowScreen(MainMenuScreens.Registration);
-
-            //if(GameConstants.poker)
-                bottomPanel.GetComponent<PaginationManager>().DisableScreens();
-            //else if(!GameConstants.poker)
-            //    bottomPanelTeen.GetComponent<PaginationManager>().DisableScreens();
+            ShowScreen(MainMenuScreensTeen.Registration);
+            bottomPanel.GetComponent<PaginationManager>().DisableScreens();
         }
         LoadVideoAndScreenshot();
-
-        //if(GameConstants.poker)
-            bottomPanel.GetComponent<PaginationManager>().PageToggleClickEvent += MainMenuController_PageToggleClickEvent;
-        //else if(!GameConstants.poker)
-        //    bottomPanelTeen.GetComponent<PaginationManager>().PageToggleClickEvent += MainMenuController_PageToggleClickEvent;
+        bottomPanel.GetComponent<PaginationManager>().PageToggleClickEvent += MainMenuController_PageToggleClickEvent;
     }
 
     public void OnClickPlayFlash()
@@ -63,20 +55,15 @@ public class MainMenuController : MonoBehaviour
         GameConstants.poker = false;
         //mainMenuFlash.SetActive(true);
         //mainMenuPoker.SetActive(false);
-
-        //bottomPanelTeen.SetActive(true);
-        //bottomPanel.SetActive(false);
         GlobalGameManager.instance.LoadScene(Scenes.MainMenuTeenPatti);
     }
 
     public void OnClickPlayPoker()
     {
         GameConstants.poker = true;
-        mainMenuPoker.SetActive(true);
-        mainMenuFlash.SetActive(false);
-
-        //bottomPanelTeen.SetActive(false);
-        bottomPanel.SetActive(true);
+        //mainMenuPoker.SetActive(true);
+        //mainMenuFlash.SetActive(false);
+        GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
     }
 
 
@@ -139,49 +126,29 @@ public class MainMenuController : MonoBehaviour
 
     public void OpenShopPage(string shopPanel)
     {
-        int layer = (int)GetScreenLayer(MainMenuScreens.MainMenu);
+        int layer = (int)GetScreenLayer(MainMenuScreensTeen.MainMenu);
         for (int i = layer + 1; i < screenLayers.Length; i++)
         {
-            DestroyScreen((ScreenLayer)i);
+            DestroyScreen((ScreenLayerTeen)i);
         }
-
-        //if (GameConstants.poker)
-        //{
-            bottomPanel.SetActive(true);
-            bottomPanel.GetComponent<PaginationManager>().GoToScreen(0);
-        //}
-        //else if(!GameConstants.poker)
-        //{
-        //    bottomPanelTeen.SetActive(true);
-        //    bottomPanelTeen.GetComponent<PaginationManager>().GoToScreen(0);
-        //}
-
-        ShopUiManager.instance.ShowScreen(shopPanel);
+        bottomPanel.SetActive(true);
+        bottomPanel.GetComponent<PaginationManager>().GoToScreen(0);
+        ShopUiManagerTeen.instance.ShowScreen(shopPanel);
     }
 
     public void SwitchToMainMenu(bool playAnimation = false, int PageNo = -1)
     {
         if(PageNo == -1) { PageNo = 2; }
-
-        //if (GameConstants.poker)
-        //{
-            bottomPanel.SetActive(true);
-            bottomPanel.GetComponent<PaginationManager>().GetScreen(0).SetActive(false);
-            bottomPanel.GetComponent<PaginationManager>().GoToScreen(PageNo);
-        //}
-        //else if(!GameConstants.poker)
-        //{
-        //    bottomPanelTeen.SetActive(true);
-        //    bottomPanelTeen.GetComponent<PaginationManager>().GetScreen(0).SetActive(false);
-        //    bottomPanelTeen.GetComponent<PaginationManager>().GoToScreen(PageNo);
-        //}
+        bottomPanel.SetActive(true);
+        bottomPanel.GetComponent<PaginationManager>().GetScreen(0).SetActive(false);
+        bottomPanel.GetComponent<PaginationManager>().GoToScreen(PageNo);
 
         if (mainMenuActiveScreens.Count > 0)
         {
-            int layer = (int)GetScreenLayer(MainMenuScreens.MainMenu);
+            int layer = (int)GetScreenLayer(MainMenuScreensTeen.MainMenu);
             for (int i = layer + 1; i < screenLayers.Length; i++)
             {
-                DestroyScreen((ScreenLayer)i);
+                DestroyScreen((ScreenLayerTeen)i);
             }
         }
 
@@ -190,26 +157,14 @@ public class MainMenuController : MonoBehaviour
         {
             Destroy(RegistrationManager.instance.gameObject);
         }
-
-        //if (GameConstants.poker)
-        //{
-            bottomPanel.GetComponent<PaginationManager>().EnableScreens();
-            bottomPanel.SetActive(true);
-            bottomPanel.GetComponent<PaginationManager>().GetScreen(0).SetActive(false);
-            bottomPanel.GetComponent<PaginationManager>().GoToScreen(PageNo);
-        //}
-        //else if(!GameConstants.poker)
-        //{
-        //    bottomPanelTeen.GetComponent<PaginationManager>().EnableScreens();
-        //    bottomPanelTeen.SetActive(true);
-        //    bottomPanelTeen.GetComponent<PaginationManager>().GetScreen(0).SetActive(false);
-        //    bottomPanelTeen.GetComponent<PaginationManager>().GoToScreen(PageNo);
-        //}
-
+        bottomPanel.GetComponent<PaginationManager>().EnableScreens();
+        bottomPanel.SetActive(true);
+        bottomPanel.GetComponent<PaginationManager>().GetScreen(0).SetActive(false);
+        bottomPanel.GetComponent<PaginationManager>().GoToScreen(PageNo);
 
         //make sure all screens are initialised.
         //shop
-        ShopUiManager.instance.ShowScreen();
+        ShopUiManagerTeen.instance.ShowScreen();
         ////career
         //CareerManager.instance.GetRequestList();
         ////profile
@@ -222,11 +177,7 @@ public class MainMenuController : MonoBehaviour
         ////ProfileScreen
         //ProfileScreenUiManager.instance.InitialiseProfileScreen();
 
-        //if(GameConstants.poker)
-            bottomPanel.transform.GetChild(PageNo).GetComponent<Toggle>().isOn = true;
-        //else if(!GameConstants.poker)
-        //    bottomPanelTeen.transform.GetChild(PageNo).GetComponent<Toggle>().isOn = true;
-
+        bottomPanel.transform.GetChild(PageNo).GetComponent<Toggle>().isOn = true;
         if (playAnimation) { PlayMainMenuAnimations(); }
     }
 
@@ -236,14 +187,14 @@ public class MainMenuController : MonoBehaviour
         {
             case 0:
                 //shop
-                ShopUiManager.instance.ShowScreen();
+                ShopUiManagerTeen.instance.ShowScreen();
 
                 if (GameObject.Find("RegistrationManager(Clone)")) { } else
                 {
                     FetchUserData();
                     FetchUserLogs();
                     //ProfileScreen
-                    ProfileScreenUiManager.instance.InitialiseProfileScreen();
+                    ProfileScreenUiManagerTeen.instance.InitialiseProfileScreen();
                 }
                 break;
             case 1:
@@ -252,23 +203,23 @@ public class MainMenuController : MonoBehaviour
                 break;
             case 2:
                 //club list
-                ClubListUiManager.instance.FetchList(false);
+                //ClubListUiManagerTeen.instance.FetchList(false);
 
                 FetchUserData();
                 FetchUserLogs();
                 //ProfileScreen
-                ProfileScreenUiManager.instance.InitialiseProfileScreen();
+                //ProfileScreenUiManagerTeen.instance.InitialiseProfileScreen();
                 break;
             case 3:
                 //career
-                CareerManager.instance.GetRequestList();
+                CareerManagerTeen.instance.GetRequestList();
                 break;
             case 4:
                 //profile
                 FetchUserData();
                 FetchUserLogs();
                 //ProfileScreen
-                ProfileScreenUiManager.instance.InitialiseProfileScreen();
+                ProfileScreenUiManagerTeen.instance.InitialiseProfileScreen();
                 break;
             default:
                 break;
@@ -419,9 +370,9 @@ public class MainMenuController : MonoBehaviour
             notificationDetails.notifications.Add(notification);
         }
 
-        if (MenuHandller.instance != null)
+        if (MenuHandllerTeen.instance != null)
         {
-            MenuHandller.instance.UpdateNotificationData(notificationDetails.unreadMessageCount);
+            MenuHandllerTeen.instance.UpdateNotificationData(notificationDetails.unreadMessageCount);
         }
 
     }
@@ -431,25 +382,25 @@ public class MainMenuController : MonoBehaviour
         return notificationDetails;
     }
 
-    public void ShowScreen(MainMenuScreens screenName, object[] parameter = null)
+    public void ShowScreen(MainMenuScreensTeen screenName, object[] parameter = null)
     {
-        if(screenName == MainMenuScreens.MainMenu)
-        {
-            SwitchToMainMenu(true);
-            return;
-        }
+        //if(screenName == MainMenuScreensTeen.MainMenu)
+        //{
+        //    SwitchToMainMenu(true);
+        //    return;
+        //}
 
         int layer = (int)GetScreenLayer(screenName);
         for (int i = layer + 1; i < screenLayers.Length; i++)
         {
-            DestroyScreen((ScreenLayer)i);
+            DestroyScreen((ScreenLayerTeen)i);
         }
 
         if (!IsScreenActive(screenName))
         {
             DestroyScreen(GetScreenLayer(screenName));
 
-            MainMenuActiveScreen mainMenuScreen = new MainMenuActiveScreen();
+            MainMenuActiveScreenTeen mainMenuScreen = new MainMenuActiveScreenTeen();
             mainMenuScreen.screenName = screenName;
             mainMenuScreen.screenLayer = GetScreenLayer(screenName);
 
@@ -459,12 +410,12 @@ public class MainMenuController : MonoBehaviour
             gm.SetActive(true);
             switch (screenName)
             {
-                case MainMenuScreens.ClubDetails:
+                case MainMenuScreensTeen.ClubDetails:
                     gm.GetComponent<ClubDetailsUIManager>().Initialize((string)parameter[0], (string)parameter[1], (string)parameter[2], (string)parameter[3], (string)parameter[4], (string)parameter[5]);
                     break;
 
 
-                case MainMenuScreens.GlobalTournament:
+                case MainMenuScreensTeen.GlobalTournament:
                     {
                         if (parameter != null)
                         {
@@ -478,15 +429,15 @@ public class MainMenuController : MonoBehaviour
                     break;
 
 
-                case MainMenuScreens.Shop:
+                case MainMenuScreensTeen.Shop:
                     {
                         if (parameter != null)
                         {
-                            gm.GetComponent<ShopUiManager>().ShowScreen((string)parameter[0]);
+                            gm.GetComponent<ShopUiManagerTeen>().ShowScreen((string)parameter[0]);
                         }
                         else
                         {
-                            gm.GetComponent<ShopUiManager>().ShowScreen();
+                            gm.GetComponent<ShopUiManagerTeen>().ShowScreen();
                         }
                     }
                     break;
@@ -501,13 +452,13 @@ public class MainMenuController : MonoBehaviour
 
     public void ShowMessage(string messageToShow, Action callBackMethod = null, string okButtonText = "Ok")
     {
-        if (!IsScreenActive(MainMenuScreens.Message))
+        if (!IsScreenActive(MainMenuScreensTeen.Message))
         {
-            MainMenuActiveScreen mainMenuScreen = new MainMenuActiveScreen();
-            mainMenuScreen.screenName = MainMenuScreens.Message;
-            mainMenuScreen.screenLayer = GetScreenLayer(MainMenuScreens.Message);
+            MainMenuActiveScreenTeen mainMenuScreen = new MainMenuActiveScreenTeen();
+            mainMenuScreen.screenName = MainMenuScreensTeen.Message;
+            mainMenuScreen.screenLayer = GetScreenLayer(MainMenuScreensTeen.Message);
 
-            GameObject gm = Instantiate(screens[(int)MainMenuScreens.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
+            GameObject gm = Instantiate(screens[(int)MainMenuScreensTeen.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
             mainMenuScreen.screenObject = gm;
 
             mainMenuActiveScreens.Add(mainMenuScreen);
@@ -519,13 +470,13 @@ public class MainMenuController : MonoBehaviour
 
     public void ShowMessage(string messageToShow, Action yesButtonCallBack, Action noButtonCallBack, string yesButtonText = "Yes", string noButtonText = "No")
     {
-        if (!IsScreenActive(MainMenuScreens.Message))
+        if (!IsScreenActive(MainMenuScreensTeen.Message))
         {
-            MainMenuActiveScreen mainMenuScreen = new MainMenuActiveScreen();
-            mainMenuScreen.screenName = MainMenuScreens.Message;
-            mainMenuScreen.screenLayer = GetScreenLayer(MainMenuScreens.Message);
+            MainMenuActiveScreenTeen mainMenuScreen = new MainMenuActiveScreenTeen();
+            mainMenuScreen.screenName = MainMenuScreensTeen.Message;
+            mainMenuScreen.screenLayer = GetScreenLayer(MainMenuScreensTeen.Message);
 
-            GameObject gm = Instantiate(screens[(int)MainMenuScreens.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
+            GameObject gm = Instantiate(screens[(int)MainMenuScreensTeen.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
             mainMenuScreen.screenObject = gm;
 
             mainMenuActiveScreens.Add(mainMenuScreen);
@@ -535,7 +486,7 @@ public class MainMenuController : MonoBehaviour
 
 
 
-    public void DestroyScreen(MainMenuScreens screenName)
+    public void DestroyScreen(MainMenuScreensTeen screenName)
     {
         for (int i = 0; i < mainMenuActiveScreens.Count; i++)
         {
@@ -547,7 +498,7 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    public void DestroyScreen(ScreenLayer layerName)
+    public void DestroyScreen(ScreenLayerTeen layerName)
     {
         for (int i = 0; i < mainMenuActiveScreens.Count; i++)
         {
@@ -559,7 +510,7 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    private bool IsScreenActive(MainMenuScreens screenName)
+    private bool IsScreenActive(MainMenuScreensTeen screenName)
     {
         for (int i = 0; i < mainMenuActiveScreens.Count; i++)
         {
@@ -573,52 +524,52 @@ public class MainMenuController : MonoBehaviour
     }
 
 
-    private ScreenLayer GetScreenLayer(MainMenuScreens screenName)
+    private ScreenLayerTeen GetScreenLayer(MainMenuScreensTeen screenName)
     {
         switch (screenName)
         {
-            case MainMenuScreens.MainMenu:
-            case MainMenuScreens.Shop:
-            case MainMenuScreens.Profile:
-            case MainMenuScreens.Forum:
+            case MainMenuScreensTeen.MainMenu:
+            case MainMenuScreensTeen.Shop:
+            case MainMenuScreensTeen.Profile:
+            case MainMenuScreensTeen.Forum:
 
-                return ScreenLayer.LAYER1;
+                return ScreenLayerTeen.LAYER1;
 
-            case MainMenuScreens.Message:
-            case MainMenuScreens.SelectFrom:
-            case MainMenuScreens.FairGaming:
-            case MainMenuScreens.Compliance:
-            case MainMenuScreens.Contact:
-            case MainMenuScreens.FriendList:
-            case MainMenuScreens.Language:
-            case MainMenuScreens.LinkYourEmail:
-            case MainMenuScreens.LinkingSucessfull:
-            case MainMenuScreens.UnlinkYourEmail:
-            case MainMenuScreens.ChangePassword:
-            case MainMenuScreens.RedeemCode:
-            case MainMenuScreens.InGameShop:
-            case MainMenuScreens.Missions:
-            case MainMenuScreens.ConsecutiveLoginReward:
-            case MainMenuScreens.Congratulation:
-            case MainMenuScreens.BackPack:
-            case MainMenuScreens.CareerMenuScreen:
-            case MainMenuScreens.CareerDataScreen:
-            case MainMenuScreens.CareerDefinationScreen:
-            case MainMenuScreens.MainMenuTeenPatti:
-                return ScreenLayer.LAYER3;
+            case MainMenuScreensTeen.Message:
+            case MainMenuScreensTeen.SelectFrom:
+            case MainMenuScreensTeen.FairGaming:
+            case MainMenuScreensTeen.Compliance:
+            case MainMenuScreensTeen.Contact:
+            case MainMenuScreensTeen.FriendList:
+            case MainMenuScreensTeen.Language:
+            case MainMenuScreensTeen.LinkYourEmail:
+            case MainMenuScreensTeen.LinkingSucessfull:
+            case MainMenuScreensTeen.UnlinkYourEmail:
+            case MainMenuScreensTeen.ChangePassword:
+            case MainMenuScreensTeen.RedeemCode:
+            case MainMenuScreensTeen.InGameShop:
+            case MainMenuScreensTeen.Missions:
+            case MainMenuScreensTeen.ConsecutiveLoginReward:
+            case MainMenuScreensTeen.Congratulation:
+            case MainMenuScreensTeen.BackPack:
+            case MainMenuScreensTeen.CareerMenuScreen:
+            case MainMenuScreensTeen.CareerDataScreen:
+            case MainMenuScreensTeen.CareerDefinationScreen:
+
+                return ScreenLayerTeen.LAYER3;
 
             /*case MainMenuScreens.Loading:*/
-            case MainMenuScreens.ChangeFrame:
-            case MainMenuScreens.SelectRegion:
-            case MainMenuScreens.ChangeProfileIcon:
+            case MainMenuScreensTeen.ChangeFrame:
+            case MainMenuScreensTeen.SelectRegion:
+            case MainMenuScreensTeen.ChangeProfileIcon:
 
-                return ScreenLayer.LAYER4;
+                return ScreenLayerTeen.LAYER4;
 
-            case MainMenuScreens.Loading:
-                return ScreenLayer.LAYER5;
+            case MainMenuScreensTeen.Loading:
+                return ScreenLayerTeen.LAYER5;
 
             default:
-                return ScreenLayer.LAYER2;
+                return ScreenLayerTeen.LAYER2;
         }
     }
 
@@ -676,7 +627,7 @@ public class MainMenuController : MonoBehaviour
             {   
                 ShowMessage(data["message"].ToString());
 
-                ShowScreen(MainMenuScreens.Registration);
+                ShowScreen(MainMenuScreensTeen.Registration);
             }
         }
         else if (requestType == RequestType.GetNotificationMessage)
@@ -707,19 +658,19 @@ public class MainMenuController : MonoBehaviour
                 ShowMessage(data["message"].ToString());
             }
         }
-        DestroyScreen(MainMenuScreens.Loading);
+        DestroyScreen(MainMenuScreensTeen.Loading);
     }
 }
 
 
-public class MainMenuActiveScreen
+public class MainMenuActiveScreenTeen
 {
     public GameObject screenObject;
-    public MainMenuScreens screenName;
-    public ScreenLayer screenLayer;
+    public MainMenuScreensTeen screenName;
+    public ScreenLayerTeen screenLayer;
 }
 
-public enum MainMenuScreens
+public enum MainMenuScreensTeen
 {
     Registration,
     MainMenu,
@@ -767,7 +718,7 @@ public enum MainMenuScreens
 }
 
 
-public enum ScreenLayer
+public enum ScreenLayerTeen
 {
     LAYER1,
     LAYER2,

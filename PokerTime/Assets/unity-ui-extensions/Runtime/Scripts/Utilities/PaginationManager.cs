@@ -106,7 +106,7 @@ namespace UnityEngine.UI.Extensions
         }
 
         private void ToggleClick(bool toggle)
-        {
+        {   
             if (toggle)
             {
                 for (int i = 0; i < m_PaginationChildren.Count; i++)

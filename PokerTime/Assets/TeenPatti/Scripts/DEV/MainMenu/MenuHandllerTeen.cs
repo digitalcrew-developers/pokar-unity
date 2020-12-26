@@ -5,14 +5,14 @@ using UnityEngine.UI;
 using LitJson;
 using TMPro;
 
-public class MenuHandller : MonoBehaviour
+public class MenuHandllerTeen : MonoBehaviour
 {
-	public static MenuHandller instance;
+	public static MenuHandllerTeen instance;
 
 	public Text coinsText, diamondsText, pointsText,notificationText;
 	public GameObject createClubPopUp,joinClubPopUp,notificationIcon;
 
-    public TMPro.TMP_InputField TMP_CreateClubField, TMP_JoinClubField, TMP_AgentField;
+    public TMP_InputField TMP_CreateClubField, TMP_JoinClubField, TMP_AgentField;
 
     //temp. club item until we call club list api
     [SerializeField]
@@ -32,22 +32,28 @@ public class MenuHandller : MonoBehaviour
 
     void Start()
 	{
-		createClubPopUp.SetActive(false);
-		joinClubPopUp.SetActive(false);
+		//createClubPopUp.SetActive(false);
+		//joinClubPopUp.SetActive(false);
 
-		if (!MainMenuController.instance.bottomPanel.activeSelf/* && GameConstants.poker*/)
-		{
-			MainMenuController.instance.bottomPanel.SetActive(true);
-			//MainMenuController.instance.bottomPanelTeen.SetActive(false);
-		}
-		//else if (!MainMenuController.instance.bottomPanelTeen.activeSelf && !GameConstants.poker)
+		//if (!MainMenuControllerTeen.instance.bottomPanel.activeSelf && GameConstants.poker)
 		//{
-		//	MainMenuController.instance.bottomPanel.SetActive(false);
-		//	MainMenuController.instance.bottomPanelTeen.SetActive(true);
+		//	MainMenuControllerTeen.instance.bottomPanel.SetActive(true);
+		//	MainMenuControllerTeen.instance.bottomPanelTeen.SetActive(false);
+		//}
+		//else if (!MainMenuControllerTeen.instance.bottomPanelTeen.activeSelf && !GameConstants.poker)
+		//{
+		//	MainMenuControllerTeen.instance.bottomPanel.SetActive(false);
+		//	MainMenuControllerTeen.instance.bottomPanelTeen.SetActive(true);
 		//}
 
-		UpdateAllText();
-		UpdateNotificationData(MainMenuController.instance.GetNotificationDetails().unreadMessageCount);
+		if (!MainMenuControllerTeen.instance.bottomPanel.activeSelf)
+		{
+			MainMenuControllerTeen.instance.bottomPanel.SetActive(true);
+		}
+
+
+		//UpdateAllText();
+		//UpdateNotificationData(MainMenuControllerTeen.instance.GetNotificationDetails().unreadMessageCount);
     }
 
 	public void UpdateNotificationData(int unreadMessageCount)
@@ -66,7 +72,7 @@ public class MenuHandller : MonoBehaviour
 
 	public void OnMissoinBtnClick()
 	{
-		MainMenuController.instance.ShowScreen(MainMenuScreens.Missions);
+		MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Missions);
 	}
 
 	public void UpdateAllText()
@@ -110,7 +116,7 @@ public class MenuHandller : MonoBehaviour
 
 		case "openClubList":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.ClubList);
+				MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.ClubList);
 			}
 			break;
 
@@ -123,21 +129,21 @@ public class MenuHandller : MonoBehaviour
 
 					if (!Utility.IsValidClubName(TMP_CreateClubField.text, out error))
 					{
-						MainMenuController.instance.ShowMessage(error);
+						MainMenuControllerTeen.instance.ShowMessage(error);
 						return;
 					}
 
 					string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
 						"\"clubName\":\"" + TMP_CreateClubField.text + "\"}";
 
-					MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+					MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Loading);
 					WebServices.instance.SendRequest(RequestType.CreateClub, requestData, true, OnServerResponseFound);
 				}
 				else
 				{
 					if (TMP_JoinClubField.text.Length <= 0)
 					{
-						MainMenuController.instance.ShowMessage("Please enter clubId");
+						MainMenuControllerTeen.instance.ShowMessage("Please enter clubId");
 						return;
 					}
 
@@ -145,7 +151,7 @@ public class MenuHandller : MonoBehaviour
 						"\"uniqueClubId\":\"" + TMP_JoinClubField.text + "\","+
 						"\"agentId\":\"" + TMP_AgentField.text + "\"}";
 
-					MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+					MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Loading);
 					WebServices.instance.SendRequest(RequestType.SendClubJoinRequest, requestData, true, OnServerResponseFound);
 				}
 			}
@@ -155,66 +161,66 @@ public class MenuHandller : MonoBehaviour
 		case "lobby":
 			{
 					//		Debug.Log("I am here---------");
-					if (GameConstants.poker)
-					{
-						MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
-					}
-					else
-					{
-						MainMenuController.instance.ShowScreen(MainMenuScreens.LobbyTeenPatti);
-					}
+					//if (GameConstants.poker)
+					//{
+					//	MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Lobby);
+					//}
+					//else
+					//{
+						MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Lobby);
+					//}
 
 					//DEV_CODE
-					//MainMenuController.instance.ShowScreen(MainMenuScreens.Lobby);
+					//MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Lobby);
 				}
 			break;
 
 		case "spinUp":
 			{
-					MainMenuController.instance.ShowScreen(MainMenuScreens.GlobalTournament, new object[] { "spinUp" });
+					MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.GlobalTournament, new object[] { "spinUp" });
 				}
 			break;
 
 			case "consecutiveLoginReward":
 				{
-					MainMenuController.instance.ShowScreen(MainMenuScreens.ConsecutiveLoginReward);
+					MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.ConsecutiveLoginReward);
 				}
 				break;
 
 			case "globalTournament":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.GlobalTournament);
+				MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.GlobalTournament);
 			}
 			break;
 
 		case "coinShop":
 			{
                 
-				MainMenuController.instance.OpenShopPage("item");
+				MainMenuControllerTeen.instance.OpenShopPage("item");
 			}
 			break;
 
 		case "diamondShop":
 			{
-				MainMenuController.instance.OpenShopPage("diamond");
+				MainMenuControllerTeen.instance.OpenShopPage("diamond");
 			}
 			break;
 
 		case "vip":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
+				MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.VIP_Privilege);
 			}
 			break;
 
 		case "notification":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.Notification);
+				MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Notification);
 			}
 			break;
 
 		case "missions":
 			{
-				MainMenuController.instance.ShowScreen(MainMenuScreens.Missions);
+				MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Missions);
 			}
 			break;
                 
@@ -243,13 +249,13 @@ public class MenuHandller : MonoBehaviour
 	public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
 	{
 
-		MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+		MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Loading);
 
 		if (errorMessage.Length > 0)
 		{
 			if (isShowErrorMessage)
 			{
-				MainMenuController.instance.ShowMessage(errorMessage);
+				MainMenuControllerTeen.instance.ShowMessage(errorMessage);
 			}
 
 			return;
@@ -268,12 +274,12 @@ public class MenuHandller : MonoBehaviour
 				if (data["success"].ToString() == "1")
 				{
 					createClubPopUp.SetActive(false);
-					MainMenuController.instance.ShowMessage("Club created successfully");
+					MainMenuControllerTeen.instance.ShowMessage("Club created successfully");
 					ClubListUiManager.instance.FetchList();
 				}
 				else
 				{
-					MainMenuController.instance.ShowMessage(data["message"].ToString());
+					MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
 						if (createClubPopUp.activeInHierarchy)
 							createClubPopUp.SetActive(false);
 				}
@@ -288,11 +294,11 @@ public class MenuHandller : MonoBehaviour
 				if (data["success"].ToString() == "1")
 				{
 					joinClubPopUp.SetActive(false);
-					MainMenuController.instance.ShowMessage("Club join request sent");
+					MainMenuControllerTeen.instance.ShowMessage("Club join request sent");
 				}
 				else
 				{
-					MainMenuController.instance.ShowMessage(data["message"].ToString());
+					MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
 				}
 			}
 			break;
