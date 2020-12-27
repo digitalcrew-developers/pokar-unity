@@ -7,9 +7,9 @@ using TMPro;
 using UnityEngine.Networking;
 using System.Runtime.InteropServices;
 
-public class LobbyUiManager: MonoBehaviour
+public class LobbyUiManagerTeen : MonoBehaviour
 {
-    public static LobbyUiManager instance;
+    public static LobbyUiManagerTeen instance;
     [SerializeField]
     private LayoutManager layoutManager;
 
@@ -34,25 +34,33 @@ public class LobbyUiManager: MonoBehaviour
     private void OnEnable()
     {
         //Deactivate Bottom Panel
-        if (MainMenuController.instance.bottomPanel.activeSelf /*&& GameConstants.poker*/)
-            MainMenuController.instance.bottomPanel.SetActive(false);
+        //if (MainMenuController.instance.bottomPanel.activeSelf && GameConstants.poker)
+        //    MainMenuController.instance.bottomPanel.SetActive(false);
         //else if(MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
         //    MainMenuController.instance.bottomPanelTeen.SetActive(false);
 
-                missionBtn.onClick.AddListener(() => ShowMissonScreen());
+        if (MainMenuControllerTeen.instance.bottomPanel.activeSelf)
+            MainMenuControllerTeen.instance.bottomPanel.SetActive(false);
+
+        missionBtn.onClick.AddListener(() => ShowMissonScreen());
         topPlayerBtn.onClick.AddListener(() => ShowTopPlayerScreen());
         shopBtn.onClick.AddListener(() => ShowShopScreen());
         BagPackBtn.onClick.AddListener(() => ShowBackPackScreen());
-        ChangeTextColor(0);
+        //ChangeTextColor(0);
+        OnClickOnButton("classic");
+        gameModeButtons[0].interactable = false;
     }
 
     private void Awake()
     {
         instance = this;
+        //ChangeTextColor(0);
     }
 
     private void Start()
     {
+        //OnClickOnButton("classic");
+
         for (int i = 0; i < 3; i++)
         {
             List<RoomData> dummyList = new List<RoomData>();
@@ -66,26 +74,26 @@ public class LobbyUiManager: MonoBehaviour
 
         coinsText.text = Utility.GetTrimmedAmount(""+PlayerManager.instance.GetPlayerGameData().coins);
 
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Loading);
         WebServices.instance.SendRequest(RequestType.GetLobbyRooms, "{}", true, OnServerResponseFound);
     }
 
     public void ShowMissonScreen()
     {
         Debug.Log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Missions);
+        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Missions);
     }
     void ShowTopPlayerScreen()
     {
-        MainMenuController.instance.ShowScreen(MainMenuScreens.TopPlayer);
+        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.TopPlayer);
     }
     void ShowBackPackScreen()
     {
-        MainMenuController.instance.ShowScreen(MainMenuScreens.BackPack);
+        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.BackPack);
     }
     void ShowShopScreen()
     {
-        MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Shop);
     }
     public void OnClickOnButton(string eventName)
     {
@@ -95,41 +103,48 @@ public class LobbyUiManager: MonoBehaviour
         {
             case "back":
                 {
-                    MainMenuController.instance.SwitchToMainMenu(true);
+                    MainMenuControllerTeen.instance.SwitchToMainMenu(true);
                 }
                 break;
 
-            case "coinsShop":
-                {
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.InGameShop);
-                }
-                break;
+            //case "coinsShop":
+            //    {
+            //        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.InGameShop);
+            //    }
+            //    break;
 
 
-            case "nlh":
+            case "classic":
                 {
-                    ShowScreen(GameMode.NLH);
+                    //ShowScreen(GameMode.NLH);
                     ChangeTextColor(0);
-                    
                 }
                 break;
 
-            case "plo":
+            case "muflis":
                 {
-                    ShowScreen(GameMode.PLO);
+                    //ShowScreen(GameMode.PLO);
                     ChangeTextColor(1);
                 }
                 break;
 
-            case "ofc":
+            case "joker":
                 {
-                    ShowScreen(GameMode.OFC);
+                    //ShowScreen(GameMode.OFC);
                     ChangeTextColor(2);
                 }
                 break;
+
+            case "999":
+                {
+                    //ShowScreen(GameMode.NLH);
+                    ChangeTextColor(3);
+                }
+                break;
+
             case "FriendList":
                 {
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.FriendList);
+                    MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.FriendList);
                 }
                 break;
 
@@ -141,14 +156,20 @@ public class LobbyUiManager: MonoBehaviour
         }
     }
 
-    void ChangeTextColor (int val){
+    void ChangeTextColor (int val)
+    {
+        if (!gameModeButtons[0].interactable)
+            gameModeButtons[0].interactable = true;
         for (int i = 0; i < gameModeButtons.Length; i++)
         {
             if (i == val)
             {
+                //gameModeButtons[i].interactable = true;
                 //gameModeButtons[i].transform.GetChild(0).GetComponent<Text>().color = new Color32(0, 0, 35, 255);
             }
-            else {
+            else 
+            {
+                //gameModeButtons[i].interactable = false;
                 //gameModeButtons[i].transform.GetChild(0).GetComponent<Text>().color = new Color32(200, 200, 200, 255);
             }
         }
@@ -162,12 +183,12 @@ public class LobbyUiManager: MonoBehaviour
             Destroy(container.GetChild(i).gameObject);
         }
 
-        for (int i = 0; i < gameModeButtons.Length; i++)
-        {
-            gameModeButtons[i].interactable = true;
-        }
+        //for (int i = 0; i < gameModeButtons.Length; i++)
+        //{
+        //    gameModeButtons[i].interactable = true;
+        //}
 
-        gameModeButtons[(int)gameMode].interactable = false;
+        //gameModeButtons[(int)gameMode].interactable = false;
 
         int index = (int)gameMode;
 
@@ -198,6 +219,7 @@ public class LobbyUiManager: MonoBehaviour
     {
         StartCoroutine(loadRoomBGSpriteFromUrl(url, obj));
     }
+
     IEnumerator loadRoomBGSpriteFromUrl(string URL, GameObject obj)
     {
         UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
@@ -271,15 +293,15 @@ public class LobbyUiManager: MonoBehaviour
         //Debug.Log("data.callTimer " + data.callTimer);
         if (data.gameMode != GameMode.OFC)
         {
-            //if(GameConstants.poker)
-            //{
-            //    GlobalGameManager.instance.LoadScene(Scenes.InGame);
-            //}
-            //else
-            //{
-            //    GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
-            //}
-            GlobalGameManager.instance.LoadScene(Scenes.InGame);
+            if (GameConstants.poker)
+            {
+                GlobalGameManager.instance.LoadScene(Scenes.InGame);
+            }
+            else
+            {
+                GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
+            }
+            //GlobalGameManager.instance.LoadScene(Scenes.InGame);
         }
         else
         {
@@ -338,18 +360,19 @@ public class LobbyUiManager: MonoBehaviour
         }
 
 
+        //ShowScreen(GameModeTeen.CLASSIC);
         ShowScreen(GameMode.NLH);
     }
     
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Loading);
 
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                MainMenuControllerTeen.instance.ShowMessage(errorMessage);
             }
 
             return;
@@ -368,7 +391,7 @@ public class LobbyUiManager: MonoBehaviour
             }
             else
             {
-                MainMenuController.instance.ShowMessage("Unable to get room data");
+                MainMenuControllerTeen.instance.ShowMessage("Unable to get room data");
             }
 
         }

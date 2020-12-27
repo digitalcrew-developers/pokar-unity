@@ -175,6 +175,14 @@ public enum GameMode
     OFC
 }
 
+public enum GameModeTeen
+{
+    CLASSIC,
+    MUFLIS,
+    JOKER,
+    _999
+}
+
 
 [System.Serializable]
 public class RoomData

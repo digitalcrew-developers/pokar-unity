@@ -53,10 +53,10 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     private void DisableAllPanels()
     {
         //Disable Bottom Panel
-        if (MainMenuController.instance.bottomPanel.activeSelf && GameConstants.poker)
+        if (MainMenuController.instance.bottomPanel.activeSelf /*&& GameConstants.poker*/)
             MainMenuController.instance.bottomPanel.SetActive(false);
-        else if (MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
-            MainMenuController.instance.bottomPanelTeen.SetActive(false);
+        //else if (MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
+        //    MainMenuController.instance.bottomPanelTeen.SetActive(false);
 
         noRecordImage.gameObject.SetActive(false);
         popUpText.gameObject.SetActive(false);
@@ -207,16 +207,16 @@ public class HandUiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     public void OnClickBtnClose()
     {
         //Enable bottom panel
-        if (!MainMenuController.instance.bottomPanel.activeSelf && GameConstants.poker)
+        if (!MainMenuController.instance.bottomPanel.activeSelf /*&& GameConstants.poker*/)
         {
             MainMenuController.instance.bottomPanel.SetActive(true);
-            MainMenuController.instance.bottomPanelTeen.SetActive(false);
+            //MainMenuController.instance.bottomPanelTeen.SetActive(false);
         }
-        else if (!MainMenuController.instance.bottomPanelTeen.activeSelf && !GameConstants.poker)
-        {
-            MainMenuController.instance.bottomPanel.SetActive(false);
-            MainMenuController.instance.bottomPanelTeen.SetActive(true);
-        }
+        //else if (!MainMenuController.instance.bottomPanelTeen.activeSelf && !GameConstants.poker)
+        //{
+        //    MainMenuController.instance.bottomPanel.SetActive(false);
+        //    MainMenuController.instance.bottomPanelTeen.SetActive(true);
+        //}
 
         MainMenuController.instance.DestroyScreen(MainMenuScreens.HandScreen);        
     }

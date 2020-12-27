@@ -33,7 +33,10 @@ public class GlobalTournamentListUiManager : MonoBehaviour
         {
             case "back":
                 {
-                    MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+                    if (GameConstants.poker)
+                        MainMenuController.instance.ShowScreen(MainMenuScreens.MainMenu);
+                    else
+                        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.MainMenu);
                 }
                 break;
 

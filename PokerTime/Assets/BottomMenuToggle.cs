@@ -17,7 +17,11 @@ public class BottomMenuToggle : MonoBehaviour
     private void Start()
     {
         textColor = new Color();
-        ColorUtility.TryParseHtmlString("#0CBAD2", out textColor);
+
+        if(GameConstants.poker)
+            ColorUtility.TryParseHtmlString("#0CBAD2", out textColor);
+        else
+            ColorUtility.TryParseHtmlString("#F7C532", out textColor);
 
         myToggle = GetComponent<Toggle>();
         myToggle.onValueChanged.AddListener(delegate {
@@ -29,6 +33,13 @@ public class BottomMenuToggle : MonoBehaviour
 
     private void UpdateColors()
     {
+        //Destroy Lobby Screen When Clicked on bottom panel (Teen Patti)
+        if (!GameConstants.poker)
+        {
+            Debug.LogError("Destroying Lobby in Teen...");
+            MainMenuControllerTeen.instance.DestroyScreen(ScreenLayerTeen.LAYER1);
+        }
+
         if (myToggle.isOn)
         {
             //call MainMenuController here.
