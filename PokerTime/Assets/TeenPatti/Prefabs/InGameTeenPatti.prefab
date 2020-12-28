@@ -34297,7 +34297,7 @@ MonoBehaviour:
   - {fileID: 4547701835638141697, guid: c5a89da516a274a7699b8c976484cc9f, type: 3}
   - {fileID: 5883551790151081492, guid: 81a2cbbb16a65ab43bccd3c6a9deeb20, type: 3}
   - {fileID: 4654787027769472351, guid: 9ef5b62427d71f34d9e925d1e3e79e80, type: 3}
-  - {fileID: 767225038319493612, guid: 4b3df061e5b79485da65615597f46d6c, type: 3}
+  - {fileID: 767225038319493612, guid: afd2c18e63212c24ea656c1e3da49442, type: 3}
   - {fileID: 2675475918296275356, guid: 8a87e837e4e394d2abd9108710faf63d, type: 3}
   - {fileID: 3091432671981371271, guid: 62cdce70f3c674ac38df5fab7b0fd1ab, type: 3}
   - {fileID: 5845787549154213412, guid: 5a52c4b1c660340f9864d556b730c7b5, type: 3}
@@ -34305,7 +34305,7 @@ MonoBehaviour:
   - {fileID: 967846151363641596, guid: 73dcfbe5eb34b01439e9c1e695a90784, type: 3}
   - {fileID: 4919143782077853024, guid: 6c80c845e66bf4f4eaea4f3b39aa18cf, type: 3}
   - {fileID: 5220358175753891868, guid: c9f941806fcfd3d48b5e8961f0a37cb8, type: 3}
-  - {fileID: 6745031552395860838, guid: 7cb0d22007d404242b59de79c993c157, type: 3}
+  - {fileID: 6745031552395860838, guid: 6fd372db48c61694bafb3ea51e9d6de8, type: 3}
   - {fileID: 4686323562265909901, guid: 2c44530ba0bdcd046bfc3e62ea90abc6, type: 3}
   - {fileID: 0}
   - {fileID: 2374332927855073667, guid: e01b300145d69b54e802983c6bfc51cc, type: 3}
@@ -34910,9 +34910,11 @@ MonoBehaviour:
   videoHeight: 0
   isRecording: 0
   cardValue: 
+  thunderPointBar: {fileID: 0}
   TableName: {fileID: 0}
   RabbitButton: {fileID: 0}
   AllSeatButtons: []
+  gameExitCalled: 0
   AmISpectator: 1
   PointEarnedCounter: 0
   WinnersNameText: {fileID: 0}
@@ -43813,7 +43815,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 7491083286655648888}
         m_MethodName: OnSpinWheelArrowBtnClick
         m_Mode: 1
         m_Arguments:

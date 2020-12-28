@@ -107,11 +107,11 @@ public class LobbyUiManagerTeen : MonoBehaviour
                 }
                 break;
 
-            //case "coinsShop":
-            //    {
-            //        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.InGameShop);
-            //    }
-            //    break;
+            case "coinsShop":
+                {
+                    MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.InGameShop);
+                }
+                break;
 
 
             case "classic":

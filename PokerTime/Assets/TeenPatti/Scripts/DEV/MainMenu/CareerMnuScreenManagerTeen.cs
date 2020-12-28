@@ -116,7 +116,7 @@ public class CareerMnuScreenManagerTeen : MonoBehaviour
             btnList[i].GetComponent<Image>().color = new Color32(42, 42, 42, 255);
             if (CareerManagerTeen.instance.selectedIndex_CareerMenuScreen == i)
             {
-                btnList[i].GetComponent<Image>().color = new Color32(80, 180, 80, 255);
+                btnList[i].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
                 CareerManagerTeen.instance.headingTxt.text = btnList[i].transform.GetChild(0).GetComponent<Text>().text;
             }
         }

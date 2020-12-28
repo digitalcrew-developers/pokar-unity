@@ -1212,7 +1212,7 @@ public enum InGameScreens
     SpinWheelScreen,
     DealerImageScreen,
     SwitchTable,
-    GameDisplay
+    GameDisplay    
 }
 
 public enum PlayerAction

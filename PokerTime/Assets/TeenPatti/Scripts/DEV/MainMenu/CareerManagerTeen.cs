@@ -62,17 +62,17 @@ public class CareerManagerTeen : MonoBehaviour
 
     public void OnMenuBtnClick()
     {
-        MainMenuController.instance.ShowScreen(MainMenuScreens.CareerMenuScreen);
+        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.CareerMenuScreen);
     }
 
     public void OnDataBtnClick()
     {
-        MainMenuController.instance.ShowScreen(MainMenuScreens.CareerDataScreen);
+        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.CareerDataScreen);
     }
 
     public void OnClickVIP()
     {
-        MainMenuController.instance.ShowScreen(MainMenuScreens.VIP_Privilege);
+        MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.VIP_Privilege);
     }
 
     public void OnDMY_BtnClick(string val)
@@ -89,27 +89,27 @@ public class CareerManagerTeen : MonoBehaviour
                 ResetData();
                 DMY_objList[0].SetActive(true);
                 DMY_objfocus[0].SetActive(true);
-                DMY_objList[0].transform.Find("mid/GameObject/DayScroll").GetComponent<ScrollSnapRect>().containerScroll_Name = "DayScroll";
-                DMY_objList[0].transform.Find("mid/GameObject/DayScroll").GetComponent<ScrollSnapRect>().startingPage = 29;
-                DMY_objList[0].transform.Find("mid/GameObject/DayScroll").GetComponent<ScrollSnapRect>().UpdatePages();
+                DMY_objList[0].transform.Find("mid/GameObject/DayScroll").GetComponent<ScrollSnapRectTeen>().containerScroll_Name = "DayScroll";
+                DMY_objList[0].transform.Find("mid/GameObject/DayScroll").GetComponent<ScrollSnapRectTeen>().startingPage = 29;
+                DMY_objList[0].transform.Find("mid/GameObject/DayScroll").GetComponent<ScrollSnapRectTeen>().UpdatePages();
                 break;
 
             case "month":
                 ResetData();
                 DMY_objList[1].SetActive(true);
                 DMY_objfocus[1].SetActive(true);
-                DMY_objList[1].transform.Find("mid/GameObject/MonthScroll").GetComponent<ScrollSnapRect>().containerScroll_Name = "MonthScroll";
-                DMY_objList[1].transform.Find("mid/GameObject/MonthScroll").GetComponent<ScrollSnapRect>().startingPage = 11;
-                DMY_objList[1].transform.Find("mid/GameObject/MonthScroll").GetComponent<ScrollSnapRect>().UpdatePages();
+                DMY_objList[1].transform.Find("mid/GameObject/MonthScroll").GetComponent<ScrollSnapRectTeen>().containerScroll_Name = "MonthScroll";
+                DMY_objList[1].transform.Find("mid/GameObject/MonthScroll").GetComponent<ScrollSnapRectTeen>().startingPage = 11;
+                DMY_objList[1].transform.Find("mid/GameObject/MonthScroll").GetComponent<ScrollSnapRectTeen>().UpdatePages();
                 break;
 
             case "year":
                 ResetData();
                 DMY_objList[2].SetActive(true);
                 DMY_objfocus[2].SetActive(true);
-                DMY_objList[2].transform.Find("mid/GameObject/YearScroll").GetComponent<ScrollSnapRect>().containerScroll_Name = "YearScroll";
-                DMY_objList[2].transform.Find("mid/GameObject/YearScroll").GetComponent<ScrollSnapRect>().startingPage = 2;
-                DMY_objList[2].transform.Find("mid/GameObject/YearScroll").GetComponent<ScrollSnapRect>().UpdatePages();
+                DMY_objList[2].transform.Find("mid/GameObject/YearScroll").GetComponent<ScrollSnapRectTeen>().containerScroll_Name = "YearScroll";
+                DMY_objList[2].transform.Find("mid/GameObject/YearScroll").GetComponent<ScrollSnapRectTeen>().startingPage = 2;
+                DMY_objList[2].transform.Find("mid/GameObject/YearScroll").GetComponent<ScrollSnapRectTeen>().UpdatePages();
                 break;
         }
     }

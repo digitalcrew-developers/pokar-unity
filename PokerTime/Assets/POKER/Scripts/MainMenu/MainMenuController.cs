@@ -604,7 +604,7 @@ public class MainMenuController : MonoBehaviour
             case MainMenuScreens.CareerMenuScreen:
             case MainMenuScreens.CareerDataScreen:
             case MainMenuScreens.CareerDefinationScreen:
-            case MainMenuScreens.MainMenuTeenPatti:
+            //case MainMenuScreens.MainMenuTeenPatti:
                 return ScreenLayer.LAYER3;
 
             /*case MainMenuScreens.Loading:*/
@@ -762,8 +762,8 @@ public enum MainMenuScreens
     CareerDataScreen,
     CareerDefinationScreen,
     HandScreen,
-    LobbyTeenPatti,
-    MainMenuTeenPatti,
+    //LobbyTeenPatti,
+    //MainMenuTeenPatti,
 }
 
 

@@ -36,7 +36,7 @@ public class BottomMenuToggle : MonoBehaviour
         //Destroy Lobby Screen When Clicked on bottom panel (Teen Patti)
         if (!GameConstants.poker)
         {
-            Debug.LogError("Destroying Lobby in Teen...");
+            //Debug.LogError("Destroying Lobby in Teen...");
             MainMenuControllerTeen.instance.DestroyScreen(ScreenLayerTeen.LAYER1);
         }
 
