@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using LitJson;
+using DG.Tweening;
 
 public class ClubInGameUIManager : MonoBehaviour
 {

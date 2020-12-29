@@ -512,6 +512,15 @@ public class ClubSocketController : MonoBehaviour
 #endif
 #endif
 
+        //DEV_CODE
+        //if (ClubInGameUIManager.instance.actionButtonParent.activeSelf)
+        //    ClubInGameUIManager.instance.actionButtonParent.SetActive(false);
+
+        //if (ClubInGameUIManager.instance.suggestionButtonParent.activeSelf)
+        //    ClubInGameUIManager.instance.suggestionButtonParent.SetActive(false);
+        //***********************************************
+
+
         SocketResponse response = new SocketResponse();
         response.eventType = SocketEvetns.ON_NEXT_ROUND_TIMER_FOUND;
         response.data = responseText;

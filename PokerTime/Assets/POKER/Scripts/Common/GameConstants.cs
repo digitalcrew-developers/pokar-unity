@@ -151,6 +151,19 @@ public class GameConstants : MonoBehaviour
     };
     #endregion
 
+
+    //--------------------------------------------------- TEEN PATTI ---------------------------------------------------
+    #region WEB_TEEN_PATTI
+
+    public const string BASE_URL_TP = "http://3.17.201.78";
+
+    public const string API_URL_TP = BASE_URL_TP + ":3000";
+
+    public static string[] GAME_URLS_TP =
+    {
+        API_URL_TP +"/tp_createClub"
+    };
+    #endregion
 }
 
 [System.Serializable]
@@ -243,4 +256,10 @@ public enum RequestType
     GetGameHistory,
     BeforePayment,
     AfterPayment
+}
+
+[System.Serializable]
+public enum RequestTypeTP
+{
+    CreateClub
 }

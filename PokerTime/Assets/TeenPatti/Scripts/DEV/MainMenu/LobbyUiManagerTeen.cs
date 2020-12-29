@@ -208,7 +208,7 @@ public class LobbyUiManagerTeen : MonoBehaviour
             gm.transform.Find("LivePlayer").GetComponent<Text>().text = data.totalActivePlayers.ToString();
 
             gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(data,index));
-            gm.GetComponent<Button>().onClick.AddListener(() => gm.GetComponent<LobbyRoomManager>().CallInsufficientCoin(data));
+            gm.GetComponent<Button>().onClick.AddListener(() => gm.GetComponent<LobbyRoomManagerTeen>().CallInsufficientCoin(data));
         }
 
         layoutManager.UpdateLayout();
