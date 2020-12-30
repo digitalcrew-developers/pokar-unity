@@ -38,8 +38,8 @@ public class EmojiUIScreenManager : MonoBehaviour
         Debug.Log("Id " + InGameUiManager.instance.TempUserID);
         if (InGameUiManager.instance.TempUserID != null)
         {
-            //GetUserDetails(InGameUiManager.instance.TempUserID);
-            GetUserDetails(PrefsManager.GetPlayerData().userId);
+            GetUserDetails(InGameUiManager.instance.TempUserID);
+            //GetUserDetails(PrefsManager.GetPlayerData().userId);
         }
     }
 
