@@ -40,7 +40,7 @@ public class PlayerSeat : MonoBehaviour
     {
         if (InGameManager.instance.AmISpectator)
         {
-            SocketController.instance.SendGameJoinRequest();
+            SocketController.instance.SendGameJoinRequest(seatNo);
         }
     }
 }
