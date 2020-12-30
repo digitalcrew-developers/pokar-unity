@@ -29,6 +29,7 @@ public class PlayerScript : MonoBehaviour
     private GameObject foldScreen, parentObject, emptyObject, RealTimeResult, localbetBG;
     private bool isItMe;
     public string otheruserId;
+    public string seat;
 
    
     private int localBetAmount = 0;
@@ -209,10 +210,12 @@ public class PlayerScript : MonoBehaviour
         TogglePlayerUI(false);
     }
 
-    public void TogglePlayerUI(bool isShow)
+    public void TogglePlayerUI(bool isShow, string avatarUrl = null)
     {
         LoadUI();
-        parentObject.SetActive(isShow);        
+        parentObject.SetActive(isShow);
+        if (avatarUrl != null)
+            LoadAvtars_Frame_Flag(avatarUrl);
     }
 
     public bool IsPlayerObjectActive()
@@ -264,7 +267,7 @@ public class PlayerScript : MonoBehaviour
         transform.Find("Bg/Dealer").gameObject.SetActive(false);
         otheruserId = playerData.userId;
         //ShowAvtars_frame_flag(playerData.userId);
-        LoadAvtars_Frame_Flag(playerData.avatarurl);
+        //LoadAvtars_Frame_Flag(playerData.avatarurl);
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
         lastActionImage.SetActive(false);
@@ -391,8 +394,9 @@ public class PlayerScript : MonoBehaviour
     }
     public void SendUserID()
     {
-        InGameUiManager.instance.TempUserID = otheruserId;
-         Debug.LogError("Onclick");
+        InGameUiManager.instance.TempUserID = this.playerData.userId;
+        InGameUiManager.instance.currentClickedSeatNum = this.playerData.userId;
+        Debug.LogError("Onclick " + this.playerData.userId);
         
     }
     public void UpdateLastAction(string textToShow)
@@ -474,18 +478,23 @@ public class PlayerScript : MonoBehaviour
     //    CountDownTimerRunning = false;
     //}
 
+    public void StartPlayerTimer(float playerTimer)
+    {
+        float t = 0;
+        fx_holder.gameObject.SetActive(true);
+        while (t <= playerTimer)
+        {
+            t += Time.deltaTime;
+            timerBar.fillAmount = t / playerTimer;
+            fx_holder.rotation = Quaternion.Euler(new Vector3(0, 0, -(timerBar.fillAmount) * 360));
+        }
+    }
+
     IEnumerator CountDownAnimation(float time, bool isSound)
     {
-        UnityEngine.Debug.LogError("Starting timer " + time);
+        //UnityEngine.Debug.LogError("CountDownAnimation timer " + time);
         if (isSound)
             SoundManager.instance.PlaySound(SoundType.TurnSwitch);
-        else
-        {
-            //Handheld.Vibrate();
-#if UNITY_ANDROID && !UNITY_EDITOR
-        Vibration.Vibrate(400);
-#endif
-        }
 
         //   if (time == 0) yield break;
         float t = 0;
@@ -496,6 +505,14 @@ public class PlayerScript : MonoBehaviour
             timerBar.fillAmount = t / time;
             fx_holder.rotation = Quaternion.Euler(new Vector3(0, 0, -(timerBar.fillAmount) * 360));
             CountDownTimerRunning = true;
+            //Debug.Log("Value " + timerBar.fillAmount.ToString("F2"));
+            if (isSound && timerBar.fillAmount.ToString("F2") == "0.50")
+            {
+                //Handheld.Vibrate();
+#if UNITY_ANDROID && !UNITY_EDITOR
+        Vibration.Vibrate(400);
+#endif
+            }
             yield return null;
         }
         CountDownTimerRunning = false;
@@ -508,29 +525,31 @@ public class PlayerScript : MonoBehaviour
 
     public void ShowRemainingTime(int remainingTime)
     {
-        //UnityEngine.Debug.LogError("RemainingTime0 = " + remainingTime);
+        //UnityEngine.Debug.LogError("ShowRemainingTime = " + remainingTime);
 
         int extraTime = 0;
         int.TryParse(playerData.bufferTime, out extraTime);
         //UnityEngine.Debug.Log("playerData.bufferTime " + playerData.bufferTime);
         int totalTime = GameConstants.TURN_TIME + extraTime;
-        //UnityEngine.Debug.LogError("GameConstants.TURN_TIME = " + GameConstants.TURN_TIME);
+        //UnityEngine.Debug.LogError(remainingTime + " " + totalTime + " " + GameConstants.TURN_TIME + " " + extraTime);
         //UnityEngine.Debug.LogError("extraTime = " + extraTime);
         //UnityEngine.Debug.LogError("totalTime = " + totalTime);
 
         remainingTime = totalTime - remainingTime;      //10  - 30
 
         //UnityEngine.Debug.LogError("RemainingTime = " + remainingTime);
-
+        //UnityEngine.Debug.LogError("Starting timer " + remainingTime + ", " + PrefsManager.GetPlayerData().userId + ", " + playerData.userId);
         if (remainingTime == 0)
         {
-            //UnityEngine.Debug.LogError("Starting timer");
+            bool playMyTurnSound = false;
             if (PrefsManager.GetPlayerData().userId == playerData.userId)
-                lastRoutine = StartCoroutine(CountDownAnimation(GameConstants.TURN_TIME, true));
+                playMyTurnSound = true;
+    
+            lastRoutine = StartCoroutine(CountDownAnimation(GameConstants.TURN_TIME, playMyTurnSound));
             //Time.timeScale = 0;
         }
-        if(remainingTime == GameConstants.TURN_TIME)
-        {   
+        if (remainingTime == GameConstants.TURN_TIME)
+        {
             timerBar.fillAmount = 0;
             if (lastRoutine != null)
             {
@@ -538,8 +557,11 @@ public class PlayerScript : MonoBehaviour
             }
             CountDownTimerRunning = false;
             //UnityEngine.Debug.LogError("Starting timer " + extraTime);
+            //if (PrefsManager.GetPlayerData().userId == playerData.userId)
+            bool playMyTurnSound = true;
             if (PrefsManager.GetPlayerData().userId == playerData.userId)
-                lastRoutine = StartCoroutine(CountDownAnimation(extraTime, false));
+                playMyTurnSound = false;
+            lastRoutine = StartCoroutine(CountDownAnimation(extraTime, playMyTurnSound));
         }
 
         //if (totalTime > GameConstants.TURN_TIME)
@@ -601,7 +623,7 @@ public class PlayerScript : MonoBehaviour
 
             if (InGameManager.instance != null)
             {
-                Debug.Log(lastActionRoundNo + " " + InGameManager.instance.GetMatchRound());
+                //Debug.Log(lastActionRoundNo + " " + InGameManager.instance.GetMatchRound());
                 if (lastActionRoundNo == InGameManager.instance.GetMatchRound())
                 {
                     UpdateLastAction(lastPlayerAction);
@@ -639,9 +661,15 @@ public class PlayerScript : MonoBehaviour
 
         for (int i = 0; i < cardsImage.Length; i++)
         {
+            if (i == 0)
+                cardsImage[i].transform.localPosition = new Vector3(29.2f, 16.8f, 0f);
+            else
+                cardsImage[i].transform.localPosition = new Vector3(57.8f, 16.8f, 0f);
+            cardsImage[i].transform.localScale = new Vector3(0.63f, 0.63f);
+            cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
             cardsImage[i].gameObject.SetActive(isShow);
         }
-
+        
         if (isShow)
         {
             if (isShowOriginalCards)
@@ -683,9 +711,10 @@ public class PlayerScript : MonoBehaviour
                         //byte[] cardByte = cardTex.EncodeToPNG();
                         File.WriteAllBytes(Application.persistentDataPath + "/Card" + i + ".png", bytes);
 */
-
+                        //Debug.Log("Cards positions....." + isItMe);
                         if (!isItMe)
                         {
+                            Debug.Log("Cards positions2222....." + isItMe);
                             if (i == 0)
                             {
                                 cardsImage[i].transform.localPosition = new Vector3(-57, 0);
@@ -706,6 +735,7 @@ public class PlayerScript : MonoBehaviour
             }
             else
             {
+                Debug.Log(GetPlayerData().userName + " " + isShow + " " + isItMe);
                 for (int i = 0; i < cardsImage.Length; i++)
                 {
                     if (!isItMe)
