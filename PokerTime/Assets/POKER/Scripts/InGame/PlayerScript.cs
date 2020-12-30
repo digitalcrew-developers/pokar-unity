@@ -331,6 +331,7 @@ public class PlayerScript : MonoBehaviour
     public void ResetTurn()
     {
         //Debug.LogError("Stopping Turn");
+        avtar.GetComponent<Animator>().SetBool("Play", false);
         fx_holder.gameObject.SetActive(false);
         timerBar.fillAmount = 0;
         if (lastRoutine != null)
@@ -515,6 +516,7 @@ public class PlayerScript : MonoBehaviour
             }
             yield return null;
         }
+        //avtar.GetComponent<Animator>().SetBool("Play", false);
         CountDownTimerRunning = false;
     }
 
@@ -526,7 +528,10 @@ public class PlayerScript : MonoBehaviour
     public void ShowRemainingTime(int remainingTime)
     {
         //UnityEngine.Debug.LogError("ShowRemainingTime = " + remainingTime);
-
+        if(!avtar.GetComponent<Animator>().GetBool("Play"))
+        {
+            avtar.GetComponent<Animator>().SetBool("Play", true);
+        }
         int extraTime = 0;
         int.TryParse(playerData.bufferTime, out extraTime);
         //UnityEngine.Debug.Log("playerData.bufferTime " + playerData.bufferTime);
