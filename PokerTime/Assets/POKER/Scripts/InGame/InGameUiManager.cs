@@ -56,6 +56,7 @@ public class InGameUiManager : MonoBehaviour
     public GameObject tipsKiss;
     public Transform spwantipsKissPos;
     public string TempUserID;
+    public string currentClickedSeatNum;
 
     public GameObject players;
     public string tableId;
@@ -222,21 +223,23 @@ public class InGameUiManager : MonoBehaviour
     {
         EmojiShowTransform = val;
         sentTo = val;
-        Debug.Log("I am getting emoji transform   "+val.transform.parent.parent.name);
+        Debug.Log("I am getting emoji transform   " + val.transform.parent.parent.name);
         if (val.transform.parent.parent.name.Equals("LobbyTable"))
         {
             otherId = 0;
         }
-        else {
-            Debug.Log("I am getting emoji transform 000000  " + val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
+        else
+        {
+            Debug.Log(currentClickedSeatNum + " I am getting emoji transform 000000  " + val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
             //if ((val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId) != "")
             //{
             //    otherId = int.Parse(val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
             //}
-            if (InGameUiManager.instance.TempUserID!= "")
+            /*if (InGameUiManager.instance.TempUserID!= "")
             {
                 otherId = int.Parse(InGameUiManager.instance.TempUserID);
-            }
+            }*/
+            otherId = int.Parse(currentClickedSeatNum);
         }
     }
 
@@ -339,7 +342,7 @@ public class InGameUiManager : MonoBehaviour
 
                     if (player != null)
                     {
-                        ToggleRaisePopUp(true, availableCallAmount + 1, player.GetPlayerData().balance, InGameManager.instance.GetPotAmount());
+                        ToggleRaisePopUp(true, GlobalGameManager.instance.GetRoomData().smallBlind/*availableCallAmount + 1*/, player.GetPlayerData().balance, InGameManager.instance.GetPotAmount());
                     }
                     else
                     {
@@ -508,7 +511,7 @@ public class InGameUiManager : MonoBehaviour
                         {
                             suggestionButtonsActiveImage[i].gameObject.SetActive(false);
                         }
-
+                        Debug.Log("<color=pink>" + selectedSuggestionButton + "</color>");
                         selectedSuggestionButton = SuggestionActions.Fold;
                         suggestionButtonsActiveImage[(int)selectedSuggestionButton].SetActive(true);
                     }
@@ -566,8 +569,9 @@ public class InGameUiManager : MonoBehaviour
         {
             sliderText.text = "" + (int)slider.value;
         }
-
+        
         selectedRaiseAmount = slider.value;
+        Debug.Log(selectedRaiseAmount + " Slider value " + slider.value);
     }
 
 
@@ -685,7 +689,10 @@ public class InGameUiManager : MonoBehaviour
 
     public void ToggleSuggestionButton(bool isShow, bool isCheckAvailable = false, int callAmount = 0, float availableBalance = 0)
     {
-        suggestionButtonParent.SetActive(isShow);
+        if (!InGameManager.instance.userWinner)
+            suggestionButtonParent.SetActive(isShow);
+        else
+            suggestionButtonParent.SetActive(false);
 
         if (isShow)
         {
@@ -728,7 +735,7 @@ public class InGameUiManager : MonoBehaviour
                         suggestionButtons[i].SetActive(false);
                         suggestionButtonsActiveImage[i].SetActive(false);
                     }
-
+                    Debug.Log("<color=pink>" + SuggestionActions.Fold + "</color>");
                     suggestionButtons[(int)SuggestionActions.Fold].SetActive(true);
                 }
             }
@@ -758,8 +765,11 @@ public class InGameUiManager : MonoBehaviour
 
     public void ToggleActionButton(bool isShow, PlayerScript playerObject = null, bool isCheckAvailable = false, int lastBetAmount = 0, float availableBalance = 0)
     {
-        actionButtonParent.SetActive(isShow);
-
+        /*if (!InGameManager.instance.userWinner)
+            actionButtonParent.SetActive(isShow);
+        else
+            actionButtonParent.SetActive(false);*/
+        /*actionButtonParent.SetActive(isShow);
         if (isShow)
         {
             ResetSuggetionAction();
@@ -783,8 +793,8 @@ public class InGameUiManager : MonoBehaviour
 
             actionButtons[(int)PlayerAction.Check].SetActive(isCheckAvailable);
             actionButtons[(int)PlayerAction.AllIn].SetActive(false);
-            
-            //Debug.LogError("call amount  " + callAmount + "  lba  " + lastBetAmount);
+
+            Debug.LogError("isShow " + isShow + " isCheckAvailable " + isCheckAvailable + " call amount  " + callAmount + "  lba  " + lastBetAmount + " availableBalance " + availableBalance + " totalBet " + playerObject.GetPlayerData().totalBet);
 
             if (!isCheckAvailable)
             {
@@ -821,7 +831,62 @@ public class InGameUiManager : MonoBehaviour
             }
 
             availableCallAmount = callAmount;
+        }*/
+
+        if (isShow)
+        {
+            ResetSuggetionAction();
+            //raisePopUp.SetActive(false);
+            int callAmount = lastBetAmount - (int)playerObject.GetPlayerData().totalBet;
+
+            if (callAmount > 0)
+            {
+                isCheckAvailable = false;
+            }
+
+            useRaisePotWise = isCheckAvailable;
+
+            Debug.LogError("isShow " + isShow + " isCheckAvailable " + isCheckAvailable + " call amount  " + callAmount + "  lba  " + lastBetAmount + " availableBalance " + availableBalance + " totalBet " + playerObject.GetPlayerData().totalBet);
+
+            //if (!isCheckAvailable)
+            {
+                if (callAmount > 0) // amount available to bet
+                {
+                    if (lastBetAmount > availableBalance)
+                    {
+                        actionButtons[(int)PlayerAction.Check].SetActive(false);
+                        actionButtons[(int)PlayerAction.Call].SetActive(false);
+                        actionButtons[(int)PlayerAction.AllIn].SetActive(true);
+                    }
+                    else
+                    {
+                        callAmountText.text = "" + callAmount;
+                        actionButtons[(int)PlayerAction.Check].SetActive(false);
+                        actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+                        actionButtons[(int)PlayerAction.Call].SetActive(true);
+                    }
+                }
+                else // dont have amount to bet hence show only fold and all-in
+                {
+                    actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    actionButtons[(int)PlayerAction.Raise].SetActive(true);
+                    actionButtons[(int)PlayerAction.Check].SetActive(true);
+                }
+
+                if (callAmount == 0)
+                {
+                    callAmountText.text = "";
+                    //actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Check].SetActive(false);
+                    //actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Fold].SetActive(false);
+                }
+            }
+
+            availableCallAmount = callAmount;
         }
+        actionButtonParent.SetActive(isShow);
     }
     
 
@@ -1004,7 +1069,7 @@ public class InGameUiManager : MonoBehaviour
 
     public void CallEmojiSocket(int index) {
         emojiIndex = index;
-       // Debug.LogError("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
+        Debug.LogError("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
         SocketController.instance.SentEmoji(otherId, InGameUiManager.instance.emojiIndex);
 
 
@@ -1093,7 +1158,7 @@ public class InGameUiManager : MonoBehaviour
         g.transform.SetParent(EmojiShowTransform);
         g.transform.localScale = scaleValue;
         //g.GetComponent<EmojiBehaviour>().target = fromEmojiShowTransform;
-        g.transform.DOMove(sentTo.position, 1.5f);
+        g.transform.DOMove(sentTo.position, 1f);
     }
 
 
@@ -1118,10 +1183,15 @@ public class InGameUiManager : MonoBehaviour
                     {
                        sentTo = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;                        
                     }
+                    /*Debug.Log(players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId + " " + data[0]["sentBy"].ToString());
                     if(players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentBy"].ToString())
                     {
                         sentBy = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
-                    }
+                    }*/
+                }
+                if (players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentBy"].ToString())
+                {
+                    sentBy = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
                 }
             }
             switch (data[0]["emojiIndex"].ToString())
