@@ -10,6 +10,7 @@ using UnityEngine.Networking;
 using System;
 using BestHTTP.SocketIO;
 using System.Security.Cryptography;
+using System.Linq;
 
 public class InGameManager : MonoBehaviour
 {
@@ -83,6 +84,8 @@ public class InGameManager : MonoBehaviour
     string myPlayerSeat;
 
     public Image thunderPointBar;
+    [HideInInspector]
+    public bool userWinner = false;
 
     private void Awake()
     {
@@ -218,23 +221,29 @@ public class InGameManager : MonoBehaviour
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
     {
+        Debug.Log("Total Users " + matchMakingPlayerData.Count);
         isRematchRequestSent = false;
-        matchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
-        onlinePlayersScript = new PlayerScript[matchMakingPlayerData.Count];
+        List<MatchMakingPlayerData> newMatchMakingPlayerData = new List<MatchMakingPlayerData>();
+        if (matchMakingPlayerData.Count > 1)
+            newMatchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
+        else
+            newMatchMakingPlayerData = matchMakingPlayerData;
+        onlinePlayersScript = new PlayerScript[newMatchMakingPlayerData.Count];
         PlayerScript playerScriptWhosTurn = null;
-
+        //Debug.Log("Arranged Users " + newMatchMakingPlayerData.Count);
         for (int i = 0; i < allPlayersObject.Length; i++)
         {
             allPlayersObject[i].ResetAllData();
-
-            if (i < matchMakingPlayerData.Count)
+            if (i < newMatchMakingPlayerData.Count)
             {
-                allPlayersObject[i].TogglePlayerUI(true);
-
+                Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn);
+                //Debug.Log("Url " + newMatchMakingPlayerData[i].playerData.avatarurl);
+                allPlayersObject[i].seat = (i + 1).ToString();
+                allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl);
                 onlinePlayersScript[i] = allPlayersObject[i];
-                onlinePlayersScript[i].Init(matchMakingPlayerData[i]);
+                onlinePlayersScript[i].Init(newMatchMakingPlayerData[i]);
 
-                if (matchMakingPlayerData[i].isTurn)
+                if (newMatchMakingPlayerData[i].isTurn)
                 {
                     playerScriptWhosTurn = onlinePlayersScript[i];
                 }
@@ -249,16 +258,17 @@ public class InGameManager : MonoBehaviour
         {
             StartCoroutine(WaitAndShowCardAnimation(onlinePlayersScript, playerScriptWhosTurn));
         }
-        else
+        /*else
         {
 #if ERROR_LOG
             Debug.LogError("Null Reference exception found playerId whos turn is not found");
 #endif
-        }
+        }*/
     }
 
     private IEnumerator WaitAndShowCardAnimation(PlayerScript[] players, PlayerScript playerScriptWhosTurn)
     {
+        Debug.Log("WaitAndShowCardAnimation............");
         if (!GlobalGameManager.IsJoiningPreviousGame)
         {
             List<GameObject> animatedCards = new List<GameObject>();
@@ -345,7 +355,10 @@ public class InGameManager : MonoBehaviour
 
     internal void OnGameOverCountDownFound(string data)
     {
-        //ResetMatchData();
+        string t = data.Substring(1, data.Length - 2);
+        Debug.LogError("Game Over - " + t);
+        if (float.Parse(t) < 1)
+            ResetMatchData();
     }
 
     public void UpdateAvailableBalance(float balance)
@@ -426,17 +439,17 @@ public class InGameManager : MonoBehaviour
                     break;
                 }
             }
-            else
+            else if(!userWinner)
             {
                 //Debug.LogWarning("LAST BET AMOUNT 1" + LAST_BET_AMOUNT);
-                InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
+                //InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
             }
         }
         else
         {
             InGameUiManager.instance.ToggleActionButton(false);
 
-            if (!GetMyPlayerObject().GetPlayerData().isFold)
+            if (GetMyPlayerObject().GetPlayerData() != null && !GetMyPlayerObject().GetPlayerData().isFold)
             {
                 int callAmount = GetLastBetAmount() - (int)GetMyPlayerObject().GetPlayerData().totalBet;
                 InGameUiManager.instance.ToggleSuggestionButton(true, isCheckAvailable, callAmount, GetMyPlayerObject().GetPlayerData().balance);
@@ -447,33 +460,45 @@ public class InGameManager : MonoBehaviour
     private List<MatchMakingPlayerData> ReArrangePlayersList(List<MatchMakingPlayerData> matchMakingPlayerData)
     {
         List<MatchMakingPlayerData> updatedList = new List<MatchMakingPlayerData>();
-
-        for (int i = 0; i < matchMakingPlayerData.Count; i++)
+        /*for (int i = 0; i < matchMakingPlayerData.Count; i++)
         {
+            Debug.Log(matchMakingPlayerData[i].playerData.userId + ", " + matchMakingPlayerData[i].playerData.userName + " <color=green>=</color> " + PlayerManager.instance.GetPlayerGameData().userId + ", " + PlayerManager.instance.GetPlayerGameData().userName);
             if (matchMakingPlayerData[i].playerData.userId == PlayerManager.instance.GetPlayerGameData().userId)
             {
-                int index = i;
-                int counter = 0;
+                MatchMakingPlayerData m = matchMakingPlayerData[i];
+                matchMakingPlayerData[i] = matchMakingPlayerData[0];
+                matchMakingPlayerData[0] = m;
+                //updatedList[0] = matchMakingPlayerData[i];
+            }
+        }
+        for (int k = 0; k < matchMakingPlayerData.Count; k++)
+        {
+            Debug.Log("User " + matchMakingPlayerData[k].playerData.userName);
+        }*/
 
-                while (counter < matchMakingPlayerData.Count)
-                {
-                    updatedList.Add(matchMakingPlayerData[index]);
-
-                    ++index;
-
-                    if (index >= matchMakingPlayerData.Count)
-                    {
-                        index = 0;
-                    }
-
-                    ++counter;
-                }
-
+        int mySeatIndex = 0;
+        for (int i = 0; i < matchMakingPlayerData.Count; i++)
+        {
+            //Debug.Log(matchMakingPlayerData[i].playerData.userId + ", " + matchMakingPlayerData[i].playerData.userName + " <color=green>=</color> " + PlayerManager.instance.GetPlayerGameData().userId + ", " + PlayerManager.instance.GetPlayerGameData().userName);
+            if (matchMakingPlayerData[i].playerData.userId == PlayerManager.instance.GetPlayerGameData().userId)
+            {
+                mySeatIndex = i;
                 break;
             }
         }
 
-
+        for (int i = mySeatIndex; i < matchMakingPlayerData.Count; i++)
+        {
+            updatedList.Add(matchMakingPlayerData[i]);
+        }
+        for (int k = 0; k < mySeatIndex; k++)
+        {
+            updatedList.Add(matchMakingPlayerData[k]);
+        }
+        /*for (int j = 0; j < updatedList.Count; j++)
+        {
+            Debug.Log(updatedList[j].playerData.userName);
+        }*/
         return updatedList;
     }
 
@@ -551,6 +576,19 @@ public class InGameManager : MonoBehaviour
 
     private void ShowNewPlayersOnTable(JsonData data, bool isMatchStarted)
     {
+        for (int i = 0; i < allPlayersObject.Length; i++)
+        {
+            //allPlayersObject[i].ResetAllData();
+            allPlayersObject[i].TogglePlayerUI(false);
+        }
+
+        for (int i = 0; i < data[0].Count; i++)
+        {
+            //allPlayersObject[i].ResetAllData();
+            allPlayersObject[i].TogglePlayerUI(true);
+        }
+
+
         List<PlayerData> playerData = new List<PlayerData>();
 
         for (int i = 0; i < data[0].Count; i++)
@@ -578,12 +616,15 @@ public class InGameManager : MonoBehaviour
                 playerData.Add(playerDataObject);
             }
         }
+        Debug.Log("Active Users " + onlinePlayersScript.Length);
         
-        for (int i = onlinePlayersScript.Length; i < allPlayersObject.Length; i++)
+        /*for (int i = onlinePlayersScript.Length - 1; i < allPlayersObject.Length; i++)
         {
+            allPlayersObject[i].ResetAllData();
             allPlayersObject[i].TogglePlayerUI(false);
-        }
-        if (isMatchStarted)
+        }*/
+        
+        /*if (isMatchStarted)
         {
             if (playerData.Count > 0)
             {
@@ -593,10 +634,10 @@ public class InGameManager : MonoBehaviour
 
                 for (int i = startIndex; i < maxIndex && i < allPlayersObject.Length; i++)
                 {
-                    /*allPlayersObject[i].TogglePlayerUI(true);
-                    allPlayersObject[i].ShowDetailsAsNewPlayer(playerData[index]);
-                    allPlayersObject[i].ResetRealtimeResult();
-                    ++index;*/
+                    //allPlayersObject[i].TogglePlayerUI(true);
+                    //allPlayersObject[i].ShowDetailsAsNewPlayer(playerData[index]);
+                    //allPlayersObject[i].ResetRealtimeResult();
+                    //++index;
                     if (playerData[i].userId == PlayerManager.instance.GetPlayerGameData().userId)
                     {
                         allPlayersObject[0].TogglePlayerUI(true);
@@ -604,15 +645,15 @@ public class InGameManager : MonoBehaviour
                         allPlayersObject[0].ResetRealtimeResult();
                         ++index;
                     }
-                    /*else
-                    {
-                        Debug.LogError("index showing : " + index);
+                    //else
+                    //{
+                      //  Debug.LogError("index showing : " + index);
 
-                        allPlayersObject[index].TogglePlayerUI(true);
-                        allPlayersObject[index].ShowDetailsAsNewPlayer(playerData[i]);
-                        allPlayersObject[index].ResetRealtimeResult();
-                        ++index;
-                    }*/
+                        //allPlayersObject[index].TogglePlayerUI(true);
+                        //allPlayersObject[index].ShowDetailsAsNewPlayer(playerData[i]);
+                        //allPlayersObject[index].ResetRealtimeResult();
+                        //++index;
+                    //}
                 }
             }
         }
@@ -638,9 +679,9 @@ public class InGameManager : MonoBehaviour
                     ++index;
                 }
             }
-        }
+        }*/
         
-        if (isMatchStarted && onlinePlayersScript != null && onlinePlayersScript.Length > 0)
+        /*if (isMatchStarted && onlinePlayersScript != null && onlinePlayersScript.Length > 0)
         {
             List<PlayerScript> leftPlayers = new List<PlayerScript>();
 
@@ -667,9 +708,9 @@ public class InGameManager : MonoBehaviour
             {
                 leftPlayers[i].TogglePlayerUI(false);
             }
-        }
+        }*/
 
-        int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
+        //int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
     }
     
 
@@ -1130,25 +1171,14 @@ public class InGameManager : MonoBehaviour
 
         string s = serverResponse.Remove(serverResponse.Length - 1, 1);
         s = s.Remove(0, 1);
-        Debug.LogWarning("s" + s);
+        Debug.LogWarning("s " + s);
 
 
         AllShowdownSidePots showdownSidePot = JsonUtility.FromJson<AllShowdownSidePots>(s);
         //Debug.LogWarning("side pot count : " + showdownSidePot.sidePot.Count);
         //Debug.LogWarning("side pot count amount: " + showdownSidePot.sidePot[0].amount);
 
-        //int outerLoopCount = 1;
-        //if(showdownSidePot.sidePot.Count > 1)
-        //{
-        //    outerLoopCount = showdownSidePot.sidePot.Count;
-        //}
-        //if(showdownSidePot.sidePot.Count == 1)
-        //{
-        //    outerLoopCount = 1;
-        //}
-
-
-        for (int i = 0; i < showdownSidePot.sidePot.Count; i++)
+        /*for (int i = 0; i < showdownSidePot.sidePot.Count; i++)
         {
             for (int j = 0; j < showdownSidePot.sidePot[i].winners.Count; j++)
             {
@@ -1161,7 +1191,37 @@ public class InGameManager : MonoBehaviour
                         showdownSidePot.sidePot[i].winners[j].winAmount.ToString(), showdownSidePot.sidePot[i].winners[j].isWin);
                 }
             }
+        }*/
 
+        Dictionary<int, WinnerObject> winnersData = new Dictionary<int, WinnerObject>();
+        for (int i = 0; i < showdownSidePot.sidePot.Count; i++)
+        {
+            for (int j = 0; j < showdownSidePot.sidePot[i].winners.Count; j++)
+            {
+                Debug.LogWarning(showdownSidePot.sidePot[i].winners[j].isWin);
+                if (winnersData.ContainsKey(showdownSidePot.sidePot[i].winners[j].userId))
+                {
+                    int winAmt = showdownSidePot.sidePot[i].winners[j].winAmount;
+                    winnersData[showdownSidePot.sidePot[i].winners[j].userId].winAmount += winAmt; 
+                }
+                else
+                {
+                    WinnerObject wd = new WinnerObject();
+                    wd.userId = showdownSidePot.sidePot[i].winners[j].userId;
+                    wd.name = showdownSidePot.sidePot[i].winners[j].name;
+                    wd.userName = showdownSidePot.sidePot[i].winners[j].userName;
+                    wd.winAmount = showdownSidePot.sidePot[i].winners[j].winAmount;
+                    wd.isWin = showdownSidePot.sidePot[i].winners[j].isWin;
+                    Debug.LogWarning(wd.userId + " " + wd.name + " " + wd.winAmount + " " + wd.isWin);
+                    winnersData.Add(showdownSidePot.sidePot[i].winners[j].userId, wd);
+                }
+            }
+        }
+        Debug.LogWarning("Total winners " + winnersData.Count);
+        foreach (var res in winnersData)
+        {
+            Debug.LogWarning(res.Value.userId + " " + res.Value.name + " " + res.Value.winAmount + " " + res.Value.isWin);
+            InstantiateWin(res.Value.userId.ToString(), res.Value.name, res.Value.winAmount.ToString(), res.Value.isWin);
         }
     }
 
@@ -1219,6 +1279,7 @@ public class InGameManager : MonoBehaviour
     public void OnResultResponseFound(string serverResponse)
     {
         //Debug.LogWarning("RESULT RESPONSE :" + serverResponse);
+        userWinner = true;
         InGameUiManager.instance.ToggleSuggestionButton(false);
         InGameUiManager.instance.ToggleActionButton(false);
 
@@ -1316,7 +1377,7 @@ public class InGameManager : MonoBehaviour
                 else
                 {
                     Debug.Log("<color=pink>Remaining Time and buffer time not matched...</color>");
-                    SocketController.instance.SendReMatchRequest("No", "0");
+                    //SocketController.instance.SendReMatchRequest("No", "0");
                 }
             }
         }
@@ -1359,19 +1420,23 @@ public class InGameManager : MonoBehaviour
         //    }
         //}
 
-
+        //Debug.Log("State " + SocketController.instance.GetSocketState());
         if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
-
+            //Debug.Log("Timer " + data[0]["userName"].ToString() + "" + PrefsManager.GetPlayerData().userName);
+            int remainingTime = (int)float.Parse(data[0].ToString());
+            /*if (remainingTime >= GameConstants.TURN_TIME - 1)
+            {
+                InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isMyTurn, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
+            }*/
+            //Debug.Log("Me&Other " + currentPlayer.IsMe() + ", " + remainingTime);
             if (currentPlayer != null)
             {
-                int remainingTime = (int)float.Parse(data[0].ToString());
                 if (remainingTime == 0)
                 {
                     PlayerTimerReset();
                 }
-
                 if (currentPlayer.IsMe())
                 {
                     int endTime = (int)(GameConstants.TURN_TIME * 0.25f);
@@ -1381,10 +1446,17 @@ public class InGameManager : MonoBehaviour
                         SoundManager.instance.PlaySound(SoundType.TurnEnd);
                     }
                     currentPlayer.ShowRemainingTime(remainingTime);
+                    //currentPlayer.StartPlayerTimer(remainingTime);
+                    if (remainingTime >= GameConstants.TURN_TIME - 1)
+                    {
+                        InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isMyTurn, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
+                    }
                 }
                 else if (!currentPlayer.IsMe())
                 {
+                    InGameUiManager.instance.raisePopUp.SetActive(false);
                     currentPlayer.ShowRemainingTime(remainingTime);
+                    //currentPlayer.StartPlayerTimer(remainingTime);
                 }
             }
             else
@@ -1541,7 +1613,7 @@ public class InGameManager : MonoBehaviour
         GlobalGameManager.instance.LoadScene(Scenes.InGame);
     }
 
-    private bool CallOnce = true;
+    private bool CallOnce = true, isMyTurn;
 
     public void OnPlayerObjectFound(string serverResponse)
     {
@@ -1553,7 +1625,8 @@ public class InGameManager : MonoBehaviour
         }
         if (!InGameUiManager.instance.isSelectedWinningBooster)
         {
-            SocketController.instance.GetRandomCard();
+            //Debug.Log("<color=yellow>isSelectedWinningBooster</color>");
+            //SocketController.instance.GetRandomCard();
             //InGameUiManager.instance.isSelectedWinningBooster = true;
         }
 
@@ -1564,7 +1637,7 @@ public class InGameManager : MonoBehaviour
             return;
         }
         
-        Debug.Log("[OnPlayerObjectFound] " + serverResponse);
+        //Debug.Log("[OnPlayerObjectFound] " + serverResponse);
 
         if (serverResponse.Length < 20)
         {
@@ -1587,26 +1660,27 @@ public class InGameManager : MonoBehaviour
             //Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
             SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
             InGameUiManager.instance.tableId = data[0][0]["tableId"].ToString();
-            ShowNewPlayersOnTable(data, isMatchStarted);
+            
             //Debug.Log("<color=yellow>" + isMatchStarted + "</color>");
             if (data[0].Count == 1)
             {
-                Debug.LogWarning("ONE PLAYER-" + serverResponse);
+                //Debug.LogWarning("ONE PLAYER-" + serverResponse);
+                SocketController.instance.SetSocketState(SocketState.WaitingForOpponent);
                 //if "userData": "" then game has not started
-                if (data[0][0]["userData"].ToString().Length > 0)
+                /*if (data[0][0]["userData"].ToString().Length > 0)
                 {
                     resetGame = true;
                     StartCoroutine(StartWaitingCountdown());
                     //request server for playerObject packet here//
                     return;
-                }
+                }*/
             }
-
+            //Debug.Log(data[0].Count + " <color=yellow>" + isMatchStarted + "</color>, " + SocketController.instance.GetSocketState());
             if (SocketController.instance.GetSocketState() == SocketState.WaitingForOpponent)
             {
                 SocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
 
-                if (isMatchStarted) // Match is started
+                //if (isMatchStarted) // Match is started
                 {
                     //Debug.Log("isMatchStarted" + isMatchStarted);
 
@@ -1623,7 +1697,7 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.userId = data[0][i]["userId"].ToString();
 
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
-                        //playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();
+                        playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
                         playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
@@ -1682,6 +1756,10 @@ public class InGameManager : MonoBehaviour
                         AllSeatButtons[z].GetComponent<PlayerSeat>().DisableButtonClick();
                     }
                 }
+                //else
+                {
+
+                }
             }
             else if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
             {
@@ -1707,12 +1785,14 @@ public class InGameManager : MonoBehaviour
                         //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
                         {
-                            //Debug.LogWarning("isTurn is true");
+                            Debug.LogWarning(data[0][i]["userName"].ToString() + " isTurn is true");
                             playerWhosTurn = playerObject;
                             isCheckAvailable = data[0][i]["isCheck"].Equals(true);
+                            isMyTurn = isCheckAvailable;
                         }
                         else
                         {
+                            isMyTurn = false;
                             InGameUiManager.instance.ToggleSuggestionButton(false);
                             InGameUiManager.instance.ToggleActionButton(false);
                         }
@@ -1752,11 +1832,11 @@ public class InGameManager : MonoBehaviour
                 {
                     InGameUiManager.instance.ToggleSuggestionButton(false);
                     InGameUiManager.instance.ToggleActionButton(false);
-                    Debug.LogError("Null reference exception found playerWhosTurn is not found");
+                    Debug.Log("Null reference exception found playerWhosTurn is not found");
                 }
             }
 
-
+            //ShowNewPlayersOnTable(data, isMatchStarted);
             for (int i = 0; i < data[0].Count; i++)
             {
                 //update balance from playerObject
@@ -1785,6 +1865,8 @@ public class InGameManager : MonoBehaviour
 
     private void ResetMatchData()
     {
+        InGameUiManager.instance.raisePopUp.SetActive(false);
+        userWinner = false;
         DontShowCommunityCardAnimation = false;
         //ClearPotAmount();
         //UpdatePot("");        
@@ -1816,7 +1898,7 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < allPlayersObject.Length; i++)
         {
-            //allPlayersObject[i].ResetAllData();
+            allPlayersObject[i].ResetAllData();
             allPlayersObject[i].ToggleCards(false);
         }
 
