@@ -258,6 +258,7 @@ public class SocketController : MonoBehaviour
 #endif
 
 #endif
+            Debug.Log(InGameManager.instance.userWinner + " <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
             switch (responseObject.eventType)
             {
                 case SocketEvetns.CONNECT:
@@ -266,7 +267,7 @@ public class SocketController : MonoBehaviour
                         {
                             case SocketState.Connecting:
                                 SetSocketState(SocketState.WaitingForOpponent);
-
+                                Debug.Log("<color=yellow>IsJoiningPreviousGame " + GlobalGameManager.IsJoiningPreviousGame + "</color>");
                                 if (GlobalGameManager.IsJoiningPreviousGame)
                                 {
                                     RequestForMatchStatus();
@@ -301,12 +302,11 @@ public class SocketController : MonoBehaviour
 
 
                 case SocketEvetns.PLAYER_OBJECT:
-                    Debug.Log("<color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
                     if (InGameManager.instance != null)
                     {
-                        //Debug.LogError("Current Socket State: " + GetSocketState());
+                        Debug.LogError("Current Socket State: " + GetSocketState());
 
-                        if (GetSocketState() == SocketState.ReConnecting)
+                        if (GetSocketState() == SocketState.ReConnecting)// || GetSocketState() == SocketState.WaitingForOpponent)
                         {
                             SetSocketState(SocketState.Game_Running);
                         }
@@ -337,7 +337,6 @@ public class SocketController : MonoBehaviour
                     break;
 
                 case SocketEvetns.ON_GAME_OVER_TIMER_FOUND:
-                    Debug.LogError("Game Over - " + responseObject.data);
                     InGameManager.instance.OnGameOverCountDownFound(responseObject.data);
                     break;
 
@@ -387,7 +386,9 @@ public class SocketController : MonoBehaviour
 
                         InGameUiManager.instance.ShowMessage("Match Data not found", () =>
                         {
-                            InGameManager.instance.LoadMainMenu();
+                            //InGameManager.instance.LoadMainMenu();
+                            InGameManager.instance.gameExitCalled = true;
+                            ResetConnection();
                         });
                     }
 
@@ -741,6 +742,7 @@ public class SocketController : MonoBehaviour
         string responseText = JsonMapper.ToJson(args);
         InGameManager.instance.Pot.SetActive(false);
         InGameManager.instance.DeactivateAllPots();
+        //Debug.Log("OnResultDataFound = " + responseText + "  Time = " + System.DateTime.Now);
 #if DEBUG
 
 #if UNITY_EDITOR
@@ -1213,13 +1215,13 @@ public class SocketController : MonoBehaviour
         socketRequest.Add(request);
     }
 
-    public void SendGameJoinRequest()
+    public void SendGameJoinRequest(string seatNo = null)
     {
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
              "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
              "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
              "\"playerType\":\"Real\"," +
-             "\"isPrivate\":\"No\"," +
+             "\"isPrivate\":\"No\"," + "\"seatNo\":\"" + seatNo + "\"," +
              "\"isFree\":\"No\"}";
 
         object requestObjectData = Json.Decode(requestStringData);
@@ -1375,6 +1377,7 @@ public class SocketController : MonoBehaviour
 
     public void SendReMatchRequest(string isJoin, string coinsToAssign = "0")
     {
+        Debug.Log("<color=yellow>SendReMatchRequest " + isJoin + ",</color> " + coinsToAssign);
         RematchData requestData = new RematchData();
 
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
@@ -1407,6 +1410,7 @@ public class SocketController : MonoBehaviour
 
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.tableId = TABLE_ID;
+        requestData.gameType = "lobby";
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
@@ -1508,6 +1512,7 @@ public class SocketController : MonoBehaviour
 
     public void SetSocketState(SocketState state)
     {
+        Debug.Log("Set Socket State " + state);
         socketState = state;
     }
 
@@ -1759,6 +1764,7 @@ public class FoldData
 {
     public string tableId;
     public string userId;
+    public string gameType;
     public UserBetData userData;
 }
 
