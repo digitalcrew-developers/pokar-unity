@@ -271,22 +271,22 @@ public class LobbyUiManager: MonoBehaviour
         //Debug.Log("data.callTimer " + data.callTimer);
         if (data.gameMode != GameMode.OFC)
         {
-            //if(GameConstants.poker)
-            //{
-            //    GlobalGameManager.instance.LoadScene(Scenes.InGame);
-            //}
-            //else
-            //{
-            //    GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
-            //}
-            GlobalGameManager.instance.LoadScene(Scenes.InGame);
+            if (GameConstants.poker)
+            {
+                GlobalGameManager.instance.LoadScene(Scenes.InGame);
+            }
+            else
+            {
+                GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
+            }
+            //GlobalGameManager.instance.LoadScene(Scenes.InGame);
         }
         else
         {
             MainMenuController.instance.ShowMessage("Coming soon");
         }
 
-        GlobalGameManager.instance.StoreLastLobbyData(allRoomData, gameMode);
+        //GlobalGameManager.instance.StoreLastLobbyData(allRoomData, gameMode);
     }
 
 
