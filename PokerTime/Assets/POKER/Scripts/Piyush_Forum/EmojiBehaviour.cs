@@ -7,18 +7,19 @@ public class EmojiBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("**********  GAME OBJECT NAME***************   "+ InGameUiManager.instance.emojiContainerVal);
-        
-        if (InGameUiManager.instance.emojiContainerVal == 2|| InGameUiManager.instance.sentToEmojiValue.Equals("Dealer"))
-        {
-            
-                this.transform.SetParent(InGameUiManager.instance.spwantipsKissPos);
+        Debug.Log("**********  GAME OBJECT NAME***************   " + InGameUiManager.instance.emojiContainerVal);
 
-            
+        if (InGameUiManager.instance.emojiContainerVal == 2 || InGameUiManager.instance.sentToEmojiValue.Equals("Dealer"))
+        {
+
+            this.transform.SetParent(InGameUiManager.instance.spwantipsKissPos);
+
+
         }
-        else {
-            if(target!=null)
-            this.transform.SetParent(target.transform);
+        else
+        {
+            if (target != null)
+                this.transform.SetParent(target.transform);
 
         }
         Destroy(this.gameObject, 3);
