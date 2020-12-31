@@ -1281,7 +1281,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         InGameManagerTeenPatti.instance.OnOpenCardsDataFound(newData1, cardSeenPlayer1);
 
         PlayerScriptTeenPatti cardSeenPlayer2 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["p2"]["userId"].ToString());
-        JsonData newData2 = data[0]["p1"]["cards"];
+        JsonData newData2 = data[0]["p2"]["cards"];
         InGameManagerTeenPatti.instance.OnOpenCardsDataFound(newData2, cardSeenPlayer2);
 
 
