@@ -359,8 +359,10 @@ public class InGameManagerTeenPatti : MonoBehaviour
         SocketControllerTeenPatti.instance.SendLeaveMatchRequest();
         yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
         SocketControllerTeenPatti.instance.ResetConnection();
-
-        GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
+        if(GameConstants.poker)
+            GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
+        else
+            GlobalGameManager.instance.LoadScene(Scenes.MainMenuTeenPatti);
     }
 
     public PlayerScriptTeenPatti GetMyPlayerObject()

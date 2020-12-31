@@ -804,8 +804,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
                     if (callAmount >= 0) // amount availabel to bet
                     {
-                       // callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
-                       // callAmountText.text = "" + callAmount;
+                        callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
+                        callAmountText.text = "" + callAmount;
                         actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = blindSprite;
                     }
                     else // dont have amount to bet hence show only fold and all-in
@@ -815,7 +815,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     }
                     if (callAmount == 0)
                     {
-                       // callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
+                        callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
                         callAmountText.text = "";
 
                     }
@@ -824,8 +824,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                 {
                     if (callAmount >= 0) // amount availabel to bet
                     {
-                       // callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
-                       // callAmountText.text = "" + callAmount;
+                        callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
+                        callAmountText.text = "" + callAmount;
                         actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = callSprite;
                     }
                     else // dont have amount to bet hence show only fold and all-in
@@ -835,7 +835,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     }
                     if (callAmount == 0)
                     {
-                      //  callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
+                        callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
                         callAmountText.text = "";
 
                     }
@@ -1276,7 +1276,14 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         Debug.LogError("ShowMatch is :" + data.ToJson());
         InGameManagerTeenPatti.instance.PlayerTimerReset();
 
-        
+        PlayerScriptTeenPatti cardSeenPlayer1 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["p1"]["userId"].ToString());
+        JsonData newData1 = data[0]["p1"]["cards"];
+        InGameManagerTeenPatti.instance.OnOpenCardsDataFound(newData1, cardSeenPlayer1);
+
+        PlayerScriptTeenPatti cardSeenPlayer2 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["p2"]["userId"].ToString());
+        JsonData newData2 = data[0]["p1"]["cards"];
+        InGameManagerTeenPatti.instance.OnOpenCardsDataFound(newData2, cardSeenPlayer2);
+
 
     }
 
@@ -1288,7 +1295,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
 
         Debug.LogError("SideShow is :" + data.ToJson());
-        PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["userId"].ToString());
+        PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["from"].ToString());
 
         cardSeenPlayer.sideShowWinnerAcceptBtn.SetActive(true);
 
