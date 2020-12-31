@@ -534,15 +534,15 @@ public class PlayerScript : MonoBehaviour
         }
         int extraTime = 0;
         int.TryParse(playerData.bufferTime, out extraTime);
-        //UnityEngine.Debug.Log("playerData.bufferTime " + playerData.bufferTime);
+        //Debug.Log("playerData.bufferTime " + playerData.bufferTime);
         int totalTime = GameConstants.TURN_TIME + extraTime;
         //UnityEngine.Debug.LogError(remainingTime + " " + totalTime + " " + GameConstants.TURN_TIME + " " + extraTime);
-        //UnityEngine.Debug.LogError("extraTime = " + extraTime);
-        //UnityEngine.Debug.LogError("totalTime = " + totalTime);
+        //Debug.LogError("extraTime = " + extraTime);
+        //Debug.LogError("totalTime = " + totalTime);
 
         remainingTime = totalTime - remainingTime;      //10  - 30
 
-        //UnityEngine.Debug.LogError("RemainingTime = " + remainingTime);
+        //Debug.LogError("RemainingTime = " + remainingTime);
         //UnityEngine.Debug.LogError("Starting timer " + remainingTime + ", " + PrefsManager.GetPlayerData().userId + ", " + playerData.userId);
         if (remainingTime == 0)
         {
