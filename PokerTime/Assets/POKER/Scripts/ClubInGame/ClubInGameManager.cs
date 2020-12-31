@@ -1,15 +1,10 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using LitJson;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using LitJson;
-using DG.Tweening;
-using UnityEditor;
-using System.IO;
-using UnityEngine.Networking;
-using System;
-using BestHTTP.SocketIO;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ClubInGameManager : MonoBehaviour
 {
@@ -69,6 +64,9 @@ public class ClubInGameManager : MonoBehaviour
 
     public GameObject WinnAnimationpos;
 
+    //DEV_CODE (Created By Nitin)
+    public string userWinner = "";
+
     //DEV_CODE
     Texture2D screenshot;
     public int videoWidth /* = 1280*/;
@@ -91,6 +89,8 @@ public class ClubInGameManager : MonoBehaviour
     bool isScreenshotCaptured = false;
     string myPlayerSeat;
 
+    public Image thunderPointBar;   //DEV_CODE Added this line as per InGameManager script
+
     private void Awake()
     {
         instance = this;
@@ -110,6 +110,10 @@ public class ClubInGameManager : MonoBehaviour
 
         gameExitCalled = false;
 
+        //DEV_CODE Added this code for setting up recording video height and width 
+        videoHeight = (int)ClubInGameUIManager.instance.height;
+        videoWidth = (int)ClubInGameUIManager.instance.width;
+
         for (int i = 0; i < communityCards.Length; i++)
         {
             communityCards[i].gameObject.SetActive(false);
@@ -125,9 +129,9 @@ public class ClubInGameManager : MonoBehaviour
             allPlayersObject[i].TogglePlayerUI(false);
             allPlayersObject[i].ResetAllData();
         }
-        UnityEngine.Debug.Log("table id is :" + GlobalGameManager.instance.GetRoomData().socketTableId);
+        Debug.Log("table id is :" + GlobalGameManager.instance.GetRoomData().socketTableId);
         TableName.text = "";// GlobalGameManager.instance.GetRoomData().title;
-        AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);
+        //AdjustAllPlayersOnTable(GlobalGameManager.instance.GetRoomData().players);    //DEV_CODE Commented this line as done inside InGameManager script
     }
 
     public void DeactivateAllPots()
@@ -176,7 +180,7 @@ public class ClubInGameManager : MonoBehaviour
         {
             //Debug.LogError("Seats available 1:" + serverResponse);
             AllSeats = JsonUtility.FromJson<TableSeats>(serverResponse);
-            //UpdateSeatClickSettingsAndView();
+            UpdateSeatClickSettingsAndView();   //DEV_CODE Enabled this line as done inside InGameManager script.
         }
     }
 
@@ -185,11 +189,11 @@ public class ClubInGameManager : MonoBehaviour
         Vector3 position1 = GetSeatObject(myPlayerSeat).transform.position;
         Vector3 position2 = GetSeatObject("1").transform.position;
 
-        GetSeatObject(myPlayerSeat).transform.position = position2;
-        GetSeatObject("1").transform.position = position1;
+        //GetSeatObject(myPlayerSeat).transform.position = position2;   //DEV_CODE Commented this line as done inside InGameManager script
+        //GetSeatObject("1").transform.position = position1;            //DEV_CODE Commented this line as done inside InGameManager script
         foreach (GameObject g in AllSeatButtons)
         {
-            g.SetActive(false);
+            //g.SetActive(false);       //DEV_CODE Commented this line as done inside InGameManager script
         }
 
         for (int i = 0; i < AllSeats.data.Length; i++)
@@ -197,8 +201,10 @@ public class ClubInGameManager : MonoBehaviour
             AllSeatButtons[i].SetActive(true);
             AllSeatButtons[i].GetComponent<PlayerSeat>().UpdateState();
         }
-        GetSeatObject(myPlayerSeat).SetActive(false);
+        //GetSeatObject(myPlayerSeat).SetActive(false);     //DEV_CODE Commented this line as done inside InGameManager script
     }
+
+    private bool DontShowCommunityCardAnimation = false;    //DEV_CODE Added this line as done inside InGameManager script
 
     public void OnEVChopDataFound(string responseText)
     {
@@ -213,6 +219,9 @@ public class ClubInGameManager : MonoBehaviour
         Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
         Debug.LogError("isFold :" + GetMyPlayerObject().GetPlayerData().isFold);
 
+        ClubInGameUIManager.instance.ToggleSuggestionButton(false);     //DEV_CODE Added this line as done inside InGameManager script
+        ClubInGameUIManager.instance.ToggleActionButton(false);         //DEV_CODE Added this line as done inside InGameManager script
+
         int vipCard = 0;
         int.TryParse(GetMyPlayerObject().GetPlayerData().userVIPCard, out vipCard);
 
@@ -222,6 +231,7 @@ public class ClubInGameManager : MonoBehaviour
             RabbitButton.SetActive(true);
             StartCoroutine(DisableRabbitButton());
             OnOpenCardsDataFound(responseText);
+            DontShowCommunityCardAnimation = true;  //DEV_CODE Added this line as done inside InGameManager script
         }
     }
 
@@ -358,6 +368,12 @@ public class ClubInGameManager : MonoBehaviour
         return LAST_BET_AMOUNT;
     }
 
+    //DEV_CODE Added this method as done inside InGameManager script
+    internal void OnGameOverCountDownFound(string data)
+    {
+        //ResetMatchData();
+    }
+
     public void UpdateAvailableBalance(float balance)
     {
         availableBalance = balance;
@@ -381,7 +397,7 @@ public class ClubInGameManager : MonoBehaviour
 
     private void SwitchTurn(PlayerScript playerScript, bool isCheckAvailable)
     {
-        SoundManager.instance.PlaySound(SoundType.TurnSwitch);
+        //SoundManager.instance.PlaySound(SoundType.TurnSwitch);    //DEV_CODE Commented this line as done inside InGameManager script
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
@@ -492,7 +508,7 @@ public class ClubInGameManager : MonoBehaviour
     }
 
 
-    private bool gameExitCalled = false;
+    public bool gameExitCalled = false;
 
     public void LoadMainMenu()
     {
@@ -604,10 +620,20 @@ public class ClubInGameManager : MonoBehaviour
 
                 for (int i = startIndex; i < maxIndex && i < allPlayersObject.Length; i++)
                 {
-                    allPlayersObject[i].TogglePlayerUI(true);
-                    allPlayersObject[i].ShowDetailsAsNewPlayer(playerData[index]);
-                    allPlayersObject[i].ResetRealtimeResult();
-                    ++index;
+                    //DEV_CODE Commented these lines as done inside InGameManager script
+                    //allPlayersObject[i].TogglePlayerUI(true);
+                    //allPlayersObject[i].ShowDetailsAsNewPlayer(playerData[index]);
+                    //allPlayersObject[i].ResetRealtimeResult();
+                    //++index;
+
+                    //DEV_CODE Added this If condition as done inside InGameManager script
+                    if (playerData[i].userId == PlayerManager.instance.GetPlayerGameData().userId)
+                    {
+                        allPlayersObject[0].TogglePlayerUI(true);
+                        allPlayersObject[0].ShowDetailsAsNewPlayer(playerData[i]);
+                        allPlayersObject[0].ResetRealtimeResult();
+                        ++index;
+                    }
                 }
             }
         }
@@ -630,7 +656,7 @@ public class ClubInGameManager : MonoBehaviour
                     allPlayersObject[index].ResetRealtimeResult();
                 }
 
-                ++index;
+                ++index;    //DEV_CDOE Added this line here as done inside InGameManager script
             }
         }
 
@@ -752,24 +778,38 @@ public class ClubInGameManager : MonoBehaviour
     {
         winnerAnimationFound = true;
         yield return new WaitForSeconds(.6f);
+
+        SoundManager.instance.PlaySound(SoundType.IncomingPot);
+
         GameObject gm = Instantiate(chipscoine, WinnAnimationpos.transform) as GameObject;
         //    gm.GetComponent<Text>().text = betAmount;
         gm.transform.position = WinnAnimationpos.transform.position;
         /*        Vector3 initialScale = gm.transform.localScale;
                 gm.transform.localScale = Vector3.zero;*/
 
-        gm.transform.DOMove(playerScript.transform.position, .5f).SetEase(Ease.Linear);
+        //DEV_CODE Added this code as done inside InGameManager Scren
+        gm.transform.DOMove(playerScript.transform.position, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            SoundManager.instance.PlaySound(SoundType.Bet);
+            Destroy(gm);
+            amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        });
+
+        //DEV_CODE Commented these lines as done inside InGameManager script
+
+        //gm.transform.DOMove(playerScript.transform.position, .5f).SetEase(Ease.Linear);
         // gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        SoundManager.instance.PlaySound(SoundType.Bet);
-        yield return new WaitForSeconds(.6f);
-        Destroy(gm);
-        amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+        //SoundManager.instance.PlaySound(SoundType.Bet);
+        //yield return new WaitForSeconds(.6f);
+        //Destroy(gm);
+        //amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+
         yield return new WaitForSeconds(3f);
         winnerAnimationFound = false;
         if (resetGame)
         {
             resetGame = false;
-            //GlobalGameManager.instance.LoadScene(Scenes.InGame);
+            GlobalGameManager.instance.LoadScene(Scenes.InGame);
         }
     }
     public float GetPotAmount()
@@ -810,7 +850,7 @@ public class ClubInGameManager : MonoBehaviour
     {
         return lastPlayerAction;
     }
-    
+
 
     private void ShowCommunityCardsAnimation()
     {
@@ -819,28 +859,41 @@ public class ClubInGameManager : MonoBehaviour
             return;
         }
 
+        if (DontShowCommunityCardAnimation) { return; }     //DEV_CODE Added this line as done inside InGameManager script
+
         StartCoroutine(WaitAndShowCommunityCardsAnimation());
     }
 
     public IEnumerator WaitAndShowRabbit()
     {
+        bool allcardEmpty = false;      //DEV_CODE Added this line as done inside InGameManager script
+
         for (int i = 0; i < 4; i++)
         {
             if (openCards[i].cardIcon == CardIcon.NONE)
             {
-                communityCards[i].gameObject.SetActive(false);
-                break;
+                //communityCards[i].gameObject.SetActive(false);    //DEV_CODE Commented this line as done inside InGameManager script
+                //break;    //DEV_CODE Commented this line as done inside InGameManager script
+                allcardEmpty = true;    //DEV_CODE Added this line as done inside InGameManager script
+            }
+            //DEV_CODE Added else part as done inside InGameManager script
+            else
+            {
+                allcardEmpty = false;
             }
             communityCards[i].sprite = openCards[i].cardsSprite;
         }
+        if (allcardEmpty) { yield break; }  //DEV_CODE Added this condition as done inside InGameManager script
         yield return new WaitForSeconds(1f);
 
         SoundManager.instance.PlaySound(SoundType.CardMove);
 
-        for (int i = 4; i < 5; i++)
+        //DEV_CODE Added this code as done inside InGameManager script
+        for (int i = 0; i < communityCards.Length; i++)
         {
             GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
 
+            gm.SetActive(true);
             gm.transform.localScale = communityCards[i].transform.localScale;
             gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
             gm.transform.Rotate(0, -90, 0);
@@ -865,7 +918,39 @@ public class ClubInGameManager : MonoBehaviour
             }
             communityCards[i].sprite = openCards[i].cardsSprite;
             communityCards[i].gameObject.SetActive(true);
+            communityCards[i].sprite = openCards[i].cardsSprite;
         }
+
+        //DEV_CODE Commented this code as per InGameManager script
+        //for (int i = 4; i < 5; i++)
+        //{
+        //    GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+
+        //    gm.transform.localScale = communityCards[i].transform.localScale;
+        //    gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
+        //    gm.transform.Rotate(0, -90, 0);
+        //    gm.transform.position = communityCards[i].transform.position;
+
+        //    gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+        //    gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+        //    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+
+        //    Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+        //}
+
+        //yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+
+        //for (int i = 0; i < communityCards.Length; i++)
+        //{
+        //    if (openCards[i].cardIcon == CardIcon.NONE)
+        //    {
+        //        communityCards[i].gameObject.SetActive(false);
+        //        break;
+        //    }
+        //    communityCards[i].sprite = openCards[i].cardsSprite;
+        //    communityCards[i].gameObject.SetActive(true);
+        //}   
 
     }
 
@@ -890,7 +975,7 @@ public class ClubInGameManager : MonoBehaviour
                 GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
 
                 gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
-                gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);
+                //gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);    //DEV_CODE Commented this line as per InGameManager script
                 Destroy(gm, GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
             }
 
@@ -908,9 +993,11 @@ public class ClubInGameManager : MonoBehaviour
         {
             case 1:
                 {
+                    WinnersNameText.text = "";   //DEV_CODE Added this line as per InGameManager script
+
                     HideEVChopButtons();
                     canShowEVChop = true;
-                    SoundManager.instance.PlaySound(SoundType.CardMove);
+                    //SoundManager.instance.PlaySound(SoundType.CardMove);
 
                     for (int i = 0; i < 3; i++)
                     {
@@ -918,6 +1005,7 @@ public class ClubInGameManager : MonoBehaviour
                         communityCards[i].sprite = openCards[i].cardsSprite;
                     }
                     yield return new WaitForSeconds(1f);
+                    SoundManager.instance.PlaySound(SoundType.CardMove);
 
                     for (int i = 0; i < 3; i++)
                     {
@@ -1023,6 +1111,12 @@ public class ClubInGameManager : MonoBehaviour
                         if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
                         communityCards[i].gameObject.SetActive(true);
+
+                        //DEV_CODE Added this line as per InGameManager script
+                        communityCards[i].transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                        //DEV_CODE Added this line as per InGameManager script
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
                     }
                 }
                 break;
@@ -1140,47 +1234,97 @@ public class ClubInGameManager : MonoBehaviour
             {
                 Debug.LogWarning(showdownSidePot.sidePot[i].winners[j].isWin);
                 //if winner count is greater than 0 then it is a split pot.
-                if (showdownSidePot.sidePot[i].winners[j].isWin)
+                //if (showdownSidePot.sidePot[i].winners[j].isWin)      //DEV_CODE Commented this line as per InGameManager script
                 {
                     InstantiateWin(showdownSidePot.sidePot[i].winners[j].userId.ToString(),
                         showdownSidePot.sidePot[i].winners[j].name,
-                        showdownSidePot.sidePot[i].winners[j].winAmount.ToString());
+                        showdownSidePot.sidePot[i].winners[j].winAmount.ToString(), showdownSidePot.sidePot[i].winners[j].isWin);
+                    //showdownSidePot.sidePot[i].winners[j].winAmount.ToString());;
                 }
             }
         }
     }
 
-    private void InstantiateWin(string userId, string name, string winAmount)
+    public Text WinnersNameText;
+
+    private void InstantiateWin(string userId, string name, string winAmount, bool isWin)
     {
         PlayerScript winnerPlayer = GetPlayerObject(userId);
 
         if (winnerPlayer != null)
         {
-            GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
-            gm.transform.Find("WinBy").GetComponent<Text>().text = name;
-            gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
-            if (string.IsNullOrEmpty(name))
+            //DEV_CODE Added this new logic as per InGameManager script
+            WinnersNameText.text += "[username=" + winnerPlayer.playerData.userName +
+                                       ",userId=" + winnerPlayer.playerData.userId + "] ";
+
+            for (int i = 0; i < animationLayer.childCount; i++)
             {
-                gm.transform.Find("WinBy").gameObject.SetActive(false);
-                gm.transform.Find("Image").gameObject.SetActive(false);
+                Destroy(animationLayer.GetChild(i).gameObject);
+            }
+
+            GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
+            
+            if (isWin)
+            {
+                gm.transform.Find("WinBy").GetComponent<Text>().text = name;
+                gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
+                if (string.IsNullOrEmpty(name))
+                {
+                    gm.transform.Find("WinBy").gameObject.SetActive(false);
+                    gm.transform.Find("Image").gameObject.SetActive(false);
+                }
+                else
+                {
+                    gm.transform.Find("WinBy").gameObject.SetActive(true);
+                    gm.transform.Find("Image").gameObject.SetActive(true);
+                }
+                if (winAmount.ToCharArray().Length > 5)
+                {
+                    SoundManager.instance.PlaySound(SoundType.bigWin);
+                }
+                gm.transform.position = winnerPlayer.gameObject.transform.position;
+                gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
+                gm.transform.SetSiblingIndex(0);
+                Vector3 inititalScale = gm.transform.localScale;
+                gm.transform.localScale = Vector3.zero;
             }
             else
             {
-                gm.transform.Find("WinBy").gameObject.SetActive(true);
-                gm.transform.Find("Image").gameObject.SetActive(true);
+                gm.SetActive(false);
             }
-            if (winAmount.ToCharArray().Length > 5)
-            {
-                SoundManager.instance.PlaySound(SoundType.bigWin);
-            }
-            gm.transform.position = winnerPlayer.gameObject.transform.position;
-            gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
-            gm.transform.SetSiblingIndex(0);
-            Vector3 inititalScale = gm.transform.localScale;
-            gm.transform.localScale = Vector3.zero;
+            
             StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer, winAmount, gm));
             // gm.transform.DOScale(inititalScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
             winnersObject.Add(gm);
+
+
+            //DEV_CODE Commented this code as per InGameManager script
+
+            //GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
+            //gm.transform.Find("WinBy").GetComponent<Text>().text = name;
+            //gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
+            //if (string.IsNullOrEmpty(name))
+            //{
+            //    gm.transform.Find("WinBy").gameObject.SetActive(false);
+            //    gm.transform.Find("Image").gameObject.SetActive(false);
+            //}
+            //else
+            //{
+            //    gm.transform.Find("WinBy").gameObject.SetActive(true);
+            //    gm.transform.Find("Image").gameObject.SetActive(true);
+            //}
+            //if (winAmount.ToCharArray().Length > 5)
+            //{
+            //    SoundManager.instance.PlaySound(SoundType.bigWin);
+            //}
+            //gm.transform.position = winnerPlayer.gameObject.transform.position;
+            //gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
+            //gm.transform.SetSiblingIndex(0);
+            //Vector3 inititalScale = gm.transform.localScale;
+            //gm.transform.localScale = Vector3.zero;
+            //StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer, winAmount, gm));
+            //// gm.transform.DOScale(inititalScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+            //winnersObject.Add(gm);
         }
     }
 
@@ -1199,14 +1343,15 @@ public class ClubInGameManager : MonoBehaviour
 
         MATCH_ROUND = 10; // ToShow all cards
         ShowCommunityCardsAnimation();
-        ClubInGameUIManager.instance.ToggleActionButton(false);
-        ClubInGameUIManager.instance.ToggleSuggestionButton(false);
-        
+        //ClubInGameUIManager.instance.ToggleActionButton(false);
+        //ClubInGameUIManager.instance.ToggleSuggestionButton(false);
+
         ResultProcess(serverResponse);
-        
+
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             onlinePlayersScript[i].ToggleCards(true, true);
+            onlinePlayersScript[i].DisablePot();    //DEV_CODE Added this line as per InGameManager script
         }
     }
 
@@ -1214,6 +1359,12 @@ public class ClubInGameManager : MonoBehaviour
 
     public void OnNextMatchCountDownFound(string serverResponse)
     {
+        //DEV_CODE
+        if (isRecording)
+        {
+            //StopRecording();
+        }
+
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             onlinePlayersScript[i].ResetRealtimeResult();
@@ -1357,7 +1508,7 @@ public class ClubInGameManager : MonoBehaviour
 
     public void OnBetDataFound(string serverResponse)
     {
-        Debug.LogWarning("serverResponse BETDATAFOUND " + serverResponse);
+        //Debug.LogWarning("serverResponse BETDATAFOUND " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         LAST_BET_AMOUNT = (int)float.Parse(data[0]["lastBet"].ToString());
         string userId = data[0]["userId"].ToString();
@@ -1366,11 +1517,11 @@ public class ClubInGameManager : MonoBehaviour
 
         string s = serverResponse.Remove(serverResponse.Length - 1, 1);
         s = s.Remove(0, 1);
-        Debug.LogWarning("s" + s);
+        //Debug.LogWarning("s" + s);
 
         MyBetData betData = JsonUtility.FromJson<MyBetData>(s);
 
-        Debug.LogWarning("side pot length; " + betData.sidePot.Count);
+        //Debug.LogWarning("side pot length; " + betData.sidePot.Count);
         PotValues.Clear();
         for (int i = 0; i < betData.sidePot.Count; i++)
         {
@@ -1399,9 +1550,9 @@ public class ClubInGameManager : MonoBehaviour
 
                 if (playerObject != null)
                 {
-                    Debug.Log("Current Bet Amount : " + betAmount);
-                    StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
-                    /*StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));*/
+                    //Debug.Log("Current Bet Amount : " + betAmount);
+                    //StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
+                    StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));
                 }
                 else
                 {
@@ -1421,7 +1572,13 @@ public class ClubInGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
         handtype = serverResponse;
-        
+
+        //DEV_CODE
+        if (!isRecording)
+        {
+            //StartRecording();
+        }
+
         ShowCommunityCardsAnimation();
     }
 
@@ -1499,6 +1656,14 @@ public class ClubInGameManager : MonoBehaviour
 
     public void OnPlayerObjectFound(string serverResponse)
     {
+        //DEV_CODE Added this condition as per InGameManager script
+        if (serverResponse == "[[]]")
+        {
+            //clear UI
+            StartCoroutine(WaitAndSendLeaveRequest());
+            return;
+        }
+
         if (!ClubInGameUIManager.instance.isSelectedWinningBooster)
         {
             ClubSocketController.instance.GetRandomCard();
@@ -1521,7 +1686,15 @@ public class ClubInGameManager : MonoBehaviour
         if (data[0].Count > 0)
         {
             //AdjustAllPlayersOnTable(data[0].Count);
+
+            //DEV_CODE Added these two lines as per InGameManager script
+            thunderPointBar.fillAmount = float.Parse(data[0][0]["playRound"].ToString()) / 10;
+            PointEarnedCounter = int.Parse(data[0][0]["currentSessionPoint"].ToString());
+
+
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
+            isGameStart = isMatchStarted;   //DEV_CODE Added this line as per InGameManager script
+
             //Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
             ClubSocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
             ClubInGameUIManager.instance.tableId = data[0][0]["tableId"].ToString();
@@ -1554,7 +1727,8 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         MatchMakingPlayerData playerData = new MatchMakingPlayerData();
 
-                        PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
+                        if (data[0][i]["coins"] != null)
+                            PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
 
                         playerData.playerData = new PlayerData();
                         playerData.playerData.userId = data[0][i]["userId"].ToString();
@@ -1612,6 +1786,13 @@ public class ClubInGameManager : MonoBehaviour
                     }
 
                     Init(matchMakingPlayerData);
+
+                    //DEV_CODE Added this loop as per InGameManager script
+                    for (int z = 0; z < AllSeatButtons.Count; z++)
+                    {
+                        AllSeatButtons[z].SetActive(true);
+                        AllSeatButtons[z].GetComponent<PlayerSeat>().DisableButtonClick();
+                    }
                 }
             }
             else if (ClubSocketController.instance.GetSocketState() == SocketState.Game_Running)
@@ -1666,6 +1847,13 @@ public class ClubInGameManager : MonoBehaviour
                         {
                             PlayerManager.instance.GetPlayerGameData().coins = playerObject.playerData.balance;
                             AmISpectator = false;
+
+                            //DEV_CODE Added this loop as per InGameManager script
+                            for (int x = 0; x < AllSeatButtons.Count; x++)
+                            {
+                                AllSeatButtons[x].SetActive(true);
+                                AllSeatButtons[x].GetComponent<PlayerSeat>().DisableButtonClick();
+                            }
                         }
                     }
                 }
@@ -1700,7 +1888,7 @@ public class ClubInGameManager : MonoBehaviour
                     //GetSeatObject("1").transform.position = position1;
                 }
             }
-            //UpdateSeatClickSettingsAndView();
+            UpdateSeatClickSettingsAndView();   //DEV_CODE Enables this line as per InGameManager script
 
             //GetAvailableSeats();
         }
@@ -1712,7 +1900,9 @@ public class ClubInGameManager : MonoBehaviour
 
     private void ResetMatchData()
     {
-        UpdatePot("");
+        DontShowCommunityCardAnimation = false;     //DEV_CODE  Added this line as per InGameManager script
+        //UpdatePot("");        //DEV_CODE  Commented this line as per InGameManager script
+
         isRematchRequestSent = true;
 
         ClubSocketController.instance.SetSocketState(SocketState.WaitingForOpponent);
@@ -1733,6 +1923,7 @@ public class ClubInGameManager : MonoBehaviour
         pot1Amount = 0;
         RabbitButton.SetActive(false);
         ClearPotAmount();
+        UpdatePot("");      //DEV_CODE Added this line as per InGameManager script
         lastPlayerAction = "";
         openCards = null;
         LAST_BET_AMOUNT = 0;
@@ -1781,5 +1972,11 @@ public class ClubInGameManager : MonoBehaviour
         ClubSocketController.instance.SendLeaveMatchRequest();
         // StartCoroutine(WaitAndSendLeaveRequest());
         //        LoadMainMenu();  
+    }
+
+    //DEV_CODE Added this method as per InGameManager script
+    private void OnDisable()
+    {
+        thunderPointBar.fillAmount = 0f;
     }
 }

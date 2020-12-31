@@ -5,6 +5,24 @@ using UnityEngine.UI;
 
 public class MenuScript : MonoBehaviour
 {
+    //DEV_CODE
+    private void Awake()
+    {
+        if (GameConstants.poker)
+        {
+            if (InGameUiManager.instance == null)
+            {
+                //Debug.Log("Current Room Data: " + GlobalGameManager.instance.currentRoomData.isEVChop.ToString());
+
+                if (GlobalGameManager.instance.currentRoomData.isEVChop)
+                    transform.Find("PopUp/EVChopRules").gameObject.SetActive(true);
+                else
+                    transform.Find("PopUp/EVChopRules").gameObject.SetActive(false);
+            }
+        }
+    }
+    //***********************************************************
+
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);

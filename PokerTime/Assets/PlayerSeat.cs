@@ -38,9 +38,23 @@ public class PlayerSeat : MonoBehaviour
 
     public void OnClick()
     {
-        if (InGameManager.instance.AmISpectator)
+        //if (InGameManager.instance.AmISpectator)
+        //{
+        //    SocketController.instance.SendGameJoinRequest(seatNo);
+        //}
+        if (InGameManager.instance != null)
         {
-            SocketController.instance.SendGameJoinRequest(seatNo);
+            if (InGameManager.instance.AmISpectator)
+            {
+                SocketController.instance.SendGameJoinRequest();
+            }
+        }
+        else
+        {
+            if (ClubInGameManager.instance.AmISpectator)
+            {
+                ClubSocketController.instance.SendClubGameJoinRequest();
+            }
         }
     }
 }

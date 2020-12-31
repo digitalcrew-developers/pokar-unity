@@ -60,6 +60,9 @@ public class InGameManager : MonoBehaviour
 
     public GameObject WinnAnimationpos;
 
+    //DEV_CODE (Created By Nitin)
+    public string currentClickedSeatNum = "";
+
     //DEV_CODE
     Texture2D screenshot;
     public int videoWidth /* = 1280*/;

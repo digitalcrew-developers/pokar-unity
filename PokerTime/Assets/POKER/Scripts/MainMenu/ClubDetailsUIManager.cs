@@ -321,8 +321,15 @@ public class ClubDetailsUIManager : MonoBehaviour
             roomData.roomId = data["response"][i]["tableId"].ToString();
             roomData.title = data["response"][i]["templateName"].ToString();
 
-            if ((i+1) % 2 == 0)
-			{
+			//DEV_CODE
+			Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
+			if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
+				roomData.isEVChop = true;
+			else
+				roomData.isEVChop = false;
+
+			if ((i + 1) % 2 == 0)
+			{ 
 				obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;				
 			}
 			else

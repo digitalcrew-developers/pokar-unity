@@ -129,6 +129,8 @@ public class ClubSocketController : MonoBehaviour
         socketManager.Socket.On("minMaxAppEmit", MinimizeAppServer);
         socketManager.Socket.On("seatObject", SeatObjectsReceived);
         socketManager.Socket.On("rabbitOpenCards", RabbitCardDataReceived);
+        socketManager.Socket.On("evChopData", EVChopDataReceived);  //DEV_CODE Added Event for EVChopDataReceived called
+        socketManager.Socket.On("playerExit", PlayerExit);          //DEV_CODE Added Event for PlayerExit called
         socketManager.Open();
     }
 
@@ -137,16 +139,25 @@ public class ClubSocketController : MonoBehaviour
     void OnGUI()
     {
         if (isPaused)
+        {
+            //MinimizeAppEvent();
             GUI.Label(new Rect(100, 100, 50, 30), "Game paused");
+        }
     }
 
     void OnApplicationFocus(bool hasFocus)
     {
+#if !UNITY_EDITOR
         isPaused = !hasFocus;
         if (!isPaused)
         {
             MaximizeAppEvent();
         }
+        if (isPaused)
+        {
+            MinimizeAppEvent();
+        }
+#endif
     }
 
     void OnApplicationPause(bool pauseStatus)
@@ -162,6 +173,30 @@ public class ClubSocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.Log(responseText);
+    }
+
+    //DEV_CODE Added this method to be called when EVChopDataReceived emited
+    private void EVChopDataReceived(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError("EVChopDataReceived :" + responseText);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.EVCHOP))
+        {
+            Debug.Log("EVChopDataReceived = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+        Debug.Log("OnNextRoundTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.EVCHOP;
+        response.data = responseText;
+        socketResponse.Add(response);
     }
 
     private void RabbitCardDataReceived(Socket socket, Packet packet, object[] args)
@@ -191,6 +226,18 @@ public class ClubSocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.LogError(responseText);
+        //InGameManager.instance.gameExitCalled = true;
+        //ResetConnection();
+    }
+
+    //DEV_CODE Added this method to be called when PlayerExit event emited 
+    private void PlayerExit(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError("Response => PlayerExit: " + responseText);
+
+        ClubInGameManager.instance.gameExitCalled = true;
+        ResetConnection();
     }
 
     private void HandleSocketResponse()
@@ -212,7 +259,7 @@ public class ClubSocketController : MonoBehaviour
 #endif
 
 #endif
-
+            Debug.Log(ClubInGameManager.instance.userWinner + " <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
             switch (responseObject.eventType)
             {
                 case SocketEvetns.CONNECT:
@@ -221,6 +268,8 @@ public class ClubSocketController : MonoBehaviour
                         {
                             case SocketState.Connecting:
                                 SetSocketState(SocketState.WaitingForOpponent);
+
+                                Debug.Log("<color=yellow>IsJoiningPreviousGame " + GlobalGameManager.IsJoiningPreviousGame + "</color>");
 
                                 if (GlobalGameManager.IsJoiningPreviousGame)
                                 {
@@ -259,6 +308,8 @@ public class ClubSocketController : MonoBehaviour
                 case SocketEvetns.PLAYER_OBJECT:
                     if (ClubInGameManager.instance != null)
                     {
+                        Debug.LogError("Current Socket State: " + GetSocketState());
+
                         if (GetSocketState() == SocketState.ReConnecting)
                         {
                             SetSocketState(SocketState.Game_Running);
@@ -512,12 +563,12 @@ public class ClubSocketController : MonoBehaviour
 #endif
 #endif
 
-        //DEV_CODE
-        //if (ClubInGameUIManager.instance.actionButtonParent.activeSelf)
-        //    ClubInGameUIManager.instance.actionButtonParent.SetActive(false);
+        //DEV_CODE To disable Action Buttons and Suggestion Buttons on round end and going to next round
+        if (ClubInGameUIManager.instance.actionButtonParent.activeSelf)
+            ClubInGameUIManager.instance.actionButtonParent.SetActive(false);
 
-        //if (ClubInGameUIManager.instance.suggestionButtonParent.activeSelf)
-        //    ClubInGameUIManager.instance.suggestionButtonParent.SetActive(false);
+        if (ClubInGameUIManager.instance.suggestionButtonParent.activeSelf)
+            ClubInGameUIManager.instance.suggestionButtonParent.SetActive(false);
         //***********************************************
 
 
@@ -1323,7 +1374,11 @@ public class ClubSocketController : MonoBehaviour
         req.plainDataToBeSend = null;
         req.jsonDataToBeSend = requestObjectData;
         req.requestDataStructure = requestStringData;
-        socketRequest.Add(req);
+        //socketRequest.Add(req);
+
+        //DEV_CODE  To send emit event immediately
+        socketManager.Socket.Emit(req.emitEvent, req.jsonDataToBeSend);
+        Debug.LogError("Maximize :" + requestStringData);
     }
 
 
@@ -1416,7 +1471,10 @@ public class ClubSocketController : MonoBehaviour
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
-        socketRequest.Add(request);
+        //socketRequest.Add(request);
+
+        //DEV_CODE Sending event directly, no need to add socketRequest to list
+        socketManager.Socket.Emit(request.emitEvent, request.jsonDataToBeSend);
 
         return true;
     }
@@ -1491,6 +1549,7 @@ public class ClubSocketController : MonoBehaviour
 
     public void SetSocketState(SocketState state)
     {
+        Debug.Log("Set Socket State " + state);
         socketState = state;
     }
 

@@ -47,6 +47,7 @@ public class ClubInGameUIManager : MonoBehaviour
     public int emojiContainerVal;
     public Transform EmojiShowTransform;
     public Transform fromEmojiShowTransform;
+    public Transform sentTo, sentBy;
     public GameObject[] EmojiPrefabs;
 
     public GameObject GirlDealerEmoji;
@@ -65,6 +66,9 @@ public class ClubInGameUIManager : MonoBehaviour
 
     public bool isSelectedWinningBooster = false;
     public string winningBoosterCardName = "";
+
+    //DEV_CODE (Created By Nitin)
+    public string currentClickedSeatNum = "";
 
     public Camera cameraObj;
     [HideInInspector]
@@ -92,16 +96,16 @@ public class ClubInGameUIManager : MonoBehaviour
     public GameObject ClubMainMenu = null;
     private void Start()
     {
-        //if (GlobalGameManager.instance.GetRoomData().isLobbyRoom)
-        //{
-        //    clubTableOject.SetActive(false);
-        //    lobbyTableObject.SetActive(true);
-        //}
-        //else
-        //{
-        //    clubTableOject.SetActive(true);
-        //    lobbyTableObject.SetActive(false);
-        //}
+        if (GlobalGameManager.instance.GetRoomData().isLobbyRoom)
+        {
+            clubTableOject.SetActive(false);
+            lobbyTableObject.SetActive(true);
+        }
+        else
+        {
+            clubTableOject.SetActive(true);
+            lobbyTableObject.SetActive(false);
+        }
 
         if (!GlobalGameManager.instance.GetRoomData().isLobbyRoom)
         {
@@ -154,7 +158,7 @@ public class ClubInGameUIManager : MonoBehaviour
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
 
-        Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+        //Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
         //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
@@ -227,6 +231,7 @@ public class ClubInGameUIManager : MonoBehaviour
     public void OnClickEmojiTransform(Transform val)
     {
         EmojiShowTransform = val;
+        sentTo = val;   //DEV_CODE Added this line as per InGameUiManager
         Debug.Log("I am getting emoji transform   " + val.transform.parent.parent.name);
         if (val.transform.parent.parent.name.Equals("LobbyTable"))
         {
@@ -299,6 +304,8 @@ public class ClubInGameUIManager : MonoBehaviour
                 break;
             case "emojiScreen":
                 {
+                    if (ClubInGameManager.instance.AmISpectator)
+                        return;
                     ShowScreen(InGameScreens.EmojiScreen);
                 }
                 break;
@@ -813,11 +820,13 @@ public class ClubInGameUIManager : MonoBehaviour
                 if (callAmount == 0)
                 {
                     callAmountText.text = "";
-                    actionButtons[(int)PlayerAction.Call].SetActive(false);
-                    actionButtons[(int)PlayerAction.Raise].SetActive(false);
-                    actionButtons[(int)PlayerAction.Check].SetActive(false);
-                    actionButtons[(int)PlayerAction.AllIn].SetActive(false);
-                    actionButtons[(int)PlayerAction.Fold].SetActive(false);
+
+                    //DEV_CODE Commented these lines as per InGameUiManager script
+                    //actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Check].SetActive(false);
+                    //actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Fold].SetActive(false);
                 }
             }
 
@@ -1014,9 +1023,11 @@ public class ClubInGameUIManager : MonoBehaviour
 
     public void ShowEmojiOnScreen(string str)
     {
+        if (sentBy == null) { sentBy = sentTo; }    //DEV_CODE Added this line as per InGameUiManager script
 
         //Debug.LogError("Show Emoji From List on Screen *** " + str);
         GameObject g = null;
+        Vector3 scaleValue = new Vector3(1f, 1f, 1f);   //DEV_CODE Added this line as per InGameUiManager script
         switch (str)
         {
 
@@ -1075,7 +1086,9 @@ public class ClubInGameUIManager : MonoBehaviour
                 break;
         }
         g.transform.SetParent(EmojiShowTransform);
-        g.GetComponent<EmojiBehaviour>().target = fromEmojiShowTransform;
+        g.transform.localScale = scaleValue;    //DEV_CODE Added this line as per InGameUiManager script
+        //g.GetComponent<EmojiBehaviour>().target = fromEmojiShowTransform;     //DEV_CODE Commented this line as per InGameUiManager script
+        g.transform.DOMove(sentTo.position, 1.5f);  //DEV_CODE Added this line as per InGameUiManager script
     }
 
 
@@ -1091,15 +1104,26 @@ public class ClubInGameUIManager : MonoBehaviour
             {
                 if (data[0]["sentTo"].ToString().Equals("0"))
                 {
-                    fromEmojiShowTransform = GirlDealerEmoji.transform;
+                    sentTo = GirlDealerEmoji.transform;     //DEV_CODE Added this line as per InGameUiManager script
+                    //fromEmojiShowTransform = GirlDealerEmoji.transform;   //DEV_CODE Commented this line as per InGameUiManage script
                     sentToEmojiValue = "Dealer";
                 }
                 else
                 {
                     if (players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentTo"].ToString())
                     {
-                        fromEmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
-                        break;
+                        //DEV_CODE Added this line as per InGameUiManager script
+                        sentTo = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
+
+                        //DEV_CODE Commented below lines as per InGameUiManager script
+                        //fromEmojiShowTransform = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
+                        //break;
+                    }
+
+                    //DEV_CODE Added this condition as per InGameUiManager script
+                    if (players.transform.GetChild(i).GetComponent<PlayerScript>().playerData.userId == data[0]["sentBy"].ToString())
+                    {
+                        sentBy = players.transform.GetChild(i).GetChild(0).Find("Emoji").transform;
                     }
                 }
             }

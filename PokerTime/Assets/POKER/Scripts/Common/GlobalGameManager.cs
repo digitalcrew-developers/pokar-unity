@@ -206,8 +206,10 @@ public class RoomData
     public bool isLobbyRoom;
 
     public int totalActivePlayers;
-    
 
+    //DEV_CODE
+    public bool isEVChop = false;
+    public bool isRunMulti = false;
 }
 
 
