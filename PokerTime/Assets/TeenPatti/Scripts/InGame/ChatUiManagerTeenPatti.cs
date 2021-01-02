@@ -107,7 +107,7 @@ public class ChatUiManagerTeenPatti : MonoBehaviour
                         suggestionScreen.SetActive(false);    
                     }
 
-                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Chat);
+                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.Chat);
                 }
             break;
 
@@ -129,7 +129,7 @@ public class ChatUiManagerTeenPatti : MonoBehaviour
                     if (inputFild.text.Length > 0)
                     {
                         ChatManagerTeenPatti.instance.SendChatMessage(inputFild.text);
-                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Chat);
+                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.Chat);
                     }
                 }
                 break;
@@ -147,7 +147,7 @@ public class ChatUiManagerTeenPatti : MonoBehaviour
         SoundManager.instance.PlaySound(SoundType.Click);
 
         ChatManagerTeenPatti.instance.SendChatMessage(suggestionText.text);
-        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Chat);
+        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.Chat);
     }
 
 

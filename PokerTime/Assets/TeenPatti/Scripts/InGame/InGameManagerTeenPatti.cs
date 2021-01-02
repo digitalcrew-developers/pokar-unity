@@ -346,7 +346,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
     public void LoadMainMenu()
     {
         gameExitCalled = true;
-        InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreens.Loading);
+        InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.Loading);
         StartCoroutine(WaitAndSendLeaveRequest());
     }
 
@@ -1331,7 +1331,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
         }
         else
         {
-            GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
+            //GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
         }
     }
 

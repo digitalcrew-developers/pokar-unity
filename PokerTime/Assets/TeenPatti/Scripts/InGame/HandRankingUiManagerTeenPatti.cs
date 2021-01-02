@@ -12,7 +12,7 @@ public class HandRankingUiManagerTeenPatti : MonoBehaviour
         {
             case "back":
                 {
-                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.HandRanking);
+                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.HandRanking);
                 }
                 break;
 

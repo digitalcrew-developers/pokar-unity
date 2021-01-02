@@ -6,6 +6,6 @@ public class PointEarnMsgTeenPatti : MonoBehaviour
 {
     public void onClickCloseMSG()
     {
-        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.PointEarnMsg);
+        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.PointEarnMsg);
     }
 }

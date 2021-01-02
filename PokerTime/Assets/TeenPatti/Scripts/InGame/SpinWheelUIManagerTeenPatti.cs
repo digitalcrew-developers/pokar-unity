@@ -255,7 +255,7 @@ public class SpinWheelUIManagerTeenPatti : MonoBehaviour
             case "back":
                 {
 
-                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.SpinWheelScreen);                   
+                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.SpinWheelScreen);                   
 
                 }
                 break;
@@ -269,9 +269,9 @@ public class SpinWheelUIManagerTeenPatti : MonoBehaviour
                     }
                     else 
                     {
-                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
+                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.SpinWheelScreen);
 
-                        InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreens.InGameShop);
+                        InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.InGameShop);
                     }
                     DeductCoinPostServer(1500);
                 }
@@ -285,9 +285,9 @@ public class SpinWheelUIManagerTeenPatti : MonoBehaviour
                     }
                     else
                     {
-                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
+                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.SpinWheelScreen);
 
-                        InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreens.InGameShop);
+                        InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.InGameShop);
                     }
                     DeductCoinPostServer(4800);
                 }

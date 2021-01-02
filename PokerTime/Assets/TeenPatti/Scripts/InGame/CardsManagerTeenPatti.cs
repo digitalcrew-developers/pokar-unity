@@ -9,7 +9,7 @@ public class CardsManagerTeenPatti: MonoBehaviour
     public static CardsManagerTeenPatti instance;
     [SerializeField]
     private Sprite[] cardSprites;
-    private Sprite cardBackSprite;
+    public Sprite cardBackSprite;
 
     private void Awake()
     {

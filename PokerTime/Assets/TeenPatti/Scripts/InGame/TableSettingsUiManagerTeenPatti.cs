@@ -74,7 +74,7 @@ public class TableSettingsUiManagerTeenPatti : MonoBehaviour
         {
             case "back":
                 {
-                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.TableSettings);
+                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.TableSettings);
                 }
                 break;
             case "voicemsg":

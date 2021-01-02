@@ -36,7 +36,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
 
     private float availableCallAmount = 0, selectedRaiseAmount = 0;
-    private List<InGameActiveScreens> inGameActiveScreens = new List<InGameActiveScreens>();
+    private List<InGameActiveScreensTeenPatti> inGameActiveScreens = new List<InGameActiveScreensTeenPatti>();
     private bool useRaisePotWise = false;
     private int suggestionCallAmount = 0;
 
@@ -103,7 +103,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         //ToggleSuggestionButton(false);
 
         int counter = PlayerPrefs.GetInt("TableCount");
-        SwitchTables(counter);
+        //SwitchTables(counter);
     }
 
     private void SwitchTables(int counter)
@@ -170,7 +170,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         Debug.Log("IIII  SpinWheelArrowBtnClick");
         SoundManager.instance.PlaySound(SoundType.Click);
 
-        ShowScreen(InGameScreens.SpinWheelScreen);
+        ShowScreen(InGameScreensTeenPatti.SpinWheelScreen);
     }
 
    
@@ -239,25 +239,26 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         {
             case "store":
                 {
-                    ShowScreen(InGameScreens.InGameShop);
+                    ShowScreen(InGameScreensTeenPatti.InGameShop);
                 }
                 break;
 
 
             case "menu":
                 {
-                    ShowScreen(InGameScreens.Menu);
+                    
+                    ShowScreen(InGameScreensTeenPatti.MenuTeenPatti);
                 }
                 break;
 
             case "missions":
                 {
-                    ShowScreen(InGameScreens.Missions);
+                    ShowScreen(InGameScreensTeenPatti.Missions);
                 }
                 break;
             case "emojiScreen":
                 {
-                    ShowScreen(InGameScreens.EmojiScreen);
+                    ShowScreen(InGameScreensTeenPatti.EmojiScreen);
                 }
                 break;
             case "fold":
@@ -478,18 +479,18 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
             case "handHistory":
                 {
-                    ShowScreen(InGameScreens.HandHistory);
+                    ShowScreen(InGameScreensTeenPatti.HandHistory);
                 }
                 break;
 
             case "realTimeResult":
                 {
-                    ShowScreen(InGameScreens.RealTimeResult);
+                    ShowScreen(InGameScreensTeenPatti.RealTimeResult);
                 }
                 break;
             case "pointEarnopen":
                 {
-                    ShowScreen(InGameScreens.PointEarnMsg);
+                    ShowScreen(InGameScreensTeenPatti.PointEarnMsg);
                 }
                 break;
 
@@ -497,7 +498,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                 {
                     if (SocketControllerTeenPatti.instance.GetSocketState() == SocketStateTeenPatti.Game_Running)
                     {
-                        ShowScreen(InGameScreens.Chat);
+                        ShowScreen(InGameScreensTeenPatti.Chat);
                     }
                     else
                     {
@@ -848,9 +849,274 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
             availableCallAmount = callAmount;
         }
     }
-    
 
-    public void ShowScreen(InGameScreens screenName, object[] parameter = null)
+
+
+    public void ConvertActionButtons(bool isShow, PlayerScriptTeenPatti playerObject = null,
+        bool isCheckAvailable = false, int lastBetAmount = 200)
+    {
+        //actionButtonParent.SetActive(isShow);
+
+        int callAmount = (int)playerObject.GetPlayerData().totalBet;
+        GameConstants.playerbetAmount = callAmount;
+
+        if (callAmount > 0)
+        {
+            isCheckAvailable = false;
+        }
+
+
+
+
+        // useRaisePotWise = isCheckAvailable;
+
+        //actionButtons[(int)PlayerAction.Check].SetActive(isCheckAvailable);
+
+        if (!isCheckAvailable)
+        {
+            Debug.LogError("Player is :" + playerObject.GetPlayerData().userId);
+
+            if (playerObject.GetPlayerData().isShow)
+            {
+                showMatchButton.SetActive(true);
+                actionButtons[5].SetActive(false);
+            }
+
+            else if (playerObject.GetPlayerData().isSideShow)
+            {
+                showMatchButton.SetActive(false);
+                actionButtons[5].SetActive(true);
+            }
+
+            else if (!playerObject.GetPlayerData().isShow && !playerObject.GetPlayerData().isSideShow)
+            {
+                showMatchButton.SetActive(false);
+                actionButtons[5].SetActive(false);
+            }
+
+
+            if (playerObject.GetPlayerData().isBlind)
+            {
+
+                if (callAmount >= 0) // amount availabel to bet
+                {
+                    callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
+                    callAmountText.text = "" + callAmount;
+                    actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = blindSprite;
+                }
+                else // dont have amount to bet hence show only fold and all-in
+                {
+                    actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                }
+                if (callAmount == 0)
+                {
+                    callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
+                    callAmountText.text = "";
+
+                }
+            }
+            else
+            {
+                if (callAmount >= 0) // amount availabel to bet
+                {
+                    callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
+                    callAmountText.text = "" + callAmount;
+                    actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = callSprite;
+                }
+                else // dont have amount to bet hence show only fold and all-in
+                {
+                    actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    // actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                }
+                if (callAmount == 0)
+                {
+                    callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
+                    callAmountText.text = "";
+
+                }
+            }
+
+        //    if (isShow)
+        //{
+        //    //ResetSuggetionAction();
+
+        //    for (int i = 0; i < actionButtons.Length; i++)
+        //    {
+        //        actionButtons[i].SetActive(true);
+        //    }
+
+        //    //raisePopUp.SetActive(false);
+        //    if (i == 0)
+        //    {
+        //        lastBetAmount = 200;
+        //        i++;
+        //    }
+
+
+
+
+            
+
+
+
+        //    }
+
+        //    availableCallAmount = callAmount;        //    if (isShow)
+        //{
+        //    //ResetSuggetionAction();
+
+        //    for (int i = 0; i < actionButtons.Length; i++)
+        //    {
+        //        actionButtons[i].SetActive(true);
+        //    }
+
+        //    //raisePopUp.SetActive(false);
+        //    if (i == 0)
+        //    {
+        //        lastBetAmount = 200;
+        //        i++;
+        //    }
+
+
+
+
+            
+
+
+
+        //    }
+
+        //    availableCallAmount = callAmount;        //    if (isShow)
+        //{
+        //    //ResetSuggetionAction();
+
+        //    for (int i = 0; i < actionButtons.Length; i++)
+        //    {
+        //        actionButtons[i].SetActive(true);
+        //    }
+
+        //    //raisePopUp.SetActive(false);
+        //    if (i == 0)
+        //    {
+        //        lastBetAmount = 200;
+        //        i++;
+        //    }
+
+
+
+
+            
+
+
+
+        //    }
+
+        //    availableCallAmount = callAmount;        //    if (isShow)
+        //{
+        //    //ResetSuggetionAction();
+
+        //    for (int i = 0; i < actionButtons.Length; i++)
+        //    {
+        //        actionButtons[i].SetActive(true);
+        //    }
+
+        //    //raisePopUp.SetActive(false);
+        //    if (i == 0)
+        //    {
+        //        lastBetAmount = 200;
+        //        i++;
+        //    }
+
+
+
+
+            
+
+
+
+        //    }
+
+        //    availableCallAmount = callAmount;        //    if (isShow)
+        //{
+        //    //ResetSuggetionAction();
+
+        //    for (int i = 0; i < actionButtons.Length; i++)
+        //    {
+        //        actionButtons[i].SetActive(true);
+        //    }
+
+        //    //raisePopUp.SetActive(false);
+        //    if (i == 0)
+        //    {
+        //        lastBetAmount = 200;
+        //        i++;
+        //    }
+
+
+
+
+            
+
+
+
+        //    }
+
+        //    availableCallAmount = callAmount;        //    if (isShow)
+        //{
+        //    //ResetSuggetionAction();
+
+        //    for (int i = 0; i < actionButtons.Length; i++)
+        //    {
+        //        actionButtons[i].SetActive(true);
+        //    }
+
+        //    //raisePopUp.SetActive(false);
+        //    if (i == 0)
+        //    {
+        //        lastBetAmount = 200;
+        //        i++;
+        //    }
+
+
+
+
+            
+
+
+
+        //    }
+
+        //    availableCallAmount = callAmount;        //    if (isShow)
+        //{
+        //    //ResetSuggetionAction();
+
+        //    for (int i = 0; i < actionButtons.Length; i++)
+        //    {
+        //        actionButtons[i].SetActive(true);
+        //    }
+
+        //    //raisePopUp.SetActive(false);
+        //    if (i == 0)
+        //    {
+        //        lastBetAmount = 200;
+        //        i++;
+        //    }
+
+
+
+
+            
+
+
+
+        //    }
+
+        //    availableCallAmount = callAmount;
+        }
+    }
+
+    public void ShowScreen(InGameScreensTeenPatti screenName, object[] parameter = null)
     {
         int layer = (int)GetScreenLayer(screenName);
         for (int i = layer + 1; i < screenLayers.Length; i++)
@@ -862,7 +1128,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         {
             DestroyScreen(GetScreenLayer(screenName));
 
-            InGameActiveScreens mainMenuScreen = new InGameActiveScreens();
+            InGameActiveScreensTeenPatti mainMenuScreen = new InGameActiveScreensTeenPatti();
             mainMenuScreen.screenName = screenName;
             mainMenuScreen.screenLayer = GetScreenLayer(screenName);
 
@@ -873,18 +1139,18 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
             switch (screenName)
             {
-                case InGameScreens.TopUp:
+                case InGameScreensTeenPatti.TopUp:
                     {
                         Debug.Log("Init topUp screen");
                         gm.GetComponent<TopUpScriptTeenPatti>().Init((float)parameter[0]);
                     }
                     break;
-                case InGameScreens.EmojiScreen:
+                case InGameScreensTeenPatti.EmojiScreen:
                     {
                         gm.GetComponent<EmojiUIScreenManager>().containerVal = emojiContainerVal;
                     }
                     break;
-                case InGameScreens.SwitchTable:
+                case InGameScreensTeenPatti.SwitchTable:
                     {
                         gm.GetComponent<SwitchTableTeenPatti>().TableImages = TableImages;
                     }
@@ -899,13 +1165,13 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
     public void ShowMessage(string messageToShow, Action callBackMethod = null, string okButtonText = "Ok")
     {
-        if (!IsScreenActive(InGameScreens.Message))
+        if (!IsScreenActive(InGameScreensTeenPatti.Message))
         {
-            InGameActiveScreens mainMenuScreen = new InGameActiveScreens();
-            mainMenuScreen.screenName = InGameScreens.Message;
-            mainMenuScreen.screenLayer = GetScreenLayer(InGameScreens.Message);
+            InGameActiveScreensTeenPatti mainMenuScreen = new InGameActiveScreensTeenPatti();
+            mainMenuScreen.screenName = InGameScreensTeenPatti.Message;
+            mainMenuScreen.screenLayer = GetScreenLayer(InGameScreensTeenPatti.Message);
 
-            GameObject gm = Instantiate(screens[(int)InGameScreens.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
+            GameObject gm = Instantiate(screens[(int)InGameScreensTeenPatti.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
             mainMenuScreen.screenObject = gm;
 
             inGameActiveScreens.Add(mainMenuScreen);
@@ -917,13 +1183,13 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
     public void ShowMessage(string messageToShow, Action yesButtonCallBack, Action noButtonCallBack, string yesButtonText = "Yes", string noButtonText = "No")
     {
-        if (!IsScreenActive(InGameScreens.Message))
+        if (!IsScreenActive(InGameScreensTeenPatti.Message))
         {
-            InGameActiveScreens mainMenuScreen = new InGameActiveScreens();
-            mainMenuScreen.screenName = InGameScreens.Message;
-            mainMenuScreen.screenLayer = GetScreenLayer(InGameScreens.Message);
+            InGameActiveScreensTeenPatti mainMenuScreen = new InGameActiveScreensTeenPatti();
+            mainMenuScreen.screenName = InGameScreensTeenPatti.Message;
+            mainMenuScreen.screenLayer = GetScreenLayer(InGameScreensTeenPatti.Message);
 
-            GameObject gm = Instantiate(screens[(int)InGameScreens.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
+            GameObject gm = Instantiate(screens[(int)InGameScreensTeenPatti.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
             mainMenuScreen.screenObject = gm;
 
             inGameActiveScreens.Add(mainMenuScreen);
@@ -933,7 +1199,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
 
 
-    public void DestroyScreen(InGameScreens screenName)
+    public void DestroyScreen(InGameScreensTeenPatti screenName)
     {
         for (int i = 0; i < inGameActiveScreens.Count; i++)
         {
@@ -957,7 +1223,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         }
     }
 
-    private bool IsScreenActive(InGameScreens screenName)
+    private bool IsScreenActive(InGameScreensTeenPatti screenName)
     {
         for (int i = 0; i < inGameActiveScreens.Count; i++)
         {
@@ -971,17 +1237,17 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     }
 
 
-    private ScreenLayer GetScreenLayer(InGameScreens screenName)
+    private ScreenLayer GetScreenLayer(InGameScreensTeenPatti screenName)
     {
         switch (screenName)
         {
-            case InGameScreens.Message:
+            case InGameScreensTeenPatti.Message:
                 return ScreenLayer.LAYER2;
 
-            case InGameScreens.Reconnecting:
+            case InGameScreensTeenPatti.Reconnecting:
                 return ScreenLayer.LAYER3;
 
-            case InGameScreens.Loading:
+            case InGameScreensTeenPatti.Loading:
                 return ScreenLayer.LAYER4;
 
             default:
@@ -1212,7 +1478,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
             cardSeenPlayer.playerData.totalBet = int.Parse(data[0]["minBet"].ToString());
 
             JsonData newData = data[0]["playerCards"];
-
+           
+            InGameUiManagerTeenPatti.instance.ConvertActionButtons(true, cardSeenPlayer, true, (int)cardSeenPlayer.playerData.totalBet);
 
 
             InGameManagerTeenPatti.instance.OnOpenCardsDataFound(newData, cardSeenPlayer);
@@ -1347,7 +1614,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 public class InGameActiveScreensTeenPatti
 {
     public GameObject screenObject;
-    public InGameScreens screenName;
+    public InGameScreensTeenPatti screenName;
     public ScreenLayer screenLayer;
 }
 
@@ -1371,7 +1638,8 @@ public enum InGameScreensTeenPatti
     SpinWheelScreen,
     DealerImageScreen,
     SwitchTable,
-    GameDisplay
+    GameDisplay,
+    MenuTeenPatti
 }
 
 public enum PlayerActionTeenPatti

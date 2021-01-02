@@ -224,7 +224,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
                         }
 
                         InGameManagerTeenPatti.instance.OnPlayerObjectFound(responseObject.data);
-                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Reconnecting);
+                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.Reconnecting);
                         InGameUiManagerTeenPatti.instance.ShowTableMessage("");
                     }
                     else
@@ -292,7 +292,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
                 case SocketEvetnsTeenPatti.ON_RECONNECTED:
                     if (!responseObject.data.Contains("Reconnect Success"))
                     {
-                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Reconnecting);
+                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.Reconnecting);
 
                         InGameUiManagerTeenPatti.instance.ShowMessage("Match Data not found", () =>
                         {
@@ -1568,7 +1568,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
     private IEnumerator WaitForReconnect()
     {
         isPreocedureRunning = true;
-        InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreens.Reconnecting);
+        InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.Reconnecting);
         SetSocketState(SocketStateTeenPatti.ReConnecting);
         socketManager = null;
         ReConnect();
@@ -1588,6 +1588,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
                 if (counter % reInitialisationCount == 0)
                 {
                     ReConnect();
+                    Debug.LogError("Functionality written");
                 }
             }
 
@@ -1596,7 +1597,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
 
         if (!socketManager.Socket.IsOpen)
         {
-            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Reconnecting);
+            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.Reconnecting);
             InGameUiManagerTeenPatti.instance.ShowMessage("ReConnect Attempt failed, please check your network connection", () =>
             {
                 StartCoroutine(WaitForReconnect());

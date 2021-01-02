@@ -494,39 +494,8 @@ public class PlayerScriptTeenPatti : MonoBehaviour
                 {
                     for (int i = 0; i < cardsImage.Length; i++)
                     {
-                        cardsImage[i].sprite = playerData.cards[i].cardsSprite;
-
-                        //DEV_CODE
-                        //InGameManager.instance.cardValue = InGameManager.instance.cardValue + GetPlayerData().cards[i].cardNumber + GetPlayerData().cards[i].cardIcon.ToString();
-
-                        /*Debug.Log("Current Player Card Data is--->>> : " + InGameManager.instance.cardValue);*/
-
-                        /*Debug.Log("Card Number" + ":  " + i + " is ->>>>>>>>>>  " + GetPlayerData().cards[i].cardNumber);
-                        Debug.Log("Card Icon" + ":  " + i + " is ->>>>>>>>>>  " + GetPlayerData().cards[i].cardIcon.ToString());*/
-
-
-                        /*
-                        Sprite[] cardSprites = Resources.LoadAll<Sprite>("cards");
-
-                        CardData data = new CardData();
-                        data.cardNumber = playerData.cards[i].cardNumber;
-                        data.cardIcon = playerData.cards[i].cardIcon;
-
-                        int totalCardNumbers = Enum.GetNames(typeof(CardNumber)).Length - 1;
-                        int totalCardIcons = Enum.GetNames(typeof(CardIcon)).Length - 1;
-
-
-                        int cardNumber = totalCardNumbers - (int)data.cardNumber; // reverse order
-                        int cardIcon = totalCardIcons - (int)data.cardIcon; // reverse order
-
-                        data.cardsSprite = cardSprites[(cardIcon * 13) + cardNumber];*/
-
-                        //Sprite cardSprite = GetPlayerData().cards[i].cardsSprite;
-                        /*Texture2D cardTex = data.cardsSprite.texture;
-                        var bytes = cardTex.EncodeToPNG();
-                        //byte[] cardByte = cardTex.EncodeToPNG();
-                        File.WriteAllBytes(Application.persistentDataPath + "/Card" + i + ".png", bytes);
-*/
+                        cardsImage[i].sprite = CardsManagerTeenPatti.instance.GetCardBackSideSprite();
+                        
 
                         if (!isItMe)
                         {
@@ -565,6 +534,65 @@ public class PlayerScriptTeenPatti : MonoBehaviour
                     cardSeenButton.SetActive(true);
                 }
 
+            }
+        }
+
+        if(!isShow)
+        {
+            for (int i = 0; i < cardsImage.Length; i++)
+            {
+                cardsImage[i].sprite = CardsManagerTeenPatti.instance.cardBackSprite;
+                //playerData.cards[i].cardsSprite = CardsManagerTeenPatti.instance.cardBackSprite;
+
+                //DEV_CODE
+                //InGameManager.instance.cardValue = InGameManager.instance.cardValue + GetPlayerData().cards[i].cardNumber + GetPlayerData().cards[i].cardIcon.ToString();
+
+                /*Debug.Log("Current Player Card Data is--->>> : " + InGameManager.instance.cardValue);*/
+
+                /*Debug.Log("Card Number" + ":  " + i + " is ->>>>>>>>>>  " + GetPlayerData().cards[i].cardNumber);
+                Debug.Log("Card Icon" + ":  " + i + " is ->>>>>>>>>>  " + GetPlayerData().cards[i].cardIcon.ToString());*/
+
+
+                /*
+                Sprite[] cardSprites = Resources.LoadAll<Sprite>("cards");
+
+                CardData data = new CardData();
+                data.cardNumber = playerData.cards[i].cardNumber;
+                data.cardIcon = playerData.cards[i].cardIcon;
+
+                int totalCardNumbers = Enum.GetNames(typeof(CardNumber)).Length - 1;
+                int totalCardIcons = Enum.GetNames(typeof(CardIcon)).Length - 1;
+
+
+                int cardNumber = totalCardNumbers - (int)data.cardNumber; // reverse order
+                int cardIcon = totalCardIcons - (int)data.cardIcon; // reverse order
+
+                data.cardsSprite = cardSprites[(cardIcon * 13) + cardNumber];*/
+
+                //Sprite cardSprite = GetPlayerData().cards[i].cardsSprite;
+                /*Texture2D cardTex = data.cardsSprite.texture;
+                var bytes = cardTex.EncodeToPNG();
+                //byte[] cardByte = cardTex.EncodeToPNG();
+                File.WriteAllBytes(Application.persistentDataPath + "/Card" + i + ".png", bytes);
+*/
+
+                //if (!isItMe)
+                //{
+                //    if (i == 0)
+                //    {
+                //        cardsImage[i].transform.localPosition = new Vector3(-53, 8);
+                //        cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                //    }
+                //    if (i == 1)
+                //    {
+                //        cardsImage[i].transform.localPosition = new Vector3(-24, 8);
+                //        cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                //    }
+                //}
+            }
+            if (GetPlayerData().cards != null && GetPlayerData().cards.Length > 0)
+            {
+                
             }
         }
 

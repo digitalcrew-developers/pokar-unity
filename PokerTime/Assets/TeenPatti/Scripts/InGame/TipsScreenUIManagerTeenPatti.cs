@@ -13,7 +13,7 @@ public class TipsScreenUIManagerTeenPatti : MonoBehaviour
             case "back":
                 {
 
-                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Tips);
+                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.Tips);
                    
                 }
                 break;

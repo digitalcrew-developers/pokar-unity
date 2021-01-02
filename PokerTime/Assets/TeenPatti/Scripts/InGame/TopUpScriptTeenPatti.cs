@@ -38,6 +38,6 @@ public class TopUpScriptTeenPatti : MonoBehaviour
             InGameManagerTeenPatti.instance.ToggleTopUpDone(true);
         }
 
-        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.TopUp);
+        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.TopUp);
     }
 }

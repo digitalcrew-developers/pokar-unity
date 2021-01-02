@@ -67,7 +67,7 @@ public class HandHistoryUiManagerTeenPatti : MonoBehaviour
 
             case "back":
                 {
-                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.HandHistory);
+                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.HandHistory);
                 }
             break;
 

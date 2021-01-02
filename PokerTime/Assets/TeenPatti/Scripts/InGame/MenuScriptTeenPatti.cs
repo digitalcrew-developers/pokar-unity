@@ -13,21 +13,21 @@ public class MenuScriptTeenPatti : MonoBehaviour
         {
             case "back":
                 {
-                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.MenuTeenPatti);
                 }
                 break;
             case "StandUp":
                 {
                     /*  InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
                       InGameUiManager.instance.ShowScreen(InGameScreens.Tips);*/
-                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                    InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.MenuTeenPatti);
                     InGameManagerTeenPatti.instance.OnClickStandupBtn();
                 }
                 break;
 
             case "GameDisplay":
                 {
-                    InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreens.GameDisplay);
+                    InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.GameDisplay);
                 }
                 break;
 
@@ -37,14 +37,14 @@ public class MenuScriptTeenPatti : MonoBehaviour
                 break;
             case "tableSettings":
                 {
-                    InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreens.TableSettings);
+                    InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.TableSettings);
 
                 }
                 break;
 
             case "handRanking":
                 {
-                    InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreens.HandRanking);
+                    InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.HandRanking);
                 }
                 break;
 
@@ -62,7 +62,7 @@ public class MenuScriptTeenPatti : MonoBehaviour
                         {
                             if (InGameManagerTeenPatti.instance.GetMyPlayerObject() != null)
                             {
-                                InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreens.TopUp,new object[] { InGameManagerTeenPatti.instance.GetMyPlayerObject().GetPlayerData().balance});
+                                InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.TopUp,new object[] { InGameManagerTeenPatti.instance.GetMyPlayerObject().GetPlayerData().balance});
                             }
                         }
                         else
