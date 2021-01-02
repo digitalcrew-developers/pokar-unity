@@ -46,7 +46,7 @@ public class MenuScript : MonoBehaviour
                     {
                         if (InGameUiManagerTeenPatti.instance != null)
                         {
-                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.MenuTeenPatti);
                         }
                         else
                         {
@@ -97,7 +97,7 @@ public class MenuScript : MonoBehaviour
                     {
                         if (InGameUiManagerTeenPatti.instance != null)
                         {
-                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreens.Menu);
+                            InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.MenuTeenPatti);
                             InGameManagerTeenPatti.instance.OnClickStandupBtn();
                         }
                     }                    

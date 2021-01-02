@@ -293,7 +293,9 @@ public class ClubInGameUIManager : MonoBehaviour
 
             case "menu":
                 {
+                    
                     ShowScreen(InGameScreens.Menu);
+                    
                 }
                 break;
 
