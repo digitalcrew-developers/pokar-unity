@@ -17,18 +17,50 @@ public class PlayerSeat : MonoBehaviour
 
     public void UpdateState()
     {
-        if (InGameManager.instance.AmISpectator)
+        //DEV_CODE Changed code
+        if (InGameManager.instance != null)
         {
-            GetComponent<Image>().sprite = PlusImage;
-            myButton.interactable = true;
-            GetComponent<Transform>().localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            if (InGameManager.instance.AmISpectator)
+            {
+                GetComponent<Image>().sprite = PlusImage;
+                myButton.interactable = true;
+                GetComponent<Transform>().localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            }
+            else
+            {
+                GetComponent<Image>().sprite = EmptyImage;
+                myButton.interactable = false;
+                GetComponent<Transform>().localScale = new Vector3(1f, 1f, 1f);
+            }
         }
         else
         {
-            GetComponent<Image>().sprite = EmptyImage;
-            myButton.interactable = false;
-            GetComponent<Transform>().localScale = new Vector3(1f, 1f, 1f);
+            if (ClubInGameManager.instance.AmISpectator)
+            {
+                GetComponent<Image>().sprite = PlusImage;
+                myButton.interactable = true;
+                GetComponent<Transform>().localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            }
+            else
+            {
+                GetComponent<Image>().sprite = EmptyImage;
+                myButton.interactable = false;
+                GetComponent<Transform>().localScale = new Vector3(1f, 1f, 1f);
+            }
         }
+
+        //if (InGameManager.instance.AmISpectator)
+        //{
+        //    GetComponent<Image>().sprite = PlusImage;
+        //    myButton.interactable = true;
+        //    GetComponent<Transform>().localScale = new Vector3(0.7f, 0.7f, 0.7f);
+        //}
+        //else
+        //{
+        //    GetComponent<Image>().sprite = EmptyImage;
+        //    myButton.interactable = false;
+        //    GetComponent<Transform>().localScale = new Vector3(1f, 1f, 1f);
+        //}
     }
 
     public void DisableButtonClick()

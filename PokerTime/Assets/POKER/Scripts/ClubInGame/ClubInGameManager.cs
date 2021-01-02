@@ -49,14 +49,15 @@ public class ClubInGameManager : MonoBehaviour
     private int currentRoundTotalBets = 0;
     private float pot1Amount = 0;
 
-    private float pot2Amount = 0;
-    private float pot3Amount = 0;
-    private float pot4Amount = 0;
-    private float pot5Amount = 0;
-    private float pot6Amount = 0;
-    private float pot7Amount = 0;
-    private float pot8Amount = 0;
-    private float pot9Amount = 0;
+    //DEV_CODE Commented 
+    //private float pot2Amount = 0;
+    //private float pot3Amount = 0;
+    //private float pot4Amount = 0;
+    //private float pot5Amount = 0;
+    //private float pot6Amount = 0;
+    //private float pot7Amount = 0;
+    //private float pot8Amount = 0;
+    //private float pot9Amount = 0;
 
 
     private bool isRematchRequestSent = false, isTopUpDone = false;
@@ -65,7 +66,7 @@ public class ClubInGameManager : MonoBehaviour
     public GameObject WinnAnimationpos;
 
     //DEV_CODE (Created By Nitin)
-    public string userWinner = "";
+    public string currentClickedSeatNum = "";
 
     //DEV_CODE
     Texture2D screenshot;
@@ -90,6 +91,8 @@ public class ClubInGameManager : MonoBehaviour
     string myPlayerSeat;
 
     public Image thunderPointBar;   //DEV_CODE Added this line as per InGameManager script
+    [HideInInspector]
+    public bool userWinner = false;
 
     private void Awake()
     {
@@ -196,15 +199,14 @@ public class ClubInGameManager : MonoBehaviour
             //g.SetActive(false);       //DEV_CODE Commented this line as done inside InGameManager script
         }
 
-        for (int i = 0; i < AllSeats.data.Length; i++)
+        //for (int i = 0; i < AllSeats.data.Length; i++)
+        for (int i = 0; i < AllSeatButtons.Count; i++)        //DEV_CODE Changed this line as per InGameManager script
         {
             AllSeatButtons[i].SetActive(true);
             AllSeatButtons[i].GetComponent<PlayerSeat>().UpdateState();
         }
         //GetSeatObject(myPlayerSeat).SetActive(false);     //DEV_CODE Commented this line as done inside InGameManager script
     }
-
-    private bool DontShowCommunityCardAnimation = false;    //DEV_CODE Added this line as done inside InGameManager script
 
     public void OnEVChopDataFound(string responseText)
     {
@@ -214,10 +216,11 @@ public class ClubInGameManager : MonoBehaviour
         ResumeHand.SetActive(false);
     }
 
+    private bool DontShowCommunityCardAnimation = false;    //DEV_CODE Added this line as done inside InGameManager script
     public void OnRabbitDataFound(string responseText)
     {
-        Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
-        Debug.LogError("isFold :" + GetMyPlayerObject().GetPlayerData().isFold);
+        //Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
+        //Debug.LogError("isFold :" + GetMyPlayerObject().GetPlayerData().isFold);
 
         ClubInGameUIManager.instance.ToggleSuggestionButton(false);     //DEV_CODE Added this line as done inside InGameManager script
         ClubInGameUIManager.instance.ToggleActionButton(false);         //DEV_CODE Added this line as done inside InGameManager script
@@ -243,23 +246,29 @@ public class ClubInGameManager : MonoBehaviour
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
     {
+        Debug.Log("Total Users " + matchMakingPlayerData.Count);
         isRematchRequestSent = false;
-        matchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
-        onlinePlayersScript = new PlayerScript[matchMakingPlayerData.Count];
+        List<MatchMakingPlayerData> newMatchMakingPlayerData = new List<MatchMakingPlayerData>();
+        if (matchMakingPlayerData.Count > 1)
+            newMatchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
+        else
+            newMatchMakingPlayerData = matchMakingPlayerData;
+        onlinePlayersScript = new PlayerScript[newMatchMakingPlayerData.Count];
         PlayerScript playerScriptWhosTurn = null;
-
+        //Debug.Log("Arranged Users " + newMatchMakingPlayerData.Count);
         for (int i = 0; i < allPlayersObject.Length; i++)
         {
             allPlayersObject[i].ResetAllData();
-
-            if (i < matchMakingPlayerData.Count)
+            if (i < newMatchMakingPlayerData.Count)
             {
-                allPlayersObject[i].TogglePlayerUI(true);
-
+                Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn);
+                //Debug.Log("Url " + newMatchMakingPlayerData[i].playerData.avatarurl);
+                allPlayersObject[i].seat = (i + 1).ToString();
+                allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl);
                 onlinePlayersScript[i] = allPlayersObject[i];
-                onlinePlayersScript[i].Init(matchMakingPlayerData[i]);
+                onlinePlayersScript[i].Init(newMatchMakingPlayerData[i]);
 
-                if (matchMakingPlayerData[i].isTurn)
+                if (newMatchMakingPlayerData[i].isTurn)
                 {
                     playerScriptWhosTurn = onlinePlayersScript[i];
                 }
@@ -270,16 +279,45 @@ public class ClubInGameManager : MonoBehaviour
             }
         }
 
+        //DEV_CODE Commented this code as to add new code from InGameManager
+
+        //isRematchRequestSent = false;
+        //matchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
+        //onlinePlayersScript = new PlayerScript[matchMakingPlayerData.Count];
+        //PlayerScript playerScriptWhosTurn = null;
+
+        //for (int i = 0; i < allPlayersObject.Length; i++)
+        //{
+        //    allPlayersObject[i].ResetAllData();
+
+        //    if (i < matchMakingPlayerData.Count)
+        //    {
+        //        allPlayersObject[i].TogglePlayerUI(true);
+
+        //        onlinePlayersScript[i] = allPlayersObject[i];
+        //        onlinePlayersScript[i].Init(matchMakingPlayerData[i]);
+
+        //        if (matchMakingPlayerData[i].isTurn)
+        //        {
+        //            playerScriptWhosTurn = onlinePlayersScript[i];
+        //        }
+        //    }
+        //    else
+        //    {
+        //        allPlayersObject[i].TogglePlayerUI(false);
+        //    }
+        //}
+
         if (playerScriptWhosTurn != null)
         {
             StartCoroutine(WaitAndShowCardAnimation(onlinePlayersScript, playerScriptWhosTurn));
         }
-        else
-        {
-#if ERROR_LOG
-            Debug.LogError("Null Reference exception found playerId whos turn is not found");
-#endif
-        }
+//        else
+//        {
+//#if ERROR_LOG
+//            Debug.LogError("Null Reference exception found playerId whos turn is not found");
+//#endif
+//        }
     }
 
     private IEnumerator WaitAndShowCardAnimation(PlayerScript[] players, PlayerScript playerScriptWhosTurn)
@@ -371,7 +409,10 @@ public class ClubInGameManager : MonoBehaviour
     //DEV_CODE Added this method as done inside InGameManager script
     internal void OnGameOverCountDownFound(string data)
     {
-        //ResetMatchData();
+        string t = data.Substring(1, data.Length - 2);
+        Debug.LogError("Game Over - " + t);
+        if (float.Parse(t) < 1)
+            ResetMatchData();
     }
 
     public void UpdateAvailableBalance(float balance)
@@ -455,18 +496,25 @@ public class ClubInGameManager : MonoBehaviour
             else
             {
                 //Debug.LogWarning("LAST BET AMOUNT 1" + LAST_BET_AMOUNT);
-                ClubInGameUIManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
+                //ClubInGameUIManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);     //DEV_CODE Commented this line as per InGameManager script
             }
         }
         else
         {
             ClubInGameUIManager.instance.ToggleActionButton(false);
 
-            if (!GetMyPlayerObject().GetPlayerData().isFold)
+            //DEV_CODE Added this condition as per InGameManager script
+            if (GetMyPlayerObject().GetPlayerData() != null && !GetMyPlayerObject().GetPlayerData().isFold)
             {
                 int callAmount = GetLastBetAmount() - (int)GetMyPlayerObject().GetPlayerData().totalBet;
                 ClubInGameUIManager.instance.ToggleSuggestionButton(true, isCheckAvailable, callAmount, GetMyPlayerObject().GetPlayerData().balance);
             }
+
+            //if (!GetMyPlayerObject().GetPlayerData().isFold)
+            //{
+            //    int callAmount = GetLastBetAmount() - (int)GetMyPlayerObject().GetPlayerData().totalBet;
+            //    ClubInGameUIManager.instance.ToggleSuggestionButton(true, isCheckAvailable, callAmount, GetMyPlayerObject().GetPlayerData().balance);
+            //}
         }
 
     }
@@ -478,31 +526,52 @@ public class ClubInGameManager : MonoBehaviour
     {
         List<MatchMakingPlayerData> updatedList = new List<MatchMakingPlayerData>();
 
+        //DEV_CODE Commented this changes as per InGameManager script
+        //for (int i = 0; i < matchMakingPlayerData.Count; i++)
+        //{
+        //    if (matchMakingPlayerData[i].playerData.userId == PlayerManager.instance.GetPlayerGameData().userId)
+        //    {
+        //        int index = i;
+        //        int counter = 0;
+
+        //        while (counter < matchMakingPlayerData.Count)
+        //        {
+        //            updatedList.Add(matchMakingPlayerData[index]);
+
+        //            ++index;
+
+        //            if (index >= matchMakingPlayerData.Count)
+        //            {
+        //                index = 0;
+        //            }
+
+        //            ++counter;
+        //        }
+
+        //        break;
+        //    }
+        //}
+
+        //DEV_CODE Added this changes as per InGameManager script
+        int mySeatIndex = 0;
         for (int i = 0; i < matchMakingPlayerData.Count; i++)
         {
+            //Debug.Log(matchMakingPlayerData[i].playerData.userId + ", " + matchMakingPlayerData[i].playerData.userName + " <color=green>=</color> " + PlayerManager.instance.GetPlayerGameData().userId + ", " + PlayerManager.instance.GetPlayerGameData().userName);
             if (matchMakingPlayerData[i].playerData.userId == PlayerManager.instance.GetPlayerGameData().userId)
             {
-                int index = i;
-                int counter = 0;
-
-                while (counter < matchMakingPlayerData.Count)
-                {
-                    updatedList.Add(matchMakingPlayerData[index]);
-
-                    ++index;
-
-                    if (index >= matchMakingPlayerData.Count)
-                    {
-                        index = 0;
-                    }
-
-                    ++counter;
-                }
-
+                mySeatIndex = i;
                 break;
             }
         }
 
+        for (int i = mySeatIndex; i < matchMakingPlayerData.Count; i++)
+        {
+            updatedList.Add(matchMakingPlayerData[i]);
+        }
+        for (int k = 0; k < mySeatIndex; k++)
+        {
+            updatedList.Add(matchMakingPlayerData[k]);
+        }
 
         return updatedList;
     }
@@ -524,8 +593,9 @@ public class ClubInGameManager : MonoBehaviour
         Debug.LogError("WaitAndSendLeaveRequest");
         yield return new WaitForEndOfFrame();
         ClubSocketController.instance.SendLeaveMatchRequest();
-        yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
-        ClubSocketController.instance.ResetConnection();
+        yield return new WaitForSeconds(7f);
+        //yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
+        //ClubSocketController.instance.ResetConnection();
         ClubInGameUIManager.instance.ClubMainMenu.SetActive(true);
         SceneManager.UnloadSceneAsync("ClubGame");
     }
@@ -579,6 +649,20 @@ public class ClubInGameManager : MonoBehaviour
 
     private void ShowNewPlayersOnTable(JsonData data, bool isMatchStarted)
     {
+        //DEV_CODE Added this code as per InGameManager script
+        for (int i = 0; i < allPlayersObject.Length; i++)
+        {
+            //allPlayersObject[i].ResetAllData();
+            allPlayersObject[i].TogglePlayerUI(false);
+        }
+
+        for (int i = 0; i < data[0].Count; i++)
+        {
+            //allPlayersObject[i].ResetAllData();
+            allPlayersObject[i].TogglePlayerUI(true);
+        }
+        //*******************
+
         List<PlayerData> playerData = new List<PlayerData>();
 
         for (int i = 0; i < data[0].Count; i++)
@@ -605,91 +689,93 @@ public class ClubInGameManager : MonoBehaviour
                 playerData.Add(playerDataObject);
             }
         }
+        Debug.Log("Active Users " + onlinePlayersScript.Length);
 
-        for (int i = onlinePlayersScript.Length; i < allPlayersObject.Length; i++)
-        {
-            allPlayersObject[i].TogglePlayerUI(false);
-        }
-        if (isMatchStarted)
-        {
-            if (playerData.Count > 0)
-            {
-                int startIndex = onlinePlayersScript.Length;
-                int maxIndex = startIndex + playerData.Count;
-                int index = 0;
+        //DEV_CODE Commented this code as per InGameManager script
+        //for (int i = onlinePlayersScript.Length; i < allPlayersObject.Length; i++)
+        //{
+        //    allPlayersObject[i].TogglePlayerUI(false);
+        //}
+        //if (isMatchStarted)
+        //{
+        //    if (playerData.Count > 0)
+        //    {
+        //        int startIndex = onlinePlayersScript.Length;
+        //        int maxIndex = startIndex + playerData.Count;
+        //        int index = 0;
 
-                for (int i = startIndex; i < maxIndex && i < allPlayersObject.Length; i++)
-                {
-                    //DEV_CODE Commented these lines as done inside InGameManager script
-                    //allPlayersObject[i].TogglePlayerUI(true);
-                    //allPlayersObject[i].ShowDetailsAsNewPlayer(playerData[index]);
-                    //allPlayersObject[i].ResetRealtimeResult();
-                    //++index;
+        //        for (int i = startIndex; i < maxIndex && i < allPlayersObject.Length; i++)
+        //        {
+        //            //DEV_CODE Commented these lines as done inside InGameManager script
+        //            //allPlayersObject[i].TogglePlayerUI(true);
+        //            //allPlayersObject[i].ShowDetailsAsNewPlayer(playerData[index]);
+        //            //allPlayersObject[i].ResetRealtimeResult();
+        //            //++index;
 
-                    //DEV_CODE Added this If condition as done inside InGameManager script
-                    if (playerData[i].userId == PlayerManager.instance.GetPlayerGameData().userId)
-                    {
-                        allPlayersObject[0].TogglePlayerUI(true);
-                        allPlayersObject[0].ShowDetailsAsNewPlayer(playerData[i]);
-                        allPlayersObject[0].ResetRealtimeResult();
-                        ++index;
-                    }
-                }
-            }
-        }
-        else
-        {
-            int index = 1;
+        //            //DEV_CODE Added this If condition as done inside InGameManager script
+        //            if (playerData[i].userId == PlayerManager.instance.GetPlayerGameData().userId)
+        //            {
+        //                allPlayersObject[0].TogglePlayerUI(true);
+        //                allPlayersObject[0].ShowDetailsAsNewPlayer(playerData[i]);
+        //                allPlayersObject[0].ResetRealtimeResult();
+        //                ++index;
+        //            }
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    int index = 1;
 
-            for (int i = 0; i < playerData.Count && i < allPlayersObject.Length; i++)
-            {
-                if (playerData[i].userId == PlayerManager.instance.GetPlayerGameData().userId)
-                {
-                    allPlayersObject[0].TogglePlayerUI(true);
-                    allPlayersObject[0].ShowDetailsAsNewPlayer(playerData[i]);
-                    allPlayersObject[0].ResetRealtimeResult();
-                }
-                else
-                {
-                    allPlayersObject[index].TogglePlayerUI(true);
-                    allPlayersObject[index].ShowDetailsAsNewPlayer(playerData[i]);
-                    allPlayersObject[index].ResetRealtimeResult();
-                }
+        //    for (int i = 0; i < playerData.Count && i < allPlayersObject.Length; i++)
+        //    {
+        //        if (playerData[i].userId == PlayerManager.instance.GetPlayerGameData().userId)
+        //        {
+        //            allPlayersObject[0].TogglePlayerUI(true);
+        //            allPlayersObject[0].ShowDetailsAsNewPlayer(playerData[i]);
+        //            allPlayersObject[0].ResetRealtimeResult();
+        //        }
+        //        else
+        //        {
+        //            allPlayersObject[index].TogglePlayerUI(true);
+        //            allPlayersObject[index].ShowDetailsAsNewPlayer(playerData[i]);
+        //            allPlayersObject[index].ResetRealtimeResult();
+        //        }
 
-                ++index;    //DEV_CDOE Added this line here as done inside InGameManager script
-            }
-        }
+        //        ++index;    //DEV_CDOE Added this line here as done inside InGameManager script
+        //    }
+        //}
 
-        if (isMatchStarted && onlinePlayersScript != null && onlinePlayersScript.Length > 0)
-        {
-            List<PlayerScript> leftPlayers = new List<PlayerScript>();
+        //if (isMatchStarted && onlinePlayersScript != null && onlinePlayersScript.Length > 0)
+        //{
+        //    List<PlayerScript> leftPlayers = new List<PlayerScript>();
 
-            for (int i = 0; i < onlinePlayersScript.Length; i++)
-            {
-                bool isMatchFound = false;
+        //    for (int i = 0; i < onlinePlayersScript.Length; i++)
+        //    {
+        //        bool isMatchFound = false;
 
-                for (int j = 0; j < data[0].Count; j++)
-                {
-                    if (data[0][j]["userId"].ToString() == onlinePlayersScript[i].GetPlayerData().userId)
-                    {
-                        isMatchFound = true;
-                        j = 100;
-                    }
-                }
+        //        for (int j = 0; j < data[0].Count; j++)
+        //        {
+        //            if (data[0][j]["userId"].ToString() == onlinePlayersScript[i].GetPlayerData().userId)
+        //            {
+        //                isMatchFound = true;
+        //                j = 100;
+        //            }
+        //        }
 
-                if (!isMatchFound)
-                {
-                    leftPlayers.Add(onlinePlayersScript[i]);
-                }
-            }
+        //        if (!isMatchFound)
+        //        {
+        //            leftPlayers.Add(onlinePlayersScript[i]);
+        //        }
+        //    }
 
-            for (int i = 0; i < leftPlayers.Count; i++)
-            {
-                leftPlayers[i].TogglePlayerUI(false);
-            }
-        }
+        //    for (int i = 0; i < leftPlayers.Count; i++)
+        //    {
+        //        leftPlayers[i].TogglePlayerUI(false);
+        //    }
+        //}
 
-        int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
+        //int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
     }
 
 
@@ -758,9 +844,10 @@ public class ClubInGameManager : MonoBehaviour
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
-        Debug.Log("Last All in Bet: " + playerScript.GetLocalBetAmount()/*betAmount*/);
+        //Debug.Log("Last All in Bet: " + playerScript.GetLocalBetAmount()/*betAmount*/);
+        
         GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
-        gm.transform.GetChild(0).GetComponent<Text>().text = playerScript.GetLocalBetAmount().ToString()/*betAmount*/;
+        gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
         gm.transform.position = playerScript.transform.position;
         Vector3 initialScale = gm.transform.localScale;
         gm.transform.localScale = Vector3.zero;
@@ -868,7 +955,7 @@ public class ClubInGameManager : MonoBehaviour
     {
         bool allcardEmpty = false;      //DEV_CODE Added this line as done inside InGameManager script
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < communityCards.Length; i++)
         {
             if (openCards[i].cardIcon == CardIcon.NONE)
             {
@@ -892,31 +979,19 @@ public class ClubInGameManager : MonoBehaviour
         for (int i = 0; i < communityCards.Length; i++)
         {
             GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-
             gm.SetActive(true);
             gm.transform.localScale = communityCards[i].transform.localScale;
             gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
             gm.transform.Rotate(0, -90, 0);
             gm.transform.position = communityCards[i].transform.position;
-
             gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
             gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
-
             yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
-
             Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
         }
 
-        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
-
         for (int i = 0; i < communityCards.Length; i++)
         {
-            if (openCards[i].cardIcon == CardIcon.NONE)
-            {
-                communityCards[i].gameObject.SetActive(false);
-                break;
-            }
-            communityCards[i].sprite = openCards[i].cardsSprite;
             communityCards[i].gameObject.SetActive(true);
             communityCards[i].sprite = openCards[i].cardsSprite;
         }
@@ -958,6 +1033,7 @@ public class ClubInGameManager : MonoBehaviour
 
     private IEnumerator WaitAndShowCommunityCardsAnimation()
     {
+        Debug.Log("<color=yellow>MATCH_ROUND " + MATCH_ROUND + "</color>");
         communityCardsAniamtionShowedUpToRound = MATCH_ROUND;
         bool isBetFound = false;
         for (int i = 0; i < onlinePlayersScript.Length; i++)
@@ -1110,13 +1186,7 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
-                        communityCards[i].gameObject.SetActive(true);
-
-                        //DEV_CODE Added this line as per InGameManager script
-                        communityCards[i].transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
-
-                        //DEV_CODE Added this line as per InGameManager script
-                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+                        communityCards[i].gameObject.SetActive(true);                        
                     }
                 }
                 break;
@@ -1129,6 +1199,12 @@ public class ClubInGameManager : MonoBehaviour
                         if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
                         communityCards[i].gameObject.SetActive(true);
+
+                        //DEV_CODE Added this line as per InGameManager script
+                        communityCards[i].transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                        //DEV_CODE Added this line as per InGameManager script
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
                     }
                 }
                 break;
@@ -1214,8 +1290,10 @@ public class ClubInGameManager : MonoBehaviour
 
 
         AllShowdownSidePots showdownSidePot = JsonUtility.FromJson<AllShowdownSidePots>(s);
-        Debug.LogWarning("side pot count : " + showdownSidePot.sidePot.Count);
-        Debug.LogWarning("side pot count amount: " + showdownSidePot.sidePot[0].amount);
+        
+        //DEV_CODE Commented this code as per InGameManager script
+        //Debug.LogWarning("side pot count : " + showdownSidePot.sidePot.Count);
+        //Debug.LogWarning("side pot count amount: " + showdownSidePot.sidePot[0].amount);
 
         //int outerLoopCount = 1;
         //if(showdownSidePot.sidePot.Count > 1)
@@ -1228,20 +1306,51 @@ public class ClubInGameManager : MonoBehaviour
         //}
 
 
+        //for (int i = 0; i < showdownSidePot.sidePot.Count; i++)
+        //{
+        //    for (int j = 0; j < showdownSidePot.sidePot[i].winners.Count; j++)
+        //    {
+        //        Debug.LogWarning(showdownSidePot.sidePot[i].winners[j].isWin);
+        //        //if winner count is greater than 0 then it is a split pot.
+        //        //if (showdownSidePot.sidePot[i].winners[j].isWin)      //DEV_CODE Commented this line as per InGameManager script
+        //        {
+        //            InstantiateWin(showdownSidePot.sidePot[i].winners[j].userId.ToString(),
+        //                showdownSidePot.sidePot[i].winners[j].name,
+        //                showdownSidePot.sidePot[i].winners[j].winAmount.ToString(), showdownSidePot.sidePot[i].winners[j].isWin);
+        //            //showdownSidePot.sidePot[i].winners[j].winAmount.ToString());;
+        //        }
+        //    }
+        //}
+
+        Dictionary<int, WinnerObject> winnersData = new Dictionary<int, WinnerObject>();
         for (int i = 0; i < showdownSidePot.sidePot.Count; i++)
         {
             for (int j = 0; j < showdownSidePot.sidePot[i].winners.Count; j++)
             {
                 Debug.LogWarning(showdownSidePot.sidePot[i].winners[j].isWin);
-                //if winner count is greater than 0 then it is a split pot.
-                //if (showdownSidePot.sidePot[i].winners[j].isWin)      //DEV_CODE Commented this line as per InGameManager script
+                if (winnersData.ContainsKey(showdownSidePot.sidePot[i].winners[j].userId))
                 {
-                    InstantiateWin(showdownSidePot.sidePot[i].winners[j].userId.ToString(),
-                        showdownSidePot.sidePot[i].winners[j].name,
-                        showdownSidePot.sidePot[i].winners[j].winAmount.ToString(), showdownSidePot.sidePot[i].winners[j].isWin);
-                    //showdownSidePot.sidePot[i].winners[j].winAmount.ToString());;
+                    int winAmt = showdownSidePot.sidePot[i].winners[j].winAmount;
+                    winnersData[showdownSidePot.sidePot[i].winners[j].userId].winAmount += winAmt;
+                }
+                else
+                {
+                    WinnerObject wd = new WinnerObject();
+                    wd.userId = showdownSidePot.sidePot[i].winners[j].userId;
+                    wd.name = showdownSidePot.sidePot[i].winners[j].name;
+                    wd.userName = showdownSidePot.sidePot[i].winners[j].userName;
+                    wd.winAmount = showdownSidePot.sidePot[i].winners[j].winAmount;
+                    wd.isWin = showdownSidePot.sidePot[i].winners[j].isWin;
+                    Debug.LogWarning(wd.userId + " " + wd.name + " " + wd.winAmount + " " + wd.isWin);
+                    winnersData.Add(showdownSidePot.sidePot[i].winners[j].userId, wd);
                 }
             }
+        }
+        Debug.LogWarning("Total winners " + winnersData.Count);
+        foreach (var res in winnersData)
+        {
+            Debug.LogWarning(res.Value.userId + " " + res.Value.name + " " + res.Value.winAmount + " " + res.Value.isWin);
+            InstantiateWin(res.Value.userId.ToString(), res.Value.name, res.Value.winAmount.ToString(), res.Value.isWin);
         }
     }
 
@@ -1330,7 +1439,8 @@ public class ClubInGameManager : MonoBehaviour
 
     public void OnResultResponseFound(string serverResponse)
     {
-        Debug.LogWarning("RESULT RESPONSE :" + serverResponse);
+        //Debug.LogWarning("RESULT RESPONSE :" + serverResponse);
+        userWinner = true;
         ClubInGameUIManager.instance.ToggleSuggestionButton(false);
         ClubInGameUIManager.instance.ToggleActionButton(false);
 
@@ -1371,8 +1481,8 @@ public class ClubInGameManager : MonoBehaviour
         }
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
-        Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
-        Debug.LogWarning("NEXT ROUND In: " + remainingTime);
+        //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
+        //Debug.LogWarning("NEXT ROUND In: " + remainingTime);
         if (remainingTime > 1)
         {
             //ClubInGameUIManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
@@ -1401,6 +1511,7 @@ public class ClubInGameManager : MonoBehaviour
                         //if (userMainBalance >= balanceToAdd)
                         if (userMainBalance < EPSILON)
                         {
+                            Debug.Log("<color=pink>" + "UserMainBalance: " + userMainBalance  + " </color>");
                             ClubSocketController.instance.SendReMatchRequest("Yes", "0");
                             //send topup request with the below api.. for clarification contact Pradeep - Digital Crew
                             ClubSocketController.instance.SendTopUpRequest(balanceToAdd);
@@ -1415,6 +1526,7 @@ public class ClubInGameManager : MonoBehaviour
                         {
                             if (availableBalance > GlobalGameManager.instance.GetRoomData().smallBlind)
                             {
+                                Debug.Log("<color=pink>" + "SmallBlind: " + GlobalGameManager.instance.GetRoomData().smallBlind + " and Available Balance: " + availableBalance + "</color>");
                                 ClubSocketController.instance.SendReMatchRequest("Yes", "0");
                             }
                             else
@@ -1445,7 +1557,7 @@ public class ClubInGameManager : MonoBehaviour
 
     public void OnTurnCountDownFound(string serverResponse)
     {
-        Debug.LogWarning("OnTurnCountDownFound" + serverResponse);
+        //Debug.LogWarning("OnTurnCountDownFound" + serverResponse);
         //if (ClubSocketController.instance.GetSocketState() == SocketState.Game_Running)
         //{
         //    JsonData data = JsonMapper.ToObject(serverResponse);
@@ -1476,9 +1588,10 @@ public class ClubInGameManager : MonoBehaviour
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
 
+            int remainingTime = (int)float.Parse(data[0].ToString());
+
             if (currentPlayer != null)
             {
-                int remainingTime = (int)float.Parse(data[0].ToString());
                 if (remainingTime == 0)
                 {
                     PlayerTimerReset();
@@ -1493,10 +1606,17 @@ public class ClubInGameManager : MonoBehaviour
                         SoundManager.instance.PlaySound(SoundType.TurnEnd);
                     }
                     currentPlayer.ShowRemainingTime(remainingTime);
+                    //currentPlayer.StartPlayerTimer(remainingTime);
+                    if (remainingTime >= GameConstants.TURN_TIME - 1)
+                    {
+                        ClubInGameUIManager.instance.ToggleActionButton(true, currentPlayer, isMyTurn, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
+                    }
                 }
                 else if (!currentPlayer.IsMe())
                 {
+                    ClubInGameUIManager.instance.raisePopUp.SetActive(false);
                     currentPlayer.ShowRemainingTime(remainingTime);
+                    //currentPlayer.StartPlayerTimer(remainingTime);
                 }
             }
             else
@@ -1585,7 +1705,7 @@ public class ClubInGameManager : MonoBehaviour
 
     public void OnOpenCardsDataFound(string serverResponse)
     {
-        Debug.LogError("OpenCardDataFound : " + serverResponse);
+        Debug.LogError("Response => OpenCardDataFound : " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         openCards = new CardData[data[0].Count];
 
@@ -1652,7 +1772,7 @@ public class ClubInGameManager : MonoBehaviour
         //GlobalGameManager.instance.LoadScene(Scenes.InGame);
     }
 
-    private bool CallOnce = true;
+    private bool CallOnce = true, isMyTurn;
 
     public void OnPlayerObjectFound(string serverResponse)
     {
@@ -1666,12 +1786,12 @@ public class ClubInGameManager : MonoBehaviour
 
         if (!ClubInGameUIManager.instance.isSelectedWinningBooster)
         {
-            ClubSocketController.instance.GetRandomCard();
+            //ClubSocketController.instance.GetRandomCard();    //DEV_CODE Commented this line as per InGameManager script
             //ClubInGameUIManager.instance.isSelectedWinningBooster = true;
         }
 
         if (gameExitCalled) { return; }
-        Debug.Log("**[OnPlayerObjectFound] _ 0" + serverResponse);
+        //Debug.Log("**[OnPlayerObjectFound] _ 0" + serverResponse);
 
         if (serverResponse.Length < 20)
         {
@@ -1690,33 +1810,34 @@ public class ClubInGameManager : MonoBehaviour
             //DEV_CODE Added these two lines as per InGameManager script
             thunderPointBar.fillAmount = float.Parse(data[0][0]["playRound"].ToString()) / 10;
             PointEarnedCounter = int.Parse(data[0][0]["currentSessionPoint"].ToString());
-
-
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
             isGameStart = isMatchStarted;   //DEV_CODE Added this line as per InGameManager script
-
             //Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
             ClubSocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
             ClubInGameUIManager.instance.tableId = data[0][0]["tableId"].ToString();
-            ShowNewPlayersOnTable(data, isMatchStarted);
+            //ShowNewPlayersOnTable(data, isMatchStarted);
 
             if (data[0].Count == 1)
             {
-                Debug.LogWarning("ONE PLAYER-" + serverResponse);
-                //if "userData": "" then game has not started
-                if (data[0][0]["userData"].ToString().Length > 0)
-                {
-                    resetGame = true;
-                    StartCoroutine(StartWaitingCountdown());
-                    return;
-                }
+                //DEV_CODE Added this code as per InGameManager screen
+                ClubSocketController.instance.SetSocketState(SocketState.WaitingForOpponent);
+
+                //DEV_CODE Commented this code as per InGameManager screen
+                //Debug.LogWarning("ONE PLAYER-" + serverResponse);
+                ////if "userData": "" then game has not started
+                //if (data[0][0]["userData"].ToString().Length > 0)
+                //{
+                //    resetGame = true;
+                //    StartCoroutine(StartWaitingCountdown());
+                //    return;
+                //}
             }
 
             if (ClubSocketController.instance.GetSocketState() == SocketState.WaitingForOpponent)
             {
                 ClubSocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
 
-                if (isMatchStarted) // Match is started
+                //if (isMatchStarted) // Match is started   //DEV_CODE Commented this line as per InGameManager script
                 {
                     Debug.Log("isMatchStarted" + isMatchStarted);
 
@@ -1728,12 +1849,17 @@ public class ClubInGameManager : MonoBehaviour
                         MatchMakingPlayerData playerData = new MatchMakingPlayerData();
 
                         if (data[0][i]["coins"] != null)
+                        {
+                            //Debug.LogError("Player Coins: " + data[0][i]["coins"].ToString());
+                            
                             PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
+                        }
 
                         playerData.playerData = new PlayerData();
                         playerData.playerData.userId = data[0][i]["userId"].ToString();
 
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
+                        playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();    //DEV_CODE Added this line as per InGameManager script
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         ClubInGameUIManager.instance.tableId = data[0][i]["tableId"].ToString();
                         playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
@@ -1753,7 +1879,7 @@ public class ClubInGameManager : MonoBehaviour
                         playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
 
-                        Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
+                        //Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
                         if (playerData.isTurn)
                         {
@@ -1797,7 +1923,7 @@ public class ClubInGameManager : MonoBehaviour
             }
             else if (ClubSocketController.instance.GetSocketState() == SocketState.Game_Running)
             {
-                Debug.Log("Game not started" + isMatchStarted);
+                //Debug.Log("Game not started" + isMatchStarted);
 
                 PlayerScript playerWhosTurn = null;
                 bool isCheckAvailable = false;
@@ -1821,12 +1947,14 @@ public class ClubInGameManager : MonoBehaviour
                         //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
                         {
-                            //Debug.LogWarning("isTurn is true");
+                            Debug.LogWarning(data[0][i]["userName"].ToString() + " isTurn is true");    //DEV_CODE Added
                             playerWhosTurn = playerObject;
                             isCheckAvailable = data[0][i]["isCheck"].Equals(true);
+                            isMyTurn = isCheckAvailable;    //DEV_CODE Added
                         }
                         else
                         {
+                            isMyTurn = false;   //DEV_CODE Added
                             ClubInGameUIManager.instance.ToggleSuggestionButton(false);
                             ClubInGameUIManager.instance.ToggleActionButton(false);
                         }
@@ -1900,6 +2028,9 @@ public class ClubInGameManager : MonoBehaviour
 
     private void ResetMatchData()
     {
+        ClubInGameUIManager.instance.raisePopUp.SetActive(false);   //DEV_CODE Added
+        userWinner = false;                                     //DEV_CODE Added
+
         DontShowCommunityCardAnimation = false;     //DEV_CODE  Added this line as per InGameManager script
         //UpdatePot("");        //DEV_CODE  Commented this line as per InGameManager script
 
@@ -1930,7 +2061,7 @@ public class ClubInGameManager : MonoBehaviour
 
         for (int i = 0; i < allPlayersObject.Length; i++)
         {
-            //allPlayersObject[i].ResetAllData();
+            allPlayersObject[i].ResetAllData();
             allPlayersObject[i].ToggleCards(false);
         }
 

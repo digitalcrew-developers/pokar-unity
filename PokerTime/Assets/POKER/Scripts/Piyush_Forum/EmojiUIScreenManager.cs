@@ -35,11 +35,15 @@ public class EmojiUIScreenManager : MonoBehaviour
     {
         ClearAll();
         ShowContainer(containerVal);
-        Debug.Log("Id " + InGameUiManager.instance.TempUserID);
-        if (InGameUiManager.instance.TempUserID != null)
+        //Debug.Log("Id " + InGameUiManager.instance.TempUserID);
+        if (InGameUiManager.instance != null && InGameUiManager.instance.TempUserID != null)
         {
             GetUserDetails(InGameUiManager.instance.TempUserID);
             //GetUserDetails(PrefsManager.GetPlayerData().userId);
+        }
+        else if (ClubInGameUIManager.instance != null && ClubInGameUIManager.instance.TempUserID != null)
+        {
+            GetUserDetails(ClubInGameUIManager.instance.TempUserID);
         }
     }
 
@@ -50,8 +54,12 @@ public class EmojiUIScreenManager : MonoBehaviour
         UserId.text = "";
     }
 
-    public void OnDealerBtnClick() {
-         InGameUiManager.instance.ShowScreen(InGameScreens.DealerImageScreen);
+    public void OnDealerBtnClick()
+    {
+        if (InGameUiManager.instance != null)
+            InGameUiManager.instance.ShowScreen(InGameScreens.DealerImageScreen);
+        else if (ClubInGameUIManager.instance != null)
+            ClubInGameUIManager.instance.ShowScreen(InGameScreens.DealerImageScreen);
     }
 
     public void GetUserDetails(string playerid)
@@ -124,7 +132,7 @@ public class EmojiUIScreenManager : MonoBehaviour
     {
         for (int i = 0; i < containerAry.Length; i++)
         {
-            if (i == InGameUiManager.instance.emojiContainerVal)
+            if (i == ((InGameUiManager.instance!=null)? InGameUiManager.instance.emojiContainerVal : ClubInGameUIManager.instance.emojiContainerVal))
             {
                 containerAry[i].SetActive(true);
                 
@@ -216,7 +224,12 @@ public class EmojiUIScreenManager : MonoBehaviour
         //InGameUiManager.instance.emojiIndex = emojiIndex;
         // InGameUiManager.instance.ShowEmojiOnScreen(str);
         Debug.Log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$    "+emojiIndex);
-        InGameUiManager.instance.CallEmojiSocket(emojiIndex);
+        
+        if (InGameUiManager.instance != null)
+            InGameUiManager.instance.CallEmojiSocket(emojiIndex);
+        else if (ClubInGameUIManager.instance != null)
+            ClubInGameUIManager.instance.CallEmojiSocket(emojiIndex);
+
         OnClickOnButton("back");
     }
 
@@ -229,10 +242,13 @@ public class EmojiUIScreenManager : MonoBehaviour
         {
             case "back":
                 {
+
                     StopCoroutine("loadSpriteImageFromUrl");
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.EmojiScreen);
 
-
+                    if (InGameUiManager.instance != null)
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.EmojiScreen);
+                    else if (ClubInGameUIManager.instance != null)
+                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.EmojiScreen);
                 }
                 break;
 

@@ -345,7 +345,7 @@ public class ClubSocketController : MonoBehaviour
 
                 case SocketEvetns.ON_GAME_OVER_TIMER_FOUND:
                     Debug.LogError("Game Over - " + responseObject.data);
-                    //ClubInGameManager.instance.OnGameOverCountDownFound(responseObject.data);
+                    ClubInGameManager.instance.OnGameOverCountDownFound(responseObject.data);
                     break;
 
                 case SocketEvetns.ON_CALL_TIMER_FOUND:
@@ -423,13 +423,13 @@ public class ClubSocketController : MonoBehaviour
                 case SocketEvetns.ON_GET_RANDOM_CARD:
                     //ClubInGameUIManager.instance.DeductCoinPostServer(ClubInGameUIManager.instance.winnigBoosterAmount, responseObject.data.Substring(2, 2));
                     string cardName = responseObject.data.Substring(2, 2);
-                    Debug.Log("Card Name FUll: " + cardName);
+                    //Debug.Log("Card Name FUll: " + cardName);
 
                     CardData cardDt = CardsManager.instance.GetCardData(cardName);
                     ClubInGameUIManager.instance.winningBoosterCardName = cardDt.cardNumber.ToString();
                     ClubInGameUIManager.instance.arrowPopUpText.text += ClubInGameUIManager.instance.winningBoosterCardName;
 
-                    Debug.Log("Name: " + cardDt.cardNumber);
+                    //Debug.Log("Name: " + cardDt.cardNumber);
                     break;
 
                 default:

@@ -367,16 +367,18 @@ public class ClubDetailsUIManager : MonoBehaviour
     {
         SoundManager.instance.PlaySound(SoundType.Click);
 
-        if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
-        {
+		//DEV_CODE Commented this code to re enter into the table 
+        //if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
+        //{
 
-            return;
-        }
+        //    return;
+        //}
 
         data.isLobbyRoom = false;
-
-        GlobalGameManager.instance.SetRoomData(data);
+		
+		GlobalGameManager.instance.SetRoomData(data);
         GameConstants.TURN_TIME = data.callTimer;
+		//Debug.LogError("Call Timer On Click: " + GameConstants.TURN_TIME);
         SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
     }
 

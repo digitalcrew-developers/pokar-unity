@@ -14,7 +14,10 @@ public class DealerImgUIScreenManager : MonoBehaviour
     }
     public void BackBtn()
     {
-        InGameUiManager.instance.DestroyScreen(InGameScreens.DealerImageScreen);
+        if (InGameUiManager.instance != null)
+            InGameUiManager.instance.DestroyScreen(InGameScreens.DealerImageScreen);
+        else if (ClubInGameUIManager.instance != null)
+            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.DealerImageScreen);
     }
 
     // Update is called once per frame

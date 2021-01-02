@@ -395,8 +395,16 @@ public class PlayerScript : MonoBehaviour
     }
     public void SendUserID()
     {
-        InGameUiManager.instance.TempUserID = this.playerData.userId;
-        InGameUiManager.instance.currentClickedSeatNum = this.playerData.userId;
+        if (InGameUiManager.instance != null)
+        {
+            InGameUiManager.instance.TempUserID = this.playerData.userId;
+            InGameUiManager.instance.currentClickedSeatNum = this.playerData.userId;
+        }
+        else if(ClubInGameUIManager.instance !=null)
+        {
+            ClubInGameUIManager.instance.TempUserID = this.playerData.userId;
+            ClubInGameUIManager.instance.currentClickedSeatNum = this.playerData.userId;
+        }
         Debug.LogError("Onclick " + this.playerData.userId);
         
     }
@@ -528,21 +536,21 @@ public class PlayerScript : MonoBehaviour
     public void ShowRemainingTime(int remainingTime)
     {
         //UnityEngine.Debug.LogError("ShowRemainingTime = " + remainingTime);
-        if(!avtar.GetComponent<Animator>().GetBool("Play"))
+        if (!avtar.GetComponent<Animator>().GetBool("Play"))
         {
             avtar.GetComponent<Animator>().SetBool("Play", true);
         }
         int extraTime = 0;
         int.TryParse(playerData.bufferTime, out extraTime);
-        //UnityEngine.Debug.Log("playerData.bufferTime " + playerData.bufferTime);
+        //Debug.Log("playerData.bufferTime " + playerData.bufferTime);
         int totalTime = GameConstants.TURN_TIME + extraTime;
         //UnityEngine.Debug.LogError(remainingTime + " " + totalTime + " " + GameConstants.TURN_TIME + " " + extraTime);
-        //UnityEngine.Debug.LogError("extraTime = " + extraTime);
-        //UnityEngine.Debug.LogError("totalTime = " + totalTime);
+        //Debug.LogError("extraTime = " + extraTime);
+        //Debug.LogError("totalTime = " + totalTime);
 
         remainingTime = totalTime - remainingTime;      //10  - 30
 
-        //UnityEngine.Debug.LogError("RemainingTime = " + remainingTime);
+        //Debug.LogError("Updated RemainingTime = " + remainingTime);
         //UnityEngine.Debug.LogError("Starting timer " + remainingTime + ", " + PrefsManager.GetPlayerData().userId + ", " + playerData.userId);
         if (remainingTime == 0)
         {

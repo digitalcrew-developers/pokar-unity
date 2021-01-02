@@ -27,6 +27,9 @@ public class LobbyRoomManager : MonoBehaviour
             if(playerData.coins < 0) { playerData.coins = 0f; }
             LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
 
+            Debug.LogError("Updated Player Coins: " + playerData.coins);
+            Debug.LogError("Updated MinByIn Coins: " + data.minBuyIn);
+
             UpdateUserBalance(playerData);
         }
     }

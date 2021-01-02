@@ -107,6 +107,7 @@ public class ClubInGameUIManager : MonoBehaviour
             lobbyTableObject.SetActive(false);
         }
 
+        //To disable main menu scene on club scene load
         if (!GlobalGameManager.instance.GetRoomData().isLobbyRoom)
         {
             ClubMainMenu = GameObject.Find("MainMenuScene(Clone)");
@@ -244,10 +245,11 @@ public class ClubInGameUIManager : MonoBehaviour
             //{
             //    otherId = int.Parse(val.transform.parent.parent.GetComponent<PlayerScript>().playerData.userId);
             //}
-            if (InGameUiManager.instance.TempUserID != "")
-            {
-                otherId = int.Parse(InGameUiManager.instance.TempUserID);
-            }
+            //if (InGameUiManager.instance.TempUserID != "")
+            //{
+            //    otherId = int.Parse(InGameUiManager.instance.TempUserID);
+            //}
+            otherId = int.Parse(currentClickedSeatNum);
         }
 
     }
@@ -698,7 +700,12 @@ public class ClubInGameUIManager : MonoBehaviour
 
     public void ToggleSuggestionButton(bool isShow, bool isCheckAvailable = false, int callAmount = 0, float availableBalance = 0)
     {
-        suggestionButtonParent.SetActive(isShow);
+        //DEV_CODE Added
+        if (!ClubInGameManager.instance.userWinner)
+            suggestionButtonParent.SetActive(isShow);
+        else
+            suggestionButtonParent.SetActive(false);
+        //suggestionButtonParent.SetActive(isShow);
 
         if (isShow)
         {
@@ -771,20 +778,11 @@ public class ClubInGameUIManager : MonoBehaviour
 
     public void ToggleActionButton(bool isShow, PlayerScript playerObject = null, bool isCheckAvailable = false, int lastBetAmount = 0, float availableBalance = 0)
     {
-        actionButtonParent.SetActive(isShow);
-
+        //DEV_CODE Added 
         if (isShow)
         {
             ResetSuggetionAction();
-
-            for (int i = 0; i < actionButtons.Length; i++)
-            {
-                actionButtons[i].SetActive(true);
-            }
-
-            raisePopUp.SetActive(false);
-
-
+            //raisePopUp.SetActive(false);
             int callAmount = lastBetAmount - (int)playerObject.GetPlayerData().totalBet;
 
             if (callAmount > 0)
@@ -794,22 +792,22 @@ public class ClubInGameUIManager : MonoBehaviour
 
             useRaisePotWise = isCheckAvailable;
 
-            actionButtons[(int)PlayerAction.Check].SetActive(isCheckAvailable);
-            actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+            Debug.LogError("isShow " + isShow + " isCheckAvailable " + isCheckAvailable + " call amount  " + callAmount + "  lba  " + lastBetAmount + " availableBalance " + availableBalance + " totalBet " + playerObject.GetPlayerData().totalBet);
 
-            if (!isCheckAvailable)
+            //if (!isCheckAvailable)
             {
-                if (callAmount >= 0) // amount availabel to bet
+                if (callAmount > 0) // amount available to bet
                 {
                     if (lastBetAmount > availableBalance)
                     {
+                        actionButtons[(int)PlayerAction.Check].SetActive(false);
                         actionButtons[(int)PlayerAction.Call].SetActive(false);
                         actionButtons[(int)PlayerAction.AllIn].SetActive(true);
                     }
                     else
                     {
                         callAmountText.text = "" + callAmount;
-
+                        actionButtons[(int)PlayerAction.Check].SetActive(false);
                         actionButtons[(int)PlayerAction.AllIn].SetActive(false);
                         actionButtons[(int)PlayerAction.Call].SetActive(true);
                     }
@@ -817,13 +815,13 @@ public class ClubInGameUIManager : MonoBehaviour
                 else // dont have amount to bet hence show only fold and all-in
                 {
                     actionButtons[(int)PlayerAction.Call].SetActive(false);
-                    actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                    actionButtons[(int)PlayerAction.Raise].SetActive(true);
+                    actionButtons[(int)PlayerAction.Check].SetActive(true);
                 }
+
                 if (callAmount == 0)
                 {
                     callAmountText.text = "";
-
-                    //DEV_CODE Commented these lines as per InGameUiManager script
                     //actionButtons[(int)PlayerAction.Call].SetActive(false);
                     //actionButtons[(int)PlayerAction.Raise].SetActive(false);
                     //actionButtons[(int)PlayerAction.Check].SetActive(false);
@@ -834,6 +832,76 @@ public class ClubInGameUIManager : MonoBehaviour
 
             availableCallAmount = callAmount;
         }
+        actionButtonParent.SetActive(isShow);
+
+
+
+
+
+        //DEV_CODE Commented 
+
+        //actionButtonParent.SetActive(isShow);
+        //if (isShow)
+        //{
+        //    ResetSuggetionAction();
+
+        //    for (int i = 0; i < actionButtons.Length; i++)
+        //    {
+        //        actionButtons[i].SetActive(true);
+        //    }
+
+        //    raisePopUp.SetActive(false);
+
+
+        //    int callAmount = lastBetAmount - (int)playerObject.GetPlayerData().totalBet;
+
+        //    if (callAmount > 0)
+        //    {
+        //        isCheckAvailable = false;
+        //    }
+
+        //    useRaisePotWise = isCheckAvailable;
+
+        //    actionButtons[(int)PlayerAction.Check].SetActive(isCheckAvailable);
+        //    actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+
+        //    if (!isCheckAvailable)
+        //    {
+        //        if (callAmount >= 0) // amount availabel to bet
+        //        {
+        //            if (lastBetAmount > availableBalance)
+        //            {
+        //                actionButtons[(int)PlayerAction.Call].SetActive(false);
+        //                actionButtons[(int)PlayerAction.AllIn].SetActive(true);
+        //            }
+        //            else
+        //            {
+        //                callAmountText.text = "" + callAmount;
+
+        //                actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+        //                actionButtons[(int)PlayerAction.Call].SetActive(true);
+        //            }
+        //        }
+        //        else // dont have amount to bet hence show only fold and all-in
+        //        {
+        //            actionButtons[(int)PlayerAction.Call].SetActive(false);
+        //            actionButtons[(int)PlayerAction.Raise].SetActive(false);
+        //        }
+        //        if (callAmount == 0)
+        //        {
+        //            callAmountText.text = "";
+
+        //            //DEV_CODE Commented these lines as per InGameUiManager script
+        //            //actionButtons[(int)PlayerAction.Call].SetActive(false);
+        //            //actionButtons[(int)PlayerAction.Raise].SetActive(false);
+        //            //actionButtons[(int)PlayerAction.Check].SetActive(false);
+        //            //actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+        //            //actionButtons[(int)PlayerAction.Fold].SetActive(false);
+        //        }
+        //    }
+
+        //    availableCallAmount = callAmount;
+        //}
     }
 
 
@@ -1018,7 +1086,7 @@ public class ClubInGameUIManager : MonoBehaviour
     {
         emojiIndex = index;
         // Debug.LogError("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
-        ClubSocketController.instance.SentEmoji(otherId, InGameUiManager.instance.emojiIndex);
+        ClubSocketController.instance.SentEmoji(otherId, ClubInGameUIManager.instance.emojiIndex);
 
 
     }
@@ -1035,56 +1103,73 @@ public class ClubInGameUIManager : MonoBehaviour
 
             case "bluffing":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Bluffing], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Bluffing].transform.localScale;
                 break;
             case "youRaPro":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.YouRaPro], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.YouRaPro].transform.localScale;
                 break;
             case "beerCheers":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.BeerCheers], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.BeerCheers].transform.localScale;
                 break;
             case "murgi":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Murgi], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Murgi].transform.localScale;
                 break;
             case "rocket":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Rocket], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Rocket].transform.localScale;
                 break;
             case "dung":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Dung], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Dung].transform.localScale;
                 break;
             case "oscar":
                 Debug.LogError("oscar Emoji From List on Screen 00000*** " + str);
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Oscar], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Oscar].transform.localScale;
                 break;
             case "donkey":
                 Debug.LogError("donkey Emoji From List on Screen *** " + str);
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Donkey], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Donkey].transform.localScale;
                 break;
             case "thumbUp":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.ThumbsUp], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.ThumbsUp].transform.localScale;
                 break;
             case "cherees":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Cherees], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Cherees].transform.localScale;
                 break;
             case "kiss":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Kiss], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Kiss].transform.localScale;
                 break;
             case "fish":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Fish], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Fish].transform.localScale;
                 break;
             case "gun":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Gun], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Gun].transform.localScale;
                 break;
             case "rose":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Rose], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Rose].transform.localScale;
                 break;
             case "perfume":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Perfume], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Perfume].transform.localScale;
                 break;
             case "ring":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Ring], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Ring].transform.localScale;
                 break;
             case "car":
                 g = Instantiate(EmojiPrefabs[(int)Emoji.Car], EmojiShowTransform) as GameObject;
+                scaleValue = EmojiPrefabs[(int)Emoji.Car].transform.localScale;
                 break;
         }
         g.transform.SetParent(EmojiShowTransform);

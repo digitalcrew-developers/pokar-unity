@@ -98,7 +98,10 @@ public class RealTimeResultUiManager : MonoBehaviour
         {
             case "back":
                 {
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
+                    if (InGameUiManager.instance != null)
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
+                    else if (ClubInGameUIManager.instance != null)
+                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
                 }
                 break;
           
