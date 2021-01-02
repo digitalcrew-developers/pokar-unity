@@ -1280,7 +1280,29 @@ public class InGameManagerTeenPatti : MonoBehaviour
         }
     }
 
-    
+    public void OnOpenCardsDataFoundShowCard(JsonData newData, PlayerScriptTeenPatti player)
+    {
+        JsonData data = newData;
+        // openCards = new CardData[data.Count];
+        GameObject cardPlace = player.transform.GetChild(0).transform.GetChild(9).transform.gameObject;
+        cardPlace.SetActive(false);
+        //for(int i =0; i < cardPlace.transform.childCount; i++)
+        //{
+        //    cardPlace.transform.GetChild(i).gameObject.SetActive(false);
+        //}
+
+        GameObject cardHolder = player.transform.GetChild(0).transform.GetChild(0).transform.gameObject;
+        
+
+        for (int i = 0; i < data.Count; i++)
+        {
+            //  openCards[i] = CardsManagerTeenPatti.instance.GetCardData(data[i].ToString());
+            cardHolder.transform.GetChild(i).gameObject.SetActive(true);
+            cardHolder.transform.GetChild(i).gameObject.GetComponent<Image>().sprite = CardsManagerTeenPatti.instance.GetCardData(data[i].ToString()).cardsSprite;
+        }
+    }
+
+
 
 
 

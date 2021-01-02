@@ -43,6 +43,11 @@ public class PlayerScriptTeenPatti : MonoBehaviour
 
     public GameObject sideShowWinnerAcceptBtn;
 
+    public GameObject tempCardHolder;
+
+    
+    
+
     public void Start()
     {
         instance = this;   
@@ -148,6 +153,12 @@ public class PlayerScriptTeenPatti : MonoBehaviour
     {
         if (balanceText == null)
         {
+            transform.Find("Bg/3_Cards").gameObject.SetActive(true);
+            transform.Find("Bg/4_Cards").gameObject.SetActive(true);
+            for (int i = 0; i < transform.Find("Bg/4_Cards").gameObject.transform.childCount; i++)
+            {
+                transform.Find("Bg/4_Cards").gameObject.transform.GetChild(i).gameObject.SetActive(false);
+            }
             balanceText = transform.Find("Bg/blance bg/Balance").GetComponent<Text>();
             lastActionText = lastActionImage.transform.GetChild(0).GetComponent<Text>();
             timerBar = transform.Find("Bg/TimerBar").GetComponent<Image>();
@@ -169,19 +180,21 @@ public class PlayerScriptTeenPatti : MonoBehaviour
             {
                 cardsImage[i] = cardHolder.transform.GetChild(i).GetComponent<Image>();
             }
-
-            if (cardsImage.Length > 3)
-            {
-                transform.Find("Bg/3_Cards").gameObject.SetActive(false);
-                transform.Find("Bg/4_Cards").gameObject.SetActive(true);
-            }
-            else
-            {
-                transform.Find("Bg/3_Cards").gameObject.SetActive(true);
-                transform.Find("Bg/4_Cards").gameObject.SetActive(false);
-            }
-
             
+            
+            
+            //if (cardsImage.Length > 3)
+            //{
+            //    transform.Find("Bg/3_Cards").gameObject.SetActive(false);
+            //    transform.Find("Bg/4_Cards").gameObject.SetActive(true);
+            //}
+            //else
+            //{
+            //    transform.Find("Bg/3_Cards").gameObject.SetActive(true);
+            //    transform.Find("Bg/4_Cards").gameObject.SetActive(false);
+            //}
+
+
         }
     }
 
@@ -537,11 +550,20 @@ public class PlayerScriptTeenPatti : MonoBehaviour
             }
         }
 
+
+        
+
         if(!isShow)
         {
+            cardHolder.SetActive(true);
+            for(int i = 0; i < tempCardHolder.transform.childCount; i++)
+            {
+                tempCardHolder.transform.GetChild(i).gameObject.SetActive(false);
+            }
             for (int i = 0; i < cardsImage.Length; i++)
             {
                 cardsImage[i].sprite = CardsManagerTeenPatti.instance.cardBackSprite;
+
                 //playerData.cards[i].cardsSprite = CardsManagerTeenPatti.instance.cardBackSprite;
 
                 //DEV_CODE
