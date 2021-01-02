@@ -395,8 +395,16 @@ public class PlayerScript : MonoBehaviour
     }
     public void SendUserID()
     {
-        InGameUiManager.instance.TempUserID = this.playerData.userId;
-        InGameUiManager.instance.currentClickedSeatNum = this.playerData.userId;
+        if (InGameUiManager.instance != null)
+        {
+            InGameUiManager.instance.TempUserID = this.playerData.userId;
+            InGameUiManager.instance.currentClickedSeatNum = this.playerData.userId;
+        }
+        else if(ClubInGameUIManager.instance !=null)
+        {
+            ClubInGameUIManager.instance.TempUserID = this.playerData.userId;
+            ClubInGameUIManager.instance.currentClickedSeatNum = this.playerData.userId;
+        }
         Debug.LogError("Onclick " + this.playerData.userId);
         
     }
@@ -528,7 +536,7 @@ public class PlayerScript : MonoBehaviour
     public void ShowRemainingTime(int remainingTime)
     {
         //UnityEngine.Debug.LogError("ShowRemainingTime = " + remainingTime);
-        if(!avtar.GetComponent<Animator>().GetBool("Play"))
+        if (!avtar.GetComponent<Animator>().GetBool("Play"))
         {
             avtar.GetComponent<Animator>().SetBool("Play", true);
         }
@@ -542,7 +550,7 @@ public class PlayerScript : MonoBehaviour
 
         remainingTime = totalTime - remainingTime;      //10  - 30
 
-        //Debug.LogError("RemainingTime = " + remainingTime);
+        //Debug.LogError("Updated RemainingTime = " + remainingTime);
         //UnityEngine.Debug.LogError("Starting timer " + remainingTime + ", " + PrefsManager.GetPlayerData().userId + ", " + playerData.userId);
         if (remainingTime == 0)
         {

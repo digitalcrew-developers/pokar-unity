@@ -9,7 +9,10 @@ public class PointEarnMsg : MonoBehaviour
 
     public void onClickCloseMSG()
     {
-        InGameUiManager.instance.DestroyScreen(InGameScreens.PointEarnMsg);
+        if (InGameUiManager.instance != null)
+            InGameUiManager.instance.DestroyScreen(InGameScreens.PointEarnMsg);
+        else if (ClubInGameUIManager.instance != null)
+            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.PointEarnMsg);
     }
 
     public void OnOpen()

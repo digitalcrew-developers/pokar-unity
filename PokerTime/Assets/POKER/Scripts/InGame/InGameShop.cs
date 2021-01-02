@@ -119,9 +119,16 @@ public class InGameShop : MonoBehaviour
         {
             case "back":
                 {
-                    if (InGameUiManager.instance != null) {
+                    if (InGameUiManager.instance != null) 
+                    {
                         InGameUiManager.instance.DestroyScreen(InGameScreens.InGameShop);
-                    } else {
+                    } 
+                    else if (ClubInGameManager.instance != null)
+                    {
+                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.InGameShop);
+                    }
+                    else
+                    { 
                         MainMenuController.instance.DestroyScreen(MainMenuScreens.InGameShop);
                     }
                     

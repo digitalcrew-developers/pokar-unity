@@ -41,7 +41,10 @@ public class HandHistoryManager : MonoBehaviour
         {
             case "back":
                 {
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.HandHistory);
+                    if (InGameUiManager.instance != null)
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.HandHistory);
+                    else if (ClubInGameUIManager.instance != null)
+                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.HandHistory);
                 }
                 break;
 

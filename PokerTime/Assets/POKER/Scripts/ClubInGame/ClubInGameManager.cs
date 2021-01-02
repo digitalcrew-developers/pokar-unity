@@ -674,7 +674,7 @@ public class ClubInGameManager : MonoBehaviour
                 playerDataObject.userId = data[0][i]["userId"].ToString();
                 playerDataObject.userName = data[0][i]["userName"].ToString();
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
-                playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString()) + 49500f;
+                playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
                 //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
                 if (isMatchStarted)
@@ -1852,7 +1852,7 @@ public class ClubInGameManager : MonoBehaviour
                         {
                             //Debug.LogError("Player Coins: " + data[0][i]["coins"].ToString());
                             
-                            PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString()) + 49500f;
+                            PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
                         }
 
                         playerData.playerData = new PlayerData();
@@ -1865,7 +1865,7 @@ public class ClubInGameManager : MonoBehaviour
                         playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
-                        playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString()) + 49500f;
+                        playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 
                         playerData.playerType = data[0][i]["playerType"].ToString();
 
@@ -1937,7 +1937,7 @@ public class ClubInGameManager : MonoBehaviour
                         //Debug.LogError("************************************************************");
                         playerData.isFold = data[0][i]["isBlocked"].Equals(true);
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
-                        playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString()) + 49500f;
+                        playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 
                         playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
                         playerData.cardValidity = data[0][i]["cardValidity"].ToString();
