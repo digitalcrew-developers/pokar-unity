@@ -145,10 +145,8 @@ public class JackpotManager : MonoBehaviour
 
     private void OnCloseTurnOffJackpotPanel()
     {
-        //JackpotToggleController.isOn = true;
-        //JackpotToggleController.DoYourStaff();
-        JackpotToggleController.isOn = true;
         JackpotToggleController.Toggle(true);
+        JackpotToggleController.isOn = true;
         TurnOffJackpotPanel.SetActive(false);
     }
 
@@ -220,16 +218,14 @@ public class JackpotManager : MonoBehaviour
     {
         if (!isJackpotActivated)
         {
-            JackpotToggleController.isOn = false;
-            //JackpotToggleController.Toggle(false);
             JackpotToggleController.Toggle(false);
+            JackpotToggleController.isOn = false;
             JackpotTopUpPopup.SetActive(false);
         }
         else
         {
-            JackpotToggleController.isOn = true;
-            //JackpotToggleController.Toggle(false);
             JackpotToggleController.Toggle(true);
+            JackpotToggleController.isOn = true;
             JackpotTopUpPopup.SetActive(false);
         }
     }
@@ -332,23 +328,20 @@ public class JackpotManager : MonoBehaviour
                         //Debug.Log("Jackpot is active");
                         if (data["data"][0]["jackpotStatus"].ToString().Equals("Active"))
                         {
-                            JackpotToggleController.isOn = true;
-                            //JackpotToggleController.DoYourStaff();
                             JackpotToggleController.Toggle(true);
+                            JackpotToggleController.isOn = true;
                         }
                         else
                         {
-                            JackpotToggleController.isOn = false;
-                            //JackpotToggleController.DoYourStaff();
                             JackpotToggleController.Toggle(false);
+                            JackpotToggleController.isOn = false;
                         }
                     }
                     else
                     {
                         Debug.Log("No Jackpot is available...");
-                        JackpotToggleController.isOn = false;
-                        //JackpotToggleController.DoYourStaff();
                         JackpotToggleController.Toggle(false);
+                        JackpotToggleController.isOn = false;
                     }
                 }
                 break;
@@ -359,8 +352,8 @@ public class JackpotManager : MonoBehaviour
                     JsonData data = JsonMapper.ToObject(serverResponse);
                     if (data["status"].Equals(true)/*["message"].ToString() == "Jackpot topup successfully"*/)
                     {
-                        JackpotToggleController.isOn = true;
                         JackpotToggleController.Toggle(true);
+                        JackpotToggleController.isOn = true;
                         JackpotTopUpPopup.SetActive(false);
                         JackpotAmountInputField.text = "";
 
