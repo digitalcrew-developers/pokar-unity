@@ -285,13 +285,15 @@ public class ClubTableController : MonoBehaviour
             Destroy(container.GetChild(i).gameObject);
         }
 
+        //Debug.Log("After RESET Total Templates: " + container.childCount);
+
         for (int i = 0; i < data["response"].Count; i++)
         {
             GameObject obj = Instantiate(templateObj, container) as GameObject;
 
             obj.GetComponent<ClubTemplateManager>().tableId = data["response"][i]["tableId"].ToString();
             
-            if (data["response"][i]["templateName"] != null)
+            if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
                 obj.GetComponent<ClubTemplateManager>().templateName.text = data["response"][i]["templateName"].ToString();
             else
                 obj.GetComponent<ClubTemplateManager>().templateName.text = "Unnamed Tab...";

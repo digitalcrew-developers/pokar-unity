@@ -30,6 +30,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 	public GameObject clubEmail;
 	public GameObject clubNotice;
 	public GameObject jackpotData;
+	public GameObject otherDetails;
 
 	[Header("Prefabs")]
 	public GameObject tableType2;
@@ -138,7 +139,10 @@ public class ClubDetailsUIManager : MonoBehaviour
 				if (data["data"][0]["jackpotStatus"].Equals("Active"))
 				{
 					if (!jackpotData.activeSelf)
+					{
 						jackpotData.SetActive(true);
+						otherDetails.transform.localPosition = new Vector3(51, 0, 0);
+					}
 
 					int a = data["data"][0]["jackpotAmount"].ToString().Length;
 
@@ -162,12 +166,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 					jackpotAmountText.text = str;
 				}
-			}
-			else
-			{
-				Debug.Log("No Jackpot is available...");
-				jackpotData.SetActive(false);
-			}
+				else
+				{
+					//Debug.Log("No Jackpot is available...");
+					jackpotData.SetActive(false);
+					otherDetails.transform.localPosition = new Vector3(-51, 0, 0);
+				}
+			}			
 		});
 	}
 
@@ -322,7 +327,7 @@ public class ClubDetailsUIManager : MonoBehaviour
             roomData.title = data["response"][i]["templateName"].ToString();
 
 			//DEV_CODE
-			Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
+			//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
 			if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
 				roomData.isEVChop = true;
 			else
@@ -358,8 +363,6 @@ public class ClubDetailsUIManager : MonoBehaviour
 
             obj.GetComponent<Button>().onClick.RemoveAllListeners();
             obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
-
-
         }
     }
 
