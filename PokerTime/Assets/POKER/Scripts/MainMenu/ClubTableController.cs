@@ -237,7 +237,7 @@ public class ClubTableController : MonoBehaviour
                 break;
 
             case "PLO5Mode":
-                Debug.Log("OnClick PLO4 Mode");
+                Debug.Log("OnClick PLO5 Mode");
 
                 RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO4").gameObject.SetActive(false);
                 RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO5").gameObject.SetActive(true);
