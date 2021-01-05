@@ -297,9 +297,8 @@ public class PlayerScript : MonoBehaviour
     }
     public void UpdateRealTimeResult(string result)
     {
+        Debug.LogWarning("Success data send " + result);
         JsonData data = JsonMapper.ToObject(result);
-
-        //Debug.Log("Success data send" + data);
         //  [{"currentSubRounds":1.0,"currentRounds":0.0,"handType":[{"userId":64.0,"handType":"Straight"},{"userId":65.0,"handType":"Pair"}]}]
         for (int i = 0; i < data[0]["handType"].Count; i++)
         {
@@ -536,10 +535,6 @@ public class PlayerScript : MonoBehaviour
     public void ShowRemainingTime(int remainingTime)
     {
         //UnityEngine.Debug.LogError("ShowRemainingTime = " + remainingTime);
-        if (!avtar.GetComponent<Animator>().GetBool("Play"))
-        {
-            avtar.GetComponent<Animator>().SetBool("Play", true);
-        }
         int extraTime = 0;
         int.TryParse(playerData.bufferTime, out extraTime);
         //Debug.Log("playerData.bufferTime " + playerData.bufferTime);

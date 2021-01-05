@@ -919,7 +919,7 @@ public class InGameManager : MonoBehaviour
         {
             if (MATCH_ROUND != 0)
             {
-                //Debug.LogError("HT @ " + handtype);
+                Debug.LogError("HT @ " + handtype);
                 onlinePlayersScript[i].UpdateRealTimeResult(handtype);
             }
             Text text = onlinePlayersScript[i].GetLocaPot();
@@ -1433,13 +1433,21 @@ public class InGameManager : MonoBehaviour
             {
                 InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isMyTurn, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
             }*/
-            //Debug.Log("Me&Other " + currentPlayer.IsMe() + ", " + remainingTime);
+            Debug.Log("Me&Other " + currentPlayer.IsMe() + ", " + remainingTime + ", " + GameConstants.TURN_TIME);
             if (currentPlayer != null)
             {
                 if (remainingTime == 0)
                 {
                     PlayerTimerReset();
                 }
+                if (remainingTime == GameConstants.TURN_TIME)
+                {
+                    if (!currentPlayer.avtar.GetComponent<Animator>().GetBool("Play"))
+                    {
+                        currentPlayer.avtar.GetComponent<Animator>().SetBool("Play", true);
+                    }
+                }
+
                 if (currentPlayer.IsMe())
                 {
                     int endTime = (int)(GameConstants.TURN_TIME * 0.25f);

@@ -26,6 +26,7 @@ public class TopUpScript : MonoBehaviour
         minText.text = "" + (int)slider.minValue;
         maxText.text = "" + (int)slider.maxValue;
         slider.value = slider.minValue;
+        balanceText.text = initialBalance.ToString();
     }
 
 
