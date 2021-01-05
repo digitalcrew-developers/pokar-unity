@@ -980,6 +980,12 @@ public class ClubAdminManager : MonoBehaviour
                 //    }
                 //    break;
 
+                case ClubScreens.Data:
+                    {
+
+                    }
+                    break;
+
                 default:
                     break;
             }
@@ -1046,5 +1052,6 @@ public enum ClubScreens
     Counter,
     Exchange,
     CreateTable,
-    Members
+    Members,
+    GameData
 }
