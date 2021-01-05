@@ -14,8 +14,11 @@ public class GameConstants : MonoBehaviour
     public static bool sideShowMatch = false;
     public static int timerStart = 0;
     public static int playerbetAmount = 0;
-    public static int sideShowRequesterId = 0;
+    public static string sideShowRequesterId = "";
     public static bool poker = true;
+
+
+    
 
 
     #region ANIMATIONS
