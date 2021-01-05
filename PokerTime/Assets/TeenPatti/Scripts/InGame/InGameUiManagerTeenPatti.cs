@@ -1563,6 +1563,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
         Debug.LogError("SideShow is :" + data.ToJson());
         PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["from"].ToString());
+        GameConstants.sideShowRequesterId = data[0]["from"].ToString();
 
         cardSeenPlayer.sideShowWinnerAcceptBtn.SetActive(true);
 
@@ -1590,7 +1591,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
         if(status == "loser")
         {
-           // OnClickOnButton("fold");
+            OnClickOnButton("fold");
         }
     }
 

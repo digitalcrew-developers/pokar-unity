@@ -1148,7 +1148,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
                 int remainingTime = (int)float.Parse(data[0].ToString());
 
-                Debug.LogError("Remaining Time is from server :" + remainingTime);
+               
 
                 // Debug.Log("%%%%%%%%%%%%%%%%%%%%%%  remainingTime " + remainingTime);
                 if (remainingTime == -9)
@@ -1291,7 +1291,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
         //    cardPlace.transform.GetChild(i).gameObject.SetActive(false);
         //}
 
-        GameObject cardHolder = player.transform.GetChild(0).transform.GetChild(0).transform.gameObject;
+        GameObject cardHolder = player.transform.GetChild(0).transform.GetChild(8).transform.gameObject;
         
 
         for (int i = 0; i < data.Count; i++)

@@ -133,7 +133,9 @@ public class SocketControllerTeenPatti : MonoBehaviour
         socketManager.Socket.On("playerStatndOut", OnPlayerStandUp);
         socketManager.Socket.On("seenData", OnCardSeen);
         socketManager.Socket.On("seatObject", OnSeatObject);
-        socketManager.Socket.On("showData", OnShowMatch);
+        //socketManager.Socket.On("showData", OnShowMatch);
+
+        socketManager.Socket.On("showTest", OnShowMatch);
 
 
         socketManager.Socket.On("sideShowRequest", OnSideShow);
@@ -492,7 +494,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_GAME_OVER_TIMER_FOUND))
         {
-            Debug.Log("OnGameOverTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+           // Debug.Log("OnGameOverTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
         }
 #else
         Debug.Log("OnGameOverTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
@@ -1280,7 +1282,8 @@ public class SocketControllerTeenPatti : MonoBehaviour
 
         //requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.tableId = TABLE_ID;
-       // requestData.bet = "" + GameConstants.playerbetAmount;
+        //requestData.tableId = "1";
+        // requestData.bet = "" + GameConstants.playerbetAmount;
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
@@ -1333,14 +1336,8 @@ public class SocketControllerTeenPatti : MonoBehaviour
 
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.tableId = TABLE_ID;
-        if (PlayerManager.instance.GetPlayerGameData().userId == "154")
-        {
-            requestData.requesterUserId = "178";
-        }
-        else
-        {
-            requestData.requesterUserId = "154";
-        }
+        requestData.requesterUserId = GameConstants.sideShowRequesterId;
+       
         // requestData.bet = "" + GameConstants.playerbetAmount;
 
         string requestStringData = JsonMapper.ToJson(requestData);

@@ -419,7 +419,6 @@ public class PlayerScriptTeenPatti : MonoBehaviour
     {
         float t = 0;
         float time = 13;
-        Debug.LogError("Times Comes Here");
         fx_holder.gameObject.SetActive(true);
         timerBar.gameObject.SetActive(true);
         while (t < time)
@@ -435,11 +434,6 @@ public class PlayerScriptTeenPatti : MonoBehaviour
 
     public void ShowRemainingTime(int remainingTime)
     { 
-        //StartCoroutine(CountDownAnimation());
-        //remainingTime = GameConstants.TURN_TIME - remainingTime;
-        Debug.LogError("Remaining Time is : " + remainingTime);
-        // Debug.Log("remainingTime     " + remainingTime);
-        //StartCoroutine("CountDownAnimation");
         if (GameConstants.timerStart == 0)
         {
             GameConstants.timerStart++;
