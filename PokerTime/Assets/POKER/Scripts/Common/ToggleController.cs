@@ -89,7 +89,25 @@ public class ToggleController : MonoBehaviour
         switching = true;
     }
 
+    public void ToggleTrue()
+    {
+        toggleBgImage.sprite = onImage;
+        //toggleBgImage.sprite = SmoothColor(onColorBg, offColorBg, offImage);
+        //toggleBgImage.color = SmoothColor(onColorBg, offColorBg);
+        Transparency(onIcon, 1f, 0f);
+        Transparency(offIcon, 0f, 1f);
+        handleTransform.localPosition = /*SmoothMove(handle, onPosX, offPosX);*/ new Vector3(Mathf.Lerp(onPosX, offPosX , /*t +=*/ speed * Time.deltaTime), 0f, 0f);
+    }
 
+    public void ToggleFalse()
+    {
+        toggleBgImage.sprite = offImage;
+        //toggleBgImage.sprite = SmoothColor(onColorBg, offColorBg, offImage);
+        //toggleBgImage.color = SmoothColor(onColorBg, offColorBg);
+        Transparency(onIcon, 0f, 1f);
+        Transparency(offIcon, 1f, 0f);
+        handleTransform.localPosition = /*SmoothMove(handle, onPosX, offPosX);*/ new Vector3(Mathf.Lerp(offPosX, onPosX, /*t +=*/ speed * Time.deltaTime), 0f, 0f);
+    }
 
     public void Toggle(bool toggleStatus)
     {
