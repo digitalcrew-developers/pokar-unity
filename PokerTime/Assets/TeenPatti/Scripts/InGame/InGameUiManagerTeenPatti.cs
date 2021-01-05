@@ -32,6 +32,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     [SerializeField]
     public GameObject LoadingImage;
 
+    public GameObject acceptSideShowButton;
+
    // private SuggestionActions selectedSuggestionButton = SuggestionActions.Null;
 
 
@@ -760,7 +762,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
             }
 
 
-
+            acceptSideShowButton.SetActive(false);
 
             int callAmount = (int)playerObject.GetPlayerData().totalBet;
             GameConstants.playerbetAmount = callAmount;
