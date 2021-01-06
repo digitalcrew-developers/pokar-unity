@@ -44,26 +44,27 @@ public class PlayerDeatilsControl : MonoBehaviour
             case "preflop":                
                 PlayerNameText.text = handDetails.PREFLOP[place].userName;
                 UpdateTextAndColor(handDetails.PREFLOP[place].betType, handDetails.PREFLOP[place].seatName);
-                BetText.text = handDetails.PREFLOP[place].amount.ToString();
-                TotalText.text = handDetails.PREFLOP[place].currentPot.ToString();   
+                BetText.text = handDetails.PREFLOP[place].totalBet.ToString();
+                TotalText.text = handDetails.PREFLOP[place].totalCoins.ToString();  
                 break;
             case "postflop":
                 PlayerNameText.text = handDetails.POSTFLOP[place].userName;
-                UpdateTextAndColor(handDetails.POSTFLOP[place].betType, handDetails.PREFLOP[place].seatName);
-                BetText.text = handDetails.POSTFLOP[place].amount.ToString();
-                TotalText.text = handDetails.POSTFLOP[place].currentPot.ToString();
+                UpdateTextAndColor(handDetails.POSTFLOP[place].betType, handDetails.POSTFLOP[place].seatName);
+                BetText.text = handDetails.POSTFLOP[place].totalBet.ToString();
+                TotalText.text = handDetails.POSTFLOP[place].totalCoins.ToString();
                 break;
             case "turn":
+                Debug.Log(handDetails.POSTTURN.Count + " " + place);
                 PlayerNameText.text = handDetails.POSTTURN[place].userName;
-                UpdateTextAndColor(handDetails.POSTTURN[place].betType, handDetails.PREFLOP[place].seatName);
-                BetText.text = handDetails.POSTTURN[place].amount.ToString();
-                TotalText.text = handDetails.POSTTURN[place].currentPot.ToString();
+                UpdateTextAndColor(handDetails.POSTTURN[place].betType, handDetails.POSTTURN[place].seatName);
+                BetText.text = handDetails.POSTTURN[place].totalBet.ToString();
+                TotalText.text = handDetails.POSTTURN[place].totalCoins.ToString();
                 break;
             case "river":
                 PlayerNameText.text = handDetails.POSTRIVER[place].userName;
-                UpdateTextAndColor(handDetails.POSTRIVER[place].betType, handDetails.PREFLOP[place].seatName);
-                BetText.text = handDetails.POSTRIVER[place].amount.ToString();
-                TotalText.text = handDetails.POSTRIVER[place].currentPot.ToString();
+                UpdateTextAndColor(handDetails.POSTRIVER[place].betType, handDetails.POSTRIVER[place].seatName);
+                BetText.text = handDetails.POSTRIVER[place].totalBet.ToString();
+                TotalText.text = handDetails.POSTRIVER[place].totalCoins.ToString();
                 break;
             case "showdown":
                 //PlayerNameText.text = handDetails.PREFLOP[place].userName;
@@ -73,6 +74,22 @@ public class PlayerDeatilsControl : MonoBehaviour
                 break;
             default:
                 break;
+        }
+        if (PrefsManager.GetPlayerData().userName == PlayerNameText.text)
+        {
+            PlayerNameText.text = "<color=yellow>" + PlayerNameText.text + "</color>";
+            BetText.text = "<color=yellow>" + BetText.text + "</color>";
+            TotalText.text = "<color=yellow>" + TotalText.text + "</color>";
+        }
+    }
+
+    void MakeMyRowColorDifferent(string uName)
+    {
+        if (PrefsManager.GetPlayerData().userName == uName)
+        {
+            PlayerNameText.text = "<color=yellow>" + PlayerNameText.text + "</color>";
+            BetText.text = "<color=yellow>" + BetText.text + "</color>";
+            TotalText.text = "<color=yellow>" + TotalText.text + "</color>";
         }
     }
 
