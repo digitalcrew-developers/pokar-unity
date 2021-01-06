@@ -42,10 +42,23 @@ public class TopUpScript : MonoBehaviour
         if (isTopUp)
         {
             int addedBalance = (int)(slider.value - initialBalance);
-            SocketController.instance.SendTopUpRequest(addedBalance);
-            InGameManager.instance.ToggleTopUpDone(true);
+
+            if (InGameManager.instance != null)
+            {
+                SocketController.instance.SendTopUpRequest(addedBalance);
+                InGameManager.instance.ToggleTopUpDone(true);
+            }
+            else if(ClubInGameManager.instance != null)
+            {
+                ClubSocketController.instance.SendTopUpRequest(addedBalance);
+                ClubInGameManager.instance.ToggleTopUpDone(true);
+            }
         }
 
-        InGameUiManager.instance.DestroyScreen(InGameScreens.TopUp);
+
+        if (InGameUiManager.instance != null)
+            InGameUiManager.instance.DestroyScreen(InGameScreens.TopUp);
+        else if (ClubInGameUIManager.instance != null)
+            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.TopUp);
     }
 }

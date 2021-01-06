@@ -58,6 +58,7 @@ public class MenuScript : MonoBehaviour
                   //  InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
                 }
                 break;
+
             case "StandUp":
                 {
                     if (GameConstants.poker)
@@ -125,9 +126,11 @@ public class MenuScript : MonoBehaviour
                     }
                 }
                 break;
+
             case "tableSettings":
                 {
-                    if (InGameUiManager.instance != null) {
+                    if (InGameUiManager.instance != null) 
+                    {
                         InGameUiManager.instance.ShowScreen(InGameScreens.TableSettings);
 
                     }
@@ -147,6 +150,45 @@ public class MenuScript : MonoBehaviour
                     else
                     {
                         ClubInGameUIManager.instance.ShowScreen(InGameScreens.HandRanking);
+                    }
+                }
+                break;
+
+            case "hostPrivilege":
+                {
+                    if (InGameUiManager.instance != null)
+                    {
+                        InGameUiManager.instance.ShowScreen(InGameScreens.HostPrivilege);
+                    }
+                    else
+                    {
+                        ClubInGameUIManager.instance.ShowScreen(InGameScreens.HostPrivilege);
+                    }
+                }
+                break;
+
+            case "evChopRules":
+                {
+                    if (InGameUiManager.instance != null)
+                    {
+                        InGameUiManager.instance.ShowScreen(InGameScreens.EVChopRules);
+                    }
+                    else
+                    {
+                        ClubInGameUIManager.instance.ShowScreen(InGameScreens.EVChopRules);
+                    }
+                }
+                break; 
+
+            case "counter":
+                {
+                    if (InGameUiManager.instance != null)
+                    {
+                        InGameUiManager.instance.ShowScreen(InGameScreens.Counter);
+                    }
+                    else
+                    {
+                        ClubInGameUIManager.instance.ShowScreen(InGameScreens.Counter);
                     }
                 }
                 break;

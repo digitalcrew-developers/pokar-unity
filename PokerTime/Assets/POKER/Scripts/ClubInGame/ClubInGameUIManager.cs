@@ -959,6 +959,14 @@ public class ClubInGameUIManager : MonoBehaviour
                         gm.GetComponent<PointEarnMsg>().OnOpen();
                     }
                     break;
+                case InGameScreens.Counter:
+                    {
+                        if (!gm.activeSelf)
+                        {
+                            gm.SetActive(true);
+                        }
+                    }
+                    break;
                 default:
                     break;
             }
