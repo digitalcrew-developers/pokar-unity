@@ -253,7 +253,7 @@ public class HandHistoryManager : MonoBehaviour
                 GameObject gm2 = Instantiate(HandDetailRoundPrefab, HandDetailsContent) as GameObject;
                 gm2.SetActive(true);
                 gm2.GetComponent<RoundHeading>().Init("turn", histories.histories[pageNo].handDetails);
-
+                Debug.Log(histories.histories[pageNo].handDetails.POSTTURN.Count + " " + pageNo);
                 for (int h = 0; h < histories.histories[pageNo].handDetails.POSTTURN.Count; h++)
                 {
                     GameObject details2 = Instantiate(PlayerDetailsPrefab, HandDetailsContent) as GameObject;
@@ -273,7 +273,7 @@ public class HandHistoryManager : MonoBehaviour
                 {
                     GameObject details2 = Instantiate(PlayerDetailsPrefab, HandDetailsContent) as GameObject;
                     details2.SetActive(true);
-                    details2.GetComponent<PlayerDeatilsControl>().Init("turn", histories.histories[pageNo].handDetails,
+                    details2.GetComponent<PlayerDeatilsControl>().Init("river", histories.histories[pageNo].handDetails,
                         h);
                 }
             }
@@ -305,6 +305,8 @@ public class PreFlop
     public string userName;
     public string betType;
     public double amount;
+    public double totalBet;
+    public double totalCoins;
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
@@ -318,6 +320,8 @@ public class PostFlop {
     public string userName;
     public string betType;
     public double amount;
+    public double totalBet;
+    public double totalCoins;
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
@@ -332,6 +336,8 @@ public class PostTurn
     public string userName;
     public string betType;
     public double amount;
+    public double totalBet;
+    public double totalCoins;
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
@@ -346,6 +352,8 @@ public class PostRiver
     public string userName;
     public string betType;
     public double amount;
+    public double totalBet;
+    public double totalCoins;
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
@@ -360,6 +368,8 @@ public class ShowDown
     public string userName;
     public string betType;
     public double amount;
+    public double totalBet;
+    public double totalCoins;
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
