@@ -12,9 +12,20 @@ public class TipsScreenUIManager : MonoBehaviour
         {
             case "back":
                 {
-                    
+                    if (InGameUiManager.instance != null)
                         InGameUiManager.instance.DestroyScreen(InGameScreens.Tips);
-                   
+                    else if (ClubInGameUIManager.instance != null)
+                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Tips);                   
+                }
+                break;
+
+            //Case to close EV Chop Tips 
+            case "closeEVChopTips":
+                {
+                    if(ClubInGameUIManager.instance != null)
+                    {
+                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.EVChopRules);
+                    }
                 }
                 break;
 

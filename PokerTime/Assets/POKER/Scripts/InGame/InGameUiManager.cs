@@ -943,7 +943,7 @@ public class InGameUiManager : MonoBehaviour
                     {
                         gm.GetComponent<PointEarnMsg>().OnOpen();
                     }
-                    break;
+                    break;                
                 default:
                     break;
             }
@@ -1282,8 +1282,10 @@ public enum InGameScreens
     SpinWheelScreen,
     DealerImageScreen,
     SwitchTable,
-    GameDisplay
-    
+    GameDisplay,
+    Counter,
+    EVChopRules,
+    HostPrivilege
 }
 
 public enum PlayerAction
