@@ -285,7 +285,7 @@ public class InGameManager : MonoBehaviour
                 {
                     GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
                     gm.transform.DOMove(playerCards[j].transform.position, GameConstants.CARD_ANIMATION_DURATION);
-                    gm.transform.DOScale(playerCards[j].transform.localScale, GameConstants.CARD_ANIMATION_DURATION);
+                    gm.transform.DOScale(Vector3.one/*playerCards[j].transform.localScale*/, GameConstants.CARD_ANIMATION_DURATION);
                     gm.transform.DORotateQuaternion(playerCards[j].transform.rotation, GameConstants.CARD_ANIMATION_DURATION);
                     animatedCards.Add(gm);
                     SoundManager.instance.PlaySound(SoundType.CardMove);
