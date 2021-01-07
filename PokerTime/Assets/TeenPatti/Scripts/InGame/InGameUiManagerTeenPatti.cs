@@ -22,7 +22,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     public GameObject actionButtonParent, raisePopUp, suggestionButtonParent, clubTableOject, lobbyTableObject;
 
     [SerializeField]
-    private Text tableText, tableInfoText, callAmountText, sliderText, suggestionCallText;
+    private Text tableText, tableInfoText, callAmountText, sliderText, suggestionCallText , showCallAomuntText;
 
     [SerializeField]
     private Slider slider;
@@ -32,7 +32,13 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     [SerializeField]
     public GameObject LoadingImage;
 
-    public GameObject acceptSideShowButton;
+    public GameObject acceptSideShowButton, rejectsideShowButton;
+
+    public GameObject betPlusButton, betMinusButton;
+
+    
+
+    
 
    // private SuggestionActions selectedSuggestionButton = SuggestionActions.Null;
 
@@ -68,7 +74,11 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
     public GameObject showMatchButton;
 
-    public Sprite blindSprite, callSprite; 
+    public Sprite blindSprite, callSprite;
+
+    public Text sideShowRequesterPlayer;
+
+    public GameObject rejectSideShowBtn;
 
     private void Awake()
     {
@@ -720,28 +730,31 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         return actionButtonParent.activeInHierarchy;
     }
 
-    
+    bool clickPlusButton = false;
     public void OnClickBetPlusButton()
     {
-        
-        callAmountText.text = "" + (GameConstants.playerbetAmount * 2).ToString();
-        GameConstants.playerbetAmount = GameConstants.playerbetAmount * 2;
+        if (!clickPlusButton)
+        {
+            callAmountText.text = "" + (GameConstants.playerbetAmount * 2).ToString();
+            GameConstants.playerbetAmount = GameConstants.playerbetAmount * 2;
+            clickPlusButton = true;
+        }
     }
 
     public void OnClickBetMinusButton()
     {
-        //if(runValue == 1)
-        //{
-        //    runValue--;
-        //    callAmountText.text = "" + (GameConstants.playerbetAmount/2).ToString();
-        //    GameConstants.playerbetAmount = GameConstants.playerbetAmount / 2;
-        //}
-        
+        if (clickPlusButton)
+        {
+            callAmountText.text = "" + (GameConstants.playerbetAmount / 2).ToString();
+            GameConstants.playerbetAmount = GameConstants.playerbetAmount / 2;
+            clickPlusButton = false;
+        }
+
     }
 
     int i = 0;
     public void ToggleActionButton(bool isShow, PlayerScriptTeenPatti playerObject = null,
-        bool isCheckAvailable = false, int lastBetAmount = 200)
+        bool isCheckAvailable = false, int lastBetAmount = 0)
     {
         actionButtonParent.SetActive(isShow);
 
@@ -755,16 +768,19 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
             }
 
             //raisePopUp.SetActive(false);
-            if (i == 0)
-            {
-                lastBetAmount = 200;
-                i++;
-            }
+            //if (i == 0)
+            //{
+            //    lastBetAmount = 200;
+            //    i++;
+            //}
 
-
+            clickPlusButton = false;
             acceptSideShowButton.SetActive(false);
+            rejectSideShowBtn.SetActive(false);
 
-            int callAmount = (int)playerObject.GetPlayerData().totalBet;
+            int callAmount = (lastBetAmount * 2) - (int)playerObject.GetPlayerData().totalBet;
+            //int callAmount = (int)playerObject.GetPlayerData().totalBet;
+            
             GameConstants.playerbetAmount = callAmount;
 
             if (callAmount > 0)
@@ -809,17 +825,23 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     {
                         callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
                         callAmountText.text = "" + callAmount;
+                        showCallAomuntText.text = "" + callAmount;
                         actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = blindSprite;
                     }
                     else // dont have amount to bet hence show only fold and all-in
                     {
-                        actionButtons[(int)PlayerAction.Call].SetActive(false);
+                        //actionButtons[(int)PlayerAction.Call].SetActive(false);
                         //actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                        callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
+                        callAmountText.text = "" + Mathf.Abs (callAmount);
+                        showCallAomuntText.text = "" + callAmount;
+                        actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = blindSprite;
                     }
                     if (callAmount == 0)
                     {
                         callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
                         callAmountText.text = "";
+                        showCallAomuntText.text = "" + callAmount;
 
                     }
                 }
@@ -829,16 +851,19 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     {
                         callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
                         callAmountText.text = "" + callAmount;
+                        showCallAomuntText.text = "" + callAmount;
                         actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = callSprite;
                     }
                     else // dont have amount to bet hence show only fold and all-in
                     {
                         actionButtons[(int)PlayerAction.Call].SetActive(false);
+                       
                         // actionButtons[(int)PlayerAction.Raise].SetActive(false);
                     }
                     if (callAmount == 0)
                     {
                         callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
+                        showCallAomuntText.text = "" + callAmount;
                         callAmountText.text = "";
 
                     }
@@ -905,6 +930,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
                     callAmountText.text = "" + callAmount;
                     actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = blindSprite;
+                    showCallAomuntText.text = "" + callAmount;
                 }
                 else // dont have amount to bet hence show only fold and all-in
                 {
@@ -915,6 +941,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                 {
                     callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
                     callAmountText.text = "";
+                    showCallAomuntText.text = "" + callAmount;
 
                 }
             }
@@ -924,6 +951,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                 {
                     callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
                     callAmountText.text = "" + callAmount;
+                    showCallAomuntText.text = "" + callAmount;
                     actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = callSprite;
                 }
                 else // dont have amount to bet hence show only fold and all-in
@@ -935,6 +963,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                 {
                     callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
                     callAmountText.text = "";
+                    showCallAomuntText.text = "" + callAmount;
 
                 }
             }
@@ -1461,6 +1490,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         //   InGameManagerTeenPatti.instance.OnOpenCards();
 
         PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["userId"].ToString());
+        cardSeenPlayer.cardSeenButton.SetActive(false);
 
         if (cardSeenPlayer.IsMe())
         {
@@ -1517,8 +1547,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         PlayerScriptTeenPatti.instance.timerBar.fillAmount = 0;
         GameConstants.timerStart++;
         SocketControllerTeenPatti.instance.SendShowMatch();
-        
-
+        //InGameManagerTeenPatti.instance.OnPlayerActionCompleted(PlayerAction.Call, (int)availableCallAmount, "Call");
         //InGameUiManagerTeenPatti.instance.ToggleActionButton(false, null, false, 0);
     }
 
@@ -1532,8 +1561,31 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     public void OnClickSideShowWinner(GameObject btn)
     {
         btn.SetActive(false);
+        rejectSideShowBtn.SetActive(false);
         SocketControllerTeenPatti.instance.OnSideShowWinnerCalled();
-        
+        PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(GameConstants.sideShowRequesterId);
+        if(cardSeenPlayer.IsMe())
+        {
+            sideShowRequesterPlayer.text = cardSeenPlayer.playerData.userName + " accept sideshow request";
+            StartCoroutine(DisableNotification());
+        }
+
+
+    }
+
+
+    public void OnClickRejectSideShowWinner(GameObject btn)
+    {
+        btn.SetActive(false);
+        acceptSideShowButton.SetActive(false);
+        SocketControllerTeenPatti.instance.OnSideShowRejectCalled();
+        PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(GameConstants.sideShowRequesterId);
+        if (cardSeenPlayer.IsMe())
+        {
+            sideShowRequesterPlayer.text = cardSeenPlayer.playerData.userName + " reject sideshow request";
+            StartCoroutine(DisableNotification());
+        }
+
 
     }
 
@@ -1544,12 +1596,14 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
         Debug.LogError("ShowMatch is :" + data.ToJson());
         InGameManagerTeenPatti.instance.PlayerTimerReset();
-
+        
         PlayerScriptTeenPatti cardSeenPlayer1 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["p1"]["userId"].ToString());
+        cardSeenPlayer1.DisableCardSeenBtn();
         JsonData newData1 = data[0]["p1"]["cards"];
         InGameManagerTeenPatti.instance.OnOpenCardsDataFoundShowCard(newData1, cardSeenPlayer1);
 
         PlayerScriptTeenPatti cardSeenPlayer2 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["p2"]["userId"].ToString());
+        cardSeenPlayer2.DisableCardSeenBtn();
         JsonData newData2 = data[0]["p2"]["cards"];
         InGameManagerTeenPatti.instance.OnOpenCardsDataFoundShowCard(newData2, cardSeenPlayer2);
 
@@ -1566,8 +1620,33 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         Debug.LogError("SideShow is :" + data.ToJson());
         PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["from"].ToString());
         GameConstants.sideShowRequesterId = data[0]["from"].ToString();
-
+        string requesterPlayer = cardSeenPlayer.playerData.userName;
+        if (cardSeenPlayer.IsMe())
+        {
+            sideShowRequesterPlayer.text = requesterPlayer + " send you sideshow request";
+            StartCoroutine(DisableNotification());
+        }
         cardSeenPlayer.sideShowWinnerAcceptBtn.SetActive(true);
+        cardSeenPlayer.sideShowRejectBtn.SetActive(true);
+        
+        // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
+
+
+
+
+
+
+
+
+    }
+
+    public void OnSideShowRequestReject(string serverResponse)
+    {
+        // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
+        JsonData data = JsonMapper.ToObject(serverResponse);
+
+        Debug.LogError("SideShowReject is :" + data.ToJson());
+        
 
         // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
 
@@ -1578,6 +1657,13 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
 
 
+    }
+
+
+    IEnumerator DisableNotification()
+    {
+        yield return new WaitForSeconds(3f);
+        sideShowRequesterPlayer.text = "";
     }
 
 

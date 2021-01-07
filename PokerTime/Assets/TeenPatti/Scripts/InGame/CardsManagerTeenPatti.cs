@@ -432,7 +432,7 @@ public class CardsManagerTeenPatti: MonoBehaviour
 
             default:
             int numberIndex = int.Parse(serverGivenCardName[0].ToString());
-            data.cardNumber = (CardNumber)(numberIndex - 2);
+            data.cardNumber = (CardNumber)(numberIndex - 1);
             break;
         }
 

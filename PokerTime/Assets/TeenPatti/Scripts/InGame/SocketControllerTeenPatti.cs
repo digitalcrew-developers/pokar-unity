@@ -142,6 +142,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
 
         socketManager.Socket.On("sideShowWinner", OnSideShowWinnerCalled);
         socketManager.Socket.On("playerReSeat", OnPlayerReseat);
+        socketManager.Socket.On("rejectRequest", OnSideShowRequestReject);
         socketManager.Open();
     }
 
@@ -329,6 +330,9 @@ public class SocketControllerTeenPatti : MonoBehaviour
                     break;
                 case SocketEvetnsTeenPatti.ON_SIDE_SHOW:
                     InGameManagerTeenPatti.instance.SideShow(responseObject.data);
+                    break;
+                case SocketEvetnsTeenPatti.ON_SIDE_SHOW_REJECT:
+                    InGameManagerTeenPatti.instance.SideShowReject(responseObject.data);
                     break;
                 case SocketEvetnsTeenPatti.ON_SIDE_SHOW_WINNER:
                     InGameManagerTeenPatti.instance.OnSideShowWinner(responseObject.data);
@@ -1082,6 +1086,29 @@ public class SocketControllerTeenPatti : MonoBehaviour
     }
 
 
+    void OnSideShowRequestReject(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        //if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_PlayerStandUp))
+        //{
+        //    //Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+        //}
+#else
+        Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponseTeenPatti response = new SocketResponseTeenPatti();
+        response.eventType = SocketEvetnsTeenPatti.ON_SIDE_SHOW_REJECT;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+
     #endregion
 
 
@@ -1345,6 +1372,34 @@ public class SocketControllerTeenPatti : MonoBehaviour
 
         SocketRequestTeenPatti request = new SocketRequestTeenPatti();
         request.emitEvent = "sideShow";
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+    }
+
+    public void OnSideShowRejectCalled()
+    {
+        SideShowData requestData = new SideShowData();
+        //requestData.userData = new UserBetData();
+        //requestData.userAction = userAction;
+        //requestData.userAction = userAction;
+        //requestData.userData.betData = totalBetInRound;
+
+        //requestData.userData.playerAction = userAction;
+        //requestData.userData.roundNo = roundNo;
+
+        //requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+        requestData.tableId = TABLE_ID;
+        requestData.requesterUserId = GameConstants.sideShowRequesterId;
+
+        // requestData.bet = "" + GameConstants.playerbetAmount;
+
+        string requestStringData = JsonMapper.ToJson(requestData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequestTeenPatti request = new SocketRequestTeenPatti();
+        request.emitEvent = "rejectRequest";
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
@@ -1690,6 +1745,7 @@ public enum SocketEvetnsTeenPatti
     ON_SIDE_SHOW_WINNER,
     ON_SEAT_OBJECT,
     ON_PLAYER_SEAT_AGAIN,
+    ON_SIDE_SHOW_REJECT,
     NULL
 }
 

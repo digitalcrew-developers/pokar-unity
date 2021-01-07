@@ -45,6 +45,8 @@ public class PlayerScriptTeenPatti : MonoBehaviour
 
     public GameObject tempCardHolder;
 
+    public GameObject sideShowRejectBtn;
+
     
     
 
@@ -173,16 +175,16 @@ public class PlayerScriptTeenPatti : MonoBehaviour
             emptyObject = transform.Find("Empty").gameObject;
             cardsImage = new Image[GameConstants.NUMBER_OF_CARDS_PLAYER_GET_IN_MATCH_IN_TEEN_PATTI];
             fx_holder.gameObject.SetActive(false);
-            cardSeenButton.SetActive(false);
+            
             string parentName = ""+ cardsImage.Length + "_Cards";
 
             for (int i = 0; i < cardsImage.Length; i++)
             {
                 cardsImage[i] = cardHolder.transform.GetChild(i).GetComponent<Image>();
             }
-            
-            
-            
+
+            cardSeenButton.SetActive(false);
+
             //if (cardsImage.Length > 3)
             //{
             //    transform.Find("Bg/3_Cards").gameObject.SetActive(false);
@@ -212,6 +214,11 @@ public class PlayerScriptTeenPatti : MonoBehaviour
     public void PlayerSeat()
     {
         SocketControllerTeenPatti.instance.UserSitAgain();
+    }
+
+    public void DisableCardSeenBtn()
+    {
+        cardSeenButton.SetActive(false);
     }
 
     

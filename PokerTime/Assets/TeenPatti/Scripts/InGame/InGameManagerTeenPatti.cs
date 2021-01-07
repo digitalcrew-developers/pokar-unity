@@ -80,6 +80,9 @@ public class InGameManagerTeenPatti : MonoBehaviour
     bool isCardValueSet = false;
     bool isScreenshotCaptured = false;
 
+
+    public Text matchWinner;
+
     private void Awake()
     {
         instance = this;
@@ -631,18 +634,20 @@ public class InGameManagerTeenPatti : MonoBehaviour
         amount.transform.DOScale(Vector3.one, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
         yield return new WaitForSeconds(3f);
         winnerAnimationFound = false;
-        if (resetGame)
-        {
-            resetGame = false;
-            if (GameConstants.poker)
-            {
-                //GlobalGameManager.instance.LoadScene(Scenes.InGame);
-            }
-            else
-            {
-                GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
-            }
-        }
+
+        // Changes in script
+        //if (resetGame)
+        //{
+        //    resetGame = false;
+        //    if (GameConstants.poker)
+        //    {
+        //        //GlobalGameManager.instance.LoadScene(Scenes.InGame);
+        //    }
+        //    else
+        //    {
+        //        GlobalGameManager.instance.LoadScene(Scenes.InGameTeenPatti);
+        //    }
+        //}
        
     }
     public float GetPotAmount()
@@ -873,6 +878,12 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     }
 
+    public void SideShowReject(string serverResponse)
+    {
+        InGameUiManagerTeenPatti.instance.OnSideShowRequestReject(serverResponse);
+
+    }
+
     public void OnSideShowWinner(string serverResponse)
     {
 
@@ -993,7 +1004,9 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
                 Debug.Log(id);
                 PlayerScriptTeenPatti winnerPlayer = GetPlayerObject(data[0][0][0]["userId"].ToString());
+                // show Winner notification
 
+                matchWinner.text = winnerPlayer.playerData.userName + " wins the game.";
 
 
                 if (winnerPlayer != null)
@@ -1391,6 +1404,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 ResetMatchData();
                 InGameManagerTeenPatti.instance.Pot.SetActive(false);
                 ResetAllDataForPlayers();
+                matchWinner.text = "";
                 InGameUiManagerTeenPatti.instance.ToggleActionButton(false, null, false, 0);
                 ShowNewPlayersOnTable(newData, false);
                 resetGame = true;
