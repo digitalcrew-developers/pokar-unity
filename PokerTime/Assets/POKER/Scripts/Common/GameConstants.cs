@@ -52,8 +52,8 @@ public class GameConstants : MonoBehaviour
     //public const string SOCKET_URL = BASE_URL + ":3002";
 
     //Production
-    public const string API_URL = BASE_URL + ":3000";// ":3009";
-    public const string SOCKET_URL = BASE_URL + ":3333";// ":3008";
+    public const string API_URL = BASE_URL + ":3001"; /*":3000";*/// ":3009";
+    public const string SOCKET_URL = BASE_URL + ":3334";/*":3333";*/// ":3008";
 
     public const string SOCKET_URL_FLASH = BASE_URL + ":8888";
 

@@ -64,6 +64,13 @@ public class InGameManager : MonoBehaviour
     public string currentClickedSeatNum = "";
 
     //DEV_CODE
+
+    //Variables to store values regarding match winning cards and to highlight them
+    private bool isHighlightCard;
+    public CardData[] highlightCards;
+    public string[] highlightCardString;
+
+    //For Recording Game Play
     Texture2D screenshot;
     public int videoWidth /* = 1280*/;
     public int videoHeight /*= 720*/;
@@ -101,6 +108,10 @@ public class InGameManager : MonoBehaviour
 
     private void Start()
     {
+        //DEV_CODE
+        highlightCardString = new string[5];
+        highlightCards = new CardData[5];
+
         //InGameUiManager.instance.ShowTableMessage("Select a seat");
         RabbitButton.SetActive(false);
         gameExitCalled = false;
@@ -1097,10 +1108,32 @@ public class InGameManager : MonoBehaviour
 
                         yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
                     }
+
+
+                    //DEV_CODE
+                    if (isHighlightCard)
+                    {
+                        for (int n = 0; n < communityCards.Length; n++)
+                        {
+                            communityCards[n].color = Color.white;
+                        }
+                    }
+                    for (int num = 0; num < communityCards.Length; num++)
+                    {
+                        for (int num2 = 0; num2 < highlightCards.Length; num2++)
+                        {
+                            if (isHighlightCard && highlightCards[num2] != null && communityCards[num].sprite.name == highlightCards[num2].cardsSprite.name)
+                            {
+                                communityCards[num].color = Color.yellow;
+
+                                Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                            }
+                        }
+                    }
                 }
             break;
         }
-
+        isHighlightCard = false;
         yield return new WaitForSeconds(0.1f);
     }
 
@@ -1291,6 +1324,39 @@ public class InGameManager : MonoBehaviour
             return;
         }
 
+
+        Debug.Log("OnResultREsponse: " + serverResponse);
+        JsonData jsonData = JsonMapper.ToObject(serverResponse);
+
+        //Debug.Log("isMyPlayerWin:" + jsonData[0]["sidePot"][0]["users"].Count.ToString());
+
+        if (jsonData[0]["sidePot"][0]["users"].Count > 0)
+        {
+            for (int i = 0; i < jsonData[0]["sidePot"][0]["users"].Count; i++)
+            {
+                if (!jsonData[0]["sidePot"][0]["users"][i]["isWin"].Equals(true))
+                {
+                    continue;
+                }
+                PlayerScript playerObject = GetPlayerObject(jsonData[0]["sidePot"][0]["users"][i]["userId"].ToString());
+                if (playerObject != null)
+                {
+                    //if()
+                    //{
+
+                    //}
+
+                    for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["openCards"].Count; j++)
+                    {
+                        highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["openCards"][j].ToString();
+                        highlightCards[j] = CardsManager.instance.GetCardData(highlightCardString[j]);
+                        Debug.Log(highlightCards[j].cardIcon);
+                    }
+                    isHighlightCard = true;
+                }
+            }
+        }
+
         MATCH_ROUND = 10; // ToShow all cards
         ShowCommunityCardsAnimation();
         ResultProcess(serverResponse);
@@ -1311,6 +1377,12 @@ public class InGameManager : MonoBehaviour
         if (isRecording)
         {
             //StopRecording();
+        }
+
+        for (int i = 0; i < communityCards.Length; i++)
+        {
+            communityCards[i].color = Color.white;
+            highlightCards[i] = null;
         }
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)

@@ -340,9 +340,11 @@ public class ClubDetailsUIManager : MonoBehaviour
 			RoomData roomData = new RoomData();
 			roomData.isLobbyRoom = false;
 
+			counter++;
+
 			if ((data["response"][i]["settingData"]["templateSubType"].ToString().Equals("NLH&PLO4") || data["response"][i]["settingData"]["templateSubType"].ToString().Equals("NLH&PLO5")) && type.Equals("NLH&PLO"))
 			{
-				counter++;
+				//counter++;
 				//roomData.gameMode = GameMode.NLH;
 
 				List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
@@ -391,7 +393,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
-				//obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = "";
+				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
 
 				//if(data["response"][i]["settingData"].Count > 0)
 				//{
@@ -413,7 +415,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 			else if (data["response"][i]["settingData"]["templateSubType"].ToString().Equals(type))
 			{
-				counter++;
+				//counter++;
 				//roomData.gameMode = GameMode.NLH;
 
 				List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
@@ -462,7 +464,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
-				//obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = "";
+				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
 
 				//if(data["response"][i]["settingData"].Count > 0)
 				//{
@@ -530,7 +532,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
-				//obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = "";
+				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
 
 				//if(data["response"][i]["settingData"].Count > 0)
 				//{
