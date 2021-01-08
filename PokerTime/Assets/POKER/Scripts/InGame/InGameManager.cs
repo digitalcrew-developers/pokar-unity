@@ -1126,7 +1126,7 @@ public class InGameManager : MonoBehaviour
                             {
                                 communityCards[num].color = Color.yellow;
 
-                                Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
                             }
                         }
                     }
@@ -1338,21 +1338,28 @@ public class InGameManager : MonoBehaviour
                 {
                     continue;
                 }
+                
                 PlayerScript playerObject = GetPlayerObject(jsonData[0]["sidePot"][0]["users"][i]["userId"].ToString());
+
                 if (playerObject != null)
                 {
-                    //if()
-                    //{
+                    Image[] playerCards = playerObject.GetCardsImage();
 
-                    //}
-
-                    for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["openCards"].Count; j++)
+                    for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count; j++)
                     {
-                        highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["openCards"][j].ToString();
+                        highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["winningCards"][j].ToString();
                         highlightCards[j] = CardsManager.instance.GetCardData(highlightCardString[j]);
-                        Debug.Log(highlightCards[j].cardIcon);
+                        //Debug.Log(highlightCards[j].cardIcon);
+                        for (int k = 0; k < playerCards.Length; k++)
+                        {
+                            if (playerCards[k].sprite.name == highlightCards[j].cardsSprite.name)
+                            {
+                                Debug.Log("Player Card Matched  :: ");
+                                playerCards[k].color = Color.yellow;
+                            }
+                        }
                     }
-                    isHighlightCard = true;
+                    isHighlightCard = true;                    
                 }
             }
         }
