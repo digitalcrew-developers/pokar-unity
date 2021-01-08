@@ -29,10 +29,11 @@ public class HandSummaryItemControl : MonoBehaviour
 
         handSummary = _handSummary;
 
-        ActionOneText.text = "";
+        ActionOneText.text = "" + handSummary.seatName;
 
         PlayerNameText.text = handSummary.userName;
         ActionTwoText.text = handSummary.name;
+        Debug.Log(handSummary.userName + " HandSummary " + handSummary.winAmount + ", " + handSummary.cards.Count + ", " + handSummary.communityCard.Count);
         if(handSummary.winAmount > 0)
         {
             BetText.text = "+" + handSummary.winAmount.ToString();
@@ -45,7 +46,7 @@ public class HandSummaryItemControl : MonoBehaviour
         }
 
         //user cards 
-        if(handSummary.cards.Count > 0)
+        if(handSummary.handStrength != "Fold" && handSummary.cards.Count > 0)
         {
             if (!string.IsNullOrEmpty(handSummary.cards[0].ToString()))
             {
