@@ -67,10 +67,10 @@ public class PlayerDeatilsControl : MonoBehaviour
                 TotalText.text = handDetails.POSTRIVER[place].totalCoins.ToString();
                 break;
             case "showdown":
-                //PlayerNameText.text = handDetails.PREFLOP[place].userName;
-                //UpdateTextAndColor(handDetails.PREFLOP[place].betType);
-                //BetText.text = handDetails.PREFLOP[place].amount.ToString();
-                //TotalText.text = handDetails.PREFLOP[place].currentPot.ToString();
+                PlayerNameText.text = handDetails.SHOWDOWN[place].userName;
+                UpdateTextAndColor(handDetails.SHOWDOWN[place].betType, handDetails.SHOWDOWN[place].seatName);
+                BetText.text = handDetails.SHOWDOWN[place].totalBet.ToString();
+                TotalText.text = handDetails.SHOWDOWN[place].totalCoins.ToString();
                 break;
             default:
                 break;
