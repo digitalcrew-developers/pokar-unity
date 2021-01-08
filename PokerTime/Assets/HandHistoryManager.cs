@@ -7,10 +7,10 @@ using UnityEngine.UI;
 
 public class HandHistoryManager : MonoBehaviour
 {
-    public GameObject LoadingText;
+    public GameObject LoadingText, logText;
     public GameObject DetailsPanel, SummaryPanel;
     public GameObject DetailsButtonImage, SummaryButtonImage;
-    public GameObject HandDetailRoundPrefab, PlayerDetailsPrefab, HandSummaryItemPrefab;
+    public GameObject HandDetailRoundPrefab, PlayerDetailsPrefab, PotDetailsPrefab, HandSummaryItemPrefab;
     public Transform HandDetailsContent, HandSummaryContent;
 
     private int pageNo = 0;
@@ -122,7 +122,7 @@ public class HandHistoryManager : MonoBehaviour
         if (requestType == RequestType.GetTableHandHistory)
         {
             Debug.Log("Response ========> GetTableHandHistory :" + serverResponse);
-
+            logText.GetComponent<Text>().text = serverResponse;
             if (!string.IsNullOrEmpty(serverResponse))
             {
                 histories = JsonUtility.FromJson<AllHandHistroy>("{\"histories\":" + serverResponse + "}");
@@ -239,6 +239,26 @@ public class HandHistoryManager : MonoBehaviour
                 gm1.SetActive(true);
                 gm1.GetComponent<RoundHeading>().Init("postflop", histories.histories[pageNo].handDetails);
 
+                if (histories.histories[pageNo].handDetails.POSTFLOP[0].sidePot.Count >= 2)
+                {
+                    string potDetails = null;
+                    for (int i = 0; i < histories.histories[pageNo].handDetails.POSTFLOP[0].sidePot.Count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            potDetails = "Main(" + histories.histories[pageNo].handDetails.POSTFLOP[0].sidePot[i].amount.ToString() + ") ";
+                        }
+                        else
+                        {
+                            potDetails += "Side " + i + "(" + histories.histories[pageNo].handDetails.POSTFLOP[0].sidePot[i].amount.ToString() + ") ";
+                        }
+                    }
+                    GameObject p = Instantiate(PotDetailsPrefab, HandDetailsContent) as GameObject;
+                    p.SetActive(true);
+                    p.transform.GetChild(1).GetComponent<Text>().text = potDetails;
+                    //p.GetComponent<RoundHeading>().Init("postfloppot", histories.histories[pageNo].handDetails);
+                }
+
                 for (int h = 0; h < histories.histories[pageNo].handDetails.POSTFLOP.Count; h++)
                 {
                     GameObject details2 = Instantiate(PlayerDetailsPrefab, HandDetailsContent) as GameObject;
@@ -276,6 +296,28 @@ public class HandHistoryManager : MonoBehaviour
                     details2.GetComponent<PlayerDeatilsControl>().Init("river", histories.histories[pageNo].handDetails,
                         h);
                 }
+            }
+            //showdown
+            if (histories.histories[pageNo].handDetails.SHOWDOWN.Count > 0)
+            {
+                GameObject gm2 = Instantiate(HandDetailRoundPrefab, HandDetailsContent) as GameObject;
+                gm2.SetActive(true);
+                gm2.GetComponent<RoundHeading>().Init("showdown", histories.histories[pageNo].handDetails);
+
+                /*for (int h = 0; h < histories.histories[pageNo].handDetails.SHOWDOWN.Count; h++)
+                {
+                    GameObject details2 = Instantiate(PlayerDetailsPrefab, HandDetailsContent) as GameObject;
+                    details2.SetActive(true);
+                    details2.GetComponent<PlayerDeatilsControl>().Init("showdown", histories.histories[pageNo].handDetails,
+                        h);
+                }*/
+            }
+            //summary detail
+            for (int j = 0; j < histories.histories[pageNo].handSummary.Count; j++)
+            {
+                GameObject gm = Instantiate(HandSummaryItemPrefab, HandDetailsContent) as GameObject;
+                gm.SetActive(true);
+                gm.GetComponent<HandSummaryItemControl>().Init(histories.histories[pageNo].handSummary[j]);
             }
         }
     }
@@ -324,6 +366,7 @@ public class PostFlop {
     public double totalCoins;
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
+    public List<Pot> sidePot = new List<Pot>();
     public double currentPot;
     public string seatName;
 }
@@ -403,6 +446,7 @@ public class HandSummary
     public int totalBet;
     public int totalCoins;
     public string name;
+    public string seatName;
     public string discription;
     public List<string> possibleCards = new List<string>();
     public List<string> cards = new List<string>();
@@ -418,7 +462,7 @@ public class HandDetails
     public List<PostFlop> POSTFLOP = new List<PostFlop>();
     public List<PostTurn> POSTTURN = new List<PostTurn>();
     public List<PostRiver> POSTRIVER = new List<PostRiver>();
-    //public List<PostRiver> PORTRIVER = new List<PostRiver>();
+    public List<ShowDown> SHOWDOWN = new List<ShowDown>();
 
 }
 
