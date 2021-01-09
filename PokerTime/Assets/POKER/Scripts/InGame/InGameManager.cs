@@ -1341,11 +1341,8 @@ public class InGameManager : MonoBehaviour
                 
                 PlayerScript playerObject = GetPlayerObject(jsonData[0]["sidePot"][0]["users"][i]["userId"].ToString());
 
-                Debug.Log("Winner Player Name is: " + playerObject.playerData.userName);
-
                 if (playerObject != null)
                 {
-                    Debug.Log("Player is no null");
                     Image[] playerCards = playerObject.GetCardsImage();
 
                     for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count; j++)
@@ -1398,17 +1395,7 @@ public class InGameManager : MonoBehaviour
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             onlinePlayersScript[i].ResetRealtimeResult();
-
-            //DEV_CODE 
-            //Logic to reset all players highlighted cards to original one.
-            Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
-
-            for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
-            {
-                playerCards[j].color = Color.white;
-            }
         }
-        
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
