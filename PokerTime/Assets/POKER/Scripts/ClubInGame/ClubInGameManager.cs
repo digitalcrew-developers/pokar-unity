@@ -69,6 +69,12 @@ public class ClubInGameManager : MonoBehaviour
     public string currentClickedSeatNum = "";
 
     //DEV_CODE
+
+    //Variables to store values regarding match winning cards and to highlight them
+    private bool isHighlightCard;
+    public CardData[] highlightCards;
+    public string[] highlightCardString;
+
     Texture2D screenshot;
     public int videoWidth /* = 1280*/;
     public int videoHeight /*= 720*/;
@@ -106,6 +112,10 @@ public class ClubInGameManager : MonoBehaviour
 
     private void Start()
     {
+        //DEV_CODE
+        highlightCardString = new string[5];
+        highlightCards = new CardData[5];
+
         //ClubInGameUIManager.instance.ShowTableMessage("Select a seat");
         RabbitButton.SetActive(false);
         ResumeHand.SetActive(false);
@@ -820,8 +830,8 @@ public class ClubInGameManager : MonoBehaviour
         //show buttons if not already shown in this game
         if (canShowEVChop)
         {
-            ResumeHand.SetActive(true);
-            EVCHOPButton.SetActive(true);
+            //ResumeHand.SetActive(true);
+            //EVCHOPButton.SetActive(true);
             //show ev chop value on button
             //loop through all players and show ev chop percent.
             canShowEVChop = false;
@@ -1206,10 +1216,34 @@ public class ClubInGameManager : MonoBehaviour
                         //DEV_CODE Added this line as per InGameManager script
                         yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
                     }
+
+                    //DEV_CODE
+                    if (isHighlightCard)
+                    {
+                        for (int n = 0; n < communityCards.Length; n++)
+                        {
+                            //communityCards[n].color = Color.white;
+                            communityCards[n].transform.GetChild(0).gameObject.SetActive(false);
+                        }
+                    }
+                    for (int num = 0; num < communityCards.Length; num++)
+                    {
+                        for (int num2 = 0; num2 < highlightCards.Length; num2++)
+                        {
+                            if (isHighlightCard && highlightCards[num2] != null && communityCards[num].sprite.name == highlightCards[num2].cardsSprite.name)
+                            {
+                                //communityCards[num].color = Color.yellow;
+                                communityCards[num].transform.GetChild(0).gameObject.SetActive(true);
+
+                                //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                            }
+                        }
+                    }
                 }
                 break;
         }
 
+        isHighlightCard = false;
         yield return new WaitForSeconds(0.1f);
     }
 
@@ -1450,6 +1484,45 @@ public class ClubInGameManager : MonoBehaviour
         }
 
         //Debug.LogError("OnResultSuccessFound :" + serverResponse);
+        JsonData jsonData = JsonMapper.ToObject(serverResponse);
+
+        //Debug.Log("isMyPlayerWin:" + jsonData[0]["sidePot"][0]["users"].Count.ToString());
+
+        if (jsonData[0]["sidePot"][0]["users"].Count > 0)
+        {
+            for (int i = 0; i < jsonData[0]["sidePot"][0]["users"].Count; i++)
+            {
+                if (!jsonData[0]["sidePot"][0]["users"][i]["isWin"].Equals(true))
+                {
+                    continue;
+                }
+
+                PlayerScript playerObject = GetPlayerObject(jsonData[0]["sidePot"][0]["users"][i]["userId"].ToString());
+
+                if (playerObject != null)
+                {
+                    Image[] playerCards = playerObject.GetCardsImage();
+
+                    for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count; j++)
+                    {
+                        highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["winningCards"][j].ToString();
+                        highlightCards[j] = CardsManager.instance.GetCardData(highlightCardString[j]);
+                        //Debug.Log(highlightCards[j].cardIcon);
+                        for (int k = 0; k < playerCards.Length; k++)
+                        {
+                            if (playerCards[k].sprite.name == highlightCards[j].cardsSprite.name)
+                            {
+                                //Debug.LogError("OBJECT NAME: " + playerCards[k].transform.GetChild(0).gameObject.name);
+                                //playerCards[k].color = Color.yellow;
+                                playerCards[k].transform.GetChild(0).gameObject.SetActive(true);
+                                //playerObject.
+                            }
+                        }
+                    }
+                    isHighlightCard = true;
+                }
+            }
+        }
 
         MATCH_ROUND = 10; // ToShow all cards
         ShowCommunityCardsAnimation();
@@ -1475,10 +1548,28 @@ public class ClubInGameManager : MonoBehaviour
             //StopRecording();
         }
 
+        for (int i = 0; i < communityCards.Length; i++)
+        {
+            //communityCards[i].color = Color.white;
+            communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
+            highlightCards[i] = null;
+        }
+
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             onlinePlayersScript[i].ResetRealtimeResult();
+
+            //DEV_CODE 
+            //Logic to reset all players highlighted cards to original one.
+            Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
+
+            for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
+            {
+                //playerCards[j].color = Color.white;
+                playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
+            }
         }
+
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);

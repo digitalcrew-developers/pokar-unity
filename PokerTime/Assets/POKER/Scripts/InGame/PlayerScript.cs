@@ -442,7 +442,7 @@ public class PlayerScript : MonoBehaviour
             default:
                 break;
         }
-        lastActionImage.GetComponent<Image>().SetNativeSize();
+        //lastActionImage.GetComponent<Image>().SetNativeSize();
         lastActionText.text = textToShow;
     }
 
@@ -668,12 +668,12 @@ public class PlayerScript : MonoBehaviour
 
         for (int i = 0; i < cardsImage.Length; i++)
         {
-            /*if (i == 0)
-                cardsImage[i].transform.localPosition = new Vector3(29.2f, 16.8f, 0f);
-            else
-                cardsImage[i].transform.localPosition = new Vector3(57.8f, 16.8f, 0f);
-            cardsImage[i].transform.localScale = new Vector3(0.63f, 0.63f);
-            cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);*/
+            //if (i == 0)
+            //    cardsImage[i].transform.localPosition = new Vector3(29.2f, 16.8f, 0f);
+            //else
+            //    cardsImage[i].transform.localPosition = new Vector3(57.8f, 16.8f, 0f);
+            //cardsImage[i].transform.localScale = new Vector3(0.63f, 0.63f);
+            //cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
             cardsImage[i].gameObject.SetActive(isShow);
         }
         
@@ -725,16 +725,42 @@ public class PlayerScript : MonoBehaviour
                             if (i == 0)
                             {
                                 cardsImage[i].transform.localPosition = new Vector3(-40, -5);
-                                //cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
-                                cardsImage[i].transform.localScale = new Vector3(2f, 2f);
+                                cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                                //cardsImage[i].transform.localScale = new Vector3(2f, 2f);
                                 cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                             }
                             if (i == 1)
                             {
                                 cardsImage[i].transform.localPosition = new Vector3(-25, -5);
-                                //cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
-                                cardsImage[i].transform.localScale = new Vector3(2f, 2f);
+                                cardsImage[i].transform.localScale = new Vector3(0.55f, 0.55f);
+                                //cardsImage[i].transform.localScale = new Vector3(2f, 2f);
                                 cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
+                            }
+
+                            //DEV_CODE
+                            if (InGameManager.instance != null)
+                            {
+                                for (int num2 = 0; num2 < InGameManager.instance.highlightCards.Length; num2++)
+                                {
+                                    if (cardsImage[i].sprite.name == InGameManager.instance.highlightCards[num2].cardsSprite.name)
+                                    {
+                                        //cardsImage[i].color = Color.yellow;
+                                        cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
+                                        //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                    }
+                                }
+                            }
+                            else if(ClubInGameManager.instance != null)
+                            {
+                                for (int num2 = 0; num2 < ClubInGameManager.instance.highlightCards.Length; num2++)
+                                {
+                                    if (cardsImage[i].sprite.name == ClubInGameManager.instance.highlightCards[num2].cardsSprite.name)
+                                    {
+                                        //cardsImage[i].color = Color.yellow;
+                                        cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
+                                        //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                    }
+                                }
                             }
                         }                        
                     }
@@ -750,16 +776,30 @@ public class PlayerScript : MonoBehaviour
                         if (i == 0)
                         {
                             cardsImage[i].transform.localPosition = new Vector3(0, 0);
-                            cardsImage[i].transform.localScale = new Vector3(1f, 1f);
+                            cardsImage[i].transform.localScale = new Vector3(0.35f, 0.35f);
                         }
                         if (i == 1)
                         {
-                            cardsImage[i].transform.localPosition = new Vector3(5, 0);
-                            cardsImage[i].transform.localScale = new Vector3(1f, 1f);
+                            cardsImage[i].transform.localPosition = new Vector3(16, 0);
+                            cardsImage[i].transform.localScale = new Vector3(0.35f, 0.35f);
 
                             if (cardsImage[i].transform.localRotation.z == 0)
-                                cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -4f);
+                                cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -18.12f);
                         }
+
+                        //if (i == 0)
+                        //{
+                        //    cardsImage[i].transform.localPosition = new Vector3(0, 0);
+                        //    cardsImage[i].transform.localScale = new Vector3(1f, 1f);
+                        //}
+                        //if (i == 1)
+                        //{
+                        //    cardsImage[i].transform.localPosition = new Vector3(5, 0);
+                        //    cardsImage[i].transform.localScale = new Vector3(1f, 1f);
+
+                        //    if (cardsImage[i].transform.localRotation.z == 0)
+                        //        cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -4f);
+                        //}
                     }
                     cardsImage[i].sprite = CardsManager.instance.GetCardBackSideSprite();
                 }

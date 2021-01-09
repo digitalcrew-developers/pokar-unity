@@ -1116,7 +1116,8 @@ public class InGameManager : MonoBehaviour
                     {
                         for (int n = 0; n < communityCards.Length; n++)
                         {
-                            communityCards[n].color = Color.white;
+                            //communityCards[n].color = Color.white;
+                            communityCards[n].transform.GetChild(0).gameObject.SetActive(false);
                         }
                     }
                     for (int num = 0; num < communityCards.Length; num++)
@@ -1125,7 +1126,8 @@ public class InGameManager : MonoBehaviour
                         {
                             if (isHighlightCard && highlightCards[num2] != null && communityCards[num].sprite.name == highlightCards[num2].cardsSprite.name)
                             {
-                                communityCards[num].color = Color.yellow;
+                                //communityCards[num].color = Color.yellow;
+                                communityCards[num].transform.GetChild(0).gameObject.SetActive(true);
 
                                 //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
                             }
@@ -1355,8 +1357,9 @@ public class InGameManager : MonoBehaviour
                         {
                             if (playerCards[k].sprite.name == highlightCards[j].cardsSprite.name)
                             {
-                                Debug.Log("Player Card Matched  :: ");
-                                playerCards[k].color = Color.yellow;
+                                //Debug.Log("Player Card Matched  :: ");
+                                //playerCards[k].color = Color.yellow;
+                                playerCards[k].transform.GetChild(0).gameObject.SetActive(true);
                             }
                         }
                     }
@@ -1390,14 +1393,26 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < communityCards.Length; i++)
         {
-            communityCards[i].color = Color.white;
+            //communityCards[i].color = Color.white;
+            communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
             highlightCards[i] = null;
         }
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             onlinePlayersScript[i].ResetRealtimeResult();
+
+            //DEV_CODE 
+            //Logic to reset all players highlighted cards to original one.
+            Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
+
+            for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
+            {
+                //playerCards[j].color = Color.white;
+                playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
+            }
         }
+
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
