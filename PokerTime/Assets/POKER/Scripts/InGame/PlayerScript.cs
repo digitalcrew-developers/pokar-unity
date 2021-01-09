@@ -737,6 +737,16 @@ public class PlayerScript : MonoBehaviour
                                 cardsImage[i].transform.localScale = new Vector3(0.7f, 0.7f);
                                 cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                             }
+
+                            //DEV_CODE
+                            for (int num2 = 0; num2 < InGameManager.instance.highlightCards.Length; num2++)
+                            {
+                                if (cardsImage[i].sprite.name == InGameManager.instance.highlightCards[num2].cardsSprite.name)
+                                {
+                                    cardsImage[i].color = Color.yellow;
+                                    //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                }
+                            }
                         }                        
                     }
                 }
