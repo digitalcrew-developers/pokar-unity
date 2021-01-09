@@ -32,7 +32,7 @@ public class HandSummaryItemControl : MonoBehaviour
         ActionOneText.text = "" + handSummary.seatName;
 
         PlayerNameText.text = handSummary.userName;
-        ActionTwoText.text = handSummary.name;
+        ActionTwoText.text = handSummary.handStrength;
         Debug.Log(handSummary.userName + " HandSummary " + handSummary.winAmount + ", " + handSummary.cards.Count + ", " + handSummary.communityCard.Count);
         if(handSummary.winAmount > 0)
         {
