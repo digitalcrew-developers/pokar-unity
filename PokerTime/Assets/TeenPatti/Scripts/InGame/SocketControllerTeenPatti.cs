@@ -1307,10 +1307,10 @@ public class SocketControllerTeenPatti : MonoBehaviour
         //requestData.userData.playerAction = userAction;
         //requestData.userData.roundNo = roundNo;
 
-        //requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+        requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.tableId = TABLE_ID;
         //requestData.tableId = "1";
-        // requestData.bet = "" + GameConstants.playerbetAmount;
+         requestData.bet = "" + GameConstants.playerbetAmount;
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
@@ -1337,7 +1337,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
 
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.tableId = TABLE_ID;
-        // requestData.bet = "" + GameConstants.playerbetAmount;
+        requestData.bet = "" + GameConstants.playerbetAmount;
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
