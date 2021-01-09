@@ -617,15 +617,16 @@ public class InGameManager : MonoBehaviour
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
+                playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                 //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
-                if (isMatchStarted)
+                /*if (isMatchStarted)
                 {
                     playerDataObject.isFold = data[0][i]["isBlocked"].Equals(true);
                 }
                 else
                 {
                     playerDataObject.isFold = false;
-                }
+                }*/
 
                 playerData.Add(playerDataObject);
             }
@@ -1370,7 +1371,8 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
-            onlinePlayersScript[i].ToggleCards(true, true);
+            Debug.Log(onlinePlayersScript[i].playerData.userName + " " + onlinePlayersScript[i].playerData.isFold);
+            onlinePlayersScript[i].ToggleCards(!onlinePlayersScript[i].playerData.isFold, true);
             onlinePlayersScript[i].DisablePot();
         }   
     }
@@ -1621,6 +1623,8 @@ public class InGameManager : MonoBehaviour
         //UnityEngine.Debug.LogWarning("Round Data :- " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
+        if (MATCH_ROUND == -1)
+            MATCH_ROUND = 1;
         handtype = serverResponse;
         //   Debug.LogError("hand typessss" + handtype);
 
@@ -1790,7 +1794,7 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
-                        playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
+                        playerData.playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
@@ -1863,7 +1867,7 @@ public class InGameManager : MonoBehaviour
                     {
                         PlayerData playerData = new PlayerData();
                         //Debug.LogError("************************************************************");
-                        playerData.isFold = data[0][i]["isBlocked"].Equals(true);
+                        playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 

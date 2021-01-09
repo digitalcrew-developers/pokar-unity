@@ -342,6 +342,14 @@ public class InGameUiManager : MonoBehaviour
 
                     if (player != null)
                     {
+                        slider.wholeNumbers = true;
+                        min = GlobalGameManager.instance.GetRoomData().smallBlind;
+                        max = player.GetPlayerData().balance;
+                        int t = (int)((max - min) / 1000f);
+                        sliderText.text = "" + min;
+                        slider.minValue = 0f;
+                        slider.maxValue = t;
+                        slider.value = 0f;
                         ToggleRaisePopUp(true, GlobalGameManager.instance.GetRoomData().smallBlind/*availableCallAmount + 1*/, player.GetPlayerData().balance, InGameManager.instance.GetPotAmount());
                     }
                     else
@@ -558,7 +566,8 @@ public class InGameUiManager : MonoBehaviour
                 break;
         }
     }
-   
+
+    float min, max;
     public void OnSliderValueChange()
     {
         if (slider.value >= slider.maxValue)
@@ -571,7 +580,15 @@ public class InGameUiManager : MonoBehaviour
         }
         
         selectedRaiseAmount = slider.value;
-        Debug.Log(selectedRaiseAmount + " Slider value " + slider.value);
+
+        float t = (max - min) / 100f;
+        Debug.Log(min + " Min&Max " + max + ", " + t);
+        Debug.Log(slider.value + " Slider " + (int)(min + slider.value * 100));    
+        //float prec = 500 * 100 / t;
+        //float val = float.Parse(string.IsNullOrEmpty(sliderText.text) ? GlobalGameManager.instance.GetRoomData().smallBlind.ToString() : sliderText.text);
+        //Debug.Log(slider.value + " Slider " + (val + (prec * t) / 100));
+        //sliderText.text = "" + (val + (prec * t) / 100);
+        //slider.value += (prec / 10);
     }
 
 
