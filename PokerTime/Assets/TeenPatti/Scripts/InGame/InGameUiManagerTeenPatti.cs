@@ -80,6 +80,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
     public GameObject rejectSideShowBtn;
 
+    public Text actionText;
+
     private void Awake()
     {
         instance = this;
@@ -226,13 +228,13 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
     public void OnSpwanTipCoin()
     {
-        //SoundManager.instance.PlaySound(SoundType.Tip);
+        SoundManager.instance.PlaySound(SoundType.Tip);
 
-        //GameObject g = Instantiate(tipsCoins, spwantipsCoinsPos) as GameObject;
-        //g.transform.SetParent(spwantipsCoinsPos);
+        GameObject g = Instantiate(tipsCoins, spwantipsCoinsPos) as GameObject;
+        g.transform.SetParent(spwantipsCoinsPos);
 
-        //SocketController.instance.TipToDealer();
-        //Invoke("OnSpwanKiss", 0.5f);
+        SocketController.instance.TipToDealer();
+        Invoke("OnSpwanKiss", 0.5f);
     }
     public void OnSpwanKiss()
     {
@@ -279,6 +281,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     PlayerScriptTeenPatti.instance.fx_holder.gameObject.SetActive(false);
                     PlayerScriptTeenPatti.instance.timerBar.fillAmount = 0;
                     InGameManagerTeenPatti.instance.OnPlayerActionCompleted(PlayerAction.Fold, 0, "Fold");
+                    //actionText.text = PlayerScriptTeenPatti.instance.playerData.userName + " fold the cards.";
                 }
                 break;
 
@@ -294,6 +297,10 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     PlayerScriptTeenPatti.instance.timerBar.fillAmount = 0;
                     PlayerScriptTeenPatti.instance.timerBar.gameObject.SetActive(false);
                     InGameManagerTeenPatti.instance.OnPlayerActionCompleted(PlayerAction.Call, (int)availableCallAmount, "Call");
+                    //if(PlayerScriptTeenPatti.instance.playerData.isBlind)
+                    //actionText.text = PlayerScriptTeenPatti.instance.playerData.userName + " calls the blind";
+                    //else
+                    //    actionText.text = PlayerScriptTeenPatti.instance.playerData.userName + " calls the chaal";
                 }
                 break;
 
@@ -778,7 +785,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
             acceptSideShowButton.SetActive(false);
             rejectSideShowBtn.SetActive(false);
 
-            int callAmount = (lastBetAmount * 2) - (int)playerObject.GetPlayerData().totalBet;
+            int callAmount = (int)playerObject.GetPlayerData().totalBet;
             //int callAmount = (int)playerObject.GetPlayerData().totalBet;
             
             GameConstants.playerbetAmount = callAmount;
