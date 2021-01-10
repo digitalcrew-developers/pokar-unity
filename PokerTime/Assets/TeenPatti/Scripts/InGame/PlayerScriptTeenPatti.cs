@@ -79,8 +79,8 @@ public class PlayerScriptTeenPatti : MonoBehaviour
                     string av_url = (data["getData"][i]["profileImage"].ToString());
                     string flag_url = (data["getData"][i]["countryFlag"].ToString());
                     string frame_url = (data["getData"][i]["frameURL"].ToString());
-                    StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
-                    StartCoroutine(loadSpriteImageFromUrl(flag_url, flag));
+                    //StartCoroutine(loadSpriteImageFromUrl(av_url, avtar));
+                    //StartCoroutine(loadSpriteImageFromUrl(flag_url, flag));
                     //StartCoroutine(loadSpriteImageFromUrl(frame_url, frame));
                 }
             }
@@ -221,19 +221,30 @@ public class PlayerScriptTeenPatti : MonoBehaviour
         cardSeenButton.SetActive(false);
     }
 
-    
-
-    public void TogglePlayerUI(bool isShow)
+    public void TogglePlayerUI(bool isShow, string avatarUrl = null)
     {
-
         LoadUI();
         parentObject.SetActive(isShow);
-
-        if (isShow)
-        {
-            ToggleEmptyObject(false);
-        }
+        if (avatarUrl != null)
+            LoadAvtars_Frame_Flag(avatarUrl);
     }
+
+    private void LoadAvtars_Frame_Flag(string avtar_Url)
+    {
+        StartCoroutine(loadSpriteImageFromUrl(avtar_Url, avtar));
+    }
+
+    //public void TogglePlayerUI(bool isShow)
+    //{
+
+    //    LoadUI();
+    //    parentObject.SetActive(isShow);
+
+    //    if (isShow)
+    //    {
+    //        ToggleEmptyObject(false);
+    //    }
+    //}
 
     public bool IsPlayerObjectActive()
     {
@@ -277,7 +288,7 @@ public class PlayerScriptTeenPatti : MonoBehaviour
         transform.Find("Bg/NameBg/Name").GetComponent<Text>().text = playerData.userName;
         transform.Find("Bg/Dealer").gameObject.SetActive(false);
         otheruserId = playerData.userId;
-        ShowAvtars_frame_flag(playerData.userId);
+        //ShowAvtars_frame_flag(playerData.userId);
         timerBar.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
         timerBar.gameObject.SetActive(false);

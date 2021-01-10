@@ -120,25 +120,32 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     private void Init(List<MatchMakingPlayerDataTeenPatti> matchMakingPlayerData)
     {
-        isRematchRequestSent = false;
-        matchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
-        onlinePlayersScript = new PlayerScriptTeenPatti[matchMakingPlayerData.Count];
-        Debug.LogError("Counts of Players are :" + matchMakingPlayerData.Count);
-        PlayerScriptTeenPatti playerScriptWhosTurn = null;
 
+
+        Debug.Log("Total Users " + matchMakingPlayerData.Count);
+        isRematchRequestSent = false;
+        List<MatchMakingPlayerDataTeenPatti> newMatchMakingPlayerData = new List<MatchMakingPlayerDataTeenPatti>();
+        if (matchMakingPlayerData.Count > 1)
+            newMatchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
+        else
+            newMatchMakingPlayerData = matchMakingPlayerData;
+        onlinePlayersScript = new PlayerScriptTeenPatti[newMatchMakingPlayerData.Count];
+        PlayerScriptTeenPatti playerScriptWhosTurn = null;
+        //Debug.Log("Arranged Users " + newMatchMakingPlayerData.Count);
         for (int i = 0; i < allPlayersObject.Length; i++)
         {
             allPlayersObject[i].ResetAllData();
-         
-
-            if (i < matchMakingPlayerData.Count)
+            if (i < newMatchMakingPlayerData.Count)
             {
-                allPlayersObject[i].TogglePlayerUI(true);
+                Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn);
+                //Debug.Log("Url " + newMatchMakingPlayerData[i].playerData.avatarurl);
+                //allPlayersObject[i].seat = (i + 1).ToString();
+                allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl);
                 allPlayersObject[i].cardSeenButton.SetActive(true);
                 onlinePlayersScript[i] = allPlayersObject[i];
-                onlinePlayersScript[i].Init(matchMakingPlayerData[i]);
+                onlinePlayersScript[i].Init(newMatchMakingPlayerData[i]);
 
-                if (matchMakingPlayerData[i].isTurn)
+                if (newMatchMakingPlayerData[i].isTurn)
                 {
                     playerScriptWhosTurn = onlinePlayersScript[i];
                 }
@@ -146,20 +153,25 @@ public class InGameManagerTeenPatti : MonoBehaviour
             else
             {
                 allPlayersObject[i].TogglePlayerUI(false);
-            }   
-        }
+            }
 
-        if (playerScriptWhosTurn != null)
-        {
-            StartCoroutine(WaitAndShowCardAnimation(onlinePlayersScript, playerScriptWhosTurn));
-        }
-        else
-        {
+            if (playerScriptWhosTurn != null)
+            {
+                StartCoroutine(WaitAndShowCardAnimation(onlinePlayersScript, playerScriptWhosTurn));
+            }
+            else
+            {
 #if ERROR_LOG
             Debug.LogError("Null Reference exception found playerId whos turn is not found");
 #endif
+            }
         }
     }
+
+
+
+
+   
 
     private IEnumerator WaitAndShowCardAnimation(PlayerScriptTeenPatti[] players, PlayerScriptTeenPatti playerScriptWhosTurn)
     {
@@ -546,37 +558,40 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     private void AdjustAllPlayersOnTable(int totalPlayerCount)
     {
-        if (totalPlayerCount <= 4)
-        {
-            int index = 0;
-            for (int i = 0; i < totalPlayerCount; i++)
-            {
-                allPlayersObject[i].transform.position = allPlayerPos[index].position;
-                index += 2;
-            }
-        }
-        else if (totalPlayerCount <= 7)
-        {
-            int index = 0;
+        //if (totalPlayerCount <= 4)
+        //{
+        //    int index = 0;
+        //    for (int i = 0; i < totalPlayerCount; i++)
+        //    {
+        //        allPlayersObject[i].transform.position = allPlayerPos[index].position;
+        //        index += 2;
+        //    }
+        //}
+        //else if (totalPlayerCount <= 7)
+        //{
+        //    int index = 0;
 
-            for (int i = 0; i < totalPlayerCount; i++)
-            {
-                if (i == 2 || i == 7)
-                {
-                    ++index;
-                }
+        //    for (int i = 0; i < totalPlayerCount; i++)
+        //    {
+        //        if (i == 2 || i == 7)
+        //        {
+        //            ++index;
+        //        }
 
-                allPlayersObject[i].transform.position = allPlayerPos[index].position;
-                ++index;
-            }
-        }
-        else
+        //        allPlayersObject[i].transform.position = allPlayerPos[index].position;
+        //        ++index;
+        //    }
+        //}
+
+
+        for (int i = 0; i < totalPlayerCount; i++)
         {
-            for (int i = 0; i < totalPlayerCount; i++)
-            {
-                allPlayersObject[i].gameObject.transform.position = allPlayerPos[i].position;
-            }
+            allPlayersObject[i].gameObject.transform.position = allPlayerPos[i].position;
         }
+        //else
+        //{
+            
+        //}
     }
 
 
@@ -1710,4 +1725,5 @@ public class MatchMakingPlayerDataTeenPatti
     public bool isTurn;
     public bool isCheckAvailable;
     public string playerType;
+    
 }
