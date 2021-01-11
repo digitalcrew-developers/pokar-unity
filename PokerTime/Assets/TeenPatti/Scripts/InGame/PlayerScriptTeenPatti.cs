@@ -144,11 +144,11 @@ public class PlayerScriptTeenPatti : MonoBehaviour
         
 
         // transform.Find("Bg/Dealer").gameObject.SetActive(playerData.isDealer);
-        localBetAmount = (int)playerData.totalBet;
+        localBetAmount = (int)playerData.playerAllBet;
 
-        if (playerData.totalBet > 0)
+        if (playerData.playerAllBet > 0)
         {
-            UpdateLocalPot((int)playerData.totalBet, InGameManagerTeenPatti.instance.GetMatchRound());
+            UpdateLocalPot((int)playerData.playerAllBet, InGameManagerTeenPatti.instance.GetMatchRound());
         }
     }
     private void LoadUI()
@@ -435,6 +435,7 @@ public class PlayerScriptTeenPatti : MonoBehaviour
                     lastActionImage.GetComponent<Image>().sprite = EventSprite[1];
                 break;
             case "Fold":
+            case "fold":
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[2];
                 break;
             
@@ -699,7 +700,7 @@ public class PlayerDataTeenPatti
     public string userName;
     public string tableId;
     public bool isDealer, isSmallBlind, isBigBlind, isFold, isTurn, isCheckAvailable;
-    public float balance, totalBet;
+    public float balance, totalBet, playerAllBet;
     public CardData[] cards;
     public string avatarurl;
     public bool isBlind;

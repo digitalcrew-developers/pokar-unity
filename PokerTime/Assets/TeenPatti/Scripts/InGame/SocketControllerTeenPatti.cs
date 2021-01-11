@@ -1365,7 +1365,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
         requestData.tableId = TABLE_ID;
         requestData.requesterUserId = GameConstants.sideShowRequesterId;
        
-        // requestData.bet = "" + GameConstants.playerbetAmount;
+        requestData.bet = "" + GameConstants.playerbetAmount;
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
@@ -1816,6 +1816,7 @@ public class SideShowData
     public string tableId;
     public string userId;
     public string requesterUserId;
+    public string bet;
 
 
 }

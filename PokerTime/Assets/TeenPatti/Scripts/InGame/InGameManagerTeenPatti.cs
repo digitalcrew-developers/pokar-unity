@@ -82,6 +82,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
 
     public Text matchWinner;
+    public GameObject notifyUser;
 
     private void Awake()
     {
@@ -1022,7 +1023,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 // show Winner notification
 
                 matchWinner.text = winnerPlayer.playerData.userName + " wins the game.";
-
+                notifyUser.GetComponent<Image>().enabled = true;
 
                 if (winnerPlayer != null)
                 {
@@ -1420,6 +1421,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 InGameManagerTeenPatti.instance.Pot.SetActive(false);
                 ResetAllDataForPlayers();
                 matchWinner.text = "";
+                notifyUser.GetComponent<Image>().enabled = false;
                 InGameUiManagerTeenPatti.instance.ToggleActionButton(false, null, false, 0);
                 ShowNewPlayersOnTable(newData, false);
                 resetGame = true;
@@ -1462,6 +1464,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                          playerData.playerData.isFold = newData[i]["isBlocked"].Equals(true);
 
                         playerData.playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
+                        playerData.playerData.playerAllBet = float.Parse(newData[i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(newData[i]["totalCoins"].ToString());
 
                        // playerData.playerType = data[0][i]["playerType"].ToString();
@@ -1523,7 +1526,8 @@ public class InGameManagerTeenPatti : MonoBehaviour
                         //PlayerData playerData = new PlayerData();
                         //Debug.LogError("************************************************************");
                         playerObject.playerData.isFold = newData[i]["isBlocked"].Equals(true);
-                        playerObject.playerData.totalBet = float.Parse(newData[i]["totalBet"].ToString());
+                        playerObject.playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
+                        playerObject.playerData.playerAllBet = float.Parse(newData[i]["totalBet"].ToString());
                         playerObject.playerData.balance = float.Parse(newData[i]["totalCoins"].ToString());
                         playerObject.playerData.isBlind = newData[i]["isBlind"].Equals(true);
                         playerObject.playerData.isShow = newData[i]["isShow"].Equals(true);

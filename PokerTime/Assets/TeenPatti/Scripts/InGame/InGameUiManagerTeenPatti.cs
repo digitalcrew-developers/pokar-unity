@@ -36,6 +36,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
     public GameObject betPlusButton, betMinusButton;
 
+
+
     
 
     
@@ -81,6 +83,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     public GameObject rejectSideShowBtn;
 
     public Text actionText;
+
+    public GameObject notifyUser;
 
     private void Awake()
     {
