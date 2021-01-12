@@ -45,7 +45,7 @@ public class GameConstants : MonoBehaviour
 
     //public const string BASE_URL = "http://3.137.10.123";// "http://192.168.0.151";////"http://3.137.10.123";//// // //"http://18.191.15.121"; // "http://3.6.137.204";
     public const string BASE_URL = "http://3.17.201.78";// "http://192.168.0.151";////"http://3.137.10.123";//// // //"http://18.191.15.121"; // "http://3.6.137.204";
-
+    public static string lobbyTeenUrl = "http://3.17.201.78:6000";
 
     //Testing
     //public const string API_URL = BASE_URL + ":3007";
@@ -149,9 +149,10 @@ public class GameConstants : MonoBehaviour
         SOCKET_URL + "/getSeatObject",
         SOCKET_URL+"/getGameHistroy",
         API_URL+"/beforPayment",
-        API_URL+"/afterPayment"
+        API_URL+"/afterPayment",
+        lobbyTeenUrl+"/tp_getRooms"
 
-    };
+};
     #endregion
 
 
@@ -166,6 +167,8 @@ public class GameConstants : MonoBehaviour
     {
         API_URL_TP +"/tp_createClub"
     };
+
+    
     #endregion
 }
 
@@ -258,7 +261,8 @@ public enum RequestType
     GetSeatObject,
     GetGameHistory,
     BeforePayment,
-    AfterPayment
+    AfterPayment,
+    LobbyRoomsTeenPatti
 }
 
 [System.Serializable]

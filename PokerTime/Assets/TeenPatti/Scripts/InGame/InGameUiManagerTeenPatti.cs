@@ -237,7 +237,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         GameObject g = Instantiate(tipsCoins, spwantipsCoinsPos) as GameObject;
         g.transform.SetParent(spwantipsCoinsPos);
 
-        SocketController.instance.TipToDealer();
+        SocketControllerTeenPatti.instance.TipToDealer();
         Invoke("OnSpwanKiss", 0.5f);
     }
     public void OnSpwanKiss()
@@ -1574,12 +1574,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         btn.SetActive(false);
         rejectSideShowBtn.SetActive(false);
         SocketControllerTeenPatti.instance.OnSideShowWinnerCalled();
-        PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(GameConstants.sideShowRequesterId);
-        if(cardSeenPlayer.IsMe())
-        {
-            sideShowRequesterPlayer.text = cardSeenPlayer.playerData.userName + " accept sideshow request";
-            StartCoroutine(DisableNotification());
-        }
+        
+        
 
 
     }
@@ -1632,11 +1628,13 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["from"].ToString());
         GameConstants.sideShowRequesterId = data[0]["from"].ToString();
         string requesterPlayer = cardSeenPlayer.playerData.userName;
-        if (cardSeenPlayer.IsMe())
-        {
-            sideShowRequesterPlayer.text = requesterPlayer + " send you sideshow request";
-            StartCoroutine(DisableNotification());
-        }
+        //if (cardSeenPlayer.IsMe())
+        //{
+
+        //}
+        notifyUser.SetActive(true);
+        sideShowRequesterPlayer.text = requesterPlayer + " send you sideshow request";
+        StartCoroutine(DisableNotification());
         cardSeenPlayer.sideShowWinnerAcceptBtn.SetActive(true);
         cardSeenPlayer.sideShowRejectBtn.SetActive(true);
         
@@ -1674,6 +1672,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     IEnumerator DisableNotification()
     {
         yield return new WaitForSeconds(3f);
+        notifyUser.SetActive(false);
         sideShowRequesterPlayer.text = "";
     }
 
@@ -1687,8 +1686,11 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         Debug.LogError("SideShowWinner is :" + data.ToJson());
 
         string status = data[0]["status"].ToString();
+        //PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(GameConstants.sideShowRequesterId);
+        //sideShowRequesterPlayer.text = cardSeenPlayer.playerData.userName + " accept sideshow request";
+        //StartCoroutine(DisableNotification());
 
-        if(status == "loser")
+        if (status == "loser")
         {
             OnClickOnButton("fold");
         }
