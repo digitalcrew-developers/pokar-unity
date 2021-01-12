@@ -721,7 +721,7 @@ public class PlayerScript : MonoBehaviour
                         //Debug.Log("Cards positions....." + isItMe);
                         if (!isItMe)
                         {
-                            Debug.Log("Cards positions2222....." + isItMe);
+                            //Debug.Log("Cards positions2222....." + isItMe);
                             if (i == 0)
                             {
                                 cardsImage[i].transform.localPosition = new Vector3(-40, -5);
@@ -752,13 +752,16 @@ public class PlayerScript : MonoBehaviour
                             }
                             else if(ClubInGameManager.instance != null)
                             {
-                                for (int num2 = 0; num2 < ClubInGameManager.instance.highlightCards.Length; num2++)
+                                if (ClubInGameManager.instance.isHighlightCard)
                                 {
-                                    if (cardsImage[i].sprite.name == ClubInGameManager.instance.highlightCards[num2].cardsSprite.name)
+                                    for (int num2 = 0; num2 < ClubInGameManager.instance.highlightCards.Length; num2++)
                                     {
-                                        //cardsImage[i].color = Color.yellow;
-                                        cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
-                                        //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                        if (cardsImage[i].sprite.name == ClubInGameManager.instance.highlightCards[num2].cardsSprite.name)
+                                        {
+                                            //cardsImage[i].color = Color.yellow;
+                                            cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
+                                            //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                        }
                                     }
                                 }
                             }

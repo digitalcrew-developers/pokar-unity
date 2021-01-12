@@ -71,7 +71,7 @@ public class ClubInGameManager : MonoBehaviour
     //DEV_CODE
 
     //Variables to store values regarding match winning cards and to highlight them
-    private bool isHighlightCard;
+    public bool isHighlightCard;
     public CardData[] highlightCards;
     public string[] highlightCardString;
 
@@ -256,7 +256,7 @@ public class ClubInGameManager : MonoBehaviour
 
     private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
     {
-        Debug.Log("Total Users " + matchMakingPlayerData.Count);
+        //Debug.Log("Total Users " + matchMakingPlayerData.Count);
         isRematchRequestSent = false;
         List<MatchMakingPlayerData> newMatchMakingPlayerData = new List<MatchMakingPlayerData>();
         if (matchMakingPlayerData.Count > 1)
@@ -271,7 +271,7 @@ public class ClubInGameManager : MonoBehaviour
             allPlayersObject[i].ResetAllData();
             if (i < newMatchMakingPlayerData.Count)
             {
-                Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn);
+                //Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn);
                 //Debug.Log("Url " + newMatchMakingPlayerData[i].playerData.avatarurl);
                 allPlayersObject[i].seat = (i + 1).ToString();
                 allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl);
@@ -417,12 +417,83 @@ public class ClubInGameManager : MonoBehaviour
     }
 
     //DEV_CODE Added this method as done inside InGameManager script
-    internal void OnGameOverCountDownFound(string data)
+    internal void OnGameOverCountDownFound(string serverResponse)
     {
-        string t = data.Substring(1, data.Length - 2);
+        string t = serverResponse.Substring(1, serverResponse.Length - 2);
         Debug.LogError("Game Over - " + t);
+
+        JsonData data = JsonMapper.ToObject(serverResponse);
+        //int remainingTime = (int)float.Parse(data[0].ToString());
+
+        //Debug.LogWarning("RESPONSE :  " + serverResponse);
+        //Debug.LogWarning("Remaining Time :  " + remainingTime.ToString());
+        //Debug.LogWarning("Buffer Time :  " + GameConstants.BUFFER_TIME);
+
         if (float.Parse(t) < 1)
-            ResetMatchData();
+        {
+            if (!isRematchRequestSent)
+            {
+                Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
+
+                //if (remainingTime > GameConstants.BUFFER_TIME)
+                //{
+                    Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
+
+                    //DEV_CODE
+                    ClubInGameUIManager.instance.isSelectedWinningBooster = false;
+
+                    //if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
+                    //{
+                        Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
+                        ToggleTopUpDone(false);
+                        ClubSocketController.instance.SendReMatchRequest("Yes", "0");
+                    //}
+                    //else
+                    //{
+                    //    //int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn - (int)availableBalance;
+                    //    //float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
+
+                    //    //now we are adding balance if userbalance is 0.
+                    //    int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn;
+                    //    float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
+                    //    Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance);
+                    //    //if (userMainBalance >= balanceToAdd)
+                    //    if (userMainBalance < EPSILON)
+                    //    {
+                    //        Debug.Log("<color=pink>" + "UserMainBalance: " + userMainBalance + " </color>");
+                    //        ClubSocketController.instance.SendReMatchRequest("Yes", "0");
+                    //        //send topup request with the below api.. for clarification contact Pradeep - Digital Crew
+                    //        ClubSocketController.instance.SendTopUpRequest(balanceToAdd);
+
+                    //        //userMainBalance -= balanceToAdd;
+                    //        PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
+                    //        //playerData.coins = userMainBalance;
+                    //        playerData.coins = balanceToAdd;
+                    //        PlayerManager.instance.SetPlayerGameData(playerData);
+                    //    }
+                    //    else
+                    //    {
+                    //        if (availableBalance > GlobalGameManager.instance.GetRoomData().smallBlind)
+                    //        {
+                    //            Debug.Log("<color=pink>" + "SmallBlind: " + GlobalGameManager.instance.GetRoomData().smallBlind + " and Available Balance: " + availableBalance + "</color>");
+                    //            ClubSocketController.instance.SendReMatchRequest("Yes", "0");
+                    //        }
+                    //        else
+                    //        {
+                    //            ClubInGameUIManager.instance.ShowMessage("You don't have enough coins to play, please purchase some coins to continue");
+                    //            // TODO call sit out
+                    //            // TODO show coin purchase screen
+                    //        }
+                    //    }
+                    //}
+                //}
+                //else
+                //{
+                //    ClubSocketController.instance.SendReMatchRequest("No", "0");
+                //}
+            }
+        }
+        ResetMatchData();
     }
 
     public void UpdateAvailableBalance(float balance)
@@ -1503,23 +1574,30 @@ public class ClubInGameManager : MonoBehaviour
                 {
                     Image[] playerCards = playerObject.GetCardsImage();
 
-                    for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count; j++)
+                    if (jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count > 2)
                     {
-                        highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["winningCards"][j].ToString();
-                        highlightCards[j] = CardsManager.instance.GetCardData(highlightCardString[j]);
-                        //Debug.Log(highlightCards[j].cardIcon);
-                        for (int k = 0; k < playerCards.Length; k++)
+                        for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count; j++)
                         {
-                            if (playerCards[k].sprite.name == highlightCards[j].cardsSprite.name)
+                            highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["winningCards"][j].ToString();
+                            highlightCards[j] = CardsManager.instance.GetCardData(highlightCardString[j]);
+                            //Debug.Log(highlightCards[j].cardIcon);
+                            for (int k = 0; k < playerCards.Length; k++)
                             {
-                                //Debug.LogError("OBJECT NAME: " + playerCards[k].transform.GetChild(0).gameObject.name);
-                                //playerCards[k].color = Color.yellow;
-                                playerCards[k].transform.GetChild(0).gameObject.SetActive(true);
-                                //playerObject.
+                                if (playerCards[k].sprite.name == highlightCards[j].cardsSprite.name)
+                                {
+                                    //Debug.LogError("OBJECT NAME: " + playerCards[k].transform.GetChild(0).gameObject.name);
+                                    //playerCards[k].color = Color.yellow;
+                                    playerCards[k].transform.GetChild(0).gameObject.SetActive(true);
+                                    //playerObject.
+                                }
                             }
                         }
+                        isHighlightCard = true;
                     }
-                    isHighlightCard = true;
+                    else
+                    {
+                        isHighlightCard = false;
+                    }
                 }
             }
         }
@@ -1553,6 +1631,7 @@ public class ClubInGameManager : MonoBehaviour
             //communityCards[i].color = Color.white;
             communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
             highlightCards[i] = null;
+            isHighlightCard = false;
         }
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
@@ -1573,20 +1652,25 @@ public class ClubInGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
-        //Debug.LogWarning("NEXT ROUND In: " + remainingTime);
+        Debug.LogWarning("NEXT ROUND In: " + remainingTime);
         if (remainingTime > 1)
         {
             //ClubInGameUIManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
             // ClubInGameUIManager.instance.LoadingImage.SetActive(true);
             if (!isRematchRequestSent)
             {
+                Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
+
                 if (remainingTime > GameConstants.BUFFER_TIME)
                 {
+                    Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
+
                     //DEV_CODE
                     ClubInGameUIManager.instance.isSelectedWinningBooster = false;
 
                     if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
                     {
+                        Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
                         ToggleTopUpDone(false);
                         ClubSocketController.instance.SendReMatchRequest("Yes", "0");
                     }
@@ -1930,7 +2014,7 @@ public class ClubInGameManager : MonoBehaviour
 
                 //if (isMatchStarted) // Match is started   //DEV_CODE Commented this line as per InGameManager script
                 {
-                    Debug.Log("isMatchStarted" + isMatchStarted);
+                    //Debug.Log("isMatchStarted" + isMatchStarted);
 
                     List<MatchMakingPlayerData> matchMakingPlayerData = new List<MatchMakingPlayerData>();
 
@@ -2050,6 +2134,36 @@ public class ClubInGameManager : MonoBehaviour
                             ClubInGameUIManager.instance.ToggleActionButton(false);
                         }
 
+
+                        //DEV_CODE
+                        //Reset players cards
+
+                        playerData.cards = new CardData[data[0][i]["cards"].Count];
+
+                        Debug.Log("Player Cards Length : " + playerData.cards.Length);
+
+                        for (int j = 0; j < playerData.cards.Length; j++)
+                        {
+                            if (playerData == null)
+                            {
+#if ERROR_LOG
+                                Debug.LogError("matchmaking object is null");
+#endif
+                            }
+
+                            if (playerData.cards == null)
+                            {
+#if ERROR_LOG
+                                Debug.LogError("cards is null");
+#endif
+                            }
+
+                            playerData.cards[j] = CardsManager.instance.GetCardData(data[0][i]["cards"][j].ToString());
+                        }
+
+
+
+
                         if (data[0][i]["userData"] != null && data[0][i]["userData"].ToString().Length > 0)
                         {
                             string playerAction = data[0][i]["userData"]["playerAction"].ToString();
@@ -2119,6 +2233,34 @@ public class ClubInGameManager : MonoBehaviour
 
     private void ResetMatchData()
     {
+        Debug.LogError("Reseting Match Data.....");
+        //DEV_CODE
+        //Reset highlighted cards
+        for (int i = 0; i < communityCards.Length; i++)
+        {
+            //communityCards[i].color = Color.white;
+            communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
+            highlightCards[i] = null;
+            isHighlightCard = false;
+        }
+
+        for (int i = 0; i < onlinePlayersScript.Length; i++)
+        {
+            onlinePlayersScript[i].ResetRealtimeResult();
+            onlinePlayersScript[i].ResetAllData();
+
+            //DEV_CODE 
+            //Logic to reset all players highlighted cards to original one.
+            Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
+
+            for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
+            {
+                //playerCards[j].color = Color.white;
+                playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
+            }
+        }
+
+
         ClubInGameUIManager.instance.raisePopUp.SetActive(false);   //DEV_CODE Added
         userWinner = false;                                     //DEV_CODE Added
 
