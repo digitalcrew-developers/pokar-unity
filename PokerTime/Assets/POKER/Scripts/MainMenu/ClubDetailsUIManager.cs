@@ -395,14 +395,14 @@ public class ClubDetailsUIManager : MonoBehaviour
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
 
-				//if(data["response"][i]["settingData"].Count > 0)
-				//{
-				//	if (data["response"][i]["settingData"]["blinds"] != null)
-				//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
+				if (data["response"][i]["settingData"].Count > 0)
+				{
+					if (data["response"][i]["settingData"]["blinds"] != null)
+						obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
 
-				//	else if (data["response"][i]["settingData"]["ante"] != null)
-				//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
-				//}
+					//else if (data["response"][i]["settingData"]["ante"] != null)
+					//	obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
+				}
 
 				obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
 				obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
@@ -466,14 +466,14 @@ public class ClubDetailsUIManager : MonoBehaviour
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
 
-				//if(data["response"][i]["settingData"].Count > 0)
-				//{
-				//	if (data["response"][i]["settingData"]["blinds"] != null)
-				//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
+				if (data["response"][i]["settingData"].Count > 0)
+				{
+					if (data["response"][i]["settingData"]["blinds"] != null)
+						obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
 
-				//	else if (data["response"][i]["settingData"]["ante"] != null)
-				//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
-				//}
+					//else if (data["response"][i]["settingData"]["ante"] != null)
+					//	obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
+				}
 
 				obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
 				obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
@@ -534,14 +534,14 @@ public class ClubDetailsUIManager : MonoBehaviour
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
 
-				//if(data["response"][i]["settingData"].Count > 0)
-				//{
-				//	if (data["response"][i]["settingData"]["blinds"] != null)
-				//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
+				if (data["response"][i]["settingData"].Count > 0)
+				{
+					if (data["response"][i]["settingData"]["blinds"] != null)
+						obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
 
-				//	else if (data["response"][i]["settingData"]["ante"] != null)
-				//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
-				//}
+					//else if (data["response"][i]["settingData"]["ante"] != null)
+					//	obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
+				}
 
 				obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
 				obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
@@ -552,22 +552,6 @@ public class ClubDetailsUIManager : MonoBehaviour
 				obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
 			}
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

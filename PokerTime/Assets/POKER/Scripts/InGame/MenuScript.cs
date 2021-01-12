@@ -87,10 +87,10 @@ public class MenuScript : MonoBehaviour
                                 InGameManager.instance.OnClickStandupBtn();
                             }
                         }
-                        else
+                        else if(ClubInGameUIManager.instance != null)
                         {
                             ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
-                            ClubInGameManager.instance.OnClickStandupBtn();
+                            ClubInGameManager.instance.OnClickStandupBtn();                            
                         }
 
                     }
@@ -101,7 +101,7 @@ public class MenuScript : MonoBehaviour
                             InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.MenuTeenPatti);
                             InGameManagerTeenPatti.instance.OnClickStandupBtn();
                         }
-                    }                    
+                    }     
                 }
                 break;
 
