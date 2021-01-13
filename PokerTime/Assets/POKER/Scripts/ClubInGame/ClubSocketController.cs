@@ -259,7 +259,7 @@ public class ClubSocketController : MonoBehaviour
 #endif
 
 #endif
-            //Debug.Log(ClubInGameManager.instance.userWinner + " <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
+            Debug.Log(ClubInGameManager.instance.userWinner + " <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
             switch (responseObject.eventType)
             {
                 case SocketEvetns.CONNECT:

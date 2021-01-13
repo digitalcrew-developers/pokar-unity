@@ -401,6 +401,12 @@ public class ClubTableController : MonoBehaviour
         }        
     }
 
+    public void ShowPopUp(string msg)
+    {
+        StartCoroutine(ShowPopUp(msg, 1.29f));
+    }
+
+
     IEnumerator ShowPopUp(string msg, float delay)
     {
         popUpText.gameObject.SetActive(true);

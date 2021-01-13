@@ -296,8 +296,8 @@ public class RingGameManager : MonoBehaviour
         //Debug.Log("AutoExtension: " + (components[14].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
         //Debug.Log("AutoExtensionTimes: " + components[15].transform.GetComponent<TMP_Text>().text.ToString());
         //Debug.Log("AutoOpen: " + (components[16].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("RunItMulti: " + (components[17].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
-        Debug.Log("EVChop: " + (components[18].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
+        //Debug.Log("RunItMulti: " + (components[17].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
+        //Debug.Log("EVChop: " + (components[18].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
         //Debug.Log("Fee : " + components[19].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[19].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
         //Debug.Log("Cap: " + components[20].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[20].transform.GetComponent<TMP_Text>().text.ToString().Length - 3));
         //Debug.Log("Call Time: " + callTime);
@@ -307,7 +307,7 @@ public class RingGameManager : MonoBehaviour
         //Debug.Log("GPS: " + (components[25].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
         //Debug.Log("IP: " + (components[26].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
         //Debug.Log("Ban Chatting: " + (components[27].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("Hours: " + components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2));
+        //Debug.Log("Hours: " + components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2));
 
 
         //Request Data
@@ -381,9 +381,10 @@ public class RingGameManager : MonoBehaviour
 
                     if (data["success"].ToString() == "1")
                     {
-                        Debug.Log(data["message"].ToString());
+                        ClubTableController.instance.ShowPopUp("Template saved successfully.");
+                        //Debug.Log(data["message"].ToString());
                         //joinClubPopUp.SetActive(false);
-                        MainMenuController.instance.ShowMessage(data["message"].ToString());
+                        //MainMenuController.instance.ShowMessage(data["message"].ToString());
                         ClubTableController.instance.RequestTemplateData();
                     }
                     else
