@@ -409,10 +409,11 @@ public class ClubTableController : MonoBehaviour
 
     IEnumerator ShowPopUp(string msg, float delay)
     {
-        popUpText.gameObject.SetActive(true);
+        popUpText.transform.parent.gameObject.SetActive(true);
+        popUpText.transform.gameObject.SetActive(true);
         popUpText.text = msg;
         yield return new WaitForSeconds(delay);
-        popUpText.gameObject.SetActive(false);
+        popUpText.transform.parent.gameObject.SetActive(false);
     }
 
 

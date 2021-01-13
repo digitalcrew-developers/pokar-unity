@@ -738,33 +738,33 @@ public class PlayerScript : MonoBehaviour
                             }
 
                             //DEV_CODE
-                            if (InGameManager.instance != null)
-                            {
-                                for (int num2 = 0; num2 < InGameManager.instance.highlightCards.Length; num2++)
-                                {
-                                    if (cardsImage[i].sprite.name == InGameManager.instance.highlightCards[num2].cardsSprite.name)
-                                    {
-                                        //cardsImage[i].color = Color.yellow;
-                                        cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
-                                        //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
-                                    }
-                                }
-                            }
-                            else if (ClubInGameManager.instance != null)
-                            {
-                                if (ClubInGameManager.instance.isHighlightCard)
-                                {
-                                    for (int num2 = 0; num2 < ClubInGameManager.instance.highlightCards.Length; num2++)
-                                    {
-                                        if (cardsImage[i].sprite.name == ClubInGameManager.instance.highlightCards[num2].cardsSprite.name)
-                                        {
-                                            //cardsImage[i].color = Color.yellow;
-                                            cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
-                                            //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
-                                        }
-                                    }
-                                }
-                            }
+                            //if (InGameManager.instance != null)
+                            //{
+                            //    for (int num2 = 0; num2 < InGameManager.instance.highlightCards.Length; num2++)
+                            //    {
+                            //        if (cardsImage[i].sprite.name == InGameManager.instance.highlightCards[num2].cardsSprite.name)
+                            //        {
+                            //            //cardsImage[i].color = Color.yellow;
+                            //            cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
+                            //            //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                            //        }
+                            //    }
+                            //}
+                            //else if (ClubInGameManager.instance != null)
+                            //{
+                            //    if (ClubInGameManager.instance.isHighlightCard)
+                            //    {
+                            //        for (int num2 = 0; num2 < ClubInGameManager.instance.highlightCards.Length; num2++)
+                            //        {
+                            //            if (cardsImage[i].sprite.name == ClubInGameManager.instance.highlightCards[num2].cardsSprite.name)
+                            //            {
+                            //                //cardsImage[i].color = Color.yellow;
+                            //                cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
+                            //                //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                            //            }
+                            //        }
+                            //    }
+                            //}
                         }                        
                     }
                 }
