@@ -17,7 +17,7 @@ public class InGameManager : MonoBehaviour
     public static InGameManager instance;
 
     [SerializeField]
-    private PlayerScript[] allPlayersObject;
+    public PlayerScript[] allPlayersObject;
 
     [SerializeField]
     private Transform[] allPlayerPos;
@@ -285,6 +285,7 @@ public class InGameManager : MonoBehaviour
         Debug.Log("WaitAndShowCardAnimation............");
         if (!GlobalGameManager.IsJoiningPreviousGame)
         {
+            GlobalGameManager.IsJoiningPreviousGame = true;
             List<GameObject> animatedCards = new List<GameObject>();
             for (int i = 0; i < players.Length; i++)
             {
@@ -319,6 +320,7 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < players.Length; i++)
         {
+            Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe());
             players[i].ToggleCards(true, players[i].IsMe());
         }
 
@@ -974,6 +976,7 @@ public class InGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab,animationLayer) as GameObject;
                         gm.transform.localScale = communityCards[0].transform.localScale;
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0,-90,0);
                         gm.transform.position = communityCards[0].transform.position;
@@ -1014,7 +1017,7 @@ public class InGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
 
-
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
                         gm.transform.localScale = communityCards[i].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
@@ -1055,7 +1058,7 @@ public class InGameManager : MonoBehaviour
                     for (int i = 4; i < 5; i++)
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
                         gm.transform.localScale = communityCards[i].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
@@ -1319,6 +1322,7 @@ public class InGameManager : MonoBehaviour
     {
         //Debug.LogWarning("RESULT RESPONSE :" + serverResponse);
         userWinner = true;
+        GlobalGameManager.IsJoiningPreviousGame = false;
         InGameUiManager.instance.ToggleSuggestionButton(false);
         InGameUiManager.instance.ToggleActionButton(false);
 
@@ -1542,6 +1546,7 @@ public class InGameManager : MonoBehaviour
                     {
                         currentPlayer.avtar.GetComponent<Animator>().SetBool("Play", true);
                     }
+                    //InGameUiManager.instance.actionPanelAnimator.SetBool("isOpen", false);
                 }
 
                 if (currentPlayer.IsMe())
@@ -2015,6 +2020,10 @@ public class InGameManager : MonoBehaviour
 
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScript[0];
+        for (int i = 0; i < animationLayer.childCount; i++)
+        {
+            Destroy(animationLayer.GetChild(i).gameObject);
+        }
     }
 
     private void ClearPotAmount()
