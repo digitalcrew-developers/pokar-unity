@@ -771,13 +771,16 @@ public class PlayerScript : MonoBehaviour
                             }
                             else if (InGameManager.instance != null)
                             {
-                                for (int num2 = 0; num2 < InGameManager.instance.highlightCards.Length; num2++)
+                                if (InGameManager.instance.isHighlightCard)
                                 {
-                                    if (cardsImage[i].sprite.name == InGameManager.instance.highlightCards[num2].cardsSprite.name)
+                                    for (int num2 = 0; num2 < InGameManager.instance.highlightCards.Length; num2++)
                                     {
-                                        //cardsImage[i].color = Color.yellow;
-                                        cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
-                                        //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                        if (cardsImage[i].sprite.name == InGameManager.instance.highlightCards[num2].cardsSprite.name)
+                                        {
+                                            //cardsImage[i].color = Color.yellow;
+                                            cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
+                                            //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                        }
                                     }
                                 }
                             }
