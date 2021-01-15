@@ -66,7 +66,7 @@ public class InGameManager : MonoBehaviour
     //DEV_CODE
 
     //Variables to store values regarding match winning cards and to highlight them
-    private bool isHighlightCard;
+    public bool isHighlightCard;
     public CardData[] highlightCards;
     public string[] highlightCardString;
 
