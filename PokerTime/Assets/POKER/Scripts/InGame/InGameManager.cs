@@ -285,7 +285,7 @@ public class InGameManager : MonoBehaviour
         Debug.Log("WaitAndShowCardAnimation............");
         if (!GlobalGameManager.IsJoiningPreviousGame)
         {
-            GlobalGameManager.IsJoiningPreviousGame = true;
+            GlobalGameManager.IsJoiningPreviousGame = isGameStart;
             List<GameObject> animatedCards = new List<GameObject>();
             for (int i = 0; i < players.Length; i++)
             {
@@ -331,7 +331,8 @@ public class InGameManager : MonoBehaviour
                 players[i].ToggleCards(true, players[i].IsMe());
         }
 
-        SocketController.instance.SetSocketState(SocketState.Game_Running);
+        if (isGameStart)
+            SocketController.instance.SetSocketState(SocketState.Game_Running);
         SwitchTurn(playerScriptWhosTurn,false);
     }
 
