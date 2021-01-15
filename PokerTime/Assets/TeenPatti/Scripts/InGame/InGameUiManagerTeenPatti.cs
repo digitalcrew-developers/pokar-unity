@@ -1628,15 +1628,21 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["from"].ToString());
         GameConstants.sideShowRequesterId = data[0]["from"].ToString();
         string requesterPlayer = cardSeenPlayer.playerData.userName;
+
+        PlayerScriptTeenPatti cardSeenPlayer1 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["to"].ToString());
+        string requesttoPlayer = cardSeenPlayer1.playerData.userName;
         //if (cardSeenPlayer.IsMe())
         //{
 
         //}
         notifyUser.SetActive(true);
-        sideShowRequesterPlayer.text = requesterPlayer + " send you sideshow request";
+        sideShowRequesterPlayer.text = requesterPlayer + " sends " + requesttoPlayer + " sideshow request";
         StartCoroutine(DisableNotification());
-        cardSeenPlayer.sideShowWinnerAcceptBtn.SetActive(true);
-        cardSeenPlayer.sideShowRejectBtn.SetActive(true);
+        if (cardSeenPlayer1.IsMe())
+        {
+            cardSeenPlayer1.sideShowWinnerAcceptBtn.SetActive(true);
+            cardSeenPlayer1.sideShowRejectBtn.SetActive(true);
+        }
         
         // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
 
@@ -1671,7 +1677,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
     IEnumerator DisableNotification()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         notifyUser.SetActive(false);
         sideShowRequesterPlayer.text = "";
     }

@@ -1023,7 +1023,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 // show Winner notification
 
                 matchWinner.text = winnerPlayer.playerData.userName + " wins the game.";
-                notifyUser.GetComponent<Image>().enabled = true;
+                notifyUser.SetActive(true);
 
                 if (winnerPlayer != null)
                 {
@@ -1421,7 +1421,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 InGameManagerTeenPatti.instance.Pot.SetActive(false);
                 ResetAllDataForPlayers();
                 matchWinner.text = "";
-                notifyUser.GetComponent<Image>().enabled = false;
+                notifyUser.SetActive(false);
                 InGameUiManagerTeenPatti.instance.ToggleActionButton(false, null, false, 0);
                 ShowNewPlayersOnTable(newData, false);
                 resetGame = true;
