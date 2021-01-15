@@ -74,6 +74,8 @@ public class InGameUiManager : MonoBehaviour
 
     public List<GameObject> TableImages = new List<GameObject>();
 
+    public Animator actionPanelAnimator;
+
     private void Awake()
     {
         instance = this;
@@ -265,7 +267,7 @@ public class InGameUiManager : MonoBehaviour
     }
     public void OnClickOnButton(string eventName)
     {
-        //Debug.Log(eventName+ " " + InGameManager.instance.AmISpectator);
+        Debug.Log(eventName+ " " + useRaisePotWise);
 
         SoundManager.instance.PlaySound(SoundType.Click);
 
@@ -342,15 +344,18 @@ public class InGameUiManager : MonoBehaviour
 
                     if (player != null)
                     {
-                        slider.wholeNumbers = true;
+                        /*slider.wholeNumbers = true;
                         min = GlobalGameManager.instance.GetRoomData().smallBlind;
                         max = player.GetPlayerData().balance;
                         int t = (int)((max - min) / 1000f);
                         sliderText.text = "" + min;
                         slider.minValue = 0f;
                         slider.maxValue = t;
-                        slider.value = 0f;
-                        ToggleRaisePopUp(true, GlobalGameManager.instance.GetRoomData().smallBlind/*availableCallAmount + 1*/, player.GetPlayerData().balance, InGameManager.instance.GetPotAmount());
+                        slider.value = 0f;*/
+                        Debug.Log("availableCallAmount..." + availableCallAmount);
+                        if (availableCallAmount < GlobalGameManager.instance.GetRoomData().smallBlind)
+                            availableCallAmount = GlobalGameManager.instance.GetRoomData().smallBlind;
+                        ToggleRaisePopUp(true, availableCallAmount, player.GetPlayerData().balance, InGameManager.instance.GetPotAmount());
                     }
                     else
                     {
@@ -389,6 +394,7 @@ public class InGameUiManager : MonoBehaviour
                     }
                     else
                     {
+                        OnSliderValueChange();
                         InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Raise, (int)selectedRaiseAmount, "Raise");
                     }
                 }
@@ -403,6 +409,7 @@ public class InGameUiManager : MonoBehaviour
                     }
                     else // Call Amount wise calculation
                     {
+                        //slider.value = availableCallAmount * 4;
                         slider.value = availableCallAmount * 4;
                         OnSliderValueChange();
                     }
@@ -578,12 +585,11 @@ public class InGameUiManager : MonoBehaviour
         {
             sliderText.text = "" + (int)slider.value;
         }
-        
         selectedRaiseAmount = slider.value;
-
-        float t = (max - min) / 100f;
-        Debug.Log(min + " Min&Max " + max + ", " + t);
-        Debug.Log(slider.value + " Slider " + (int)(min + slider.value * 100));    
+        Debug.Log((int)selectedRaiseAmount + "  " + slider.value);
+        //float t = (max - min) / 100f;
+        //Debug.Log(min + " Min&Max " + max + ", " + t);
+        //Debug.Log(slider.value + " Slider " + (int)(min + slider.value * 100));    
         //float prec = 500 * 100 / t;
         //float val = float.Parse(string.IsNullOrEmpty(sliderText.text) ? GlobalGameManager.instance.GetRoomData().smallBlind.ToString() : sliderText.text);
         //Debug.Log(slider.value + " Slider " + (val + (prec * t) / 100));
@@ -706,11 +712,7 @@ public class InGameUiManager : MonoBehaviour
 
     public void ToggleSuggestionButton(bool isShow, bool isCheckAvailable = false, int callAmount = 0, float availableBalance = 0)
     {
-        if (!InGameManager.instance.userWinner)
-            suggestionButtonParent.SetActive(isShow);
-        else
-            suggestionButtonParent.SetActive(false);
-
+        suggestionButtonParent.SetActive(isShow);
         if (isShow)
         {
             if (callAmount <= 0)
@@ -863,7 +865,7 @@ public class InGameUiManager : MonoBehaviour
 
             useRaisePotWise = isCheckAvailable;
 
-            Debug.LogError("isShow " + isShow + " isCheckAvailable " + isCheckAvailable + " call amount  " + callAmount + "  lba  " + lastBetAmount + " availableBalance " + availableBalance + " totalBet " + playerObject.GetPlayerData().totalBet);
+            Debug.LogError("call amount  " + callAmount + "  lba  " + lastBetAmount + " availableBalance " + availableBalance + " totalBet " + playerObject.GetPlayerData().totalBet);
 
             //if (!isCheckAvailable)
             {
@@ -886,8 +888,10 @@ public class InGameUiManager : MonoBehaviour
                 else // dont have amount to bet hence show only fold and all-in
                 {
                     actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    actionButtons[(int)PlayerAction.AllIn].SetActive(false);
                     actionButtons[(int)PlayerAction.Raise].SetActive(true);
                     actionButtons[(int)PlayerAction.Check].SetActive(true);
+                    actionButtons[(int)PlayerAction.Fold].SetActive(true);
                 }
 
                 if (callAmount == 0)
@@ -904,6 +908,7 @@ public class InGameUiManager : MonoBehaviour
             availableCallAmount = callAmount;
         }
         actionButtonParent.SetActive(isShow);
+        InGameUiManager.instance.actionPanelAnimator.SetBool("isOpen", true);
     }
     
 

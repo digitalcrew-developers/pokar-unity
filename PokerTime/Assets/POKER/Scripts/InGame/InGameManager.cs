@@ -291,20 +291,24 @@ public class InGameManager : MonoBehaviour
             {
                 Image[] playerCards = players[i].GetCardsImage();
 
-/*                Debug.Log("Player Cards: " + playerCards[i].name);*/
+                /*                Debug.Log("Player Cards: " + playerCards[i].name);*/
 
-                for (int j = 0; j < playerCards.Length; j++)
+                if (!players[i].playerData.isBlock)
                 {
-                    GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-                    gm.transform.DOMove(playerCards[j].transform.position, GameConstants.CARD_ANIMATION_DURATION);
-                    gm.transform.DOScale(Vector3.one/*playerCards[j].transform.localScale*/, GameConstants.CARD_ANIMATION_DURATION);
-                    gm.transform.DORotateQuaternion(playerCards[j].transform.rotation, GameConstants.CARD_ANIMATION_DURATION);
-                    animatedCards.Add(gm);
-                    SoundManager.instance.PlaySound(SoundType.CardMove);
+                    for (int j = 0; j < playerCards.Length; j++)
+                    {
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                        gm.transform.DOMove(playerCards[j].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+                        gm.transform.DOScale(Vector3.one/*playerCards[j].transform.localScale*/, GameConstants.CARD_ANIMATION_DURATION);
+                        gm.transform.DORotateQuaternion(playerCards[j].transform.rotation, GameConstants.CARD_ANIMATION_DURATION);
+                        animatedCards.Add(gm);
+                        SoundManager.instance.PlaySound(SoundType.CardMove);
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
+
                     yield return new WaitForSeconds(0.1f);
                 }
-
-                yield return new WaitForSeconds(0.1f);
             }
 
             yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
@@ -320,8 +324,11 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < players.Length; i++)
         {
-            Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe());
-            players[i].ToggleCards(true, players[i].IsMe());
+            Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe() + ", " + players[i].playerData.isBlock);
+            if (players[i].playerData.isBlock)
+                players[i].ToggleCards(false, players[i].IsMe());
+            else
+                players[i].ToggleCards(true, players[i].IsMe());
         }
 
         SocketController.instance.SetSocketState(SocketState.Game_Running);
@@ -620,6 +627,7 @@ public class InGameManager : MonoBehaviour
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
                 playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
+                playerDataObject.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
                 //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
                 /*if (isMatchStarted)
                 {
@@ -1379,7 +1387,8 @@ public class InGameManager : MonoBehaviour
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             Debug.Log(onlinePlayersScript[i].playerData.userName + " " + onlinePlayersScript[i].playerData.isFold);
-            onlinePlayersScript[i].ToggleCards(!onlinePlayersScript[i].playerData.isFold, true);
+            if (!onlinePlayersScript[i].playerData.isBlock)
+                onlinePlayersScript[i].ToggleCards(!onlinePlayersScript[i].playerData.isFold, true);
             onlinePlayersScript[i].DisablePot();
         }   
     }
@@ -1815,6 +1824,7 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
                         playerData.playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
+                        playerData.playerData.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
@@ -1888,6 +1898,7 @@ public class InGameManager : MonoBehaviour
                         PlayerData playerData = new PlayerData();
                         //Debug.LogError("************************************************************");
                         playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
+                        playerData.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 
