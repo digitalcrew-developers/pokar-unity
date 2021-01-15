@@ -293,7 +293,7 @@ public class InGameManager : MonoBehaviour
 
                 /*                Debug.Log("Player Cards: " + playerCards[i].name);*/
 
-                if (!players[i].playerData.isBlock)
+                if (players[i].playerData.isStart)
                 {
                     for (int j = 0; j < playerCards.Length; j++)
                     {
@@ -324,8 +324,8 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < players.Length; i++)
         {
-            Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe() + ", " + players[i].playerData.isBlock);
-            if (players[i].playerData.isBlock)
+            Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe() + ", " + players[i].playerData.isStart);
+            if (!players[i].playerData.isStart)
                 players[i].ToggleCards(false, players[i].IsMe());
             else
                 players[i].ToggleCards(true, players[i].IsMe());
@@ -628,6 +628,7 @@ public class InGameManager : MonoBehaviour
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
                 playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                 playerDataObject.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
+                playerDataObject.isStart = bool.Parse(data[0][i]["isStart"].ToString());
                 //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
                 /*if (isMatchStarted)
                 {
@@ -1387,7 +1388,7 @@ public class InGameManager : MonoBehaviour
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             Debug.Log(onlinePlayersScript[i].playerData.userName + " " + onlinePlayersScript[i].playerData.isFold);
-            if (!onlinePlayersScript[i].playerData.isBlock)
+            if (onlinePlayersScript[i].playerData.isStart)
                 onlinePlayersScript[i].ToggleCards(!onlinePlayersScript[i].playerData.isFold, true);
             onlinePlayersScript[i].DisablePot();
         }   
@@ -1825,6 +1826,7 @@ public class InGameManager : MonoBehaviour
                         InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
                         playerData.playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                         playerData.playerData.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
+                        playerData.playerData.isStart = bool.Parse(data[0][i]["isStart"].ToString());
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
@@ -1899,6 +1901,7 @@ public class InGameManager : MonoBehaviour
                         //Debug.LogError("************************************************************");
                         playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                         playerData.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
+                        playerData.isStart = bool.Parse(data[0][i]["isStart"].ToString());
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 

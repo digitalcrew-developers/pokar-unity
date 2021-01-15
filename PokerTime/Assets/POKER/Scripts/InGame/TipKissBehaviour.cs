@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class TipKissBehaviour : MonoBehaviour
 {
@@ -22,10 +23,11 @@ public class TipKissBehaviour : MonoBehaviour
         img= this.transform.GetChild(0).GetComponent<Image>();
         //Get the RectTransform component
         faceButton = this.transform.GetComponent<RectTransform>();
+        transform.DOLocalMoveY(-910f, 1f).OnComplete(() => { Destroy(this.gameObject); });
     }
 
     bool isfade=false;
-    void Update()
+    /*void Update()
     {
         if (faceButton.localPosition.y > -1090.0f)
         {
@@ -55,5 +57,5 @@ public class TipKissBehaviour : MonoBehaviour
                 //yield return null;
           
             }
-        }
+        }*/
 }

@@ -201,6 +201,11 @@ public class HandHistoryManager : MonoBehaviour
 
         totalPages = histories.histories.Length;
         int val = totalPages - 1;
+        if (totalPages <=0)
+        {
+            val = 0;
+            totalPages = 0;
+        }        
         PageNoText.text = pageNo + "/" + val;
 
         if (totalPages > 0)

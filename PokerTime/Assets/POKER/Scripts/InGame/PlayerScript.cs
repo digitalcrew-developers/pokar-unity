@@ -499,7 +499,7 @@ public class PlayerScript : MonoBehaviour
 
     IEnumerator CountDownAnimation(float time, bool isSound)
     {
-        //UnityEngine.Debug.LogError("CountDownAnimation timer " + time);
+        UnityEngine.Debug.LogError("CountDownAnimation timer " + time);
         if (isSound)
             SoundManager.instance.PlaySound(SoundType.TurnSwitch);
 
@@ -904,7 +904,7 @@ public class PlayerData
     public string userId;
     public string userName;
     public string tableId;
-    public bool isDealer, isSmallBlind, isBigBlind, isFold, isTurn, isCheckAvailable, isBlock;
+    public bool isDealer, isSmallBlind, isBigBlind, isFold, isTurn, isCheckAvailable, isBlock, isStart;
     public float balance, totalBet;
     public CardData[] cards;
     public string avatarurl;

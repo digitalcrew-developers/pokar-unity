@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class TipCoinBehaviour : MonoBehaviour
 {
@@ -17,17 +18,18 @@ public class TipCoinBehaviour : MonoBehaviour
     {
        
         faceButton = this.transform.GetComponent<RectTransform>();
+        transform.DOLocalMoveY(750, 1f).OnComplete(() => { Destroy(this.gameObject); });
     }
 
     void Update()
     {
-        
-        if (faceButton.localPosition.y < 1090.0f)
+        /*if (faceButton.localPosition.y < 1090.0f)
         {
             faceButton.localPosition = Vector3.SmoothDamp(faceButton.localPosition, newPos, ref buttonVelocity, smoothTime);
         }
-        else {
+        else
+        {
             Destroy(this.gameObject);
-        }
+        }*/
     }
 }

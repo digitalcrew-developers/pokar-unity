@@ -16,7 +16,7 @@ public class ShowGirlEmoji : MonoBehaviour
     void TaskOnClick()
     {
         Debug.Log("I Touch Girls");
-
+        InGameUiManager.instance.TempUserID = 0.ToString();
         InGameUiManager.instance.OnClickEmoji(2);
         InGameUiManager.instance.OnClickOnButton("emojiScreen");
         InGameUiManager.instance.OnClickEmojiTransform(this.transform);

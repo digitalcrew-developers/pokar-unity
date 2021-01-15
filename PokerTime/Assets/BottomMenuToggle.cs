@@ -39,7 +39,10 @@ public class BottomMenuToggle : MonoBehaviour
             //Debug.LogError("Destroying Lobby in Teen...");
             MainMenuControllerTeen.instance.DestroyScreen(ScreenLayerTeen.LAYER1);
         }
-
+        if (GameConstants.poker)
+        {
+            MainMenuController.instance.DestroyScreen(ScreenLayer.LAYER1);
+        }
         if (myToggle.isOn)
         {
             //call MainMenuController here.
