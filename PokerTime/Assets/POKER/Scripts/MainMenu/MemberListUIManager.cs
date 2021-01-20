@@ -184,8 +184,10 @@ public class MemberListUIManager : MonoBehaviour
                 //gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
 
                 if (memberDetails.profileImagePath.Length > 0)
-                    StartCoroutine(LoadSpriteImageFromUrl(memberDetails.profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
-
+                {
+                    if(transform.gameObject.activeSelf)
+                        StartCoroutine(LoadSpriteImageFromUrl(memberDetails.profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
+                }
                 gm.transform.Find("Reject").GetComponent<Button>().onClick.AddListener(() => newMemberButton.transform.Find("Notification").gameObject.SetActive(false));
                 gm.transform.Find("Reject").GetComponent<Button>().onClick.AddListener(()=> ChangeUserRole(gm,true, memberDetails));
                 gm.transform.Find("Approve").GetComponent<Button>().onClick.AddListener(() => newMemberButton.transform.Find("Notification").gameObject.SetActive(false));
@@ -213,9 +215,13 @@ public class MemberListUIManager : MonoBehaviour
                 //initial = initial.Substring(0, 2);
                 //gm.transform.Find("Image/Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>().text = initial;
 
+
                 if (oldMembersList[i].profileImagePath.Length > 0)
-                    StartCoroutine(LoadSpriteImageFromUrl(oldMembersList[i].profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
-                
+                {
+                    if (transform.gameObject.activeSelf)
+                        StartCoroutine(LoadSpriteImageFromUrl(oldMembersList[i].profileImagePath, gm.transform.Find("Image").GetComponent<Image>()));
+                }
+
                 gm.GetComponent<Button>().onClick.RemoveAllListeners();
                 //Debug.Log("Debug i value :" + i);
 

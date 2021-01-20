@@ -4707,15 +4707,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5171230533843327460}
-        m_MethodName: OnClickOnCreate
-        m_Mode: 1
+      - m_Target: {fileID: 8424019137379975712}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: CreateRingGameNLH
+          m_StringArgument: Start
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &2351211537047112959
@@ -6009,13 +6009,14 @@ GameObject:
   - component: {fileID: 8077442336584505794}
   - component: {fileID: 8807878267415144352}
   - component: {fileID: 918671792774501244}
+  - component: {fileID: 8424019137379975712}
   m_Layer: 5
   m_Name: TeenPatti(Classic)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8852283524320906333
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6103,6 +6104,48 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8424019137379975712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2878430752633816932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af3a61608036d81499e7bc674bd31cd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popUpText: {fileID: 0}
+  templateObj: {fileID: 0}
+  container: {fileID: 0}
+  selectAllToggle: {fileID: 0}
+  noTemplateText: {fileID: 0}
+  createBtn: {fileID: 0}
+  RingGame_RegularModeTabNLH: {fileID: 0}
+  RingGame_6PlusModeTabNLH: {fileID: 0}
+  RingGameTabButton_NLH: {fileID: 0}
+  SNGGameTabButton_NLH: {fileID: 0}
+  MTTGameTabButton_NLH: {fileID: 0}
+  RingGamePanel_NLH: {fileID: 0}
+  SNGamePanel_NLH: {fileID: 0}
+  MTTGamePanel_NLH: {fileID: 0}
+  RingGameTabButton_PLO: {fileID: 0}
+  SNGGameTabButton_PLO: {fileID: 0}
+  MTTGameTabButton_PLO: {fileID: 0}
+  RingGamePanel_PLO: {fileID: 0}
+  SNGamePanel_PLO: {fileID: 0}
+  MTTGamePanel_PLO: {fileID: 0}
+  RingGame_PLO4ModePLO: {fileID: 0}
+  RingGame_PLO5ModePLO: {fileID: 0}
+  RingGameTabButton_MIXED: {fileID: 0}
+  SNGGameTabButton_MIXED: {fileID: 0}
+  MTTGameTabButton_MIXED: {fileID: 0}
+  RingGamePanel_MIXED: {fileID: 0}
+  SNGamePanel_MIXED: {fileID: 0}
+  MTTGamePanel_MIXED: {fileID: 0}
+  RingGame_NLHPLO4ModePLO: {fileID: 0}
+  RingGame_NLHPLO5ModePLO: {fileID: 0}
 --- !u!1 &2885429105818469839
 GameObject:
   m_ObjectHideFlags: 0
@@ -11071,7 +11114,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: RANDOM
+  m_text: 5%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 30e3e450ecabeb347be73f256feb80f6, type: 2}
   m_sharedMaterial: {fileID: -6124664884291830468, guid: 30e3e450ecabeb347be73f256feb80f6,
@@ -11442,7 +11485,7 @@ GameObject:
   - component: {fileID: 2600279297847703555}
   - component: {fileID: 4407355252357013590}
   m_Layer: 5
-  m_Name: CreatTableOptions (1)
+  m_Name: CreatTableOptions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12040,7 +12083,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5595966532216465092}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2aa98176e2d7503459b557cdab9185f2, type: 3}
   m_Name: 
@@ -13921,15 +13964,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5171230533843327460}
-        m_MethodName: OnClickOnSave
-        m_Mode: 1
+      - m_Target: {fileID: 8424019137379975712}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: SaveRingGameNLH
+          m_StringArgument: Create
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &6577074505188342715
@@ -15399,7 +15442,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: OFF
+  m_text: 5%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 30e3e450ecabeb347be73f256feb80f6, type: 2}
   m_sharedMaterial: {fileID: -6124664884291830468, guid: 30e3e450ecabeb347be73f256feb80f6,
@@ -17803,7 +17846,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 388s
+  m_text: 3 BB
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 30e3e450ecabeb347be73f256feb80f6, type: 2}
   m_sharedMaterial: {fileID: -6124664884291830468, guid: 30e3e450ecabeb347be73f256feb80f6,

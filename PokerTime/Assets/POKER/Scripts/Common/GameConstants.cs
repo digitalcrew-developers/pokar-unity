@@ -165,7 +165,23 @@ public class GameConstants : MonoBehaviour
 
     public static string[] GAME_URLS_TP =
     {
-        API_URL_TP +"/tp_createClub"
+        API_URL_TP +"/tp_createClub",
+        API_URL_TP +"/tp_joinClubRequest",
+        API_URL_TP +"/tp_updateClub",
+        API_URL_TP +"/tp_createTable",
+        API_URL_TP +"/tp_changePlayerRoleAndStatus",
+        API_URL_TP +"/tp_getPendingClubJoinRequest",
+        API_URL_TP +"/tp_deleteUserClubJoinedRedquest",
+        API_URL_TP +"/tp_getTemplates",
+        API_URL_TP +"/tp_getClubListByUserId",
+        API_URL_TP +"/tp_getClubDetails",
+        API_URL_TP +"/tp_getClubMemberListByClubId",
+        API_URL_TP +"/tp_postNotification",
+        API_URL_TP +"/tp_getNotifications",
+        API_URL_TP +"/tp_addPTchips",
+        API_URL_TP +"/tp_rateClub",
+        API_URL_TP +"/tp_sendOut",
+        API_URL_TP +"/tp_claimBack"
     };
 
     
@@ -268,5 +284,21 @@ public enum RequestType
 [System.Serializable]
 public enum RequestTypeTP
 {
-    CreateClub
+    CreateClub,
+    SendClubJoinRequest,
+    UpdateClub,
+    CreateTable,
+    ChangePlayerRoleAndStatus,
+    GetPendingClubJoinRequest,
+    DeleteUserClubJoinedRedquest,
+    GetTemplates,
+    GetClubList,
+    GetClubDetails,
+    GetClubMemberList,
+    PostNotification,
+    GetNotification,
+    AddPTChips,
+    RateClub,
+    SendChipsOut,
+    ClaimBackChips
 }

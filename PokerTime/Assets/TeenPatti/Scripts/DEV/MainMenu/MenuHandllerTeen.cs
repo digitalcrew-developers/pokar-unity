@@ -141,12 +141,12 @@ public class MenuHandllerTeen : MonoBehaviour
 						return;
 					}
 
-					string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-						"\"uniqueClubId\":\"" + TMP_JoinClubField.text + "\","+
-						"\"agentId\":\"" + TMP_AgentField.text + "\"}";
+					string requestData = "{\"uniqueClubId\":\"" + TMP_JoinClubField.text + "\"," +
+						"\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\","+
+						"\"referralCode\":\"" + TMP_AgentField.text + "\"}";
 
 					MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Loading);
-					//WebServices.instance.SendRequest(RequestType.SendClubJoinRequest, requestData, true, OnServerResponseFound);
+					WebServices.instance.SendRequestTP(RequestTypeTP.SendClubJoinRequest, requestData, true, OnServerResponseFound);
 				}
 			}
 			break;
@@ -263,42 +263,43 @@ public class MenuHandllerTeen : MonoBehaviour
 			case RequestTypeTP.CreateClub:
 			{
 				Debug.Log("Response => CreateClub TP: " + serverResponse);
-				//JsonData data = JsonMapper.ToObject(serverResponse);
+				JsonData data = JsonMapper.ToObject(serverResponse);
 
-				//if (data["success"].ToString() == "1")
-				//{
-				//	createClubPopUp.SetActive(false);
-				//	MainMenuControllerTeen.instance.ShowMessage("Club created successfully");
-				//	ClubListUiManager.instance.FetchList();
-				//}
-				//else
-				//{
-				//	MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
-				//		if (createClubPopUp.activeInHierarchy)
-				//			createClubPopUp.SetActive(false);
-				//}
+				if (data["success"].ToString() == "1")
+				{
+					createClubPopUp.SetActive(false);
+					MainMenuControllerTeen.instance.ShowMessage("Club created successfully");
+					ClubListUiManager.instance.FetchList();
+				}
+				else
+				{
+					MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
+					if (createClubPopUp.activeInHierarchy)
+						createClubPopUp.SetActive(false);
+				}
 			}
 			break;
 
 
-		//case RequestType.SendClubJoinRequest:
-		//	{
-		//		JsonData data = JsonMapper.ToObject(serverResponse);
+			case RequestTypeTP.SendClubJoinRequest:
+				{
+					Debug.Log("Response => JoinClubRequest TP: " + serverResponse);
+					//JsonData data = JsonMapper.ToObject(serverResponse);
 
-		//		if (data["success"].ToString() == "1")
-		//		{
-		//			joinClubPopUp.SetActive(false);
-		//			MainMenuControllerTeen.instance.ShowMessage("Club join request sent");
-		//		}
-		//		else
-		//		{
-		//			MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
-		//		}
-		//	}
-		//	break;
+					//if (data["success"].ToString() == "1")
+					//{
+					//	joinClubPopUp.SetActive(false);
+					//	MainMenuControllerTeen.instance.ShowMessage("Club join request sent");
+					//}
+					//else
+					//{
+					//	MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
+					//}
+				}
+				break;
 
 
-		default:
+			default:
 			#if ERROR_LOG
 			Debug.LogError("Unhandled requestType found in  MenuHandller = "+requestType);
 			#endif
