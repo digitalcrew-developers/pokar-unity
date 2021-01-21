@@ -7,6 +7,7 @@ public class ClubDataManager : MonoBehaviour
     public static ClubDataManager instance;
 
     public Transform container;
+    
 
     private void Awake()
     {
@@ -16,5 +17,9 @@ public class ClubDataManager : MonoBehaviour
     public void OnClickOnData()
     {
         ClubAdminManager.instance.ShowScreen(ClubScreens.GameData);
+    }
+    public void OnClickExpertData()
+    {
+        ClubAdminManager.instance.ShowScreen(ClubScreens.ExpertData);
     }
 }

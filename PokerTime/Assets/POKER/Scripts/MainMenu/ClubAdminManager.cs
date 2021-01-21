@@ -1053,5 +1053,6 @@ public enum ClubScreens
     Exchange,
     CreateTable,
     Members,
-    GameData
+    GameData,
+    ExpertData
 }
