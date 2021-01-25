@@ -4797,6 +4797,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -4818,6 +4820,7 @@ MonoBehaviour:
   flag: {fileID: 4959437261845164108}
   lastActionImage: {fileID: 4093918317380083049}
   otheruserId: 0
+  seat: 
   CountDownTimerRunning: 0
 --- !u!1 &1234193980454010206
 GameObject:
@@ -5360,6 +5363,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -5381,6 +5386,7 @@ MonoBehaviour:
   flag: {fileID: 4559374651726827411}
   lastActionImage: {fileID: 5671392016237609046}
   otheruserId: 0
+  seat: 
   CountDownTimerRunning: 0
 --- !u!1 &1343376374539981511
 GameObject:
@@ -7354,6 +7360,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -7375,6 +7383,7 @@ MonoBehaviour:
   flag: {fileID: 2775717328108790338}
   lastActionImage: {fileID: 4037804361590852574}
   otheruserId: 0
+  seat: 
   CountDownTimerRunning: 0
 --- !u!1 &1725049493565571307
 GameObject:
@@ -11293,7 +11302,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2763066923528859188}
   m_Layer: 0
-  m_Name: InGame
+  m_Name: InGame 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11599,6 +11608,7 @@ MonoBehaviour:
     type: 3}
   spwantipsKissPos: {fileID: 8407494511636142678}
   TempUserID: 
+  currentClickedSeatNum: 
   players: {fileID: 4707413369215380694}
   tableId: 
   winnigBoosterAmount: 0
@@ -11611,6 +11621,7 @@ MonoBehaviour:
   TableImages:
   - {fileID: 6008857389795572624}
   - {fileID: 745439279765296237}
+  actionPanelAnimator: {fileID: 0}
   emojiIndex: 0
   otherId: 0
   sentToEmojiValue: 
@@ -12102,6 +12113,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -12123,6 +12136,7 @@ MonoBehaviour:
   flag: {fileID: 6070130574859851319}
   lastActionImage: {fileID: 410814328876983966}
   otheruserId: 0
+  seat: 
   CountDownTimerRunning: 0
 --- !u!1 &2859541179289468635
 GameObject:
@@ -18409,6 +18423,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -18430,6 +18446,7 @@ MonoBehaviour:
   flag: {fileID: 9168980273232215636}
   lastActionImage: {fileID: 5695223082968046195}
   otheruserId: 0
+  seat: 
   CountDownTimerRunning: 0
 --- !u!1 &4240486738518207454
 GameObject:
@@ -21839,10 +21856,16 @@ MonoBehaviour:
   - {fileID: 7946648710705021605}
   isGameStart: 0
   WinnAnimationpos: {fileID: 8151787256875801600}
+  currentClickedSeatNum: 
+  isHighlightCard: 0
+  highlightCards: []
+  highlightCardString: []
   videoWidth: 0
   videoHeight: 0
   isRecording: 0
   cardValue: 
+  thunderPointBar: {fileID: 0}
+  userWinner: 0
   TableName: {fileID: 922889364978663483}
   RabbitButton: {fileID: 8120948149850850810}
   AllSeatButtons:
@@ -21855,6 +21878,7 @@ MonoBehaviour:
   - {fileID: 4848791765544459878}
   - {fileID: 3777397537803368512}
   - {fileID: 896617490599754949}
+  gameExitCalled: 0
   AmISpectator: 1
   PointEarnedCounter: 0
   WinnersNameText: {fileID: 6734230858514144179}
@@ -28871,6 +28895,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -28892,6 +28918,7 @@ MonoBehaviour:
   flag: {fileID: 9065814547707500171}
   lastActionImage: {fileID: 7668740388125666367}
   otheruserId: 0
+  seat: 
   CountDownTimerRunning: 0
 --- !u!1 &5981811403755945743
 GameObject:
@@ -32532,6 +32559,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -32553,6 +32582,7 @@ MonoBehaviour:
   flag: {fileID: 4175368688331809296}
   lastActionImage: {fileID: 7044287673105460458}
   otheruserId: 0
+  seat: 
   CountDownTimerRunning: 0
 --- !u!1 &6021704314546782284
 GameObject:
@@ -35754,6 +35784,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -35775,6 +35807,7 @@ MonoBehaviour:
   flag: {fileID: 5045431640735412388}
   lastActionImage: {fileID: 4900910189588829832}
   otheruserId: 0
+  seat: 
   CountDownTimerRunning: 0
 --- !u!1 &6919946719838496895
 GameObject:
@@ -37637,6 +37670,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -37658,6 +37693,7 @@ MonoBehaviour:
   flag: {fileID: 1216417539343545589}
   lastActionImage: {fileID: 3469838226736061538}
   otheruserId: 0
+  seat: 
   CountDownTimerRunning: 0
 --- !u!1 &7375380460068598707
 GameObject:

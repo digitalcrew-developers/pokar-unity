@@ -638,46 +638,46 @@ public class MemberDetailsTeen : MonoBehaviour
                 MainMenuControllerTeen.instance.ShowMessage(data2["message"].ToString());
             }
         }
-        //else if(requestType == RequestType.GetTradeHistory)
-        //{
-        //    JsonData data = JsonMapper.ToObject(serverResponse);
-        //    Debug.Log("Response GetTradeHistory: " + serverResponse);
-        //    if (data["success"].Equals(1))
-        //    {
-        //        for (int j = 0; j < AgentGrantCreditContainer.childCount; j++)
-        //        {
-        //            Destroy(AgentGrantCreditContainer.GetChild(j).gameObject);
-        //        }
+        else if (requestType == RequestTypeTP.GetTradeHistory)
+        {
+            JsonData data = JsonMapper.ToObject(serverResponse);
+            Debug.Log("Response GetTradeHistory: " + serverResponse);
+            if (data["success"].Equals(1))
+            {
+                for (int j = 0; j < AgentGrantCreditContainer.childCount; j++)
+                {
+                    Destroy(AgentGrantCreditContainer.GetChild(j).gameObject);
+                }
 
-        //        //Debug.Log("Total Data: " + data["response"][0]["nickName"].ToString());
-        //        for (int i = 0; i < data["response"].Count; i++)
-        //        {
-        //            GameObject gm = Instantiate(AgentPrefabForGrantCredit, AgentGrantCreditContainer);
+                //Debug.Log("Total Data: " + data["response"][0]["nickName"].ToString());
+                for (int i = 0; i < data["response"].Count; i++)
+                {
+                    GameObject gm = Instantiate(AgentPrefabForGrantCredit, AgentGrantCreditContainer);
 
-        //            if (data["response"][i]["nickName"] != null)
-        //                gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["nickName"].ToString();
-        //            else
-        //                gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["userId"].ToString();
+                    if (data["response"][i]["nickName"] != null)
+                        gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["nickName"].ToString();
+                    else
+                        gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["userId"].ToString();
 
-        //            gm.transform.Find("Time").GetComponent<TMP_Text>().text = data["response"][i]["created"].ToString().Substring(0, 10) + " " + data["response"][i]["created"].ToString().Substring(11, 5);
+                    gm.transform.Find("Time").GetComponent<TMP_Text>().text = data["response"][i]["created"].ToString().Substring(0, 10) + " " + data["response"][i]["created"].ToString().Substring(11, 5);
 
-        //            if (data["response"][i]["tradeType"].ToString().Equals("Dr"))
-        //            {
-        //                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.red;
-        //                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "-" + data["response"][i]["amount"].ToString();
+                    if (data["response"][i]["tradeType"].ToString().Equals("Dr"))
+                    {
+                        gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.red;
+                        gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "-" + data["response"][i]["amount"].ToString();
 
-        //                gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Sent out to " + data["response"][i]["toUserId"].ToString();
-        //            }
-        //            else
-        //            {
-        //                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.green;
-        //                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "+" + data["response"][i]["amount"].ToString();
+                        gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Sent out to " + data["response"][i]["toUserId"].ToString();
+                    }
+                    else
+                    {
+                        gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.green;
+                        gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "+" + data["response"][i]["amount"].ToString();
 
-        //                gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Claimed back from " + data["response"][i]["userId"].ToString();
-        //            }
-        //        }
-        //    }
-        //}
+                        gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Claimed back from " + data["response"][i]["userId"].ToString();
+                    }
+                }
+            }
+        }
         //else if(requestType == RequestType.GetClubMemberList)
         //{
         //    Debug.Log("Response => GetClubMemberList: " + serverResponse);
@@ -729,9 +729,9 @@ public class MemberDetailsTeen : MonoBehaviour
     {
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                              "\"OrderBy\":\"" + "created" + "\"," +
-                             "\"Sequence\":\"" + "DESC" + "\"," +
-                             "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
-        //WebServices.instance.SendRequest(RequestType.GetTradeHistory, requestData, true, OnServerResponseFound);
+                             "\"Sequence\":\"" + "DESC" + "\"}";
+        //"\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
+        WebServices.instance.SendRequestTP(RequestTypeTP.GetTradeHistory, requestData, true, OnServerResponseFound);
     }
     
     public void GetAgentDetails()
