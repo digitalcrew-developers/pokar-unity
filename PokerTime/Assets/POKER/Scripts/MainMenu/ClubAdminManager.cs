@@ -147,6 +147,7 @@ public class ClubAdminManager : MonoBehaviour
                 InitialiseDisbandClubScreen();
                 break;
             case "Data":
+                AllScreens[7].SetActive(true);
                 ShowScreen(ClubScreens.Data);
                 break;
             case "Counter":
@@ -980,11 +981,11 @@ public class ClubAdminManager : MonoBehaviour
                 //    }
                 //    break;
 
-                case ClubScreens.Data:
-                    {
+                //case ClubScreens.Data:
+                //    {
 
-                    }
-                    break;
+                //    }
+                //    break;
 
                 default:
                     break;

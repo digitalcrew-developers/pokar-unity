@@ -114,6 +114,11 @@ public class MenuHandller : MonoBehaviour
 			}
 			break;
 
+			case "LuckyDraw":
+                {
+					MainMenuController.instance.ShowScreen(MainMenuScreens.LuckyDraw);
+                }
+				break;
 
 		case "submit":
 			{

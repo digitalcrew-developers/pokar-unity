@@ -365,7 +365,7 @@ public class ClubCounterTeen : MonoBehaviour
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                              "\"OrderBy\":\"" + "created" + "\"," +
                              "\"Sequence\":\"" + "DESC" + "\"}";
-        //WebServices.instance.SendRequest(RequestType.GetTradeHistory, requestData, true, OnServerResponseFound);
+        WebServices.instance.SendRequestTP(RequestTypeTP.GetTradeHistory, requestData, true, OnServerResponseFound);
     }
 
     public void OnServerResponseFound(RequestTypeTP requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -474,50 +474,50 @@ public class ClubCounterTeen : MonoBehaviour
             //    }
             //    break;
 
-            //case RequestType.GetTradeHistory:
-            //    {
-            //        JsonData data = JsonMapper.ToObject(serverResponse);
-            //        Debug.Log("Response GetTradeHistory: " + serverResponse);
-            //        if (data["success"].Equals(1))
-            //        {
-            //            for (int i = 0; i < TradeRecordListContent.childCount; i++)
-            //            {
-            //                Destroy(TradeRecordListContent.GetChild(i).gameObject);
-            //            }
+            case RequestTypeTP.GetTradeHistory:
+                {
+                    JsonData data = JsonMapper.ToObject(serverResponse);
+                    Debug.Log("Response GetTradeHistory: " + serverResponse);
+                    if (data["success"].Equals(1))
+                    {
+                        for (int i = 0; i < TradeRecordListContent.childCount; i++)
+                        {
+                            Destroy(TradeRecordListContent.GetChild(i).gameObject);
+                        }
 
-            //            //Debug.Log("Total Data: " + data["response"][0]["nickName"].ToString());
-            //            for (int i = 0; i < data["response"].Count; i++)
-            //            {
-            //                GameObject gm = Instantiate(TradeRecordPrefab, TradeRecordListContent);
+                        //Debug.Log("Total Data: " + data["response"][0]["nickName"].ToString());
+                        for (int i = 0; i < data["response"].Count; i++)
+                        {
+                            GameObject gm = Instantiate(TradeRecordPrefab, TradeRecordListContent);
 
-            //                if (data["response"][i]["nickName"] != null)
-            //                {
-            //                    gm.name = data["response"][i]["nickName"].ToString();
-            //                    gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["nickName"].ToString();
-            //                }
-            //                else
-            //                    gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["userId"].ToString();
+                            if (data["response"][i]["nickName"] != null)
+                            {
+                                gm.name = data["response"][i]["nickName"].ToString();
+                                gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["nickName"].ToString();
+                            }
+                            else
+                                gm.transform.Find("Name").GetComponent<TMP_Text>().text = data["response"][i]["userId"].ToString();
 
-            //                gm.transform.Find("Time").GetComponent<TMP_Text>().text = data["response"][i]["created"].ToString().Substring(0, 10) + " " + data["response"][i]["created"].ToString().Substring(11, 5);
+                            gm.transform.Find("Time").GetComponent<TMP_Text>().text = data["response"][i]["created"].ToString().Substring(0, 10) + " " + data["response"][i]["created"].ToString().Substring(11, 5);
 
-            //                if (data["response"][i]["tradeType"].ToString().Equals("Dr"))
-            //                {
-            //                    gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.red;
-            //                    gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "-" + data["response"][i]["amount"].ToString();
+                            if (data["response"][i]["tradeType"].ToString().Equals("Dr"))
+                            {
+                                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.red;
+                                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "-" + data["response"][i]["amount"].ToString();
 
-            //                    gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Sent out to " + data["response"][i]["toUserId"].ToString();
-            //                }
-            //                else
-            //                {
-            //                    gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.green;
-            //                    gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "+" + data["response"][i]["amount"].ToString();
+                                gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Sent out to " + data["response"][i]["toUserId"].ToString();
+                            }
+                            else
+                            {
+                                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().color = Color.green;
+                                gm.transform.Find("Image").GetChild(0).GetComponent<TMP_Text>().text = "+" + data["response"][i]["amount"].ToString();
 
-            //                    gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Claimed back from " + data["response"][i]["userId"].ToString();
-            //                }
-            //            }
-            //        }
-            //    }
-            //    break;
+                                gm.transform.Find("Data").GetComponent<TMP_Text>().text = "Claimed back from " + data["response"][i]["userId"].ToString();
+                            }
+                        }
+                    }
+                }
+                break;
 
             default:
                 Debug.LogError("Unhandled server requestType found  " + requestType);
