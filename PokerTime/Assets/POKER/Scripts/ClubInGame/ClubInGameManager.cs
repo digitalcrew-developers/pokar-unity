@@ -221,10 +221,37 @@ public class ClubInGameManager : MonoBehaviour
     public void OnEVChopDataFound(string responseText)
     {
         Debug.LogError("EV :" + responseText);
-        EVCHOPPanel.SetActive(false);
-        EVCHOPButton.SetActive(false);
-        ResumeHand.SetActive(false);
+        JsonData data = JsonMapper.ToObject(responseText);
+        Debug.LogError("EV2 :" + data[0][0]["amount"]);
+        ClubInGameUIManager.instance.ToggleActionButton(false);
+        ClubInGameUIManager.instance.ToggleSuggestionButton(false);
+        EVCHOPPanel.SetActive(true);
+        EVCHOPButton.SetActive(true);
+        ResumeHand.SetActive(true);
+        for (int i = 0; i < data.Count; i++)
+        {
+            EVCHOPButton.transform.GetChild(0).GetComponent<Text>().text = data[0][i]["amount"].ToString();
+        }
+        /*if (data[0].Count > 0)
+        {
+            EVCHOPPanel.SetActive(true);
+            //EVCHOPButton.SetActive(true);
+            ResumeHand.SetActive(true);
+            for (int j = 0; j < data[0].Count; j++)
+            {
+                if (data[0][j]["userName"].ToString() == PrefsManager.GetPlayerData().userName)
+                {
+                    for (int i = 0; i < data[0][j]["evChop"].Count; i++)
+                    {
+                        GameObject g = Instantiate(EVCHOPButton) as GameObject;
+                        g.transform.SetSiblingIndex()
+                    }
+                }
+            }
+        }*/
     }
+
+
 
     private bool DontShowCommunityCardAnimation = false;    //DEV_CODE Added this line as done inside InGameManager script
     public void OnRabbitDataFound(string responseText)
@@ -919,7 +946,8 @@ public class ClubInGameManager : MonoBehaviour
 
     public void EmitEVChop()
     {
-        EVCHOPPanel.SetActive(true);
+        //EVCHOPPanel.SetActive(true);
+        ClubSocketController.instance.ConfrimEvChop("1", "0");
     }
 
     public void HideEVChopButtons()

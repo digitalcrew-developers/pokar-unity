@@ -783,6 +783,7 @@ GameObject:
   - component: {fileID: 381037525149187376}
   - component: {fileID: 381037525149187391}
   - component: {fileID: 381037525149187390}
+  - component: {fileID: 9074019043252440023}
   m_Layer: 5
   m_Name: Container
   m_TagString: Untagged
@@ -887,6 +888,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &9074019043252440023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381037525149187388}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: 10
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
 --- !u!1 &767225038319493612
 GameObject:
   m_ObjectHideFlags: 0
@@ -8362,6 +8388,7 @@ GameObject:
   - component: {fileID: 8019755161300763692}
   - component: {fileID: 8019755161300763695}
   - component: {fileID: 8019755161300763694}
+  - component: {fileID: 8648464208299730106}
   m_Layer: 5
   m_Name: 1
   m_TagString: Untagged
@@ -8482,6 +8509,26 @@ MonoBehaviour:
           m_StringArgument: item_one
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8648464208299730106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8019755161300763688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 600
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &8019755161307669446
 GameObject:
   m_ObjectHideFlags: 0
@@ -8928,7 +8975,7 @@ RectTransform:
   m_GameObject: {fileID: 8152751628222111815}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.85, y: 0.85, z: 1}
   m_Children:
   - {fileID: 1503467708359619411}
   - {fileID: 4274214303009723475}

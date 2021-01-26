@@ -131,7 +131,14 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("rabbitOpenCards", RabbitCardDataReceived);
         socketManager.Socket.On("evChopData", EVChopDataReceived);
         socketManager.Socket.On("playerExit", PlayerExit);
+        socketManager.Socket.On("lineNo", LineNumber);
         socketManager.Open();
+    }
+
+    private void LineNumber(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError("Response => LineNumber: " + responseText);
     }
 
     bool isPaused = false;
@@ -1609,7 +1616,7 @@ public class SocketController : MonoBehaviour
         if (!socketManager.Socket.IsOpen)
         {
             InGameUiManager.instance.DestroyScreen(InGameScreens.Reconnecting);
-            InGameUiManager.instance.ShowMessage("ReConnect Attempt failed, please check your network connection", () =>
+            InGameUiManager.instance.ShowMessage("Connection error, check your network connection and try again.", () =>
             {
                 StartCoroutine(WaitForReconnect());
             },
@@ -1708,13 +1715,6 @@ public enum SocketEvetns
 
 [System.Serializable]
 public class RabitData
-{
-    public string tableId;
-    public string userId;
-}
-
-[System.Serializable]
-public class EVChopData
 {
     public string tableId;
     public string userId;
@@ -1851,7 +1851,12 @@ public class PrivateRoomJoinData
     public string tableId;
 }
 
-
+[System.Serializable]
+public class EvChopData
+{
+    public string tableId, userId;
+    public string action, index;
+}
 
 [System.Serializable]
 public enum SocketState

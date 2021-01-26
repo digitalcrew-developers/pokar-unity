@@ -1065,7 +1065,7 @@ public class ClubSocketControllerTeen : MonoBehaviour
 
     public void RequestEVCHOP()
     {
-        EVChopData requestData = new EVChopData();
+        EvChopData requestData = new EvChopData();
         requestData.tableId = TABLE_ID;
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
 

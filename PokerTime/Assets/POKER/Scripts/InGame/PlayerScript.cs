@@ -369,7 +369,7 @@ public class PlayerScript : MonoBehaviour
 
         if (amount > 0)
         {
-            ToggleLocalPot(true);
+            //ToggleLocalPot(true);
             localBetPot.text = "" + amount;
         }
         else

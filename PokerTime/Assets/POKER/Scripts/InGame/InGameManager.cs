@@ -781,18 +781,24 @@ public class InGameManager : MonoBehaviour
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
         //Debug.Log("Last All in Bet: " + /*playerScript.GetLocalBetAmount()*/betAmount);
-        
-        GameObject gm = Instantiate(betAnimationPrefab,animationLayer) as GameObject;
-        gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
-        gm.transform.position = playerScript.transform.position;
-        Vector3 initialScale = gm.transform.localScale;
-        gm.transform.localScale = Vector3.zero;
+        if (!playerScript.localBg().activeSelf)
+        {
+            GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
+            gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
+            gm.transform.position = playerScript.transform.position;
+            Vector3 initialScale = gm.transform.localScale;
+            gm.transform.localScale = Vector3.zero;
 
-        gm.transform.DOMove(playerScript.localBg().transform.position,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        gm.transform.DOScale(initialScale,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        SoundManager.instance.PlaySound(SoundType.Bet);
-        yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
-        Destroy(gm);
+            gm.transform.DOMove(playerScript.localBg().transform.position, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+            gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack).OnComplete(() => { playerScript.localBg().SetActive(true); });
+            SoundManager.instance.PlaySound(SoundType.Bet);
+            yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
+            Destroy(gm);
+        }
+        else
+        {
+            playerScript.GetLocaPot().text = betAmount;
+        }
     }
 
     private bool winnerAnimationFound = false;
@@ -951,11 +957,14 @@ public class InGameManager : MonoBehaviour
             if (text.gameObject.activeInHierarchy && !string.IsNullOrEmpty(text.text))
             {
                 isBetFound = true;
+                text.transform.parent.gameObject.SetActive(false);
                 GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
-
                 gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
-                //gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);
-                Destroy(gm,GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
+                //Debug.LogError(onlinePlayersScript[i].localBg().transform.localPosition+", " +onlinePlayersScript[i].localBg().transform.position+ " Pos..... " + text.GetComponent<RectTransform>().anchoredPosition+", "+ text.transform.position+", "+ text.transform.localPosition);
+                gm.transform.position = onlinePlayersScript[i].localBg().transform.position;
+                gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
+                gm.transform.DOMove(Pot.transform.position, 0.3f).OnComplete(() => { Destroy(gm); });
+                //Destroy(gm,GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
             }
 
             onlinePlayersScript[i].UpdateRoundNo(GetMatchRound());
@@ -1620,7 +1629,7 @@ public class InGameManager : MonoBehaviour
             PotValues.Add(value);
         }
 
-        if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
+        //if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         {
             //DEV_CODE
             if (!isCardValueSet)
@@ -1634,14 +1643,14 @@ public class InGameManager : MonoBehaviour
             isCardValueSet = true;
 
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
-
-            if (betAmount > 0 && userId != PlayerManager.instance.GetPlayerGameData().userId)
+            Debug.Log(userId+" " + PlayerManager.instance.GetPlayerGameData().userId);
+            if (betAmount > 0 /*&& userId != PlayerManager.instance.GetPlayerGameData().userId*/)
             {
                 PlayerScript playerObject = GetPlayerObject(userId);
 
                 if (playerObject != null)
                 {
-                    //Debug.Log("Current Bet Amount : " + betAmount);
+                    Debug.Log("Current Bet Amount : " + betAmount);
                     //StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
                     StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));
                 }
@@ -2067,8 +2076,8 @@ public class InGameManager : MonoBehaviour
 
         myPlayerObject = null;
 
-        onlinePlayersScript = null;
-        onlinePlayersScript = new PlayerScript[0];
+        //onlinePlayersScript = null;
+        //onlinePlayersScript = new PlayerScript[0];
         for (int i = 0; i < animationLayer.childCount; i++)
         {
             Destroy(animationLayer.GetChild(i).gameObject);
