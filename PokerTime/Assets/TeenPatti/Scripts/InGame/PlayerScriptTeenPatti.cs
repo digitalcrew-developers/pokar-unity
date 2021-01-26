@@ -706,6 +706,7 @@ public class PlayerDataTeenPatti
     public bool isBlind;
     public GameObject cardSeen;
     public bool isShow, isSideShow;
+    public float maxChaal;
 }
 
 public class GetDataTeenPatti

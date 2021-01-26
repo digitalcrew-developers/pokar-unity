@@ -746,9 +746,15 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     {
         if (!clickPlusButton)
         {
-            callAmountText.text = "" + (GameConstants.playerbetAmount * 2).ToString();
-            GameConstants.playerbetAmount = GameConstants.playerbetAmount * 2;
-            clickPlusButton = true;
+            if (GameConstants.playerbetAmount < GameConstants.maxChaal)
+            {
+                callAmountText.text = "" + (GameConstants.playerbetAmount * 2).ToString();
+                showCallAomuntText.text = "" + (GameConstants.playerbetAmount * 2).ToString();
+                GameConstants.playerbetAmount = GameConstants.playerbetAmount * 2;
+                availableCallAmount = GameConstants.playerbetAmount;
+                clickPlusButton = true;
+                
+            }
         }
     }
 
@@ -757,8 +763,11 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         if (clickPlusButton)
         {
             callAmountText.text = "" + (GameConstants.playerbetAmount / 2).ToString();
+            showCallAomuntText.text = "" + (GameConstants.playerbetAmount / 2).ToString();
             GameConstants.playerbetAmount = GameConstants.playerbetAmount / 2;
+            availableCallAmount = GameConstants.playerbetAmount;
             clickPlusButton = false;
+            
         }
 
     }
@@ -794,7 +803,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
             
             GameConstants.playerbetAmount = callAmount;
 
-            if (callAmount > 0)
+            if (GameConstants.playerbetAmount > 0)
             {
                 isCheckAvailable = false;
             }
@@ -835,8 +844,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     if (callAmount >= 0) // amount availabel to bet
                     {
                         callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
-                        callAmountText.text = "" + callAmount;
-                        showCallAomuntText.text = "" + callAmount;
+                        callAmountText.text = "" + GameConstants.playerbetAmount;
+                        showCallAomuntText.text = "" + GameConstants.playerbetAmount;
                         actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = blindSprite;
                     }
                     else // dont have amount to bet hence show only fold and all-in
@@ -844,25 +853,25 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                         //actionButtons[(int)PlayerAction.Call].SetActive(false);
                         //actionButtons[(int)PlayerAction.Raise].SetActive(false);
                         callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
-                        callAmountText.text = "" + Mathf.Abs (callAmount);
-                        showCallAomuntText.text = "" + callAmount;
+                        callAmountText.text = "" + Mathf.Abs (GameConstants.playerbetAmount);
+                        showCallAomuntText.text = "" + GameConstants.playerbetAmount;
                         actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = blindSprite;
                     }
-                    if (callAmount == 0)
+                    if (GameConstants.playerbetAmount == 0)
                     {
                         callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Blind";
                         callAmountText.text = "";
-                        showCallAomuntText.text = "" + callAmount;
+                        showCallAomuntText.text = "" + GameConstants.playerbetAmount;
 
                     }
                 }
                 else
                 {
-                    if (callAmount >= 0) // amount availabel to bet
+                    if (GameConstants.playerbetAmount >= 0) // amount availabel to bet
                     {
                         callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
-                        callAmountText.text = "" + callAmount;
-                        showCallAomuntText.text = "" + callAmount;
+                        callAmountText.text = "" + GameConstants.playerbetAmount;
+                        showCallAomuntText.text = "" + GameConstants.playerbetAmount;
                         actionButtons[(int)PlayerAction.Call].GetComponent<Image>().sprite = callSprite;
                     }
                     else // dont have amount to bet hence show only fold and all-in
@@ -874,7 +883,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     if (callAmount == 0)
                     {
                         callAmountText.transform.parent.transform.GetChild(0).gameObject.GetComponent<Text>().text = "Chaal";
-                        showCallAomuntText.text = "" + callAmount;
+                        showCallAomuntText.text = "" + GameConstants.playerbetAmount;
                         callAmountText.text = "";
 
                     }
@@ -884,7 +893,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
             }
 
-            availableCallAmount = callAmount;
+            availableCallAmount = GameConstants.playerbetAmount;
         }
     }
 
@@ -978,185 +987,12 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
                 }
             }
-
-        //    if (isShow)
-        //{
-        //    //ResetSuggetionAction();
-
-        //    for (int i = 0; i < actionButtons.Length; i++)
-        //    {
-        //        actionButtons[i].SetActive(true);
-        //    }
-
-        //    //raisePopUp.SetActive(false);
-        //    if (i == 0)
-        //    {
-        //        lastBetAmount = 200;
-        //        i++;
-        //    }
-
-
-
-
-            
-
-
-
-        //    }
-
-        //    availableCallAmount = callAmount;        //    if (isShow)
-        //{
-        //    //ResetSuggetionAction();
-
-        //    for (int i = 0; i < actionButtons.Length; i++)
-        //    {
-        //        actionButtons[i].SetActive(true);
-        //    }
-
-        //    //raisePopUp.SetActive(false);
-        //    if (i == 0)
-        //    {
-        //        lastBetAmount = 200;
-        //        i++;
-        //    }
-
-
-
-
-            
-
-
-
-        //    }
-
-        //    availableCallAmount = callAmount;        //    if (isShow)
-        //{
-        //    //ResetSuggetionAction();
-
-        //    for (int i = 0; i < actionButtons.Length; i++)
-        //    {
-        //        actionButtons[i].SetActive(true);
-        //    }
-
-        //    //raisePopUp.SetActive(false);
-        //    if (i == 0)
-        //    {
-        //        lastBetAmount = 200;
-        //        i++;
-        //    }
-
-
-
-
-            
-
-
-
-        //    }
-
-        //    availableCallAmount = callAmount;        //    if (isShow)
-        //{
-        //    //ResetSuggetionAction();
-
-        //    for (int i = 0; i < actionButtons.Length; i++)
-        //    {
-        //        actionButtons[i].SetActive(true);
-        //    }
-
-        //    //raisePopUp.SetActive(false);
-        //    if (i == 0)
-        //    {
-        //        lastBetAmount = 200;
-        //        i++;
-        //    }
-
-
-
-
-            
-
-
-
-        //    }
-
-        //    availableCallAmount = callAmount;        //    if (isShow)
-        //{
-        //    //ResetSuggetionAction();
-
-        //    for (int i = 0; i < actionButtons.Length; i++)
-        //    {
-        //        actionButtons[i].SetActive(true);
-        //    }
-
-        //    //raisePopUp.SetActive(false);
-        //    if (i == 0)
-        //    {
-        //        lastBetAmount = 200;
-        //        i++;
-        //    }
-
-
-
-
-            
-
-
-
-        //    }
-
-        //    availableCallAmount = callAmount;        //    if (isShow)
-        //{
-        //    //ResetSuggetionAction();
-
-        //    for (int i = 0; i < actionButtons.Length; i++)
-        //    {
-        //        actionButtons[i].SetActive(true);
-        //    }
-
-        //    //raisePopUp.SetActive(false);
-        //    if (i == 0)
-        //    {
-        //        lastBetAmount = 200;
-        //        i++;
-        //    }
-
-
-
-
-            
-
-
-
-        //    }
-
-        //    availableCallAmount = callAmount;        //    if (isShow)
-        //{
-        //    //ResetSuggetionAction();
-
-        //    for (int i = 0; i < actionButtons.Length; i++)
-        //    {
-        //        actionButtons[i].SetActive(true);
-        //    }
-
-        //    //raisePopUp.SetActive(false);
-        //    if (i == 0)
-        //    {
-        //        lastBetAmount = 200;
-        //        i++;
-        //    }
-
-
-
-
-            
-
-
-
-        //    }
-
-        //    availableCallAmount = callAmount;
+           availableCallAmount = callAmount;
         }
     }
+
+
+    
 
     public void ShowScreen(InGameScreensTeenPatti screenName, object[] parameter = null)
     {
@@ -1661,7 +1497,108 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
 
         Debug.LogError("SideShowReject is :" + data.ToJson());
-        
+
+
+        // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
+
+       
+
+
+
+
+
+
+    }
+
+    public void OnChaalNotification(string serverResponse)
+    {
+        // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
+        JsonData data = JsonMapper.ToObject(serverResponse);
+
+        Debug.LogError("Chaal Notification is :" + data.ToJson());
+
+        PlayerScriptTeenPatti cardSeenPlayer1 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["userId"].ToString());
+
+        string requesttoPlayer = cardSeenPlayer1.playerData.userName;
+
+        string betAmount = data[0]["bet"].ToString();
+        // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
+        notifyUser.SetActive(true);
+        sideShowRequesterPlayer.text = requesttoPlayer + " played a chaal of " + betAmount;
+        StartCoroutine(DisableNotification());
+
+
+
+
+
+
+
+
+    }
+
+    public void OnShowNotification(string serverResponse)
+    {
+        // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
+        JsonData data = JsonMapper.ToObject(serverResponse);
+
+        Debug.LogError("Show Notification is :" + data.ToJson());
+
+
+        // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
+
+
+        PlayerScriptTeenPatti cardSeenPlayer1 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["userId"].ToString());
+
+        string requesttoPlayer = cardSeenPlayer1.playerData.userName;
+        // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
+
+        notifyUser.SetActive(true);
+        sideShowRequesterPlayer.text = requesttoPlayer + "called the show.";
+        StartCoroutine(DisableNotification());
+
+
+
+
+
+    }
+
+    public void OnFoldNotification(string serverResponse)
+    {
+        // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
+        JsonData data = JsonMapper.ToObject(serverResponse);
+
+        Debug.LogError("Fold Notification is :" + data.ToJson());
+
+        PlayerScriptTeenPatti cardSeenPlayer1 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["userId"].ToString());
+
+        string requesttoPlayer = cardSeenPlayer1.playerData.userName;
+        // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
+
+        notifyUser.SetActive(true);
+        sideShowRequesterPlayer.text = requesttoPlayer + "pack the game";
+        StartCoroutine(DisableNotification());
+
+
+
+
+
+
+    }
+
+    public void OnPotLimitReached(string serverResponse)
+    {
+        // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
+        JsonData data = JsonMapper.ToObject(serverResponse);
+
+        Debug.LogError("PotLimitReach is :" + data.ToJson());
+
+        for(int i = 0; i < data[0].Count; i++)
+        {
+            PlayerScriptTeenPatti cardSeenPlayer = InGameManagerTeenPatti.instance.GetPlayerObject(data[0][i]["userId"].ToString());
+            cardSeenPlayer.DisableCardSeenBtn();
+            JsonData newData = data[0][i]["cards"];
+            InGameManagerTeenPatti.instance.OnOpenCardsDataFoundShowCard(newData, cardSeenPlayer);
+        }
 
         // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
 

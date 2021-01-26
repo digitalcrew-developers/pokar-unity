@@ -75,9 +75,9 @@ public class LobbyUiManagerTeen : MonoBehaviour
         coinsText.text = Utility.GetTrimmedAmount(""+PlayerManager.instance.GetPlayerGameData().coins);
 
         MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Loading);
-        GenerateRequest("http://3.17.201.78:6000/tp_getRooms");
+        //GenerateRequest("http://3.17.201.78:6000/tp_getRooms");
         //string req = "{\"Content-Type\":\"" + "application/Json" + "\"}";
-        //WebServices.instance.SendRequest(RequestType.LobbyRoomsTeenPatti, "{}", true, OnServerResponseFound);
+        WebServices.instance.SendRequest(RequestType.LobbyRoomsTeenPatti, "{}", true, OnServerResponseFound);
     }
 
     
@@ -101,7 +101,7 @@ public class LobbyUiManagerTeen : MonoBehaviour
             {
                 MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Loading);
                
-                // Debug.LogError("Response => GetLobbyRooms: " + serverResponse);
+                 Debug.LogError("Response => GetLobbyRooms: " + request.downloadHandler.text);
                 JsonData data = JsonMapper.ToObject(request.downloadHandler.text);
 
                 if (data["status"].Equals(true))

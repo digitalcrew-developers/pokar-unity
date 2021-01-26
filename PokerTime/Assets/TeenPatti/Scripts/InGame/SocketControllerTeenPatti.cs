@@ -143,6 +143,10 @@ public class SocketControllerTeenPatti : MonoBehaviour
         socketManager.Socket.On("sideShowWinner", OnSideShowWinnerCalled);
         socketManager.Socket.On("playerReSeat", OnPlayerReseat);
         socketManager.Socket.On("rejectRequest", OnSideShowRequestReject);
+        socketManager.Socket.On("getAllCards", OnGetCardsOnPotLimit);
+        socketManager.Socket.On("chalNotification", OnChaalNotification);
+        socketManager.Socket.On("showNotification", OnShowNotification);
+        socketManager.Socket.On("packNotification", OnFoldNotification);
         socketManager.Open();
     }
 
@@ -333,6 +337,20 @@ public class SocketControllerTeenPatti : MonoBehaviour
                     break;
                 case SocketEvetnsTeenPatti.ON_SIDE_SHOW_REJECT:
                     InGameManagerTeenPatti.instance.SideShowReject(responseObject.data);
+                    break;
+
+                case SocketEvetnsTeenPatti.ON_CHAAL_NOTIFICATION:
+                    InGameManagerTeenPatti.instance.OnChaalNotify(responseObject.data);
+                    break;
+                case SocketEvetnsTeenPatti.ON_SHOW_NOTIFICATION:
+                    InGameManagerTeenPatti.instance.OnShowNotify(responseObject.data);
+                    break;
+                case SocketEvetnsTeenPatti.ON_FOLD_NOTIFICATION:
+                    InGameManagerTeenPatti.instance.OnFoldNotify(responseObject.data);
+                    break;
+
+                case SocketEvetnsTeenPatti.ON_GET_CARDS_ON_POT_LIMIT:
+                    InGameManagerTeenPatti.instance.PotLimiReached(responseObject.data);
                     break;
                 case SocketEvetnsTeenPatti.ON_SIDE_SHOW_WINNER:
                     InGameManagerTeenPatti.instance.OnSideShowWinner(responseObject.data);
@@ -1108,6 +1126,94 @@ public class SocketControllerTeenPatti : MonoBehaviour
         socketResponse.Add(response);
     }
 
+    void OnGetCardsOnPotLimit(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        //if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_PlayerStandUp))
+        //{
+        //    //Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+        //}
+#else
+        Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponseTeenPatti response = new SocketResponseTeenPatti();
+        response.eventType = SocketEvetnsTeenPatti.ON_GET_CARDS_ON_POT_LIMIT;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+    void OnChaalNotification(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        //if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_PlayerStandUp))
+        //{
+        //    //Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+        //}
+#else
+        Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponseTeenPatti response = new SocketResponseTeenPatti();
+        response.eventType = SocketEvetnsTeenPatti.ON_CHAAL_NOTIFICATION;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+    void OnShowNotification(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        //if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_PlayerStandUp))
+        //{
+        //    //Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+        //}
+#else
+        Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponseTeenPatti response = new SocketResponseTeenPatti();
+        response.eventType = SocketEvetnsTeenPatti.ON_SHOW_NOTIFICATION;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+    void OnFoldNotification(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        //if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_PlayerStandUp))
+        //{
+        //    //Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+        //}
+#else
+        Debug.Log("OnStartGameTimerFound = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+
+        SocketResponseTeenPatti response = new SocketResponseTeenPatti();
+        response.eventType = SocketEvetnsTeenPatti.ON_FOLD_NOTIFICATION;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
 
     #endregion
 
@@ -1421,6 +1527,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.tableId = TABLE_ID;
         requestData.bet = "" + GameConstants.playerbetAmount;
+        Debug.LogError("Amount in bet is :" + GameConstants.playerbetAmount);
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
@@ -1746,6 +1853,10 @@ public enum SocketEvetnsTeenPatti
     ON_SEAT_OBJECT,
     ON_PLAYER_SEAT_AGAIN,
     ON_SIDE_SHOW_REJECT,
+    ON_GET_CARDS_ON_POT_LIMIT,
+    ON_CHAAL_NOTIFICATION,
+    ON_SHOW_NOTIFICATION,
+    ON_FOLD_NOTIFICATION,
     NULL
 }
 
