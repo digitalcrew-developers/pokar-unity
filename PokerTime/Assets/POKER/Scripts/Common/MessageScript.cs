@@ -83,6 +83,10 @@ public class MessageScript : MonoBehaviour
         {
             MainMenuController.instance.DestroyScreen(MainMenuScreens.Message);
         }
+        else if(MainMenuControllerTeen.instance!=null)
+        {
+            MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Message);
+        }
         else
         {
             InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
@@ -114,9 +118,13 @@ public class MessageScript : MonoBehaviour
         {
             MainMenuController.instance.DestroyScreen(MainMenuScreens.Message);
         }
-        else
+        else if(InGameManager.instance != null)
         {
             InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
+        }
+        else if(MainMenuControllerTeen.instance!=null)
+        {
+            MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Message);
         }
     }
 

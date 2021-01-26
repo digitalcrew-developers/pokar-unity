@@ -12,7 +12,7 @@ public class Swipe : MonoBehaviour
 
     private void Start()
     {
-        scroll_pos = scrollBar.GetComponent<Scrollbar>().value;
+        scroll_pos = 0.5f;/*scrollBar.GetComponent<Scrollbar>().value;*/
     }
 
     private void Update()

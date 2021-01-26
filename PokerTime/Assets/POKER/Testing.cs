@@ -18,11 +18,11 @@ public class Testing : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Enable "+transform.parent.parent.parent.name);
+        //Debug.Log("Enable "+transform.parent.parent.parent.name);
     }
 
     private void OnDisable()
     {
-        Debug.Log("Disable "+transform.parent.parent.parent.name);
+        //Debug.Log("Disable "+transform.parent.parent.parent.name);
     }
 }

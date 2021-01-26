@@ -147,6 +147,7 @@ public class ClubAdminManager : MonoBehaviour
                 InitialiseDisbandClubScreen();
                 break;
             case "Data":
+                AllScreens[7].SetActive(true);
                 ShowScreen(ClubScreens.Data);
                 break;
             case "Counter":
@@ -530,7 +531,7 @@ public class ClubAdminManager : MonoBehaviour
         //To-Do.. when opening notification screen. get data from server for existing notification sent
         //allow edit of existing text, image notification
         
-        OldNotificationText.text = ""; 
+        //OldNotificationText.text = ""; 
         
         //NotificationClubImage.sprite = ClubDetailsUIManager.instance.GetClubImage();
         //NotificationClubName.text = ClubDetailsUIManager.instance.GetClubName();
@@ -764,7 +765,7 @@ public class ClubAdminManager : MonoBehaviour
 
             case RequestType.GetClubDetails:
                 {
-                    Debug.Log("Response CLUB List: " + serverResponse.ToString());
+                    Debug.Log("Response => GetClubDetails: " + serverResponse.ToString());
 
                     JsonData data = JsonMapper.ToObject(serverResponse);
                     if (data["status"].Equals(true))
@@ -980,11 +981,11 @@ public class ClubAdminManager : MonoBehaviour
                 //    }
                 //    break;
 
-                case ClubScreens.Data:
-                    {
+                //case ClubScreens.Data:
+                //    {
 
-                    }
-                    break;
+                //    }
+                //    break;
 
                 default:
                     break;
@@ -1053,5 +1054,6 @@ public enum ClubScreens
     Exchange,
     CreateTable,
     Members,
-    GameData
+    GameData,
+    ExpertData
 }

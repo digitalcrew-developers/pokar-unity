@@ -416,9 +416,13 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         }
         
         // unselect old
-        if (_previousPageSelectionIndex >= 0) {
-            _pageSelectionImages[_previousPageSelectionIndex].sprite = unselectedPage;
-            _pageSelectionImages[_previousPageSelectionIndex].SetNativeSize();
+        if (_previousPageSelectionIndex >= 0) 
+        {
+            if(transform.gameObject.activeSelf)    
+            {
+                _pageSelectionImages[_previousPageSelectionIndex].sprite = unselectedPage;
+                _pageSelectionImages[_previousPageSelectionIndex].SetNativeSize();
+            }
         }
 
         // select new

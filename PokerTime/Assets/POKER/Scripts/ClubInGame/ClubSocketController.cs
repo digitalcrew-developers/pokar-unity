@@ -131,6 +131,8 @@ public class ClubSocketController : MonoBehaviour
         socketManager.Socket.On("rabbitOpenCards", RabbitCardDataReceived);
         socketManager.Socket.On("evChopData", EVChopDataReceived);  //DEV_CODE Added Event for EVChopDataReceived called
         socketManager.Socket.On("playerExit", PlayerExit);          //DEV_CODE Added Event for PlayerExit called
+        socketManager.Socket.On("askEvChop", EVChopDataReceived);
+        socketManager.Socket.On("closePopUp", EVChopCloseDataReceived);
         socketManager.Open();
     }
 
@@ -178,7 +180,9 @@ public class ClubSocketController : MonoBehaviour
     //DEV_CODE Added this method to be called when EVChopDataReceived emited
     private void EVChopDataReceived(Socket socket, Packet packet, object[] args)
     {
+        Debug.Log("<color=magenta>EVChopDataReceived :</color>" + args);
         string responseText = JsonMapper.ToJson(args);
+
         Debug.LogError("EVChopDataReceived :" + responseText);
 
 #if DEBUG
@@ -197,6 +201,12 @@ public class ClubSocketController : MonoBehaviour
         response.eventType = SocketEvetns.EVCHOP;
         response.data = responseText;
         socketResponse.Add(response);
+    }
+
+    private void EVChopCloseDataReceived(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError("EVChopCloseDataReceived :" + responseText);
     }
 
     private void RabbitCardDataReceived(Socket socket, Packet packet, object[] args)
@@ -1123,7 +1133,7 @@ public class ClubSocketController : MonoBehaviour
 
     #region EMIT_METHODS
 
-    public void RequestEVCHOP()
+    /*public void RequestEVCHOP()
     {
         EVChopData requestData = new EVChopData();
         requestData.tableId = TABLE_ID;
@@ -1138,7 +1148,7 @@ public class ClubSocketController : MonoBehaviour
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
         socketRequest.Add(request);
-    }
+    }*/
 
     public void RequestRabbitCard()
     {
@@ -1537,8 +1547,24 @@ public class ClubSocketController : MonoBehaviour
         socketRequest.Add(request);
     }
 
+    public void ConfrimEvChop(string action, string index)
+    {
+        EvChopData requestData = new EvChopData();
+
+        requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+        requestData.tableId = TABLE_ID;
+        requestData.action = action;
+        requestData.index = index;
+        string requestStringData = JsonMapper.ToJson(requestData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "evChopAction";
+        socketRequest.Add(request);
+    }
+
     #endregion
-    
+
 
     // OTHER_METHODS ---------------------------------------------------------------------------------------------------------------------------------------------------------
 

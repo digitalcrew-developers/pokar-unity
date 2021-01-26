@@ -214,19 +214,28 @@ public class SpinWheelUIManager : MonoBehaviour
     }
 
 
-    public void GetLuckyDrawAvatars() {
+    public void GetLuckyDrawAvatars() 
+    {
         for (int i = 0; i < ImgGetContainer.transform.childCount; i++)
         {
-            StartCoroutine(loadSpriteImageFromUrl(SpinManager.instance.spinItemList[i].itemIcon, ImgGetContainer.transform.GetChild(i).GetComponent<Image>()));
+            //if (InGameUiManager.instance != null)
+                StartCoroutine(loadSpriteImageFromUrl(SpinManager.instance.spinItemList[i].itemIcon, ImgGetContainer.transform.GetChild(i).GetComponent<Image>()));
+            //else if(MainMenuController.instance != null)
+            //    StartCoroutine(loadSpriteImageFromUrl(SpinManagerMainMenu.instance.spinItemList[i].itemIcon, ImgGetContainer.transform.GetChild(i).GetComponent<Image>()));
         }
-        }
+    }
+
     public void GetTextItemsList()
     {
         for (int i = 0; i < ImgGetContainer.transform.childCount; i++)
         {
-            TextGetContainer.transform.GetChild(i).GetComponent<TextMeshProUGUI>().text =" X "+ SpinManager.instance.spinItemList[i].itemMultipler;
+            //if (InGameUiManager.instance != null)
+                TextGetContainer.transform.GetChild(i).GetComponent<TextMeshProUGUI>().text = " X " + SpinManager.instance.spinItemList[i].itemMultipler;
+            //else if(MainMenuController.instance != null)
+            //    TextGetContainer.transform.GetChild(i).GetComponent<TextMeshProUGUI>().text = " X " + SpinManagerMainMenu.instance.spinItemList[i].itemMultipler;
         }
     }
+
     IEnumerator loadSpriteImageFromUrl(string URL, Image image)
     {
 
@@ -262,8 +271,10 @@ public class SpinWheelUIManager : MonoBehaviour
         {
             case "back":
                 {
-                    
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);                   
+                    if (InGameUiManager.instance != null)
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
+                    else if (MainMenuController.instance != null)
+                        MainMenuController.instance.DestroyScreen(MainMenuScreens.LuckyDraw);
 
                 }
                 break;
@@ -277,9 +288,16 @@ public class SpinWheelUIManager : MonoBehaviour
                     }
                     else 
                     {
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
-
-                        InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
+                        if (InGameUiManager.instance != null)
+                        {
+                            InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
+                            InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
+                        }
+                        else if(MainMenuController.instance !=null)
+                        {
+                            MainMenuController.instance.DestroyScreen(MainMenuScreens.LuckyDraw);
+                            MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+                        }
                     }
                     DeductCoinPostServer(1500);
                 }
@@ -293,9 +311,16 @@ public class SpinWheelUIManager : MonoBehaviour
                     }
                     else
                     {
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
-
-                        InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
+                        if (InGameUiManager.instance != null)
+                        {
+                            InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
+                            InGameUiManager.instance.ShowScreen(InGameScreens.InGameShop);
+                        }
+                        else if (MainMenuController.instance != null)
+                        {
+                            MainMenuController.instance.DestroyScreen(MainMenuScreens.LuckyDraw);
+                            MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+                        }
                     }
                     DeductCoinPostServer(4800);
                 }

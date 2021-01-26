@@ -41,7 +41,7 @@ public class ClubListUiManagerTeen : MonoBehaviour
 			//MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
 		}
 		
-		WebServices.instance.SendRequest(RequestType.GetClubList, requestData, true, OnServerResponseFound);
+		WebServices.instance.SendRequestTP(RequestTypeTP.GetClubList, requestData, true, OnServerResponseFound);
 	}	
 
 	public void OnClickOnBack()
@@ -124,7 +124,7 @@ public class ClubListUiManagerTeen : MonoBehaviour
 		MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.ClubDetails, parameters);
 	}
 
-	public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+	public void OnServerResponseFound(RequestTypeTP requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
 	{
 		MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Loading);
 
@@ -138,7 +138,7 @@ public class ClubListUiManagerTeen : MonoBehaviour
 			return;
 		}
 
-		if (requestType == RequestType.GetClubList)
+		if (requestType == RequestTypeTP.GetClubList)
 		{
 			Debug.Log("Response => GetClubList: " + serverResponse);
 

@@ -411,7 +411,7 @@ public class MainMenuControllerTeen : MonoBehaviour
             switch (screenName)
             {
                 case MainMenuScreensTeen.ClubDetails:
-                    gm.GetComponent<ClubDetailsUIManager>().Initialize((string)parameter[0], (string)parameter[1], (string)parameter[2], (string)parameter[3], (string)parameter[4], (string)parameter[5]);
+                    gm.GetComponent<ClubDetailsUIManagerTeen>().Initialize((string)parameter[0], (string)parameter[1], (string)parameter[2], (string)parameter[3], (string)parameter[4], (string)parameter[5]);
                     break;
 
 

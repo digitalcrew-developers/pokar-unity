@@ -762,6 +762,7 @@ public enum MainMenuScreens
     CareerDataScreen,
     CareerDefinationScreen,
     HandScreen,
+    LuckyDraw
     //LobbyTeenPatti,
     //MainMenuTeenPatti,
 }

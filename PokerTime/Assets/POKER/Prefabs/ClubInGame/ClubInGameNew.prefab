@@ -2841,8 +2841,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -14.82}
-  m_SizeDelta: {x: 196.30423, y: 54.08211}
+  m_AnchoredPosition: {x: 0, y: -18}
+  m_SizeDelta: {x: 200, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4275323376018969496
 CanvasRenderer:
@@ -2873,7 +2873,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 770e09343d64c4854a1902a84be6c236, type: 3}
-    m_FontSize: 25
+    m_FontSize: 24
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -3232,6 +3232,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -8009,12 +8011,12 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: 
+      - m_Target: {fileID: 4702460777643937826}
+        m_MethodName: EmitEVChop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -11655,8 +11657,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: 14.57}
-  m_SizeDelta: {x: 196.30423, y: 54.08211}
+  m_AnchoredPosition: {x: -0, y: 12}
+  m_SizeDelta: {x: 200, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &909663751978708792
 CanvasRenderer:
@@ -16862,6 +16864,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -20489,6 +20493,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -24216,6 +24222,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -28600,6 +28608,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -32724,6 +32734,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -48472,6 +48484,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -49534,6 +49548,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []
@@ -50358,6 +50374,8 @@ MonoBehaviour:
     isFold: 0
     isTurn: 0
     isCheckAvailable: 0
+    isBlock: 0
+    isStart: 0
     balance: 0
     totalBet: 0
     cards: []

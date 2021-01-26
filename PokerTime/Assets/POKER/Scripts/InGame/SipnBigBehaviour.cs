@@ -72,7 +72,11 @@ public class SipnBigBehaviour : MonoBehaviour
                 SpinWheelUIManager.instance.drawOutput.transform.GetChild(1).gameObject.SetActive(false);
                 Image img = SpinWheelUIManager.instance.ImgGetContainer.transform.GetChild(spinStartIndex).GetComponent<Image>();
                 SpinWheelUIManager.instance.draw1xOutputImg.sprite = img.sprite;
-                SpinWheelUIManager.instance.draw1xOutputText.text = "+ " + SpinManager.instance.spinItemList[spinStartIndex].itemValue;
+
+                //if(InGameUiManager.instance != null)
+                    SpinWheelUIManager.instance.draw1xOutputText.text = "+ " + SpinManager.instance.spinItemList[spinStartIndex].itemValue;
+                //else if(MainMenuController.instance != null)
+                //    SpinWheelUIManager.instance.draw1xOutputText.text = "+ " + SpinManagerMainMenu.instance.spinItemList[spinStartIndex].itemValue;
 
                 break;
             case "5x":
@@ -88,7 +92,11 @@ public class SipnBigBehaviour : MonoBehaviour
 
                     Image img2 = SpinWheelUIManager.instance.ImgGetContainer.transform.GetChild(prevValue[j]).GetComponent<Image>();
                     SpinWheelUIManager.instance.draw5xOutputImg[j].sprite = img2.sprite;
-                    SpinWheelUIManager.instance.draw5xOutputText[j].text = "+ " + SpinManager.instance.spinItemList[prevValue[j]].itemValue;
+
+                    //if (InGameUiManager.instance != null)
+                        SpinWheelUIManager.instance.draw5xOutputText[j].text = "+ " + SpinManager.instance.spinItemList[prevValue[j]].itemValue;
+                    //else if (MainMenuController.instance != null)
+                    //    SpinWheelUIManager.instance.draw5xOutputText[j].text = "+ " + SpinManagerMainMenu.instance.spinItemList[spinStartIndex].itemValue;
 
                     SpinWheelUIManager.instance.spinWheelImage.sprite = SpinWheelUIManager.instance.spinWheelSprites[0];
                     SpinWheelUIManager.instance.spinWheelImage.transform.GetChild(0).gameObject.SetActive(true);
@@ -106,8 +114,6 @@ public class SipnBigBehaviour : MonoBehaviour
                 }
                 break;
         }
-
-
 
         SpinManager.instance.SetSpinWheelWinning(spinStartIndex);
         Invoke("DeActiveObj", 2);

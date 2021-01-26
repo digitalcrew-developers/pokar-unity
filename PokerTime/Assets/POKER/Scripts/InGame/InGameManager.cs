@@ -66,9 +66,9 @@ public class InGameManager : MonoBehaviour
     //DEV_CODE
 
     //Variables to store values regarding match winning cards and to highlight them
-    //private bool isHighlightCard;
-    //public CardData[] highlightCards;
-    //public string[] highlightCardString;
+    public bool isHighlightCard;
+    public CardData[] highlightCards;
+    public string[] highlightCardString;
 
     //For Recording Game Play
     Texture2D screenshot;
@@ -109,8 +109,8 @@ public class InGameManager : MonoBehaviour
     private void Start()
     {
         //DEV_CODE
-        //highlightCardString = new string[5];
-        //highlightCards = new CardData[5];
+        highlightCardString = new string[5];
+        highlightCards = new CardData[5];
 
         //InGameUiManager.instance.ShowTableMessage("Select a seat");
         RabbitButton.SetActive(false);
@@ -285,7 +285,7 @@ public class InGameManager : MonoBehaviour
         Debug.Log("WaitAndShowCardAnimation............");
         if (!GlobalGameManager.IsJoiningPreviousGame)
         {
-            GlobalGameManager.IsJoiningPreviousGame = true;
+            GlobalGameManager.IsJoiningPreviousGame = isGameStart;
             List<GameObject> animatedCards = new List<GameObject>();
             for (int i = 0; i < players.Length; i++)
             {
@@ -293,7 +293,7 @@ public class InGameManager : MonoBehaviour
 
                 /*                Debug.Log("Player Cards: " + playerCards[i].name);*/
 
-                if (!players[i].playerData.isBlock)
+                if (players[i].playerData.isStart)
                 {
                     for (int j = 0; j < playerCards.Length; j++)
                     {
@@ -324,14 +324,15 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < players.Length; i++)
         {
-            Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe() + ", " + players[i].playerData.isBlock);
-            if (players[i].playerData.isBlock)
+            Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe() + ", " + players[i].playerData.isStart);
+            if (!players[i].playerData.isStart)
                 players[i].ToggleCards(false, players[i].IsMe());
             else
                 players[i].ToggleCards(true, players[i].IsMe());
         }
 
-        SocketController.instance.SetSocketState(SocketState.Game_Running);
+        if (isGameStart)
+            SocketController.instance.SetSocketState(SocketState.Game_Running);
         SwitchTurn(playerScriptWhosTurn,false);
     }
 
@@ -628,6 +629,7 @@ public class InGameManager : MonoBehaviour
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
                 playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                 playerDataObject.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
+                playerDataObject.isStart = bool.Parse(data[0][i]["isStart"].ToString());
                 //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
                 /*if (isMatchStarted)
                 {
@@ -779,18 +781,24 @@ public class InGameManager : MonoBehaviour
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
         //Debug.Log("Last All in Bet: " + /*playerScript.GetLocalBetAmount()*/betAmount);
-        
-        GameObject gm = Instantiate(betAnimationPrefab,animationLayer) as GameObject;
-        gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
-        gm.transform.position = playerScript.transform.position;
-        Vector3 initialScale = gm.transform.localScale;
-        gm.transform.localScale = Vector3.zero;
+        if (!playerScript.localBg().activeSelf)
+        {
+            GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
+            gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
+            gm.transform.position = playerScript.transform.position;
+            Vector3 initialScale = gm.transform.localScale;
+            gm.transform.localScale = Vector3.zero;
 
-        gm.transform.DOMove(playerScript.localBg().transform.position,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        gm.transform.DOScale(initialScale,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        SoundManager.instance.PlaySound(SoundType.Bet);
-        yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
-        Destroy(gm);
+            gm.transform.DOMove(playerScript.localBg().transform.position, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+            gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack).OnComplete(() => { playerScript.localBg().SetActive(true); });
+            SoundManager.instance.PlaySound(SoundType.Bet);
+            yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
+            Destroy(gm);
+        }
+        else
+        {
+            playerScript.GetLocaPot().text = betAmount;
+        }
     }
 
     private bool winnerAnimationFound = false;
@@ -949,11 +957,14 @@ public class InGameManager : MonoBehaviour
             if (text.gameObject.activeInHierarchy && !string.IsNullOrEmpty(text.text))
             {
                 isBetFound = true;
+                text.transform.parent.gameObject.SetActive(false);
                 GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
-
                 gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
-                //gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);
-                Destroy(gm,GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
+                //Debug.LogError(onlinePlayersScript[i].localBg().transform.localPosition+", " +onlinePlayersScript[i].localBg().transform.position+ " Pos..... " + text.GetComponent<RectTransform>().anchoredPosition+", "+ text.transform.position+", "+ text.transform.localPosition);
+                gm.transform.position = onlinePlayersScript[i].localBg().transform.position;
+                gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
+                gm.transform.DOMove(Pot.transform.position, 0.3f).OnComplete(() => { Destroy(gm); });
+                //Destroy(gm,GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
             }
 
             onlinePlayersScript[i].UpdateRoundNo(GetMatchRound());
@@ -1123,31 +1134,31 @@ public class InGameManager : MonoBehaviour
 
 
                     //DEV_CODE
-                    //if (isHighlightCard)
-                    //{
-                    //    for (int n = 0; n < communityCards.Length; n++)
-                    //    {
-                    //        //communityCards[n].color = Color.white;
-                    //        communityCards[n].transform.GetChild(0).gameObject.SetActive(false);
-                    //    }
-                    //}
-                    //for (int num = 0; num < communityCards.Length; num++)
-                    //{
-                    //    for (int num2 = 0; num2 < highlightCards.Length; num2++)
-                    //    {
-                    //        if (isHighlightCard && highlightCards[num2] != null && communityCards[num].sprite.name == highlightCards[num2].cardsSprite.name)
-                    //        {
-                    //            //communityCards[num].color = Color.yellow;
-                    //            communityCards[num].transform.GetChild(0).gameObject.SetActive(true);
+                    if (isHighlightCard)
+                    {
+                        for (int n = 0; n < communityCards.Length; n++)
+                        {
+                            //communityCards[n].color = Color.white;
+                            communityCards[n].transform.GetChild(0).gameObject.SetActive(false);
+                        }
+                    }
+                    for (int num = 0; num < communityCards.Length; num++)
+                    {
+                        for (int num2 = 0; num2 < highlightCards.Length; num2++)
+                        {
+                            if (isHighlightCard && highlightCards[num2] != null && communityCards[num].sprite.name == highlightCards[num2].cardsSprite.name)
+                            {
+                                //communityCards[num].color = Color.yellow;
+                                communityCards[num].transform.GetChild(0).gameObject.SetActive(true);
 
-                    //            //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
-                    //        }
-                    //    }
-                    //}
+                                //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                            }
+                        }
+                    }
                 }
             break;
         }
-        //isHighlightCard = false;
+        isHighlightCard = false;
         yield return new WaitForSeconds(0.1f);
     }
 
@@ -1356,27 +1367,34 @@ public class InGameManager : MonoBehaviour
                 
                 PlayerScript playerObject = GetPlayerObject(jsonData[0]["sidePot"][0]["users"][i]["userId"].ToString());
 
-                //if (playerObject != null)
-                //{
-                //    Image[] playerCards = playerObject.GetCardsImage();
+                if (playerObject != null)
+                {
+                    Image[] playerCards = playerObject.GetCardsImage();
 
-                //    for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count; j++)
-                //    {
-                //        highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["winningCards"][j].ToString();
-                //        highlightCards[j] = CardsManager.instance.GetCardData(highlightCardString[j]);
-                //        //Debug.Log(highlightCards[j].cardIcon);
-                //        for (int k = 0; k < playerCards.Length; k++)
-                //        {
-                //            if (playerCards[k].sprite.name == highlightCards[j].cardsSprite.name)
-                //            {
-                //                //Debug.Log("Player Card Matched  :: ");
-                //                //playerCards[k].color = Color.yellow;
-                //                playerCards[k].transform.GetChild(0).gameObject.SetActive(true);
-                //            }
-                //        }
-                //    }
-                //    isHighlightCard = true;                    
-                //}
+                    if (jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count > 2)
+                    {
+                        for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count; j++)
+                        {
+                            highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["winningCards"][j].ToString();
+                            highlightCards[j] = CardsManager.instance.GetCardData(highlightCardString[j]);
+                            //Debug.Log(highlightCards[j].cardIcon);
+                            for (int k = 0; k < playerCards.Length; k++)
+                            {
+                                if (playerCards[k].sprite.name == highlightCards[j].cardsSprite.name)
+                                {
+                                    //Debug.Log("Player Card Matched  :: ");
+                                    //playerCards[k].color = Color.yellow;
+                                    playerCards[k].transform.GetChild(0).gameObject.SetActive(true);
+                                }
+                            }
+                        }
+                        isHighlightCard = true;
+                    }
+                    else
+                    {
+                        isHighlightCard = false;
+                    }
+                }
             }
         }
 
@@ -1387,7 +1405,7 @@ public class InGameManager : MonoBehaviour
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
             Debug.Log(onlinePlayersScript[i].playerData.userName + " " + onlinePlayersScript[i].playerData.isFold);
-            if (!onlinePlayersScript[i].playerData.isBlock)
+            if (onlinePlayersScript[i].playerData.isStart)
                 onlinePlayersScript[i].ToggleCards(!onlinePlayersScript[i].playerData.isFold, true);
             onlinePlayersScript[i].DisablePot();
         }   
@@ -1404,12 +1422,13 @@ public class InGameManager : MonoBehaviour
             //StopRecording();
         }
 
-        //for (int i = 0; i < communityCards.Length; i++)
-        //{
-        //    //communityCards[i].color = Color.white;
-        //    communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
-        //    highlightCards[i] = null;
-        //}
+        for (int i = 0; i < communityCards.Length; i++)
+        {
+            //communityCards[i].color = Color.white;
+            communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
+            highlightCards[i] = null;
+            isHighlightCard = false;
+        }
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
@@ -1417,13 +1436,13 @@ public class InGameManager : MonoBehaviour
 
             //DEV_CODE 
             //Logic to reset all players highlighted cards to original one.
-            //Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
+            Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
 
-            //for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
-            //{
-            //    //playerCards[j].color = Color.white;
-            //    playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
-            //}
+            for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
+            {
+                //playerCards[j].color = Color.white;
+                playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
+            }
         }
 
         JsonData data = JsonMapper.ToObject(serverResponse);
@@ -1610,7 +1629,7 @@ public class InGameManager : MonoBehaviour
             PotValues.Add(value);
         }
 
-        if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
+        //if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         {
             //DEV_CODE
             if (!isCardValueSet)
@@ -1624,14 +1643,14 @@ public class InGameManager : MonoBehaviour
             isCardValueSet = true;
 
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
-
-            if (betAmount > 0 && userId != PlayerManager.instance.GetPlayerGameData().userId)
+            Debug.Log(userId+" " + PlayerManager.instance.GetPlayerGameData().userId);
+            if (betAmount > 0 /*&& userId != PlayerManager.instance.GetPlayerGameData().userId*/)
             {
                 PlayerScript playerObject = GetPlayerObject(userId);
 
                 if (playerObject != null)
                 {
-                    //Debug.Log("Current Bet Amount : " + betAmount);
+                    Debug.Log("Current Bet Amount : " + betAmount);
                     //StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
                     StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));
                 }
@@ -1825,6 +1844,7 @@ public class InGameManager : MonoBehaviour
                         InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
                         playerData.playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                         playerData.playerData.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
+                        playerData.playerData.isStart = bool.Parse(data[0][i]["isStart"].ToString());
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
@@ -1899,6 +1919,7 @@ public class InGameManager : MonoBehaviour
                         //Debug.LogError("************************************************************");
                         playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                         playerData.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
+                        playerData.isStart = bool.Parse(data[0][i]["isStart"].ToString());
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 
@@ -1990,6 +2011,32 @@ public class InGameManager : MonoBehaviour
 
     private void ResetMatchData()
     {
+        //DEV_CODE
+        //Reset highlighted cards
+        for (int i = 0; i < communityCards.Length; i++)
+        {
+            //communityCards[i].color = Color.white;
+            communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
+            highlightCards[i] = null;
+            isHighlightCard = false;
+        }
+
+        for (int i = 0; i < onlinePlayersScript.Length; i++)
+        {
+            onlinePlayersScript[i].ResetRealtimeResult();
+            onlinePlayersScript[i].ResetAllData();
+
+            //DEV_CODE 
+            //Logic to reset all players highlighted cards to original one.
+            Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
+
+            for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
+            {
+                //playerCards[j].color = Color.white;
+                playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
+            }
+        }
+
         InGameUiManager.instance.raisePopUp.SetActive(false);
         userWinner = false;
         DontShowCommunityCardAnimation = false;
@@ -2029,8 +2076,8 @@ public class InGameManager : MonoBehaviour
 
         myPlayerObject = null;
 
-        onlinePlayersScript = null;
-        onlinePlayersScript = new PlayerScript[0];
+        //onlinePlayersScript = null;
+        //onlinePlayersScript = new PlayerScript[0];
         for (int i = 0; i < animationLayer.childCount; i++)
         {
             Destroy(animationLayer.GetChild(i).gameObject);

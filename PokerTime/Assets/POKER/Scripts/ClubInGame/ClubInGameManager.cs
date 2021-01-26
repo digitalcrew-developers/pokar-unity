@@ -71,9 +71,9 @@ public class ClubInGameManager : MonoBehaviour
     //DEV_CODE
 
     //Variables to store values regarding match winning cards and to highlight them
-    //public bool isHighlightCard;
-    //public CardData[] highlightCards;
-    //public string[] highlightCardString;
+    public bool isHighlightCard;
+    public CardData[] highlightCards;
+    public string[] highlightCardString;
 
     Texture2D screenshot;
     public int videoWidth /* = 1280*/;
@@ -113,8 +113,8 @@ public class ClubInGameManager : MonoBehaviour
     private void Start()
     {
         //DEV_CODE
-        //highlightCardString = new string[5];
-        //highlightCards = new CardData[5];
+        highlightCardString = new string[5];
+        highlightCards = new CardData[5];
 
         //ClubInGameUIManager.instance.ShowTableMessage("Select a seat");
         RabbitButton.SetActive(false);
@@ -221,10 +221,37 @@ public class ClubInGameManager : MonoBehaviour
     public void OnEVChopDataFound(string responseText)
     {
         Debug.LogError("EV :" + responseText);
-        EVCHOPPanel.SetActive(false);
-        EVCHOPButton.SetActive(false);
-        ResumeHand.SetActive(false);
+        JsonData data = JsonMapper.ToObject(responseText);
+        Debug.LogError("EV2 :" + data[0][0]["amount"]);
+        ClubInGameUIManager.instance.ToggleActionButton(false);
+        ClubInGameUIManager.instance.ToggleSuggestionButton(false);
+        EVCHOPPanel.SetActive(true);
+        EVCHOPButton.SetActive(true);
+        ResumeHand.SetActive(true);
+        for (int i = 0; i < data.Count; i++)
+        {
+            EVCHOPButton.transform.GetChild(0).GetComponent<Text>().text = data[0][i]["amount"].ToString();
+        }
+        /*if (data[0].Count > 0)
+        {
+            EVCHOPPanel.SetActive(true);
+            //EVCHOPButton.SetActive(true);
+            ResumeHand.SetActive(true);
+            for (int j = 0; j < data[0].Count; j++)
+            {
+                if (data[0][j]["userName"].ToString() == PrefsManager.GetPlayerData().userName)
+                {
+                    for (int i = 0; i < data[0][j]["evChop"].Count; i++)
+                    {
+                        GameObject g = Instantiate(EVCHOPButton) as GameObject;
+                        g.transform.SetSiblingIndex()
+                    }
+                }
+            }
+        }*/
     }
+
+
 
     private bool DontShowCommunityCardAnimation = false;    //DEV_CODE Added this line as done inside InGameManager script
     public void OnRabbitDataFound(string responseText)
@@ -334,6 +361,7 @@ public class ClubInGameManager : MonoBehaviour
     {
         if (!GlobalGameManager.IsJoiningPreviousGame)
         {
+			GlobalGameManager.IsJoiningPreviousGame = true;
             List<GameObject> animatedCards = new List<GameObject>();
             for (int i = 0; i < players.Length; i++)
             {
@@ -345,7 +373,7 @@ public class ClubInGameManager : MonoBehaviour
                 {
                     GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
                     gm.transform.DOMove(playerCards[j].transform.position, GameConstants.CARD_ANIMATION_DURATION);
-                    gm.transform.DOScale(playerCards[j].transform.localScale, GameConstants.CARD_ANIMATION_DURATION);
+                    gm.transform.DOScale(Vector3.one/*playerCards[j].transform.localScale*/, GameConstants.CARD_ANIMATION_DURATION);
                     gm.transform.DORotateQuaternion(playerCards[j].transform.rotation, GameConstants.CARD_ANIMATION_DURATION);
                     animatedCards.Add(gm);
                     SoundManager.instance.PlaySound(SoundType.CardMove);
@@ -368,6 +396,10 @@ public class ClubInGameManager : MonoBehaviour
 
         for (int i = 0; i < players.Length; i++)
         {
+			Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe() + ", " + players[i].playerData.isStart);
+            if (!players[i].playerData.isStart)
+                players[i].ToggleCards(false, players[i].IsMe());
+            else
             players[i].ToggleCards(true, players[i].IsMe());
         }
 
@@ -422,7 +454,7 @@ public class ClubInGameManager : MonoBehaviour
         string t = serverResponse.Substring(1, serverResponse.Length - 2);
         Debug.LogError("Game Over - " + t);
 
-        JsonData data = JsonMapper.ToObject(serverResponse);
+        //JsonData data = JsonMapper.ToObject(serverResponse);
         //int remainingTime = (int)float.Parse(data[0].ToString());
 
         //Debug.LogWarning("RESPONSE :  " + serverResponse);
@@ -430,23 +462,23 @@ public class ClubInGameManager : MonoBehaviour
         //Debug.LogWarning("Buffer Time :  " + GameConstants.BUFFER_TIME);
 
         if (float.Parse(t) < 1)
-        {
-            if (!isRematchRequestSent)
-            {
-                Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
+        //{
+            //if (!isRematchRequestSent)
+            //{
+                //Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
 
                 //if (remainingTime > GameConstants.BUFFER_TIME)
                 //{
-                    Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
+                    //Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
 
                     //DEV_CODE
-                    ClubInGameUIManager.instance.isSelectedWinningBooster = false;
+                    //ClubInGameUIManager.instance.isSelectedWinningBooster = false;
 
                     //if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
                     //{
-                        Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
-                        ToggleTopUpDone(false);
-                        ClubSocketController.instance.SendReMatchRequest("Yes", "0");
+                        //Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
+                        //ToggleTopUpDone(false);
+                        //ClubSocketController.instance.SendReMatchRequest("Yes", "0");
                     //}
                     //else
                     //{
@@ -491,8 +523,8 @@ public class ClubInGameManager : MonoBehaviour
                 //{
                 //    ClubSocketController.instance.SendReMatchRequest("No", "0");
                 //}
-            }
-        }
+            //}
+        //}
         ResetMatchData();
     }
 
@@ -757,15 +789,18 @@ public class ClubInGameManager : MonoBehaviour
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
+				playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
+                playerDataObject.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
+                playerDataObject.isStart = bool.Parse(data[0][i]["isStart"].ToString());
                 //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
-                if (isMatchStarted)
+                /*if (isMatchStarted)
                 {
                     playerDataObject.isFold = data[0][i]["isBlocked"].Equals(true);
                 }
                 else
                 {
                     playerDataObject.isFold = false;
-                }
+                }*/
 
                 playerData.Add(playerDataObject);
             }
@@ -911,7 +946,8 @@ public class ClubInGameManager : MonoBehaviour
 
     public void EmitEVChop()
     {
-        EVCHOPPanel.SetActive(true);
+        //EVCHOPPanel.SetActive(true);
+        ClubSocketController.instance.ConfrimEvChop("1", "0");
     }
 
     public void HideEVChopButtons()
@@ -1034,7 +1070,7 @@ public class ClubInGameManager : MonoBehaviour
 
     public IEnumerator WaitAndShowRabbit()
     {
-        bool allcardEmpty = false;      //DEV_CODE Added this line as done inside InGameManager script
+        bool allcardsEmpty = false;      //DEV_CODE Added this line as done inside InGameManager script
 
         for (int i = 0; i < communityCards.Length; i++)
         {
@@ -1042,16 +1078,16 @@ public class ClubInGameManager : MonoBehaviour
             {
                 //communityCards[i].gameObject.SetActive(false);    //DEV_CODE Commented this line as done inside InGameManager script
                 //break;    //DEV_CODE Commented this line as done inside InGameManager script
-                allcardEmpty = true;    //DEV_CODE Added this line as done inside InGameManager script
+                allcardsEmpty = true;    //DEV_CODE Added this line as done inside InGameManager script
             }
             //DEV_CODE Added else part as done inside InGameManager script
             else
             {
-                allcardEmpty = false;
+                allcardsEmpty = false;
             }
             communityCards[i].sprite = openCards[i].cardsSprite;
         }
-        if (allcardEmpty) { yield break; }  //DEV_CODE Added this condition as done inside InGameManager script
+        if (allcardsEmpty) { yield break; }  //DEV_CODE Added this condition as done inside InGameManager script
         yield return new WaitForSeconds(1f);
 
         SoundManager.instance.PlaySound(SoundType.CardMove);
@@ -1168,6 +1204,7 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
                         gm.transform.localScale = communityCards[0].transform.localScale;
+						gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
                         gm.transform.position = communityCards[0].transform.position;
@@ -1208,7 +1245,7 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
 
-
+						gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
                         gm.transform.localScale = communityCards[i].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
@@ -1242,12 +1279,13 @@ public class ClubInGameManager : MonoBehaviour
                     }
                     yield return new WaitForSeconds(1f);
 
+					if (DontShowCommunityCardAnimation) { yield break; }
                     SoundManager.instance.PlaySound(SoundType.CardMove);
 
                     for (int i = 4; i < 5; i++)
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-
+						gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
                         gm.transform.localScale = communityCards[i].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
@@ -1289,32 +1327,32 @@ public class ClubInGameManager : MonoBehaviour
                     }
 
                     //DEV_CODE
-                    //if (isHighlightCard)
-                    //{
-                    //    for (int n = 0; n < communityCards.Length; n++)
-                    //    {
-                    //        //communityCards[n].color = Color.white;
-                    //        communityCards[n].transform.GetChild(0).gameObject.SetActive(false);
-                    //    }
-                    //}
-                    //for (int num = 0; num < communityCards.Length; num++)
-                    //{
-                    //    for (int num2 = 0; num2 < highlightCards.Length; num2++)
-                    //    {
-                    //        if (isHighlightCard && highlightCards[num2] != null && communityCards[num].sprite.name == highlightCards[num2].cardsSprite.name)
-                    //        {
-                    //            //communityCards[num].color = Color.yellow;
-                    //            communityCards[num].transform.GetChild(0).gameObject.SetActive(true);
+                    if (isHighlightCard)
+                    {
+                        for (int n = 0; n < communityCards.Length; n++)
+                        {
+                            //communityCards[n].color = Color.white;
+                            communityCards[n].transform.GetChild(0).gameObject.SetActive(false);
+                        }
+                    }
+                    for (int num = 0; num < communityCards.Length; num++)
+                    {
+                        for (int num2 = 0; num2 < highlightCards.Length; num2++)
+                        {
+                            if (isHighlightCard && highlightCards[num2] != null && communityCards[num].sprite.name == highlightCards[num2].cardsSprite.name)
+                            {
+                                //communityCards[num].color = Color.yellow;
+                                communityCards[num].transform.GetChild(0).gameObject.SetActive(true);
 
-                    //            //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
-                    //        }
-                    //    }
-                    //}
+                                //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                            }
+                        }
+                    }
                 }
                 break;
         }
 
-        //isHighlightCard = false;
+        isHighlightCard = false;
         yield return new WaitForSeconds(0.1f);
     }
 
@@ -1546,6 +1584,7 @@ public class ClubInGameManager : MonoBehaviour
     {
         //Debug.LogWarning("RESULT RESPONSE :" + serverResponse);
         userWinner = true;
+		GlobalGameManager.IsJoiningPreviousGame = false;
         ClubInGameUIManager.instance.ToggleSuggestionButton(false);
         ClubInGameUIManager.instance.ToggleActionButton(false);
 
@@ -1570,35 +1609,34 @@ public class ClubInGameManager : MonoBehaviour
 
                 PlayerScript playerObject = GetPlayerObject(jsonData[0]["sidePot"][0]["users"][i]["userId"].ToString());
 
-                //if (playerObject != null)
-                //{
-                //    Image[] playerCards = playerObject.GetCardsImage();
+                if (playerObject != null)
+                {
+                    Image[] playerCards = playerObject.GetCardsImage();
 
-                //    if (jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count > 2)
-                //    {
-                //        for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count; j++)
-                //        {
-                //            highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["winningCards"][j].ToString();
-                //            highlightCards[j] = CardsManager.instance.GetCardData(highlightCardString[j]);
-                //            //Debug.Log(highlightCards[j].cardIcon);
-                //            for (int k = 0; k < playerCards.Length; k++)
-                //            {
-                //                if (playerCards[k].sprite.name == highlightCards[j].cardsSprite.name)
-                //                {
-                //                    //Debug.LogError("OBJECT NAME: " + playerCards[k].transform.GetChild(0).gameObject.name);
-                //                    //playerCards[k].color = Color.yellow;
-                //                    playerCards[k].transform.GetChild(0).gameObject.SetActive(true);
-                //                    //playerObject.
-                //                }
-                //            }
-                //        }
-                //        isHighlightCard = true;
-                //    }
-                //    else
-                //    {
-                //        isHighlightCard = false;
-                //    }
-                //}
+                    if (jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count > 2)
+                    {
+                        for (int j = 0; j < jsonData[0]["sidePot"][0]["users"][i]["winningCards"].Count; j++)
+                        {
+                            highlightCardString[j] = jsonData[0]["sidePot"][0]["users"][i]["winningCards"][j].ToString();
+                            highlightCards[j] = CardsManager.instance.GetCardData(highlightCardString[j]);
+                            //Debug.Log(highlightCards[j].cardIcon);
+                            for (int k = 0; k < playerCards.Length; k++)
+                            {
+                                if (playerCards[k].sprite.name == highlightCards[j].cardsSprite.name)
+                                {
+                                    //Debug.LogError("OBJECT NAME: " + playerCards[k].transform.GetChild(0).gameObject.name);
+                                    //playerCards[k].color = Color.yellow;
+                                    playerCards[k].transform.GetChild(0).gameObject.SetActive(true);
+                                }
+                            }
+                        }
+                        isHighlightCard = true;
+                    }
+                    else
+                    {
+                        isHighlightCard = false;
+                    }
+                }
             }
         }
 
@@ -1611,7 +1649,10 @@ public class ClubInGameManager : MonoBehaviour
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
-            onlinePlayersScript[i].ToggleCards(true, true);
+			Debug.Log(onlinePlayersScript[i].playerData.userName + " " + onlinePlayersScript[i].playerData.isFold);
+            if (onlinePlayersScript[i].playerData.isStart)
+                onlinePlayersScript[i].ToggleCards(!onlinePlayersScript[i].playerData.isFold, true);
+				
             onlinePlayersScript[i].DisablePot();    //DEV_CODE Added this line as per InGameManager script
         }
     }
@@ -1626,13 +1667,13 @@ public class ClubInGameManager : MonoBehaviour
             //StopRecording();
         }
 
-        //for (int i = 0; i < communityCards.Length; i++)
-        //{
-        //    //communityCards[i].color = Color.white;
-        //    communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
-        //    highlightCards[i] = null;
-        //    isHighlightCard = false;
-        //}
+        for (int i = 0; i < communityCards.Length; i++)
+        {
+            //communityCards[i].color = Color.white;
+            communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
+            highlightCards[i] = null;
+            isHighlightCard = false;
+        }
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
@@ -1640,13 +1681,13 @@ public class ClubInGameManager : MonoBehaviour
 
             //DEV_CODE 
             //Logic to reset all players highlighted cards to original one.
-            //Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
+            Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
 
-            //for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
-            //{
-            //    //playerCards[j].color = Color.white;
-            //    playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
-            //}
+            for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
+            {
+                //playerCards[j].color = Color.white;
+                playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
+            }
         }
 
         JsonData data = JsonMapper.ToObject(serverResponse);
@@ -1770,6 +1811,15 @@ public class ClubInGameManager : MonoBehaviour
                 if (remainingTime == 0)
                 {
                     PlayerTimerReset();
+				}
+                if (remainingTime == GameConstants.TURN_TIME)
+                {
+                    if (!currentPlayer.avtar.GetComponent<Animator>().GetBool("Play"))
+                    {
+                        currentPlayer.avtar.GetComponent<Animator>().SetBool("Play", true);
+                    }
+                    //InGameUiManager.instance.actionPanelAnimator.SetBool("isOpen", false);
+                
                 }
 
                 if (currentPlayer.IsMe())
@@ -1866,6 +1916,8 @@ public class ClubInGameManager : MonoBehaviour
         //UnityEngine.Debug.LogWarning("Round Data :- " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
         MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
+		if (MATCH_ROUND == -1)
+            MATCH_ROUND = 1;
         handtype = serverResponse;
 
         //DEV_CODE
@@ -1965,7 +2017,11 @@ public class ClubInGameManager : MonoBehaviour
             //ClubInGameUIManager.instance.isSelectedWinningBooster = true;
         }
 
-        if (gameExitCalled) { return; }
+        if (gameExitCalled) 
+		{ 
+		
+			return; 
+		}
         //Debug.Log("**[OnPlayerObjectFound] _ 0" + serverResponse);
 
         if (serverResponse.Length < 20)
@@ -2037,7 +2093,9 @@ public class ClubInGameManager : MonoBehaviour
                         playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();    //DEV_CODE Added this line as per InGameManager script
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         ClubInGameUIManager.instance.tableId = data[0][i]["tableId"].ToString();
-                        playerData.playerData.isFold = data[0][i]["isBlocked"].Equals(true);
+						playerData.playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
+						playerData.playerData.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
+                        playerData.playerData.isStart = bool.Parse(data[0][i]["isStart"].ToString());
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
@@ -2110,7 +2168,9 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         PlayerData playerData = new PlayerData();
                         //Debug.LogError("************************************************************");
-                        playerData.isFold = data[0][i]["isBlocked"].Equals(true);
+						playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
+                        playerData.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
+                        playerData.isStart = bool.Parse(data[0][i]["isStart"].ToString());
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 
@@ -2236,13 +2296,13 @@ public class ClubInGameManager : MonoBehaviour
         Debug.LogError("Reseting Match Data.....");
         //DEV_CODE
         //Reset highlighted cards
-        //for (int i = 0; i < communityCards.Length; i++)
-        //{
-        //    //communityCards[i].color = Color.white;
-        //    communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
-        //    highlightCards[i] = null;
-        //    isHighlightCard = false;
-        //}
+        for (int i = 0; i < communityCards.Length; i++)
+        {
+            //communityCards[i].color = Color.white;
+            communityCards[i].transform.GetChild(0).gameObject.SetActive(false);
+            highlightCards[i] = null;
+            isHighlightCard = false;
+        }
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
@@ -2251,13 +2311,13 @@ public class ClubInGameManager : MonoBehaviour
 
             //DEV_CODE 
             //Logic to reset all players highlighted cards to original one.
-            //Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
+            Image[] playerCards = onlinePlayersScript[i].GetCardsImage();
 
-            //for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
-            //{
-            //    //playerCards[j].color = Color.white;
-            //    playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
-            //}
+            for (int j = 0; j < onlinePlayersScript[i].playerData.cards.Length; j++)
+            {
+                //playerCards[j].color = Color.white;
+                playerCards[j].transform.GetChild(0).gameObject.SetActive(false);
+            }
         }
 
 
@@ -2302,6 +2362,10 @@ public class ClubInGameManager : MonoBehaviour
 
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScript[0];
+		for (int i = 0; i < animationLayer.childCount; i++)
+        {
+            Destroy(animationLayer.GetChild(i).gameObject);
+        }
     }
 
     private void ClearPotAmount()

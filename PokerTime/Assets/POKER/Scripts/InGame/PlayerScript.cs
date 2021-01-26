@@ -369,7 +369,7 @@ public class PlayerScript : MonoBehaviour
 
         if (amount > 0)
         {
-            ToggleLocalPot(true);
+            //ToggleLocalPot(true);
             localBetPot.text = "" + amount;
         }
         else
@@ -499,7 +499,7 @@ public class PlayerScript : MonoBehaviour
 
     IEnumerator CountDownAnimation(float time, bool isSound)
     {
-        //UnityEngine.Debug.LogError("CountDownAnimation timer " + time);
+        UnityEngine.Debug.LogError("CountDownAnimation timer " + time);
         if (isSound)
             SoundManager.instance.PlaySound(SoundType.TurnSwitch);
 
@@ -754,19 +754,7 @@ public class PlayerScript : MonoBehaviour
                             }
 
                             //DEV_CODE
-                            /*if (InGameManager.instance != null)
-                            {
-                                for (int num2 = 0; num2 < InGameManager.instance.highlightCards.Length; num2++)
-                                {
-                                    if (cardsImage[i].sprite.name == InGameManager.instance.highlightCards[num2].cardsSprite.name)
-                                    {
-                                        //cardsImage[i].color = Color.yellow;
-                                        cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
-                                        //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
-                                    }
-                                }
-                            }
-                            else if (ClubInGameManager.instance != null)
+                            if (ClubInGameManager.instance != null)
                             {
                                 if (ClubInGameManager.instance.isHighlightCard)
                                 {
@@ -780,7 +768,22 @@ public class PlayerScript : MonoBehaviour
                                         }
                                     }
                                 }
-                            }*/
+                            }
+                            else if (InGameManager.instance != null)
+                            {
+                                if (InGameManager.instance.isHighlightCard)
+                                {
+                                    for (int num2 = 0; num2 < InGameManager.instance.highlightCards.Length; num2++)
+                                    {
+                                        if (cardsImage[i].sprite.name == InGameManager.instance.highlightCards[num2].cardsSprite.name)
+                                        {
+                                            //cardsImage[i].color = Color.yellow;
+                                            cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
+                                            //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                        }
+                                    }
+                                }
+                            }
                         }
                         else
                         {
@@ -904,7 +907,7 @@ public class PlayerData
     public string userId;
     public string userName;
     public string tableId;
-    public bool isDealer, isSmallBlind, isBigBlind, isFold, isTurn, isCheckAvailable, isBlock;
+    public bool isDealer, isSmallBlind, isBigBlind, isFold, isTurn, isCheckAvailable, isBlock, isStart;
     public float balance, totalBet;
     public CardData[] cards;
     public string avatarurl;
