@@ -394,7 +394,18 @@ public class MemberListUIManager : MonoBehaviour
             clubMemberDetails.ptChips = data["data"][i]["ptChips"].ToString();
             clubMemberDetails.creditChips = data["data"][i]["creditChips"].ToString();
             clubMemberDetails.profileImagePath = data["data"][i]["profileImage"].ToString();
-            
+
+            //DEV_CODE
+            //To display Players' credit Chips on club dashboard
+            if (data["data"][i]["requestUserId"].ToString().Equals(PlayerManager.instance.GetPlayerGameData().userId))
+            {
+                if (data["data"][i]["assignRole"].ToString().Equals("Member"))
+                    ClubDetailsUIManager.instance.CLubChips.text = data["data"][i]["ptChips"].ToString();
+                else if (data["data"][i]["assignRole"].ToString().Equals("Creater"))
+                    ClubDetailsUIManager.instance.CLubChips.text = data["data"][i]["clubPtChips"].ToString();
+                else
+                    ClubDetailsUIManager.instance.CLubChips.text = data["data"][i]["creditChips"].ToString();
+            }
 
             if (!newMembers)
             {

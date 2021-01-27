@@ -4,9 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ClubCounter : MonoBehaviour
+public class ClubCounter : MonoBehaviour, IPointerDownHandler
 {
     public static ClubCounter instance;
 
@@ -18,6 +19,9 @@ public class ClubCounter : MonoBehaviour
     private float clubChips;
 
     public GameObject popUpText;
+
+    public GameObject yourPTChips;
+    public GameObject totalPlayersPTChips;
 
     public Button StatsBtn;
     public Button TabTradeBtn, /*TabSleepModeBtn,*/ TabVIPBtn, TabTicketBtn;
@@ -343,6 +347,42 @@ public class ClubCounter : MonoBehaviour
         {
             ClubAdminManager.instance.ShowScreen(ClubScreens.Exchange);
         }
+
+        if (totalPlayersPTChips.activeSelf)
+            totalPlayersPTChips.SetActive(false);
+        if (yourPTChips.activeSelf)
+            yourPTChips.SetActive(false);
+    }
+
+    public void OnClickYourPTChips()
+    {
+        if (yourPTChips.activeSelf)
+            yourPTChips.SetActive(false);
+        else if (totalPlayersPTChips.activeSelf)
+            totalPlayersPTChips.SetActive(false);
+        else
+            yourPTChips.SetActive(true);
+    }
+
+    public void OnClickTotalPlayersPTChips()
+    {
+        if (totalPlayersPTChips.activeSelf)
+            totalPlayersPTChips.SetActive(false);
+        else if (yourPTChips.activeSelf)
+            yourPTChips.SetActive(false);
+        else
+            totalPlayersPTChips.SetActive(true);
+    }
+
+    //DEV_CODE Pointe Event to disable popup which are currently active, when user click on anywhere in the screen
+    public void OnPointerDown(PointerEventData a)
+    {
+        Debug.Log("On Pointer Down...");
+        if (yourPTChips.activeSelf)
+            yourPTChips.SetActive(false);
+
+        if (totalPlayersPTChips.activeSelf)
+            totalPlayersPTChips.SetActive(false);
     }
 
     IEnumerator ShowPopUp(string msg, float delay)
@@ -447,7 +487,7 @@ public class ClubCounter : MonoBehaviour
                 {
                     Debug.Log("Response => GetClubMemberListByClubId: " + serverResponse);
                     JsonData data3 = JsonMapper.ToObject(serverResponse);
-                    Debug.LogWarning("Club memeber list counter :" + serverResponse);
+                    //Debug.LogWarning("Club memeber list counter :" + serverResponse);
                     if (data3["status"].Equals(true))
                     {
                         AddToAllLists(data3);
@@ -627,6 +667,17 @@ public class ClubCounter : MonoBehaviour
 
             //DEV_CODE
             allPTChips += int.Parse(clubMemberDetails.ptChips);
+
+            //To display Players' credit Chips on club dashboard
+            if (data["data"][x]["requestUserId"].ToString().Equals(PlayerManager.instance.GetPlayerGameData().userId))
+            {
+                if (data["data"][x]["assignRole"].ToString().Equals("Member"))
+                    ClubDetailsUIManager.instance.CLubChips.text = data["data"][x]["ptChips"].ToString();
+                else if(data["data"][x]["assignRole"].ToString().Equals("Creater"))
+                    ClubDetailsUIManager.instance.CLubChips.text = data["data"][x]["clubPtChips"].ToString();
+                else
+                    ClubDetailsUIManager.instance.CLubChips.text = data["data"][x]["creditChips"].ToString();
+            }
 
             if (clubMemberDetails.userId.Equals(PlayerManager.instance.GetPlayerGameData().userId))
                 ClubOwnerChipCount.text = clubMemberDetails.ptChips;

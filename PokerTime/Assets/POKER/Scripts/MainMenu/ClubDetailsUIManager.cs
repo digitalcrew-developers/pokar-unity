@@ -275,8 +275,8 @@ public class ClubDetailsUIManager : MonoBehaviour
                 {
 					Debug.Log("Response => GetClubDetails : " + serverResponse);
 					JsonData data = JsonMapper.ToObject(serverResponse);
-                    string chipsText = data["data"][0]["ptChips"].ToString();
-                    CLubChips.text = chipsText;
+                    //string chipsText = data["data"][0]["ptChips"].ToString();
+                    //CLubChips.text = chipsText;
 					
 
 				}
