@@ -100,6 +100,16 @@ public class ClubInGameManager : MonoBehaviour
     [HideInInspector]
     public bool userWinner = false;
 
+    public GameObject runItMultiAllCards;
+    public GameObject runItMultiTwoCards;
+    public GameObject runItMultiOneCard;
+
+    public Transform communityCardLayer1;
+    public Transform communityCardLayer2;
+
+    public GameObject MultiRunPanel;
+    public GameObject MultiRunActionPanel;
+
     private void Awake()
     {
         instance = this;
@@ -1261,6 +1271,8 @@ public class ClubInGameManager : MonoBehaviour
 
                     yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
 
+                    //GameObject gmTwoCards = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+
                     for (int i = 0; i < 4; i++)
                     {
                         if (openCards[i].cardIcon == CardIcon.NONE) { break; }
@@ -1301,12 +1313,37 @@ public class ClubInGameManager : MonoBehaviour
 
                     yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
 
+                    //yield return new WaitForSeconds(0.5f);
+
+                    //GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    //GameObject gmTwoCard = Instantiate(runItMultiTwoCards, animationLayer) as GameObject;
+
                     for (int i = 0; i < communityCards.Length; i++)
                     {
                         if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
-                        communityCards[i].gameObject.SetActive(true);                        
+                        communityCards[i].gameObject.SetActive(true);
+
+                        //gmAllCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
                     }
+
+                    for (int i = 3; i < communityCards.Length; i++)
+                    {
+                        //if (openCards[i].cardIcon == CardIcon.NONE)
+                        //{ break; }
+                        //communityCards[i].sprite = openCards[i].cardsSprite;
+                        //communityCards[i].gameObject.SetActive(true);
+
+                        //gmTwoCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                    }
+
+                    //gmTwoCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    //gmTwoCard.transform.DOMove(communityCardLayer1.transform.position, 0.7f);
+
+                    //yield return new WaitForSeconds(0.7f);
+
+                    //gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    //gmAllCard.transform.DOMove(communityCardLayer2.transform.position, 0.7f);
                 }
                 break;
 
@@ -1413,7 +1450,16 @@ public class ClubInGameManager : MonoBehaviour
         }
     }
 
+    //DEV_CODE
+    public void OnClickResumeGamePlay(int value)
+    {
+        ClubSocketController.instance.RequestAskMultiRunAction(value);
+    }
 
+    public void OnClickResumeGamePlayAction(bool action)
+    {
+        ClubSocketController.instance.RequestConfirmMultiRunAction(action);
+    }
 
     public void ToggleTopUpDone(bool isDone)
     {
@@ -1429,7 +1475,7 @@ public class ClubInGameManager : MonoBehaviour
 
         string s = serverResponse.Remove(serverResponse.Length - 1, 1);
         s = s.Remove(0, 1);
-        Debug.LogWarning("s" + s);
+        //Debug.LogWarning("s" + s);
 
 
         AllShowdownSidePots showdownSidePot = JsonUtility.FromJson<AllShowdownSidePots>(s);
@@ -1693,25 +1739,25 @@ public class ClubInGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
-        Debug.LogWarning("NEXT ROUND In: " + remainingTime);
+        //Debug.LogWarning("NEXT ROUND In: " + remainingTime);
         if (remainingTime > 1)
         {
             //ClubInGameUIManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
             // ClubInGameUIManager.instance.LoadingImage.SetActive(true);
             if (!isRematchRequestSent)
             {
-                Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
+                //Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
 
                 if (remainingTime > GameConstants.BUFFER_TIME)
                 {
-                    Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
+                    //Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
 
                     //DEV_CODE
                     ClubInGameUIManager.instance.isSelectedWinningBooster = false;
 
                     if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
                     {
-                        Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
+                        //Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
                         ToggleTopUpDone(false);
                         ClubSocketController.instance.SendReMatchRequest("Yes", "0");
                     }
@@ -1915,7 +1961,9 @@ public class ClubInGameManager : MonoBehaviour
     {
         //UnityEngine.Debug.LogWarning("Round Data :- " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
-        MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
+
+        if(data[0] != null)
+            MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
 		if (MATCH_ROUND == -1)
             MATCH_ROUND = 1;
         handtype = serverResponse;
@@ -2182,7 +2230,7 @@ public class ClubInGameManager : MonoBehaviour
                         //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
                         {
-                            Debug.LogWarning(data[0][i]["userName"].ToString() + " isTurn is true");    //DEV_CODE Added
+                            //Debug.LogWarning(data[0][i]["userName"].ToString() + " isTurn is true");    //DEV_CODE Added
                             playerWhosTurn = playerObject;
                             isCheckAvailable = data[0][i]["isCheck"].Equals(true);
                             isMyTurn = isCheckAvailable;    //DEV_CODE Added
@@ -2200,21 +2248,21 @@ public class ClubInGameManager : MonoBehaviour
 
                         playerData.cards = new CardData[data[0][i]["cards"].Count];
 
-                        Debug.Log("Player Cards Length : " + playerData.cards.Length);
+                        //Debug.Log("Player Cards Length : " + playerData.cards.Length);
 
                         for (int j = 0; j < playerData.cards.Length; j++)
                         {
                             if (playerData == null)
                             {
 #if ERROR_LOG
-                                Debug.LogError("matchmaking object is null");
+                                //Debug.LogError("matchmaking object is null");
 #endif
                             }
 
                             if (playerData.cards == null)
                             {
 #if ERROR_LOG
-                                Debug.LogError("cards is null");
+                                //Debug.LogError("cards is null");
 #endif
                             }
 
@@ -2260,7 +2308,7 @@ public class ClubInGameManager : MonoBehaviour
                 {
                     ClubInGameUIManager.instance.ToggleSuggestionButton(false);
                     ClubInGameUIManager.instance.ToggleActionButton(false);
-                    Debug.LogError("Null reference exception found playerWhosTurn is not found");
+                    //Debug.LogError("Null reference exception found playerWhosTurn is not found");
                 }
             }
 

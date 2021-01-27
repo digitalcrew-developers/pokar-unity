@@ -296,7 +296,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void UpdateRealTimeResult(string result)
     {
-        Debug.LogWarning("Success data send " + result);
+        //Debug.LogWarning("Success data send " + result);
         JsonData data = JsonMapper.ToObject(result);
         //  [{"currentSubRounds":1.0,"currentRounds":0.0,"handType":[{"userId":64.0,"handType":"Straight"},{"userId":65.0,"handType":"Pair"}]}]
         for (int i = 0; i < data[0]["handType"].Count; i++)

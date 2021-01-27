@@ -453,17 +453,17 @@ public class SocketController : MonoBehaviour
             {
                 socketManager.Socket.Emit(request.emitEvent, request.plainDataToBeSend);
 
-//#if DEBUG
-                //Debug.Log("sending Plain request " + request.requestDataStructure + "         event = " + request.emitEvent + "   Time = " + System.DateTime.Now);
-//#endif
+#if DEBUG
+                Debug.Log("sending Plain request " + request.requestDataStructure + "         event = " + request.emitEvent + "   Time = " + System.DateTime.Now);
+#endif
             }
             else if (request.jsonDataToBeSend != null)
             {
                 socketManager.Socket.Emit(request.emitEvent, request.jsonDataToBeSend);
 
-//#if DEBUG
-                //Debug.Log("Send Socket Request " + request.requestDataStructure + "          emitEvent   ==" + request.emitEvent + "  Time = " + System.DateTime.Now);
-//#endif
+#if DEBUG
+                Debug.Log("Send Socket Request " + request.requestDataStructure + "          emitEvent   ==" + request.emitEvent + "  Time = " + System.DateTime.Now);
+#endif
             }
         }
     }
@@ -1710,7 +1710,11 @@ public enum SocketEvetns
     ON_ALL_TIP_DATA,
     ON_POINT_UPDATE,
     RABBIT_CARDS,
-    EVCHOP
+    EVCHOP,
+    ON_AskMultiRun,
+    ON_ConfirmMultiRun,
+    ON_CLOSEPOPUP,
+    ON_COMCARDS
 }
 
 [System.Serializable]
@@ -1856,6 +1860,22 @@ public class EvChopData
 {
     public string tableId, userId;
     public string action, index;
+}
+
+//DEV_CODE
+[System.Serializable]
+public class AskMultiRunAction
+{
+    public string userId, tableId;
+    public bool action;
+    public int runIt;
+}
+
+[System.Serializable]
+public class ConfirmMultiRunAction
+{
+    public string userId, tableId;
+    public bool action;
 }
 
 [System.Serializable]

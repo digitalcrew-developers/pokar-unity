@@ -33,7 +33,7 @@ public class ClubDataManager : MonoBehaviour
         string requestData = "{\"tableId\":" + 130 + "," +
                              "\"startDate\":\"" + "2021-01-13" + "\"," +
                              "\"endDate\":\"" + "2021-01-13" + "\"}";
-        WebServices.instance.SendRequest(RequestType.GetClubDataAnalytics, requestData, true, OnServerResponseFound);
+        WebServices.instance.SendRequest(RequestType.GetClubTableDataAnalytics, requestData, true, OnServerResponseFound);
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -57,9 +57,9 @@ public class ClubDataManager : MonoBehaviour
                 {
                     Debug.Log("Response => GetClubDataAnalytics: " + serverResponse.ToString());
                     JsonData data = JsonMapper.ToObject(serverResponse);
-                    if (data["success"].ToString().Equals("1"))
-                    {
-                        Debug.Log("Total Data: " + data["response"].Count);
+                    //if (data["success"].ToString().Equals("1"))
+                    //{
+                    //    Debug.Log("Total Data: " + data["response"].Count);
                         //    if (DisbandClub.activeInHierarchy)//api response is for disband club
                         //    {
                         //        MainMenuController.instance.ShowMessage("Club has been disbanded", () =>
@@ -86,7 +86,7 @@ public class ClubDataManager : MonoBehaviour
                         //{
                         //    MainMenuController.instance.ShowMessage(data["message"].ToString());
                         //}
-                    }
+                    //}
                 }
                 break;
 
