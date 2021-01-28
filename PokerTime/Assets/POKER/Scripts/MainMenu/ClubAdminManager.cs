@@ -160,7 +160,6 @@ public class ClubAdminManager : MonoBehaviour
                 ShowScreen(ClubScreens.CreateTable);
                 break;
             case "Members":
-                Debug.Log("Showing Member Screen");
                 ShowScreen(ClubScreens.Members);
                 MemberListUIManager.instance.ToggleScreen(true);
                 break;

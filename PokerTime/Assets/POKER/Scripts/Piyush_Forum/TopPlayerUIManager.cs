@@ -66,7 +66,7 @@ public class TopPlayerUIManager : MonoBehaviour
 
     public void GetClubTopPlayerList(bool isShowLoading)
     {
-        playerTypeVal = "CLUB";
+        playerTypeVal = "MTT";//"CLUB";
         scoreLabelTxt.text = "Score";
         ChangeBtnFocus(2);
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
@@ -189,7 +189,7 @@ public class TopPlayerUIManager : MonoBehaviour
                 
             if (data["getData"][0]["TopPlayers"][i]["frameURL"] != null)
             {
-                Debug.Log("Here IMAGE is COME   " + data["getData"][0]["TopPlayers"][i]["frameURL"].ToString());
+                //Debug.Log("Here IMAGE is COME   " + data["getData"][0]["TopPlayers"][i]["frameURL"].ToString());
                 Davinci.get()
             .load(data["getData"][0]["TopPlayers"][i]["frameURL"].ToString())
             .setLoadingPlaceholder(loadingSpr)
@@ -219,7 +219,7 @@ public class TopPlayerUIManager : MonoBehaviour
                     break;
 
             }
-            Debug.Log("Here the Count of value  ----   " + data["getData"][1]["MyRank"].ToString());
+            //Debug.Log("Here the Count of value  ----   " + data["getData"][1]["MyRank"].ToString());
 
             myRankTxt.text = "My Rank " + data["getData"][1]["MyRank"].ToString();
             usernameTxt.text = PlayerManager.instance.GetPlayerGameData().userName;

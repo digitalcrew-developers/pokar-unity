@@ -16,11 +16,18 @@ public class GetCountry
 
 public class SelectContryRegion : MonoBehaviour
 {
+    public static SelectContryRegion instance;
     [SerializeField]
     private List<GetCountry> allCountries;
     public GameObject CountryPrefeb, prefebParent;
 
     public InputField countryNameInputField;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
 
     public void Start()
     {

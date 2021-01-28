@@ -44,5 +44,13 @@ public class SelectCountry : MonoBehaviour
         ProfileModification.instance.countrycode = countryID;
         ProfileModification.instance.countryRegion.text = countryName.text;
         ProfileModification.instance.countryimage.sprite = countryicon.sprite;
+
+        for (int i = 0; i < SelectContryRegion.instance.prefebParent.transform.childCount; i++)
+        {
+            if(!SelectContryRegion.instance.prefebParent.transform.GetChild(i).transform.GetComponent<SelectCountry>().countryID.Equals(countryID))
+            {
+                SelectContryRegion.instance.prefebParent.transform.GetChild(i).transform.GetComponent<SelectCountry>().countryselected.enabled = false;
+            }
+        }
     }
 }

@@ -66,7 +66,7 @@ public class TopPlayerUIManagerTeen : MonoBehaviour
 
     public void GetClubTopPlayerList(bool isShowLoading)
     {
-        playerTypeVal = "CLUB";
+        playerTypeVal = "MTT";//"CLUB";
         scoreLabelTxt.text = "Score";
         ChangeBtnFocus(2);
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +

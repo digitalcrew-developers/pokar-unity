@@ -684,6 +684,10 @@ public class MemberDetails : MonoBehaviour
 
             if (data["status"].Equals(true))
             {
+				//Clear all list of players
+                MemberListUIManager.instance.oldMembersList.Clear();
+                MemberListUIManager.instance.newMembersList.Clear();
+				
                 MemberListUIManager.instance.ShowMemberDetails(data);
             }
             else

@@ -307,7 +307,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	private void LoadAllTemplates(JsonData data, string type)
 	{
-		Debug.Log("Total Templates: " + data["response"].Count);
+		//Debug.Log("Total Templates: " + data["response"].Count);
 
 
 		//DEV_CODE	
