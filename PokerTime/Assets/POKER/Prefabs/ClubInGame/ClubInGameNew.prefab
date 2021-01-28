@@ -4206,6 +4206,7 @@ MonoBehaviour:
     cardValidity: 
     bufferTime: 
     seatNo: 
+    winPercent: 
   fx_holder: {fileID: 4457260697182597805}
   EventSprite:
   - {fileID: 21300000, guid: 0e403e37aa4c7bc4391cd2ce5e037458, type: 3}
@@ -4221,6 +4222,7 @@ MonoBehaviour:
   lastActionImage: {fileID: 6767347020308743354}
   otheruserId: 0
   seat: 
+  winPercentage: {fileID: 7841230778394173259}
   CountDownTimerRunning: 0
 --- !u!1 &846248144593124749
 GameObject:
@@ -10412,13 +10414,13 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4702460777643937826}
         m_MethodName: EmitEVChop
-        m_Mode: 1
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: 1
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1860862250742071200
@@ -18358,7 +18360,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
       - m_Target: {fileID: 1856478414934418529}
         m_MethodName: SetActive
         m_Mode: 6
@@ -18369,7 +18371,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
       - m_Target: {fileID: 1039756234151535819}
         m_MethodName: SetActive
         m_Mode: 6
@@ -18379,6 +18381,17 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 0
+      - m_Target: {fileID: 4702460777643937826}
+        m_MethodName: EmitEVChop
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 2
           m_BoolArgument: 1
         m_CallState: 2
 --- !u!1 &3250754262517975458
@@ -21096,6 +21109,7 @@ MonoBehaviour:
     cardValidity: 
     bufferTime: 
     seatNo: 
+    winPercent: 
   fx_holder: {fileID: 4334819369734055818}
   EventSprite:
   - {fileID: 21300000, guid: 0e403e37aa4c7bc4391cd2ce5e037458, type: 3}
@@ -21111,6 +21125,7 @@ MonoBehaviour:
   lastActionImage: {fileID: 3012524287126490704}
   otheruserId: 0
   seat: 
+  winPercentage: {fileID: 8802251740602528155}
   CountDownTimerRunning: 0
 --- !u!1 &3636827667087351393
 GameObject:
@@ -26023,6 +26038,7 @@ MonoBehaviour:
     cardValidity: 
     bufferTime: 
     seatNo: 
+    winPercent: 
   fx_holder: {fileID: 5645192718577173428}
   EventSprite:
   - {fileID: 21300000, guid: 0e403e37aa4c7bc4391cd2ce5e037458, type: 3}
@@ -26038,6 +26054,7 @@ MonoBehaviour:
   lastActionImage: {fileID: 869040144273683506}
   otheruserId: 0
   seat: 
+  winPercentage: {fileID: 8542260500707927703}
   CountDownTimerRunning: 0
 --- !u!1 &4493538075235719316
 GameObject:
@@ -29752,6 +29769,7 @@ MonoBehaviour:
     cardValidity: 
     bufferTime: 
     seatNo: 
+    winPercent: 
   fx_holder: {fileID: 3073835362149534086}
   EventSprite:
   - {fileID: 21300000, guid: 0e403e37aa4c7bc4391cd2ce5e037458, type: 3}
@@ -29767,6 +29785,7 @@ MonoBehaviour:
   lastActionImage: {fileID: 4671893462634273988}
   otheruserId: 0
   seat: 
+  winPercentage: {fileID: 8887920914067644466}
   CountDownTimerRunning: 0
 --- !u!1 &4525709700244793303
 GameObject:
@@ -35475,6 +35494,7 @@ MonoBehaviour:
     cardValidity: 
     bufferTime: 
     seatNo: 
+    winPercent: 
   fx_holder: {fileID: 4312176993402636911}
   EventSprite:
   - {fileID: 21300000, guid: 0e403e37aa4c7bc4391cd2ce5e037458, type: 3}
@@ -35490,6 +35510,7 @@ MonoBehaviour:
   lastActionImage: {fileID: 7529636280728813126}
   otheruserId: 0
   seat: 
+  winPercentage: {fileID: 1860862250742071200}
   CountDownTimerRunning: 0
 --- !u!1 &5435090697776859047
 GameObject:
@@ -40592,6 +40613,7 @@ MonoBehaviour:
     cardValidity: 
     bufferTime: 
     seatNo: 
+    winPercent: 
   fx_holder: {fileID: 2336836318420140175}
   EventSprite:
   - {fileID: 21300000, guid: 0e403e37aa4c7bc4391cd2ce5e037458, type: 3}
@@ -40607,6 +40629,7 @@ MonoBehaviour:
   lastActionImage: {fileID: 2505226253285180075}
   otheruserId: 0
   seat: 
+  winPercentage: {fileID: 4595674223459428329}
   CountDownTimerRunning: 0
 --- !u!1 &6276364211723953788
 GameObject:
@@ -58957,6 +58980,7 @@ MonoBehaviour:
     cardValidity: 
     bufferTime: 
     seatNo: 
+    winPercent: 
   fx_holder: {fileID: 7000597729286161148}
   EventSprite:
   - {fileID: 21300000, guid: 0e403e37aa4c7bc4391cd2ce5e037458, type: 3}
@@ -58972,6 +58996,7 @@ MonoBehaviour:
   lastActionImage: {fileID: 6180078424103899910}
   otheruserId: 0
   seat: 
+  winPercentage: {fileID: 2756504930811774708}
   CountDownTimerRunning: 0
 --- !u!1 &8844258754296119651
 GameObject:
@@ -60246,6 +60271,7 @@ MonoBehaviour:
     cardValidity: 
     bufferTime: 
     seatNo: 
+    winPercent: 
   fx_holder: {fileID: 3153661816717808742}
   EventSprite:
   - {fileID: 21300000, guid: 0e403e37aa4c7bc4391cd2ce5e037458, type: 3}
@@ -60261,6 +60287,7 @@ MonoBehaviour:
   lastActionImage: {fileID: 6133234454673884593}
   otheruserId: 0
   seat: 
+  winPercentage: {fileID: 6282471777849965706}
   CountDownTimerRunning: 0
 --- !u!1 &8995486342022334571
 GameObject:
@@ -61150,6 +61177,7 @@ MonoBehaviour:
     cardValidity: 
     bufferTime: 
     seatNo: 
+    winPercent: 
   fx_holder: {fileID: 145020007200844548}
   EventSprite:
   - {fileID: 21300000, guid: 0e403e37aa4c7bc4391cd2ce5e037458, type: 3}
@@ -61165,4 +61193,5 @@ MonoBehaviour:
   lastActionImage: {fileID: 2556340090447452302}
   otheruserId: 0
   seat: 
+  winPercentage: {fileID: 4678741060245586912}
   CountDownTimerRunning: 0

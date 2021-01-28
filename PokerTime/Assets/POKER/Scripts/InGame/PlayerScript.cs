@@ -30,6 +30,7 @@ public class PlayerScript : MonoBehaviour
     private bool isItMe;
     public string otheruserId;
     public string seat;
+    public GameObject winPercentage;
    
     private int localBetAmount = 0;
     private int localBetRoundNo = 0;
@@ -913,6 +914,7 @@ public class PlayerData
     public string avatarurl;
     public string userVIPCard, cardValidity, bufferTime;
     public string seatNo;
+    public string winPercent;
 }
 
 public class GetData

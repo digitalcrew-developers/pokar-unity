@@ -230,6 +230,12 @@ public class ClubInGameManager : MonoBehaviour
 
     public void OnEVChopDataFound(string responseText)
     {
+        for (int i = 0; i < onlinePlayersScript.Length; i++)
+        {
+            Debug.Log("Win% :" + onlinePlayersScript[i].playerData.winPercent);
+            onlinePlayersScript[i].winPercentage.SetActive(true);
+            onlinePlayersScript[i].winPercentage.transform.GetChild(0).GetComponent<Text>().text = onlinePlayersScript[i].playerData.winPercent;
+        }
         Debug.LogError("EV :" + responseText);
         JsonData data = JsonMapper.ToObject(responseText);
         Debug.LogError("EV2 :" + data[0][0]["amount"]);
@@ -954,10 +960,10 @@ public class ClubInGameManager : MonoBehaviour
         }
     }
 
-    public void EmitEVChop()
+    public void EmitEVChop(string action)
     {
         //EVCHOPPanel.SetActive(true);
-        ClubSocketController.instance.ConfrimEvChop("1", "0");
+        ClubSocketController.instance.ConfrimEvChop(action, "0");
     }
 
     public void HideEVChopButtons()
@@ -966,7 +972,10 @@ public class ClubInGameManager : MonoBehaviour
         EVCHOPButton.SetActive(false);
         EVCHOPPanel.SetActive(false);
         //loop through and hide all ev chop values from players
-
+        for (int i = 0; i < onlinePlayersScript.Length; i++)
+        {
+            onlinePlayersScript[i].winPercentage.SetActive(false);
+        }
     }
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
@@ -2159,7 +2168,8 @@ public class ClubInGameManager : MonoBehaviour
                         playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
                         playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
-
+                        Debug.Log("Win% ww :" + data[0][i]["winPercent"].ToString());
+                        playerData.playerData.winPercent = data[0][i]["winPercent"].ToString();
                         //Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
                         if (playerData.isTurn)
@@ -2226,7 +2236,8 @@ public class ClubInGameManager : MonoBehaviour
                         playerData.cardValidity = data[0][i]["cardValidity"].ToString();
                         playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         playerData.seatNo = data[0][i]["seatNo"].ToString();
-
+                        Debug.Log("Win% rr :" + data[0][i]["winPercent"].ToString());
+                        playerObject.playerData.winPercent = data[0][i]["winPercent"].ToString();
                         //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
                         {

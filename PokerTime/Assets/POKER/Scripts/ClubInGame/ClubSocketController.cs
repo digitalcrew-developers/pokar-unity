@@ -129,7 +129,7 @@ public class ClubSocketController : MonoBehaviour
         socketManager.Socket.On("minMaxAppEmit", MinimizeAppServer);
         socketManager.Socket.On("seatObject", SeatObjectsReceived);
         socketManager.Socket.On("rabbitOpenCards", RabbitCardDataReceived);
-        socketManager.Socket.On("evChopData", EVChopDataReceived);  //DEV_CODE Added Event for EVChopDataReceived called
+        //socketManager.Socket.On("evChopData", EVChopDataReceived);  //DEV_CODE Added Event for EVChopDataReceived called
         socketManager.Socket.On("playerExit", PlayerExit);          //DEV_CODE Added Event for PlayerExit called
         socketManager.Socket.On("askEvChop", EVChopDataReceived);
         socketManager.Socket.On("closePopUp", EVChopCloseDataReceived);
@@ -141,7 +141,7 @@ public class ClubSocketController : MonoBehaviour
         socketManager.Socket.On("askMultiRun", OnAskMultiRun);
         socketManager.Socket.On("confirmMultiRun", OnConfirmMultiRun);
 
-        socketManager.Socket.On("closePopUp", OnClosePopUp);
+        //socketManager.Socket.On("closePopUp", OnClosePopUp);
         socketManager.Socket.On("comCards", OnComCards);
 
         socketManager.Open();
@@ -206,7 +206,7 @@ public class ClubSocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.Log("OnAskMultiRun :" + responseText);
-        //ClubInGameManager.instance.MultiRunActionPanel.SetActive(true);
+        ClubInGameManager.instance.MultiRunPanel.SetActive(true);
     }
 
     private void OnConfirmMultiRun(Socket socket, Packet packet, object[] args)
@@ -217,11 +217,11 @@ public class ClubSocketController : MonoBehaviour
     }
 
 
-    private void OnClosePopUp(Socket socket, Packet packet, object[] args)
+    /*private void OnClosePopUp(Socket socket, Packet packet, object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.Log("OnClosePopUp :" + responseText);
-    }
+    }*/
 
     private void OnComCards(Socket socket, Packet packet, object[] args)
     {
@@ -232,10 +232,10 @@ public class ClubSocketController : MonoBehaviour
     //This method to be called when EVChopDataReceived emited
     private void EVChopDataReceived(Socket socket, Packet packet, object[] args)
     {
-        Debug.Log("<color=magenta>EVChopDataReceived :</color>" + args);
+        //Debug.Log("<color=magenta>EVChopDataReceived :</color>" + args);
         string responseText = JsonMapper.ToJson(args);
 
-        Debug.LogError("EVChopDataReceived :" + responseText);
+        //Debug.LogError("EVChopDataReceived :" + responseText);
 
 #if DEBUG
 
@@ -259,6 +259,7 @@ public class ClubSocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.LogError("EVChopCloseDataReceived :" + responseText);
+        ClubInGameManager.instance.HideEVChopButtons();
     }
 
     private void RabbitCardDataReceived(Socket socket, Packet packet, object[] args)
@@ -1648,10 +1649,14 @@ public class ClubSocketController : MonoBehaviour
         requestData.index = index;
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
-
+        Debug.LogError("evChopAction " + requestStringData);
         SocketRequest request = new SocketRequest();
         request.emitEvent = "evChopAction";
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
         socketRequest.Add(request);
+        //SendSocketRequest();
     }
 
     #endregion
