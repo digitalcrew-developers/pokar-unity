@@ -14,45 +14,48 @@ public class BodyManager : MonoBehaviour
 
 	private List<GameObject> cells;
 
+    public static List<GameObject> totalCells;
+
 	#endregion
 
 	#region Public Methods
 
 	public void Initialize(int year, int month, Action<(string, string)> clickEventHandler)
 	{
-		var dateTime = new DateTime(year, month, 1);
+	    var dateTime = new DateTime(year, month, 1);
 		var daysInMonth = DateTime.DaysInMonth(year, month);
-
 		var dayOfWeek = (int)dateTime.DayOfWeek;
 		var size = (dayOfWeek + daysInMonth) / 7;
-
+		
 		if ((dayOfWeek + daysInMonth) % 7 > 0)
 			size++;
-
+		
 		var arr = new int[size * 7];
-
+		
 		for (var i = 0; i < daysInMonth; i++)
 			arr[dayOfWeek + i] = i + 1;
 
 		if (cells == null)
 			cells = new List<GameObject>();
 
-		foreach(var c in cells)
+		foreach (var c in cells)
 			Destroy(c);
 
 		cells.Clear();
 
-		foreach(var a in arr)
+		foreach (var day in arr)
 		{
-			var instance = Instantiate(a == 0 ? placeHolderPrefab : buttonPrefab, transform);
+			var instance = Instantiate(day == 0 ? placeHolderPrefab : buttonPrefab, transform);
 			var buttonManager = instance.GetComponent<ButtonManager>();
 
-			if (buttonManager != null)
-				buttonManager.Initialize(a.ToString(), clickEventHandler);
+            if (buttonManager != null)
+            {
+                buttonManager.Initialize(day, month, year, clickEventHandler);
+            }
 
 			cells.Add(instance);
 		}
-	}
+    }
 
 	#endregion
 }
