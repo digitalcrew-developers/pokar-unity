@@ -147,27 +147,20 @@ public class ClubDetailsUIManager : MonoBehaviour
 						otherDetails.transform.localPosition = new Vector3(51, 0, 0);
 					}
 
-					int a = data["data"][0]["jackpotAmount"].ToString().Length;
+                    int a = data["data"][0]["jackpotAmount"].ToString().Length;
 
-					string str = "";
-					for (int i = 0; i < (9 - a); i++)
-					{
-						if (i == 1)
-						{
-							str += ",";
-							continue;
-						}
-						else if (i == 5)
-						{
-							str += ",";
-							continue;
-						}
-						str += "0";
-					}
+                    string str = "";
+                    for (int i = 0; i < (7 - a); i++)
+                    {
+                        str += "0";
+                    }
 
-					str += data["data"][0]["jackpotAmount"].ToString();
+                    str += data["data"][0]["jackpotAmount"].ToString();
 
-					jackpotAmountText.text = str;
+					str = str.Insert(1, ",");
+					str = str.Insert(5, ",");
+
+                    jackpotAmountText.text = str;
 				}
 				else
 				{

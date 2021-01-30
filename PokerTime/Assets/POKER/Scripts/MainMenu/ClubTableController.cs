@@ -21,6 +21,7 @@ public class ClubTableController : MonoBehaviour
     public Text noTemplateText;
     public Button createBtn;
 
+    public GameObject createTablePanel;
 
     [Header("NLH")]
     public Button RingGame_RegularModeTabNLH;
@@ -61,7 +62,7 @@ public class ClubTableController : MonoBehaviour
         }
 
         popUpText.gameObject.SetActive(false);
-        RequestTemplateData();
+        RequestTemplateData(false);
     }
 
     private void Start()
@@ -268,11 +269,11 @@ public class ClubTableController : MonoBehaviour
         }
     }
 
-    public void RequestTemplateData()
+    public void RequestTemplateData(bool isPublish)
     {
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
                                 "\"tableId\":\"" + "" + "\"," +
-                                "\"status\":\"" + "" + "\"," +
+                                "\"status\":\"" + (isPublish ? "Published" : "") + "\"," +
                                 "\"settingData\":\"" + "Yes" + "\"}";
 
         WebServices.instance.SendRequest(RequestType.GetTemplates, requestData, true, OnServerResponseFound);
@@ -472,7 +473,7 @@ public class ClubTableController : MonoBehaviour
                             {
                                 Destroy(container.GetChild(i).gameObject);
                             }
-                            RequestTemplateData();
+                            RequestTemplateData(false);
                         }
                         else if (data["message"].ToString().Equals("Template Published"))
                         {

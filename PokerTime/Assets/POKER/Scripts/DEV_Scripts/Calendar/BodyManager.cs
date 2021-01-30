@@ -53,6 +53,11 @@ public class BodyManager : MonoBehaviour
                 buttonManager.Initialize(day, month, year, clickEventHandler);
             }
 
+			if(instance.name == buttonPrefab.name)
+            {
+				Debug.Log("Date Prefab is going to instantiate...");
+            }
+
 			cells.Add(instance);
 		}
     }
