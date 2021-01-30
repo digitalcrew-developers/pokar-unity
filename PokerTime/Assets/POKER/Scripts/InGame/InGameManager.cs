@@ -253,7 +253,7 @@ public class InGameManager : MonoBehaviour
                 Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn);
                 //Debug.Log("Url " + newMatchMakingPlayerData[i].playerData.avatarurl);
                 allPlayersObject[i].seat = (i + 1).ToString();
-                allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl);
+                allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl, newMatchMakingPlayerData[i].playerData.flagurl);
                 onlinePlayersScript[i] = allPlayersObject[i];
                 onlinePlayersScript[i].Init(newMatchMakingPlayerData[i]);
 
@@ -627,6 +627,7 @@ public class InGameManager : MonoBehaviour
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
+                playerDataObject.flagurl = data[0][i]["countryFlag"].ToString();
                 playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                 playerDataObject.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
                 playerDataObject.isStart = bool.Parse(data[0][i]["isStart"].ToString());
@@ -1840,6 +1841,7 @@ public class InGameManager : MonoBehaviour
 
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
                         playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();
+                        playerData.playerData.flagurl = data[0][i]["countryFlag"].ToString();
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         InGameUiManager.instance.tableId = data[0][i]["tableId"].ToString();
                         playerData.playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());

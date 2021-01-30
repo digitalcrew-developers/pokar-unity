@@ -847,7 +847,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	public Sprite GetClubImage()
     {
-        return null;
+		//return null;
+		return clubProfileImage.sprite;
     }
 
     public string GetClubName()

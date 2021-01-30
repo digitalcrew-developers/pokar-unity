@@ -59,21 +59,50 @@ public class CalendarManager : MonoBehaviour
 		cultureInfo = new CultureInfo("en-US");
 		//Refresh(targetDateTime.Year, targetDateTime.Month);
 
-		month1.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
-		bodyManager1.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
+		//targetDateTime = targetDateTime.AddMonths(-3);
+		//Debug.Log("Month 4: " + targetDateTime.Month + " And Year:" + targetDateTime.Year);
+		//targetDateTime = targetDateTime.AddMonths(1);
+		//Debug.Log("Month 3: " + targetDateTime.Month + " And Year:" + targetDateTime.Year);
+		//targetDateTime = targetDateTime.AddMonths(1);
+		//Debug.Log("Month 2: " + targetDateTime.Month + " And Year:" + targetDateTime.Year);
+		//targetDateTime = targetDateTime.AddMonths(1);
+		//Debug.Log("Month 1: " + targetDateTime.Month + " And Year:" + targetDateTime.Year);
 
-		targetDateTime = targetDateTime.AddMonths(-1);
-		month2.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
-		bodyManager2.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
 
-		targetDateTime = targetDateTime.AddMonths(-1);
-		month3.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
-		bodyManager3.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
+        targetDateTime = targetDateTime.AddMonths(-3);
+        month4.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
+        bodyManager4.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
 
-		targetDateTime = targetDateTime.AddMonths(-1);
-		month4.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
-		bodyManager4.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
-	}
+        targetDateTime = targetDateTime.AddMonths(1);
+        month3.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
+        bodyManager3.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
+
+        targetDateTime = targetDateTime.AddMonths(1);
+        month2.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
+        bodyManager2.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
+
+        targetDateTime = targetDateTime.AddMonths(1);
+        month1.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
+        bodyManager1.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
+
+
+        //OLD CODE
+
+        //month1.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
+        //bodyManager1.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
+
+        //targetDateTime = targetDateTime.AddMonths(-1);
+        //month2.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
+        //bodyManager2.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
+
+        //targetDateTime = targetDateTime.AddMonths(-1);
+        //month3.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
+        //bodyManager3.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
+
+        //targetDateTime = targetDateTime.AddMonths(-1);
+        //month4.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
+        //bodyManager4.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
+    }
 
 	#endregion
 

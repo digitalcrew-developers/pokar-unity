@@ -85,7 +85,7 @@ public class ClubSleepMode : MonoBehaviour
             clubMemberDetails.clubRequestId = data["data"][x]["clubRequestId"].ToString();
             clubMemberDetails.ptChips = data["data"][x]["ptChips"].ToString();
 
-            Debug.Log("For Player: " + clubMemberDetails.userId + " - PT Chips : " + clubMemberDetails.ptChips);
+            //Debug.Log("For Player: " + clubMemberDetails.userId + " - PT Chips : " + clubMemberDetails.ptChips);
 
             string initial = clubMemberDetails.userName.ToUpper();
             initial = initial.Substring(0, 2);

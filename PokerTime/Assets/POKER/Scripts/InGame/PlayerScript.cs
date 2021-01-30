@@ -210,12 +210,12 @@ public class PlayerScript : MonoBehaviour
         TogglePlayerUI(false);
     }
 
-    public void TogglePlayerUI(bool isShow, string avatarUrl = null)
+    public void TogglePlayerUI(bool isShow, string avatarUrl = null, string flagUrl = null)
     {
         LoadUI();
         parentObject.SetActive(isShow);
-        if (avatarUrl != null)
-            LoadAvtars_Frame_Flag(avatarUrl);
+        if (avatarUrl != null && flagUrl != null)
+            LoadAvtars_Frame_Flag(avatarUrl, flagUrl);
     }
 
     public bool IsPlayerObjectActive()
@@ -277,9 +277,13 @@ public class PlayerScript : MonoBehaviour
         ToggleFoldScreen(playerData.isFold);
     }
 
-    private void LoadAvtars_Frame_Flag(string avtar_Url)
+    private void LoadAvtars_Frame_Flag(string avtar_Url, string flag_Url)
     {
+        //To load Avtar
         StartCoroutine(loadSpriteImageFromUrl(avtar_Url, avtar));
+
+        //To load Flag
+        StartCoroutine(loadSpriteImageFromUrl(flag_Url, flag));
     }
 
     public void ToggleFoldScreen(bool isShow)
@@ -915,6 +919,7 @@ public class PlayerData
     public string userVIPCard, cardValidity, bufferTime;
     public string seatNo;
     public string winPercent;
+    public string flagurl;
 }
 
 public class GetData

@@ -317,7 +317,7 @@ public class ClubInGameManager : MonoBehaviour
                 //Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn);
                 //Debug.Log("Url " + newMatchMakingPlayerData[i].playerData.avatarurl);
                 allPlayersObject[i].seat = (i + 1).ToString();
-                allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl);
+                allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl, newMatchMakingPlayerData[i].playerData.flagurl);
                 onlinePlayersScript[i] = allPlayersObject[i];
                 onlinePlayersScript[i].Init(newMatchMakingPlayerData[i]);
 
@@ -805,7 +805,8 @@ public class ClubInGameManager : MonoBehaviour
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
-				playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
+                playerDataObject.flagurl = data[0][i]["countryFlag"].ToString();
+                playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                 playerDataObject.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
                 playerDataObject.isStart = bool.Parse(data[0][i]["isStart"].ToString());
                 //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
@@ -2362,6 +2363,7 @@ public class ClubInGameManager : MonoBehaviour
 
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
                         playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();    //DEV_CODE Added this line as per InGameManager script
+                        playerData.playerData.flagurl = data[0][i]["countryFlag"].ToString();
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         ClubInGameUIManager.instance.tableId = data[0][i]["tableId"].ToString();
 						playerData.playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());

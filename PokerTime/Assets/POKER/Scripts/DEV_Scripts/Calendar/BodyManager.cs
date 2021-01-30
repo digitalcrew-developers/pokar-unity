@@ -22,6 +22,8 @@ public class BodyManager : MonoBehaviour
 
 	public void Initialize(int year, int month, Action<(string, string)> clickEventHandler)
 	{
+		Debug.Log("Year:" + year + " And Month:" + month);
+
 	    var dateTime = new DateTime(year, month, 1);
 		var daysInMonth = DateTime.DaysInMonth(year, month);
 		var dayOfWeek = (int)dateTime.DayOfWeek;
@@ -53,12 +55,7 @@ public class BodyManager : MonoBehaviour
                 buttonManager.Initialize(day, month, year, clickEventHandler);
             }
 
-			if(instance.name == buttonPrefab.name)
-            {
-				Debug.Log("Date Prefab is going to instantiate...");
-            }
-
-			cells.Add(instance);
+            cells.Add(instance);
 		}
     }
 
