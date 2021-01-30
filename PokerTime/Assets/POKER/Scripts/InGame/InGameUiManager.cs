@@ -908,7 +908,7 @@ public class InGameUiManager : MonoBehaviour
             availableCallAmount = callAmount;
         }
         actionButtonParent.SetActive(isShow);
-        InGameUiManager.instance.actionPanelAnimator.SetBool("isOpen", true);
+        actionPanelAnimator.SetBool("isOpen", true);
     }
     
 

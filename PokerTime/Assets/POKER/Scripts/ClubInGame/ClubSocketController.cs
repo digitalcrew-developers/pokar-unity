@@ -142,7 +142,8 @@ public class ClubSocketController : MonoBehaviour
         socketManager.Socket.On("confirmMultiRun", OnConfirmMultiRun);
 
         //socketManager.Socket.On("closePopUp", OnClosePopUp);
-        socketManager.Socket.On("comCards", OnComCards);
+        socketManager.Socket.On("comCard1", OnComCards1);
+        socketManager.Socket.On("comCard2", OnComCards2);
 
         socketManager.Open();
     }
@@ -223,10 +224,18 @@ public class ClubSocketController : MonoBehaviour
         Debug.Log("OnClosePopUp :" + responseText);
     }*/
 
-    private void OnComCards(Socket socket, Packet packet, object[] args)
+    private void OnComCards1(Socket socket, Packet packet, object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
-        Debug.Log("OnComCards :" + responseText);
+        Debug.Log("<color=magenta>OnComCards1 :</color> " + responseText);
+        StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer1.position));
+    }
+
+    private void OnComCards2(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("<color=magenta>OnComCards2 :</color> " + responseText);
+        StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer2.position));
     }
 
     //This method to be called when EVChopDataReceived emited
