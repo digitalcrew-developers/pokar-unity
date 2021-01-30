@@ -1322,9 +1322,9 @@ public class ClubInGameManager : MonoBehaviour
 
                     yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
 
-                    //yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.5f);
 
-                    //GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
                     //GameObject gmTwoCard = Instantiate(runItMultiTwoCards, animationLayer) as GameObject;
 
                     for (int i = 0; i < communityCards.Length; i++)
@@ -1333,26 +1333,26 @@ public class ClubInGameManager : MonoBehaviour
                         communityCards[i].sprite = openCards[i].cardsSprite;
                         communityCards[i].gameObject.SetActive(true);
 
-                        //gmAllCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                        gmAllCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
                     }
 
-                    for (int i = 3; i < communityCards.Length; i++)
-                    {
+                    //for (int i = 3; i < communityCards.Length; i++)
+                    //{
                         //if (openCards[i].cardIcon == CardIcon.NONE)
                         //{ break; }
                         //communityCards[i].sprite = openCards[i].cardsSprite;
                         //communityCards[i].gameObject.SetActive(true);
 
                         //gmTwoCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
-                    }
+                    //}
 
                     //gmTwoCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
                     //gmTwoCard.transform.DOMove(communityCardLayer1.transform.position, 0.7f);
 
                     //yield return new WaitForSeconds(0.7f);
 
-                    //gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
-                    //gmAllCard.transform.DOMove(communityCardLayer2.transform.position, 0.7f);
+                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    gmAllCard.transform.DOMove(communityCardLayer2.transform.position, 0.7f);
                 }
                 break;
 
