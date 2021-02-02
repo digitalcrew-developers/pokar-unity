@@ -416,7 +416,7 @@ public class ClubInGameManager : MonoBehaviour
             if (!players[i].playerData.isStart)
                 players[i].ToggleCards(false, players[i].IsMe());
             else
-            players[i].ToggleCards(true, players[i].IsMe());
+                players[i].ToggleCards(true, players[i].IsMe());
         }
 
         ClubSocketController.instance.SetSocketState(SocketState.Game_Running);
@@ -478,70 +478,71 @@ public class ClubInGameManager : MonoBehaviour
         //Debug.LogWarning("Buffer Time :  " + GameConstants.BUFFER_TIME);
 
         if (float.Parse(t) < 1)
+            ResetMatchData();
         //{
-            //if (!isRematchRequestSent)
-            //{
-                //Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
+        //if (!isRematchRequestSent)
+        //{
+        //Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
 
-                //if (remainingTime > GameConstants.BUFFER_TIME)
-                //{
-                    //Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
+        //if (remainingTime > GameConstants.BUFFER_TIME)
+        //{
+        //Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
 
-                    //DEV_CODE
-                    //ClubInGameUIManager.instance.isSelectedWinningBooster = false;
+        //DEV_CODE
+        //ClubInGameUIManager.instance.isSelectedWinningBooster = false;
 
-                    //if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
-                    //{
-                        //Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
-                        //ToggleTopUpDone(false);
-                        //ClubSocketController.instance.SendReMatchRequest("Yes", "0");
-                    //}
-                    //else
-                    //{
-                    //    //int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn - (int)availableBalance;
-                    //    //float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
-
-                    //    //now we are adding balance if userbalance is 0.
-                    //    int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn;
-                    //    float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
-                    //    Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance);
-                    //    //if (userMainBalance >= balanceToAdd)
-                    //    if (userMainBalance < EPSILON)
-                    //    {
-                    //        Debug.Log("<color=pink>" + "UserMainBalance: " + userMainBalance + " </color>");
-                    //        ClubSocketController.instance.SendReMatchRequest("Yes", "0");
-                    //        //send topup request with the below api.. for clarification contact Pradeep - Digital Crew
-                    //        ClubSocketController.instance.SendTopUpRequest(balanceToAdd);
-
-                    //        //userMainBalance -= balanceToAdd;
-                    //        PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
-                    //        //playerData.coins = userMainBalance;
-                    //        playerData.coins = balanceToAdd;
-                    //        PlayerManager.instance.SetPlayerGameData(playerData);
-                    //    }
-                    //    else
-                    //    {
-                    //        if (availableBalance > GlobalGameManager.instance.GetRoomData().smallBlind)
-                    //        {
-                    //            Debug.Log("<color=pink>" + "SmallBlind: " + GlobalGameManager.instance.GetRoomData().smallBlind + " and Available Balance: " + availableBalance + "</color>");
-                    //            ClubSocketController.instance.SendReMatchRequest("Yes", "0");
-                    //        }
-                    //        else
-                    //        {
-                    //            ClubInGameUIManager.instance.ShowMessage("You don't have enough coins to play, please purchase some coins to continue");
-                    //            // TODO call sit out
-                    //            // TODO show coin purchase screen
-                    //        }
-                    //    }
-                    //}
-                //}
-                //else
-                //{
-                //    ClubSocketController.instance.SendReMatchRequest("No", "0");
-                //}
-            //}
+        //if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
+        //{
+        //Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
+        //ToggleTopUpDone(false);
+        //ClubSocketController.instance.SendReMatchRequest("Yes", "0");
         //}
-        ResetMatchData();
+        //else
+        //{
+        //    //int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn - (int)availableBalance;
+        //    //float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
+
+        //    //now we are adding balance if userbalance is 0.
+        //    int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn;
+        //    float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
+        //    Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance);
+        //    //if (userMainBalance >= balanceToAdd)
+        //    if (userMainBalance < EPSILON)
+        //    {
+        //        Debug.Log("<color=pink>" + "UserMainBalance: " + userMainBalance + " </color>");
+        //        ClubSocketController.instance.SendReMatchRequest("Yes", "0");
+        //        //send topup request with the below api.. for clarification contact Pradeep - Digital Crew
+        //        ClubSocketController.instance.SendTopUpRequest(balanceToAdd);
+
+        //        //userMainBalance -= balanceToAdd;
+        //        PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
+        //        //playerData.coins = userMainBalance;
+        //        playerData.coins = balanceToAdd;
+        //        PlayerManager.instance.SetPlayerGameData(playerData);
+        //    }
+        //    else
+        //    {
+        //        if (availableBalance > GlobalGameManager.instance.GetRoomData().smallBlind)
+        //        {
+        //            Debug.Log("<color=pink>" + "SmallBlind: " + GlobalGameManager.instance.GetRoomData().smallBlind + " and Available Balance: " + availableBalance + "</color>");
+        //            ClubSocketController.instance.SendReMatchRequest("Yes", "0");
+        //        }
+        //        else
+        //        {
+        //            ClubInGameUIManager.instance.ShowMessage("You don't have enough coins to play, please purchase some coins to continue");
+        //            // TODO call sit out
+        //            // TODO show coin purchase screen
+        //        }
+        //    }
+        //}
+        //}
+        //else
+        //{
+        //    ClubSocketController.instance.SendReMatchRequest("No", "0");
+        //}
+        //}
+        //}
+
     }
 
     public void UpdateAvailableBalance(float balance)
@@ -1325,7 +1326,7 @@ public class ClubInGameManager : MonoBehaviour
 
                     yield return new WaitForSeconds(0.5f);
 
-                    GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    //GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
                     //GameObject gmTwoCard = Instantiate(runItMultiTwoCards, animationLayer) as GameObject;
 
                     for (int i = 0; i < communityCards.Length; i++)
@@ -1334,7 +1335,7 @@ public class ClubInGameManager : MonoBehaviour
                         communityCards[i].sprite = openCards[i].cardsSprite;
                         communityCards[i].gameObject.SetActive(true);
 
-                        gmAllCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                        //gmAllCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
                     }
 
                     //for (int i = 3; i < communityCards.Length; i++)
@@ -1352,8 +1353,8 @@ public class ClubInGameManager : MonoBehaviour
 
                     //yield return new WaitForSeconds(0.7f);
 
-                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
-                    gmAllCard.transform.DOMove(communityCardLayer2.transform.position, 0.7f);
+                    //gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    //gmAllCard.transform.DOMove(communityCardLayer2.transform.position, 0.7f);
                 }
                 break;
 
@@ -2641,6 +2642,7 @@ public class ClubInGameManager : MonoBehaviour
         {
             Destroy(animationLayer.GetChild(i).gameObject);
         }
+        ClubInGameUIManager.instance.ResetSuggetionAction();
     }
 
     private void ClearPotAmount()

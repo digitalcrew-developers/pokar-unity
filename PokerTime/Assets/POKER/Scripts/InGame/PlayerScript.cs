@@ -792,16 +792,26 @@ public class PlayerScript : MonoBehaviour
                         }
                         else
                         {
+                            Debug.Log("Cards 3333....." + isItMe + ", " + gameObject.name);
                             cardsImage[i].GetComponent<RectTransform>().sizeDelta = new Vector3(58f, 83f);
+                            
                             if (i == 0)
                             {
-                                cardsImage[i].transform.localPosition = new Vector3(-11, 0);
+                                if (InGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(-11, 0);
+                                else if (ClubInGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(-22, 0);
+
                                 cardsImage[i].transform.localScale = new Vector3(0.87f, 0.87f);
                                 cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                             }
                             if (i == 1)
                             {
-                                cardsImage[i].transform.localPosition = new Vector3(11, 0);
+                                if (InGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(11, 0);
+                                else if (ClubInGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(0, 0);
+                                
                                 cardsImage[i].transform.localScale = new Vector3(0.87f, 0.87f);
                                 cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                             }

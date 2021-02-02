@@ -1201,7 +1201,10 @@ public class ClubSocketController : MonoBehaviour
         AskMultiRunAction requestData = new AskMultiRunAction();
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.tableId = TABLE_ID;
-        requestData.action = true;
+        if (value == 0)
+            requestData.action = false;
+        else
+            requestData.action = true;
         requestData.runIt = value;
 
         string requestStringData = JsonMapper.ToJson(requestData);
@@ -1445,7 +1448,7 @@ public class ClubSocketController : MonoBehaviour
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
-
+        Debug.Log("<color=magenta>Fold Request </color>" + requestStringData);
         SocketRequest request = new SocketRequest();
         request.emitEvent = "foldCards";
         request.plainDataToBeSend = null;
