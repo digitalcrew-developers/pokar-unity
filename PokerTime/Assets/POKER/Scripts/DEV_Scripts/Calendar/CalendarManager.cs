@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,20 +13,15 @@ public class CalendarManager : MonoBehaviour
 	[SerializeField]
 	private HeaderManager headerManager;
 
-	//[SerializeField]
+	[Header("Selectable Days")]
+	public int daysToSelect;
+
+	[Space(15)]
+
 	public BodyManager bodyManager4;
-	
-	//[SerializeField]
 	public BodyManager bodyManager3;
-
-	//[SerializeField]
 	public BodyManager bodyManager2;
-
-	//[SerializeField]
 	public BodyManager bodyManager1;
-
-	[SerializeField]
-	//private TailManager tailManager;
 
 	public Text month4;
 	public Text month3;
@@ -33,6 +30,13 @@ public class CalendarManager : MonoBehaviour
 
 	private DateTime targetDateTime;
 	private CultureInfo cultureInfo;
+
+	public static int previousClickIndex = 0;
+	public static int nextClickIndex = 0;
+
+	public string startDate, endDate;
+
+	public Color selectedDateColor;
 
 	#endregion
 
@@ -50,24 +54,26 @@ public class CalendarManager : MonoBehaviour
 
     private void Awake()
     {
-		instance = this;    
-    }
+		instance = this;
 
-    private void Start()
+		ColorUtility.TryParseHtmlString("#004D1F", out selectedDateColor);
+
+		startDate = endDate = "";
+	}
+
+    private void OnEnable()
 	{
+		if (BodyManager.totalCells == null)
+			BodyManager.totalCells = new List<GameObject>();
+
+		foreach (var c in BodyManager.totalCells)
+			Destroy(c);
+
+		BodyManager.totalCells.Clear();
+
 		targetDateTime = DateTime.Now;
 		cultureInfo = new CultureInfo("en-US");
 		//Refresh(targetDateTime.Year, targetDateTime.Month);
-
-		//targetDateTime = targetDateTime.AddMonths(-3);
-		//Debug.Log("Month 4: " + targetDateTime.Month + " And Year:" + targetDateTime.Year);
-		//targetDateTime = targetDateTime.AddMonths(1);
-		//Debug.Log("Month 3: " + targetDateTime.Month + " And Year:" + targetDateTime.Year);
-		//targetDateTime = targetDateTime.AddMonths(1);
-		//Debug.Log("Month 2: " + targetDateTime.Month + " And Year:" + targetDateTime.Year);
-		//targetDateTime = targetDateTime.AddMonths(1);
-		//Debug.Log("Month 1: " + targetDateTime.Month + " And Year:" + targetDateTime.Year);
-
 
         targetDateTime = targetDateTime.AddMonths(-3);
         month4.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
@@ -84,24 +90,6 @@ public class CalendarManager : MonoBehaviour
         targetDateTime = targetDateTime.AddMonths(1);
         month1.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
         bodyManager1.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
-
-
-        //OLD CODE
-
-        //month1.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
-        //bodyManager1.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
-
-        //targetDateTime = targetDateTime.AddMonths(-1);
-        //month2.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
-        //bodyManager2.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
-
-        //targetDateTime = targetDateTime.AddMonths(-1);
-        //month3.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
-        //bodyManager3.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
-
-        //targetDateTime = targetDateTime.AddMonths(-1);
-        //month4.text = ((targetDateTime.Month.ToString().Length == 1) ? "0" + targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString() : targetDateTime.Month.ToString() + "/" + targetDateTime.Year.ToString());
-        //bodyManager4.Initialize(targetDateTime.Year, targetDateTime.Month, OnButtonClicked);
     }
 
 	#endregion
@@ -120,5 +108,21 @@ public class CalendarManager : MonoBehaviour
 		//Debug.Log("You Clicked On Date" + param.);
 	}
 
+	public void OnClickConfirmButton(TMP_Text dateText)
+    {
+		if (endDate.Equals(""))
+			dateText.text = startDate + " - " + startDate;
+			//ClubExportDataManager.instance.dateText.text = startDate + " - " + startDate;
+		else
+			dateText.text = startDate + " - " + endDate;
+			//ClubExportDataManager.instance.dateText.text = startDate + " - " + endDate;
+
+		startDate = endDate = "";
+    }
+
+	public void OnClickOnClose()
+    {
+
+    }
 	#endregion
 }
