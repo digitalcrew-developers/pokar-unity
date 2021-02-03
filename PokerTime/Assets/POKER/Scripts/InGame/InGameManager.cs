@@ -961,11 +961,9 @@ public class InGameManager : MonoBehaviour
                 text.transform.parent.gameObject.SetActive(false);
                 GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
                 gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
-                //Debug.LogError(onlinePlayersScript[i].localBg().transform.localPosition+", " +onlinePlayersScript[i].localBg().transform.position+ " Pos..... " + text.GetComponent<RectTransform>().anchoredPosition+", "+ text.transform.position+", "+ text.transform.localPosition);
                 gm.transform.position = onlinePlayersScript[i].localBg().transform.position;
                 gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
                 gm.transform.DOMove(Pot.transform.position, 0.3f).OnComplete(() => { Destroy(gm); });
-                //Destroy(gm,GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
             }
 
             onlinePlayersScript[i].UpdateRoundNo(GetMatchRound());
@@ -1644,7 +1642,7 @@ public class InGameManager : MonoBehaviour
             isCardValueSet = true;
 
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
-            Debug.Log(userId+" " + PlayerManager.instance.GetPlayerGameData().userId);
+            Debug.Log(userId + " " + PlayerManager.instance.GetPlayerGameData().userId);
             if (betAmount > 0 /*&& userId != PlayerManager.instance.GetPlayerGameData().userId*/)
             {
                 PlayerScript playerObject = GetPlayerObject(userId);
