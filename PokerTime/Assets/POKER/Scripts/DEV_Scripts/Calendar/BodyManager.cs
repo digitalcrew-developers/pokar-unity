@@ -41,10 +41,6 @@ public class BodyManager : MonoBehaviour
 		if (cells == null)
 			cells = new List<GameObject>();
 
-		//if (totalCells == null)
-		//	totalCells = new List<GameObject>();
-
-
 		foreach (var c in cells)
 			Destroy(c);
 
@@ -87,8 +83,8 @@ public class BodyManager : MonoBehaviour
 
 					CalendarManager.instance.endDate = "";
 
-					buttonManager.label.color = Color.green;
-					buttonManager.GetComponent<Image>().color = CalendarManager.instance.selectedDateColor;
+                    buttonManager.label.color = CalendarManager.instance.selectedDateTextColor;
+                    buttonManager.GetComponent<Image>().color = CalendarManager.instance.selectedDateBGColor;
                 }
 			}
 		}
