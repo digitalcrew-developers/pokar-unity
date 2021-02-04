@@ -72,6 +72,9 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     public GameObject careerListPrefab, careerDayListContainer, careerMonthListContainer, careerYearListContainer;
     GameObject listObj; // Add By GP
 
+    [Space(10)]
+    public Transform dayContainer, monthContainer, yearContainer;
+
     public void Awake()
     {
         instance = this;
@@ -120,16 +123,20 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             case "YearScroll":
                 //changeIndexTxt.text = "202" + _currentPage ;
                 changeIndexTxt.text = CareerManager.instance.currentYear.ToString();
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
                 break;
             case "MonthScroll":
                 //changeIndexTxt.text = "2020 - "+_currentPage + 1 ;
                 changeIndexTxt.text = CareerManager.instance.currentYear + "-" + ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString());
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
                 break;
             case "DayScroll":
                 //changeIndexTxt.text = _currentPage + 1 + "/25";
                 //Debug.Log("Setting New Date..");
                 changeIndexTxt.text = ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) + "/" +
                                       ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
+                //Debug.Log("Current Page " + _currentPage);
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
                 break;
         }
         //GameObject g = GameObject.Find("Date");//Add By Gp
@@ -174,13 +181,19 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                     Destroy(careerDayListContainer.transform.GetChild(i).gameObject);
                 }
 
-                    listObj = Instantiate(careerListPrefab, careerDayListContainer.transform);
-                    listObj.name = "Date";
-                    listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
-                    listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
-                    listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
+                listObj = Instantiate(careerListPrefab, careerDayListContainer.transform);
+                listObj.name = "Date";
+                listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
+                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
+                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
 
-                    //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+                GraphManager.instance.valueList.Clear();
+
+                GraphManager.instance.valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
+                GraphManager.instance.valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
+
+                GraphManager.instance.ShowGraph(GraphManager.instance.valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
+                //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
                 //}
                 //else
                 //{

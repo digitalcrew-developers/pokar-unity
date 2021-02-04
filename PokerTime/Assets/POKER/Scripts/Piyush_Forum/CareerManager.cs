@@ -12,7 +12,7 @@ public class CareerManager : MonoBehaviour
     public int selectedIndex_CareerMenuScreen = 0;
 
     //DEV_CODE
-    public GameObject requestObj, dataObj;
+    public GameObject requestObj, dataObj, graphObj;
     public List<RequestData> requestDataList = new List<RequestData>();
     public static int requestCounter = -1;
 

@@ -62,7 +62,11 @@ public class ClubTableController : MonoBehaviour
             instance = this;
         }
 
-        popUpText.gameObject.SetActive(false);
+        popUpText.gameObject.SetActive(false);        
+    }
+
+    private void OnEnable()
+    {
         RequestTemplateData(false);
     }
 
