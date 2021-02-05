@@ -12,6 +12,9 @@ using UnityEngine.UI.Extensions;
 public class ClubTableController : MonoBehaviour
 {
     public static ClubTableController instance;
+
+    public static bool isEditingTemplate = false;
+
     public Text popUpText;
 
     [Header ("Table Template")]
@@ -126,8 +129,20 @@ public class ClubTableController : MonoBehaviour
         RingGame_NLHPLO5ModePLO.onClick.AddListener(() => OpenScreen("NLHPLO5"));
     }
 
+    public void OnCloseCreateTemplatePanel()
+    {
+        isEditingTemplate = false;
+        createTablePanel.SetActive(false);
+    }
+
     private void OpenScreen(string screenName)
     {
+        if(isEditingTemplate)
+        {
+            StartCoroutine(ShowPopUp("Please exit table template settings \n page to change game type", 1.29f));
+            return;
+        }
+
         Color c = new Color(1, 1, 1, 1);
         Color c1 = new Color(1, 1, 1, 0);
 
@@ -299,10 +314,15 @@ public class ClubTableController : MonoBehaviour
 
         for (int i = 0; i < data["response"].Count; i++)
         {
+            if (data["response"][i]["status"].ToString().Equals("Published"))
+            {
+                ClubDetailsUIManager.instance.LoadAllTemplates(data, "ALL");
+            }
+
             GameObject obj = Instantiate(templateObj, container) as GameObject;
 
             obj.GetComponent<ClubTemplateManager>().tableId = data["response"][i]["tableId"].ToString();
-            
+
             if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
                 obj.GetComponent<ClubTemplateManager>().templateName.text = data["response"][i]["templateName"].ToString();
             else
@@ -334,15 +354,15 @@ public class ClubTableController : MonoBehaviour
                 obj.GetComponent<ClubTemplateManager>().playerText.text = data["response"][i]["settingData"]["memberCount"].ToString();
                 obj.GetComponent<ClubTemplateManager>().timeText.text = data["response"][i]["settingData"]["hours"].ToString();
             }
-            
+
             obj.GetComponent<ClubTemplateManager>().deleteButton.onClick.AddListener(() => OnClickOnDeleteButton(obj.GetComponent<ClubTemplateManager>().tableId));
-            obj.GetComponent<ClubTemplateManager>().editButton.onClick.AddListener(() => OnClickOnEditButton());
+            obj.GetComponent<ClubTemplateManager>().editButton.onClick.AddListener(() => OnClickOnEditButton(obj.GetComponent<ClubTemplateManager>().tableId, data));            
         }      
     }
 
     private void OnClickOnDeleteButton(string tableId)
     {
-        Debug.Log("Table to delete: " + tableId);
+        //Debug.Log("Table to delete: " + tableId);
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId().ToString() + "\"," +
                                "\"status\":\"" + "Deleted" + "\"," +
                                "\"tableId\":\"" + tableId + "\"}";
@@ -350,9 +370,118 @@ public class ClubTableController : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
     }
 
-    private void OnClickOnEditButton()
+    private void OnClickOnEditButton(string tableId, JsonData data)
     {
+        transform.Find("TableTemplate").gameObject.SetActive(false);
+        for (int i = 0; i < data["response"].Count; i++)
+        {
+            if(data["response"][i]["tableId"].ToString().Equals(tableId))
+            {
+                Debug.Log("Response Table ID: " + data["response"][i]["tableId"].ToString());
+                Debug.Log("Current Table ID: " + tableId);
+                
+                Debug.Log("Game Type: " + data["response"][i]["gameType"].ToString());
 
+                switch (data["response"][i]["gameType"].ToString())
+                {
+                    case "NLH":
+                        {
+                            if(data["response"][i]["templateType"].ToString().Equals("Ring Game") && data["response"][i]["settingData"]["templateSubType"].ToString().Equals("Regular Mode"))
+                            {
+                                createTablePanel.SetActive(true);
+                                createTablePanel.transform.Find("NLH").gameObject.SetActive(true);
+                                createTablePanel.transform.Find("PLO").gameObject.SetActive(false);
+                                createTablePanel.transform.Find("MIXED").gameObject.SetActive(false);
+                                //RingGamePanel_NLH.SetActive(true);
+                                RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode/HoursData/SaveBtn").gameObject.SetActive(false);
+                                RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode/HoursData/CreateBtn").gameObject.SetActive(false);
+                                RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode/HoursData/EditBtn").gameObject.SetActive(true);
+                                OpenScreen("Ring_NLH");
+                                OpenScreen("NLH_RegularMode");
+                            }
+                            else if (data["response"][i]["templateType"].ToString().Equals("Ring Game") && data["response"][i]["settingData"]["templateSubType"].ToString().Equals("6+"))
+                            {
+                                createTablePanel.SetActive(true);
+                                createTablePanel.transform.Find("NLH").gameObject.SetActive(true);
+                                createTablePanel.transform.Find("PLO").gameObject.SetActive(false);
+                                createTablePanel.transform.Find("MIXED").gameObject.SetActive(false);
+                                RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus/HoursData/SaveBtn").gameObject.SetActive(false);
+                                RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus/HoursData/CreateBtn").gameObject.SetActive(false);
+                                RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus/HoursData/EditBtn").gameObject.SetActive(true);
+                                //RingGamePanel_NLH.SetActive(true);
+                                OpenScreen("Ring_NLH");
+                                OpenScreen("NLH_6Plus");
+                            }
+                        }
+                        break;
+
+                    case "PLO":
+                        {
+                            if (data["response"][i]["templateType"].ToString().Equals("Ring Game") && data["response"][i]["settingData"]["templateSubType"].ToString().Equals("PLO4"))
+                            {
+                                createTablePanel.SetActive(true);
+                                createTablePanel.transform.Find("NLH").gameObject.SetActive(false);
+                                createTablePanel.transform.Find("PLO").gameObject.SetActive(true);
+                                createTablePanel.transform.Find("MIXED").gameObject.SetActive(false);
+                                //RingGamePanel_PLO.SetActive(true);
+                                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO4/HoursData/SaveBtn").gameObject.SetActive(false);
+                                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO4/HoursData/CreateBtn").gameObject.SetActive(false);
+                                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO4/HoursData/EditBtn").gameObject.SetActive(true);
+                                OpenScreen("Ring_PLO");
+                                OpenScreen("PLO4Mode");
+                            }
+                            else if (data["response"][i]["templateType"].ToString().Equals("Ring Game") && data["response"][i]["settingData"]["templateSubType"].ToString().Equals("PLO5"))
+                            {
+                                createTablePanel.SetActive(true);
+                                createTablePanel.transform.Find("NLH").gameObject.SetActive(false);
+                                createTablePanel.transform.Find("PLO").gameObject.SetActive(true);
+                                createTablePanel.transform.Find("MIXED").gameObject.SetActive(false);
+                                //RingGamePanel_PLO.SetActive(true);
+                                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO5/HoursData/SaveBtn").gameObject.SetActive(false);
+                                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO5/HoursData/CreateBtn").gameObject.SetActive(false);
+                                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO5/HoursData/EditBtn").gameObject.SetActive(true);
+                                OpenScreen("Ring_PLO");
+                                OpenScreen("PLO5Mode");
+                            }
+                        }
+                        break;
+
+                    case "MIXED":
+                        {
+                            if (data["response"][i]["templateType"].ToString().Equals("Ring Game") && data["response"][i]["settingData"]["templateSubType"].ToString().Equals("NLH&PLO4"))
+                            {
+                                createTablePanel.SetActive(true);
+                                createTablePanel.transform.Find("NLH").gameObject.SetActive(false);
+                                createTablePanel.transform.Find("PLO").gameObject.SetActive(false);
+                                createTablePanel.transform.Find("MIXED").gameObject.SetActive(true);
+                                //RingGamePanel_NLH.SetActive(true);
+                                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO4/HoursData/SaveBtn").gameObject.SetActive(false);
+                                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO4/HoursData/CreateBtn").gameObject.SetActive(false);
+                                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO4/HoursData/EditBtn").gameObject.SetActive(true);
+                                OpenScreen("Ring_MIXED");
+                                OpenScreen("NLHPLO4");
+                            }
+                            else if (data["response"][i]["templateType"].ToString().Equals("Ring Game") && data["response"][i]["settingData"]["templateSubType"].ToString().Equals("NLH&PLO5"))
+                            {
+                                createTablePanel.SetActive(true);
+                                createTablePanel.transform.Find("NLH").gameObject.SetActive(false);
+                                createTablePanel.transform.Find("PLO").gameObject.SetActive(false);
+                                createTablePanel.transform.Find("MIXED").gameObject.SetActive(true);
+                                //RingGamePanel_NLH.SetActive(true);
+                                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO5/HoursData/SaveBtn").gameObject.SetActive(false);
+                                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO5/HoursData/CreateBtn").gameObject.SetActive(false);
+                                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO5/HoursData/EditBtn").gameObject.SetActive(true);
+                                OpenScreen("Ring_MIXED");
+                                OpenScreen("NLHPLO5");
+                            }
+                        }
+                        break;
+                }
+                isEditingTemplate = true;
+                Debug.Log("Template Type: " + data["response"][i]["templateType"].ToString());
+                Debug.Log("Template Sub Type: " + data["response"][i]["settingData"]["templateSubType"].ToString());
+            }
+        }
     }
 
     public void OnClickSelectAllToggle()
@@ -460,6 +589,7 @@ public class ClubTableController : MonoBehaviour
                             noTemplatePanel.SetActive(false);
                             availableTemplatePanel.SetActive(true);
                             createBtn.interactable = true;
+
                             LoadAllTemplates(data);
                         }
                     }
@@ -488,8 +618,10 @@ public class ClubTableController : MonoBehaviour
                         }
                         else if (data["message"].ToString().Equals("Template Published"))
                         {
-                            //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
-                            Debug.Log("Tamplate Published Successfully");                            
+                            StartCoroutine(ShowPopUp("Template Published ", 1.25f));
+                            //Debug.Log("Tamplate Published Successfully");
+                            //RequestTemplateData(true);
+                            ClubDetailsUIManager.instance.GetClubTemplates();
                         }
                     }
                     else

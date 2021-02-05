@@ -1848,7 +1848,7 @@ public class InGameManager : MonoBehaviour
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
-
+                        Debug.LogError("******************************* total coins" + playerData.playerData.balance);
                         playerData.playerType = data[0][i]["playerType"].ToString();
 
                         playerData.isTurn = data[0][i]["isTurn"].Equals(true);
