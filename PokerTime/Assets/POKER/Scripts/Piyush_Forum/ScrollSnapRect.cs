@@ -75,6 +75,8 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     [Space(10)]
     public Transform dayContainer, monthContainer, yearContainer;
 
+    private Transform graphData;
+
     public void Awake()
     {
         instance = this;
@@ -187,12 +189,13 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                 listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
                 listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
 
-                GraphManager.instance.valueList.Clear();
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
 
-                GraphManager.instance.valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
-                GraphManager.instance.valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
 
-                GraphManager.instance.ShowGraph(GraphManager.instance.valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
+
                 //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
                 //}
                 //else
@@ -213,6 +216,13 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                 listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
                 listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
 
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
+
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
+
                 //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
             }
             else if (containerScroll_Name.Equals("YearScroll"))
@@ -227,6 +237,13 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                 listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
                 listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
                 listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
+
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
+
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
 
                 //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
             }
