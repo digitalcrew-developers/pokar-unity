@@ -1414,7 +1414,7 @@ public class ClubInGameManager : MonoBehaviour
     public IEnumerator ShowMultiRunCards(string cardData, Vector3 pos)
     {
         JsonData data = JsonMapper.ToObject(cardData);
-        Debug.Log(data[0].Count + " Multi Cards " + data.Count);
+        
         openCards = new CardData[data[0].Count];
 
         for (int i = 0; i < data[0].Count; i++)
@@ -1429,7 +1429,8 @@ public class ClubInGameManager : MonoBehaviour
             }
             //openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
         }
-        switch (data[0].Count)
+        Debug.Log("Cards = " + openCards.Length);
+        switch (openCards.Length)
         {
             case 3:
                 {
@@ -1579,6 +1580,89 @@ public class ClubInGameManager : MonoBehaviour
 
                     //gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
                     //gmAllCard.transform.DOMove(communityCardLayer2.transform.position, 0.7f);
+                }
+                break;
+
+            case 1:
+                {
+                    communityCards[4].gameObject.SetActive(false);
+                    GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        gmAllCard.transform.GetChild(i).gameObject.SetActive(false);
+                    }
+                    gmAllCard.transform.GetChild(4).GetComponent<Image>().sprite = communityCards[4].sprite;
+                    gmAllCard.transform.GetChild(4).gameObject.SetActive(true);
+                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    gmAllCard.transform.DOMove(pos, 0.5f).OnComplete(() => { gmAllCard.transform.DOScale(0.8f, 0.1f); });
+                    yield return new WaitForSeconds(1f);
+
+                    SoundManager.instance.PlaySound(SoundType.CardMove);
+
+                    //for (int i = 3; i < 4; i++)
+                    {
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.transform.localScale = communityCards[4].transform.localScale;
+                        gm.GetComponent<Image>().sprite = openCards[0].cardsSprite;
+                        gm.transform.Rotate(0, -90, 0);
+                        gm.transform.position = communityCards[3].transform.position;
+
+                        gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                        gm.transform.DOMove(communityCards[4].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                    }
+
+                    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+                    communityCards[4].sprite = openCards[0].cardsSprite;
+                    communityCards[4].gameObject.SetActive(true);
+                }
+                break;
+            case 2:
+                {
+                    communityCards[3].gameObject.SetActive(false);
+                    communityCards[4].gameObject.SetActive(false);
+                    GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        gmAllCard.transform.GetChild(i).gameObject.SetActive(false);
+                    }
+                    gmAllCard.transform.GetChild(3).GetComponent<Image>().sprite = communityCards[3].sprite;
+                    gmAllCard.transform.GetChild(3).gameObject.SetActive(true);
+                    gmAllCard.transform.GetChild(4).GetComponent<Image>().sprite = communityCards[4].sprite;
+                    gmAllCard.transform.GetChild(4).gameObject.SetActive(true);
+                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    gmAllCard.transform.DOMove(pos, 0.5f).OnComplete(() => { gmAllCard.transform.DOScale(0.8f, 0.1f); });
+                    yield return new WaitForSeconds(1f);
+
+                    SoundManager.instance.PlaySound(SoundType.CardMove);
+
+                    for (int i = 3; i < 5; i++)
+                    {
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                        gm.transform.position = communityCards[i].transform.position;
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.transform.localScale = communityCards[i].transform.localScale;
+                        gm.GetComponent<Image>().sprite = openCards[i-3].cardsSprite;
+                        gm.transform.Rotate(0, -90, 0);                        
+
+                        gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                        gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                    }
+
+                    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+                    communityCards[3].sprite = openCards[0].cardsSprite;
+                    communityCards[3].gameObject.SetActive(true);
+                    communityCards[4].sprite = openCards[1].cardsSprite;
+                    communityCards[4].gameObject.SetActive(true);
                 }
                 break;
 

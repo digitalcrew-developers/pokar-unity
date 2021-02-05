@@ -455,6 +455,7 @@ public class HandSummary
     public string discription;
     public List<string> possibleCards = new List<string>();
     public List<string> cards = new List<string>();
+    public List<string> winningCards = new List<string>();
     public List<string> mergeCards = new List<string>();
     public string winBy;
     public string handStrength;
