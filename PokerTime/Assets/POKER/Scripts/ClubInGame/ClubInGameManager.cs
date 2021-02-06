@@ -268,8 +268,8 @@ public class ClubInGameManager : MonoBehaviour
     }
 
 
-
-    private bool DontShowCommunityCardAnimation = false;    //DEV_CODE Added this line as done inside InGameManager script
+    [HideInInspector]
+    public bool DontShowCommunityCardAnimation = false;    //DEV_CODE Added this line as done inside InGameManager script
     public void OnRabbitDataFound(string responseText)
     {
         //Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
@@ -1637,32 +1637,78 @@ public class ClubInGameManager : MonoBehaviour
                     gmAllCard.transform.GetChild(4).gameObject.SetActive(true);
                     gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
                     gmAllCard.transform.DOMove(pos, 0.5f).OnComplete(() => { gmAllCard.transform.DOScale(0.8f, 0.1f); });
-                    yield return new WaitForSeconds(1f);
-
+                    yield return new WaitForSeconds(0.3f);
                     SoundManager.instance.PlaySound(SoundType.CardMove);
 
+                    GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                    gm.transform.position = communityCards[3].transform.position;
+                    gm.transform.localScale = communityCards[0].transform.localScale;
+                    gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                    gm.GetComponent<Image>().sprite = openCards[0].cardsSprite;
+                    gm.transform.Rotate(0, -90, 0);
+                    gm.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.2f).OnComplete(() => 
+                    {
+                        Debug.Log("One card....");
+                        //yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.8f);
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                        communityCards[3].sprite = openCards[0].cardsSprite;
+                        communityCards[3].gameObject.SetActive(true);
+
+                        GameObject gm2 = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                        gm2.transform.position = communityCards[4].transform.position;
+                        gm2.transform.localScale = communityCards[0].transform.localScale;
+                        gm2.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm2.GetComponent<Image>().sprite = openCards[1].cardsSprite;
+                        gm2.transform.Rotate(0, -90, 0);
+                        gm2.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.1f).OnComplete(() => 
+                        {
+                            Debug.Log("Second card....");
+                            //yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.8f);
+                            //Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                            //communityCards[3].sprite = openCards[0].cardsSprite;
+                            //communityCards[3].gameObject.SetActive(true);
+                            Destroy(gm2, GameConstants.CARD_ANIMATION_DURATION * 1);
+                            communityCards[4].sprite = openCards[1].cardsSprite;
+                            communityCards[4].gameObject.SetActive(true);
+                            StartCoroutine(CardsAnim(gm2));
+                        });                        
+                    });
+                    
+
+                    /*yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
                     for (int i = 3; i < 5; i++)
                     {
+                        if (openCards[i - 3].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i - 3].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
+                    }*/
+
+                    /*for (int i = 3; i < 5; i++)
+                    {
+                        Debug.Log("Generating cards....." + System.DateTime.Now);
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-                        gm.transform.position = communityCards[i].transform.position;
+                        gm.transform.localScale = communityCards[0].transform.localScale;
                         gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
-                        gm.transform.localScale = communityCards[i].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i-3].cardsSprite;
-                        gm.transform.Rotate(0, -90, 0);                        
+                        gm.transform.Rotate(0, -90, 0);
+                        gm.transform.position = communityCards[i].transform.position;
 
                         gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
                         gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+                        //gm.transform.DOScale(communityCards[i].transform.localScale, GameConstants.CARD_ANIMATION_DURATION).SetEase(Ease.OutBack);
 
-                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 1.5f);
 
-                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 2);
                     }
-
                     yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
-                    communityCards[3].sprite = openCards[0].cardsSprite;
-                    communityCards[3].gameObject.SetActive(true);
-                    communityCards[4].sprite = openCards[1].cardsSprite;
-                    communityCards[4].gameObject.SetActive(true);
+
+                    for (int i = 3; i < 5; i++)
+                    {
+                        if (openCards[i-3].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i-3].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
+                    }*/
                 }
                 break;
 
@@ -1707,6 +1753,20 @@ public class ClubInGameManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    IEnumerator CardsAnim(GameObject g)
+    {
+        yield return new WaitForSeconds(1.9f);
+        //Destroy(g);
+        Debug.Log("Both card....");
+        for (int i = 3; i < 5; i++)
+        {
+            if (openCards[i - 3].cardIcon == CardIcon.NONE) { break; }
+            communityCards[i].sprite = openCards[i - 3].cardsSprite;
+            communityCards[i].gameObject.SetActive(true);
+        }
+
     }
 
     public void SendEmoji(string serverResponse)
