@@ -595,7 +595,10 @@ public class ClubTableController : MonoBehaviour
                     }
                     else
                     {
-                        MainMenuController.instance.ShowMessage("Unable to get room data");
+                        noTemplatePanel.gameObject.SetActive(true);
+                        availableTemplatePanel.SetActive(false);
+                        createBtn.interactable = false;
+                    //    MainMenuController.instance.ShowMessage("Unable to get room data");
                     } 
                 }
                 break;
