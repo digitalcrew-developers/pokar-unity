@@ -22,7 +22,7 @@ public class SliderManager : MonoBehaviour
     private  Slider slider;
 
     [SerializeField]
-    private int[] values;
+    public int[] values;
 
     private void Awake()
     {

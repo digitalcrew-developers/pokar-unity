@@ -349,6 +349,9 @@ public class RingGameManager : MonoBehaviour
             "\"hours\":\"" + components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2) + "\"}]}";
 
         WebServices.instance.SendRequest(RequestType.CreateTemplate, requestData, true, OnServerResponseFound);
+
+        components[28].transform.parent.Find("SaveBtn").GetComponent<Button>().interactable = false;
+        components[28].transform.parent.Find("CreateBtn").GetComponent<Button>().interactable = false;
     }
 
     public void OnClickOnCreate()
@@ -359,6 +362,8 @@ public class RingGameManager : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        components[28].transform.parent.Find("SaveBtn").GetComponent<Button>().interactable = true;
+        components[28].transform.parent.Find("CreateBtn").GetComponent<Button>().interactable = true;
 
         //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
@@ -434,6 +439,97 @@ public class RingGameManager : MonoBehaviour
                 Debug.LogError("Unhandled requestType found in  MenuHandller = " + requestType);
 #endif
                 break;
+        }
+    }
+
+    public void SetDataForEdit(JsonData data, int index)
+    {
+        for (int i = 0; i < data["response"].Count; i++)
+        {
+            if (i == index)
+            {
+                components[0].transform.GetComponent<TMP_InputField>().text = data["response"][i]["templateName"].ToString();
+                components[1].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["memberCount"].ToString();
+                components[2].transform.Find(data["response"][i]["settingData"]["actionTime"].ToString()).GetComponent<Toggle>().isOn = true;
+                components[3].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["exclusiveTable"].ToString().Equals("On") ? true : false);
+                components[4].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["blinds"].ToString();
+
+                //Debug.Log("Blinds Value:" + components[4].transform.GetComponent<TMP_Text>().text);
+
+                for (int j = 0; j < transform.Find("BlindsData").GetComponent<SliderChange>().sliderValues.Length; j++)
+                {
+                    if (transform.Find("BlindsData").GetComponent<SliderChange>().sliderValues[j].Equals(data["response"][i]["settingData"]["blinds"].ToString()))
+                    {
+                        transform.Find("BlindsData/BlindsSlider").GetComponent<Slider>().value = j;
+                    }
+                }
+
+                components[5].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["ante"].ToString();
+                components[6].transform.Find(data["response"][i]["settingData"]["high_low"].ToString()).GetComponent<Toggle>().isOn = true;
+                components[7].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["buyInMin"].ToString();
+                components[8].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["buyInMax"].ToString();
+
+                //for (int j = 0; j < transform.Find("BlindsData").GetComponent<SliderChange>().sliderValues.Length; j++)
+                //{
+                //    if (transform.Find("BlindsData").GetComponent<SliderChange>().sliderValues[j].Equals(data["response"][i]["settingData"]["blinds"].ToString()))
+                //    {
+                //        transform.Find("BlindsData/BlindsSlider").GetComponent<Slider>().value = j;
+                //    }
+                //}
+
+                components[9].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["minVPIP"].ToString();
+
+                for (int j = 0; j < transform.Find("BlindsData/MinVPIP").GetComponent<SliderManager>().values.Length; j++)
+                {
+                    //Debug.Log("Value of MinVPIP: " + transform.Find("BlindsData/MinVPIP").GetComponent<SliderManager>().values[j] + " AT INDEX: " + j);
+                    if (transform.Find("BlindsData/MinVPIP").GetComponent<SliderManager>().values[j].ToString().Equals(data["response"][i]["settingData"]["minVPIP"].ToString()))
+                    {
+                        Debug.Log("Slider Value for MinVPIP " + j);
+                        transform.Find("BlindsData/MinVPIP").GetComponent<Slider>().value = j;
+                    }
+                }
+
+                components[10].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["VPIPLevel"].ToString();
+
+                for (int j = 0; j < transform.Find("BlindsData/VPIPLevel").GetComponent<SliderManager>().values.Length; j++)
+                {
+                    if (transform.Find("BlindsData/VPIPLevel").GetComponent<SliderManager>().values[j].ToString().Equals(data["response"][i]["settingData"]["VPIPLevel"].ToString()))
+                    {
+                        Debug.Log("Slider Value for VPIPLevel " + j);
+                        transform.Find("BlindsData/VPIPLevel").GetComponent<Slider>().value = j;
+                    }
+                }
+
+                components[11].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["handsThreshold"].ToString();
+
+                for (int j = 0; j < transform.Find("BlindsData/HandsThreshold/HandsThresholdSlider").GetComponent<SliderManager>().values.Length; j++)
+                {
+                    if (transform.Find("BlindsData/HandsThreshold/HandsThresholdSlider").GetComponent<SliderManager>().values[j].ToString().Equals(data["response"][i]["settingData"]["handsThreshold"].ToString()))
+                    {
+                        Debug.Log("Slider Value for HandsThreshold " + j);
+                        transform.Find("BlindsData/HandsThreshold/HandsThresholdSlider").GetComponent<Slider>().value = j;
+                    }
+                }
+
+                components[12].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoStart"].ToString().Equals("On") ? true : false);
+                components[13].transform.Find("Members/"+data["response"][i]["settingData"]["autoStartWith"].ToString()).GetComponent<Toggle>().isOn = true;
+                components[14].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoExtension"].ToString().Equals("On") ? true : false);
+                components[15].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["autoExtensionTimes"].ToString();
+                components[16].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoOpen"].ToString().Equals("On") ? true : false);
+                components[17].transform.GetComponent<Toggle>().isOn = (data["response"][i]["settingData"]["runItMulti"].ToString().Equals("Yes") ? true : false);
+                components[18].transform.GetComponent<Toggle>().isOn = (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes") ? true : false);
+                components[19].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["fee"].ToString();
+                components[20].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["cap"].ToString();
+                components[21].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["calltime"].ToString().Equals("On") ? true : false);
+                components[22].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["time"].ToString();
+                components[23].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["chipWithdrawal"].ToString().Equals("On") ? true : false);
+                components[24].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["authorizedBuyIn"].ToString().Equals("On") ? true : false);
+                components[25].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["GPSRestriction"].ToString().Equals("On") ? true : false);
+                components[26].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["IPRestriction"].ToString().Equals("On") ? true : false);
+                components[27].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["banChatting"].ToString().Equals("On") ? true : false);
+                components[28].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["hours"].ToString();
+                
+            }
         }
     }
 }
