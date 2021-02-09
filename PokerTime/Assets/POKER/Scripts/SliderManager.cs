@@ -45,7 +45,8 @@ public class SliderManager : MonoBehaviour
                 if (i == slider.value)
                 {
                     timeValues[i].color = new Color32(255, 146, 49, 255);
-                    RingGameManager.instance.components[28].transform.GetComponent<TMP_Text>().text = timeValues[i].text;
+                    if(ClubDetailsUIManager.instance != null)
+                        RingGameManager.instance.components[28].transform.GetComponent<TMP_Text>().text = timeValues[i].text;
                 }
                 else
                     timeValues[i].color = new Color32(255, 255, 255, 255);

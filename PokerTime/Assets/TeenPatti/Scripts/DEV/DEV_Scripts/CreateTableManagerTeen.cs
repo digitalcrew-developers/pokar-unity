@@ -1,15 +1,13 @@
-﻿using LitJson;
-using System;
+using LitJson;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UI.Extensions;
 
-public class RingGameManager : MonoBehaviour
+public class CreateTableManagerTeen : MonoBehaviour
 {
-    public static RingGameManager instance;
+    public static CreateTableManagerTeen instance;
 
     private int memberCount = 9;
 
@@ -24,21 +22,8 @@ public class RingGameManager : MonoBehaviour
     public Button incrementMemberCount;
     public Button decreamentMemberCount;
 
-    [Space(7)]
-    public Slider VPIPLevelSlider;
-    public GameObject callTimeTextData;
-    public GameObject banChattingDiamondObj;
-    
-    [Space(7)]
-    public List<GameObject> autoStartMemberList = new List<GameObject>();
-
-    [Space(7)]
-    public List<GameObject> innerComponents = new List<GameObject>();
-
     [HideInInspector]
     public bool isPublishTemplateWithCreate = false;
-
-    public static int tableId = 0;
 
     private void Awake()
     {
@@ -61,64 +46,64 @@ public class RingGameManager : MonoBehaviour
             decreamentMemberCount.interactable = false;
 
         //Members Toggle list Enable/Disable
-        if (components[12].transform.GetComponent<ToggleController>().isOn)
-        {
-            innerComponents[0].SetActive(true);
-            innerComponents[0].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608.5f, 420.48f);
-        }
-        else
-        {
-            innerComponents[0].SetActive(false);
-            innerComponents[0].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608.5f, 344f);
-        }
+        //if (components[12].transform.GetComponent<ToggleController>().isOn)
+        //{
+        //    innerComponents[0].SetActive(true);
+        //    innerComponents[0].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608.5f, 420.48f);
+        //}
+        //else
+        //{
+        //    innerComponents[0].SetActive(false);
+        //    innerComponents[0].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608.5f, 344f);
+        //}
 
         //Hand Threshold Slider Enable/ Disable
-        if (VPIPLevelSlider.value > 0)
-        {
-            innerComponents[1].SetActive(true);
-            innerComponents[1].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 520);
-        }
-        else
-        {
-            innerComponents[1].SetActive(false);
-            innerComponents[1].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 414);
-        }
+        //if (VPIPLevelSlider.value > 0)
+        //{
+        //    innerComponents[1].SetActive(true);
+        //    innerComponents[1].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 520);
+        //}
+        //else
+        //{
+        //    innerComponents[1].SetActive(false);
+        //    innerComponents[1].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 414);
+        //}
 
         //Auto Extension Time Slider Enable/Disable
-        if (components[14].transform.GetComponent<ToggleController>().isOn)
-        {
-            innerComponents[2].transform.GetComponent<Slider>().interactable = true;
-        }
-        else
-        {
-            innerComponents[2].transform.GetComponent<Slider>().interactable = false;
-        }
+        //if (components[14].transform.GetComponent<ToggleController>().isOn)
+        //{
+        //    innerComponents[2].transform.GetComponent<Slider>().interactable = true;
+        //}
+        //else
+        //{
+        //    innerComponents[2].transform.GetComponent<Slider>().interactable = false;
+        //}
 
         //Call Time Slider Enable/Disable
-        if (components[21].transform.GetComponent<ToggleController>().isOn)
-        {
-            callTimeTextData.SetActive(true);
-            innerComponents[3].SetActive(true);
-            innerComponents[3].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 135);
-            //callTime.interactable = true;
-        }
-        else
-        {
-            callTimeTextData.SetActive(false);
-            //callTime.interactable = false;
-            innerComponents[3].gameObject.SetActive(false);
-            innerComponents[3].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 75);
-        }
+        //if (components[21].transform.GetComponent<ToggleController>().isOn)
+        //{
+        //    callTimeTextData.SetActive(true);
+        //    innerComponents[3].SetActive(true);
+        //    innerComponents[3].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 135);
+        //    //callTime.interactable = true;
+        //}
+        //else
+        //{
+        //    callTimeTextData.SetActive(false);
+        //    //callTime.interactable = false;
+        //    innerComponents[3].gameObject.SetActive(false);
+        //    innerComponents[3].transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(608, 75);
+        //}
 
         //Ban Chatting Diamond Prefab Enable
-        if (components[27].transform.GetComponent<ToggleController>().isOn)
-        {
-            innerComponents[4].SetActive(true);
-        }
-        else
-        {
-            innerComponents[4].SetActive(false);
-        }
+        //if (components[27].transform.GetComponent<ToggleController>().isOn)
+        //{
+        //    innerComponents[4].SetActive(true);
+        //}
+        //else
+        //{
+        //    innerComponents[4].SetActive(false);
+        //}
     }
 
     public void OnClickIncreaseMemberCount()
@@ -127,32 +112,32 @@ public class RingGameManager : MonoBehaviour
         {
             memberCount++;
             components[1].transform.GetComponent<TMP_Text>().text = memberCount.ToString();
-        }        
-
-        switch (memberCount)
-        {
-            case 3:
-                {
-                    autoStartMemberList[0].SetActive(true);
-                }
-                break;
-            case 4:
-                {
-                    for (int i = 0; i < 2; i++)
-                    {
-                        autoStartMemberList[i].SetActive(true);
-                    }
-                }
-                break;
-            case 5:
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                       autoStartMemberList[i].SetActive(true);
-                    }
-                }
-                break;
         }
+
+        //switch (memberCount)
+        //{
+        //    case 3:
+        //        {
+        //            autoStartMemberList[0].SetActive(true);
+        //        }
+        //        break;
+        //    case 4:
+        //        {
+        //            for (int i = 0; i < 2; i++)
+        //            {
+        //                autoStartMemberList[i].SetActive(true);
+        //            }
+        //        }
+        //        break;
+        //    case 5:
+        //        {
+        //            for (int i = 0; i < 3; i++)
+        //            {
+        //                autoStartMemberList[i].SetActive(true);
+        //            }
+        //        }
+        //        break;
+        //}
     }
 
     public void OnClickDecreaseMemberCount()
@@ -161,74 +146,74 @@ public class RingGameManager : MonoBehaviour
         {
             memberCount--;
             components[1].transform.GetComponent<TMP_Text>().text = memberCount.ToString();
-        }       
-
-        switch (memberCount)
-        {
-            case 2:
-                {
-                    for (int i = 2; i >= 0; i--)
-                    {
-                        autoStartMemberList[i].SetActive(false);
-                    }
-                }
-                break;
-
-            case 3:
-                {
-                    for (int i = 2; i >= 1; i--)
-                    {
-                        autoStartMemberList[i].SetActive(false);
-                    }
-                }
-                break;
-            case 4:
-                {
-                    autoStartMemberList[2].SetActive(false);
-                }
-                break;
-
         }
+
+        //switch (memberCount)
+        //{
+        //    case 2:
+        //        {
+        //            for (int i = 2; i >= 0; i--)
+        //            {
+        //                autoStartMemberList[i].SetActive(false);
+        //            }
+        //        }
+        //        break;
+
+        //    case 3:
+        //        {
+        //            for (int i = 2; i >= 1; i--)
+        //            {
+        //                autoStartMemberList[i].SetActive(false);
+        //            }
+        //        }
+        //        break;
+        //    case 4:
+        //        {
+        //            autoStartMemberList[2].SetActive(false);
+        //        }
+        //        break;
+
+        //}
     }
 
 
     public void OnClickOnSave()
     {
         //ActionTime Toggle Group
-        string actionTime = "";
-        Toggle[] toggles_ActionTime = components[2].transform.GetComponentsInChildren<Toggle>();
-        foreach (var t in toggles_ActionTime)
-        {
-            if (t.isOn)
-            {
-                actionTime = t.name;
-                //Debug.Log("Toggle Name:" + actionTime);
-            }
-        }
+        //string actionTime = "";
+        //Toggle[] toggles_ActionTime = components[2].transform.GetComponentsInChildren<Toggle>();
+        //foreach (var t in toggles_ActionTime)
+        //{
+        //    if (t.isOn)
+        //    {
+        //        actionTime = t.name;
+        //        //Debug.Log("Toggle Name:" + actionTime);
+        //    }
+        //}
 
-        //Hi Lo Toggle Group
-        string hi_Lo = "";
-        Toggle[] toggles_Hi_Lo = components[6].transform.GetComponentsInChildren<Toggle>();
-        foreach (var t in toggles_Hi_Lo)
-        {
-            if (t.isOn)
-            {
-                hi_Lo = t.name;
-                //Debug.Log("Toggle Name:" + hi_Lo);
-            }
-        }
+        ////Hi Lo Toggle Group
+        //string hi_Lo = "";
+        //Toggle[] toggles_Hi_Lo = components[6].transform.GetComponentsInChildren<Toggle>();
+        //foreach (var t in toggles_Hi_Lo)
+        //{
+        //    if (t.isOn)
+        //    {
+        //        hi_Lo = t.name;
+        //        //Debug.Log("Toggle Name:" + hi_Lo);
+        //    }
+        //}
 
         //AutoStartWith Toggle Group
-        string autoStartWith = "";
-        Toggle[] toggles_AutoStartWith = components[13].transform.GetComponentsInChildren<Toggle>();
-        foreach (var t in toggles_AutoStartWith)
-        {
-            if (t.isOn)
-            {
-                autoStartWith = t.name;
-                //Debug.Log("Toggle Name:" + autoStartWith);
-            }
-        }
+        //string autoStartWith = "";
+        //Toggle[] toggles_AutoStartWith = components[13].transform.GetComponentsInChildren<Toggle>();
+        //foreach (var t in toggles_AutoStartWith)
+        //{
+        //    if (t.isOn)
+        //    {
+        //        autoStartWith = t.name;
+        //        //Debug.Log("Toggle Name:" + autoStartWith);
+        //    }
+        //}
 
         //Risk Management Toggle Group
         //string riskManagement = "";
@@ -242,30 +227,30 @@ public class RingGameManager : MonoBehaviour
         //    }
         //}
 
-        
-        string blindString = "";
-        string anteString = "";
-        string callTime = "";
-        string callTimeText = "";
-        string chipWithdrawal = "";
 
-        if (templateSubType.Equals("6 Plus"))
-        {
-            anteString = components[5].transform.GetComponent<TMP_Text>().text.ToString();
-            chipWithdrawal = components[23].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off";
-            
-            blindString = "";
-            callTime = "";
-            callTimeText = "";
-        }
-        else
-        {
-            anteString = "";
-            chipWithdrawal = "";
-            blindString = components[4].transform.GetComponent<TMP_Text>().text;
-            callTime = components[21].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off";
-            callTimeText = components[22].transform.GetComponent<TMP_Text>().text;            
-        }
+        //string blindString = "";
+        //string anteString = "";
+        //string callTime = "";
+        //string callTimeText = "";
+        //string chipWithdrawal = "";
+
+        //if (templateSubType.Equals("6 Plus"))
+        //{
+        //    anteString = components[5].transform.GetComponent<TMP_Text>().text.ToString();
+        //    chipWithdrawal = components[23].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off";
+
+        //    blindString = "";
+        //    callTime = "";
+        //    callTimeText = "";
+        //}
+        //else
+        //{
+        //    anteString = "";
+        //    chipWithdrawal = "";
+        //    blindString = components[4].transform.GetComponent<TMP_Text>().text;
+        //    callTime = components[21].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off";
+        //    callTimeText = components[22].transform.GetComponent<TMP_Text>().text;
+        //}
 
 
         //Debug.Log("Blind String: " + blindString);
@@ -280,7 +265,7 @@ public class RingGameManager : MonoBehaviour
         //Debug.Log("TemplateName: " + components[0].transform.GetComponent<TMP_InputField>().text.ToString());
         //Debug.Log("templateType: " + templateType);
         //Debug.Log("Status: " + "Saved");
-        Debug.Log("TableId: " + tableId);
+        //Debug.Log("TableId: " + "");
         //Debug.Log("Template Sub Type: " + templateSubType);
         //Debug.Log("Member Count: " + components[1].transform.GetComponent<TMP_Text>().text);
         //Debug.Log("ActionTime: " + actionTime);
@@ -313,47 +298,40 @@ public class RingGameManager : MonoBehaviour
 
 
         //Request Data
-        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-            "\"gameType\":\"" + gameType + "\"," +
-            "\"templateName\":\"" + components[0].transform.GetComponent<TMP_InputField>().text.ToString() + "\"," +
-            "\"templateType\":\"" + templateType + "\"," +
-            "\"status\":\"" + "Saved" + "\"," +
-            "\"tableId\":\"" + ((tableId != 0)?tableId.ToString():"") + "\"," +
-            "\"settingData\":[{\"templateSubType\":\"" + templateSubType + "\"," +
-            "\"memberCount\":\"" + components[1].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
-            "\"actionTime\":\"" + actionTime + "\"," +
-            "\"exclusiveTable\":\"" + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"blinds\":\"" + blindString + "\"," +
-            "\"ante\":\"" + anteString + "\"," +
-            "\"high_low\":\"" + hi_Lo + "\"," +
-            "\"buyInMin\":\"" + components[7].transform.GetComponent<TMP_Text>().text + "\"," +
-            "\"buyInMax\":\"" + components[8].transform.GetComponent<TMP_Text>().text + "\"," +
-            "\"minVPIP\":\"" + components[9].transform.GetComponent<TMP_Text>().text.Substring(0, components[9].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
-            "\"VPIPLevel\":\"" + components[10].transform.GetComponent<TMP_Text>().text.Substring(0, components[10].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
-            "\"handsThreshold\":\"" + components[11].transform.GetComponent<TMP_Text>().text + "\"," +
-            "\"autoStart\":\"" + (components[12].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"autoStartWith\":\"" + autoStartWith + "\"," +
-            "\"autoExtension\":\"" + (components[14].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"autoExtensionTimes\":\"" + components[15].transform.GetComponent<TMP_Text>().text + "\"," +
-            "\"autoOpen\":\"" + (components[16].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            //"\"riskManagement\":\"" + /*riskManagement*/"" + "\"," +
-            "\"runItMulti\":\"" + (components[17].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No") + "\"," +
-            "\"evChop\":\"" + (components[18].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No") + "\"," +
-            "\"fee\":\"" + components[19].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[19].transform.GetComponent<TMP_Text>().text.ToString().Length - 1) + "\"," +
-            "\"cap\":\"" + components[20].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[20].transform.GetComponent<TMP_Text>().text.ToString().Length - 3) + "\"," +
-            "\"calltime\":\"" + callTime + "\"," +
-            "\"time\":\"" + callTimeText + "\"," +
-            "\"chipWithdrawal\":\"" + chipWithdrawal + "\"," +
-            "\"authorizedBuyIn\":\"" + (components[24].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"GPSRestriction\":\"" + (components[25].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"IPRestriction\":\"" + (components[26].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"banChatting\":\"" + (components[27].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"hours\":\"" + components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2) + "\"}]}";
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+           "\"tableName\":\"" + "ak47" + "\"," +
+            "\"playerCount\":\"" + 5 + "\"," +
+            "\"gameMode\":\"" + "classic" + "\"," +
+            "\"actionTime\":\"" + 5 + "\"," +
+            //"\"bootValue\":\"" + 100 + "\"," +
+            "\"minBuyIn\":\"" + 100 + "\"," +
+            "\"fee\":\"" + 1 + "\"," +
+            "\"cap\":\"" + 1 + "\"," +
+            "\"hideRealTimeResult\":\"" + 1 + "\"," +
+            "\"gpsRestriction\":\"" + 1 + "\"," +
+            "\"ipRestriction\":\"" + 1 + "\"," +
+            "\"tableTime\":\"" + 5 + "\"," +
+            "\"entryCurrency\":\"" + 100 + "\"," +
+            "\"players\":\"" + 5 + "\"," +
+            "\"bootAmount\":\"" + 100 + "\"," +
+            "\"smallBlind\":\"" + 100 + "\"," +
+            "\"bigBlind\":\"" + 1200 + "\"," +
+            "\"minBet\":\"" + 500 + "\"," +
+            "\"maxBet\":\"" + 300 + "\"," +
+            "\"potLimit\":\"" + 2800 + "\"," +
+            "\"callTimmer\":\"" + 5 + "\"," +
+            "\"startGameTimmer\":\"" + 5 + "\"," +
+            "\"nextRoundTimmer\":\"" + 5 + "\"," +
+            "\"gameOverTimmer\":\"" + 5 + "\"," +
+            "\"gameIcon\":\"" + "test" + "\"," +
+            "\"iconBaseUrl\":\"" + "test" + "\"," +
+            "\"backgroundImg\":\"" + "test" + "\"," +
+            "\"backgroundImg\":\"" + "test" + "\"}";
 
-        WebServices.instance.SendRequest(RequestType.CreateTemplate, requestData, true, OnServerResponseFound);
+        WebServices.instance.SendRequestTP(RequestTypeTP.CreateTable, requestData, true, OnServerResponseFound);
 
-        components[28].transform.parent.Find("SaveBtn").GetComponent<Button>().interactable = false;
-        components[28].transform.parent.Find("CreateBtn").GetComponent<Button>().interactable = false;
+        //components[28].transform.parent.Find("SaveBtn").GetComponent<Button>().interactable = false;
+        //components[28].transform.parent.Find("CreateBtn").GetComponent<Button>().interactable = false;
     }
 
     public void OnClickOnCreate()
@@ -362,10 +340,10 @@ public class RingGameManager : MonoBehaviour
         OnClickOnSave();
     }
 
-    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    public void OnServerResponseFound(RequestTypeTP requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-        components[28].transform.parent.Find("SaveBtn").GetComponent<Button>().interactable = true;
-        components[28].transform.parent.Find("CreateBtn").GetComponent<Button>().interactable = true;
+        //components[28].transform.parent.Find("SaveBtn").GetComponent<Button>().interactable = true;
+        //components[28].transform.parent.Find("CreateBtn").GetComponent<Button>().interactable = true;
 
         //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
@@ -382,62 +360,59 @@ public class RingGameManager : MonoBehaviour
 
         switch (requestType)
         {
-            case RequestType.CreateTemplate:
+            case RequestTypeTP.CreateTable:
                 {
-                    Debug.Log("Response => CreateTemplate: " + serverResponse);
                     JsonData data = JsonMapper.ToObject(serverResponse);
 
                     if (data["success"].ToString() == "1")
                     {
-                        tableId = 0;
-                        ClubTableController.instance.ShowPopUp("Template saved successfully.");
+                        ClubTableControllerTeen.instance.ShowPopUp("Template saved successfully.");
                         //Debug.Log(data["message"].ToString());
                         //joinClubPopUp.SetActive(false);
                         //MainMenuController.instance.ShowMessage(data["message"].ToString());
-                        ClubTableController.instance.RequestTemplateData(false);
+                        //ClubTableControllerTeen.instance.RequestTemplateData(false);
                     }
                     else
                     {
                         Debug.Log(data["message"].ToString());
-                        MainMenuController.instance.ShowMessage(data["message"].ToString());
+                        MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
                     }
 
-                    if(isPublishTemplateWithCreate)
+                    if (isPublishTemplateWithCreate)
                     {
-                        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-                                "\"status\":\"" + "Published" + "\"," +
-                                "\"tableIds\":[\"" + data["tableId"].ToString() + "\"]}";
+                        //string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
+                        //        "\"status\":\"" + "Published" + "\"," +
+                        //        "\"tableIds\":[\"" + data["tableId"].ToString() + "\"]}";
 
-                        WebServices.instance.SendRequest(RequestType.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
+                        //WebServices.instance.SendRequest(RequestType.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
                     }
                 }
                 break;
 
-            case RequestType.UpdateTemplateStatus:
-                {
-                    JsonData data = JsonMapper.ToObject(serverResponse);
+            //case RequestTypeTP.UpdateTemplateStatus:
+            //    {
+            //        JsonData data = JsonMapper.ToObject(serverResponse);
 
-                    if (data["success"].ToString() == "1")
-                    {
-                        tableId = 0;
-                        if (data["message"].ToString().Equals("Template Published"))
-                        {
-                            Debug.Log("Tamplate Published Successfully");
-                            isPublishTemplateWithCreate = false;
-                            //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
-                            ClubDetailsUIManager.instance.GetClubTemplates();
-                            ClubTableController.instance.RequestTemplateData(true);
+            //        if (data["success"].ToString() == "1")
+            //        {
+            //            if (data["message"].ToString().Equals("Template Published"))
+            //            {
+            //                Debug.Log("Tamplate Published Successfully");
+            //                isPublishTemplateWithCreate = false;
+            //                //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
+            //                ClubDetailsUIManager.instance.GetClubTemplates();
+            //                ClubTableController.instance.RequestTemplateData(true);
 
-                            if (ClubTableController.instance.createTablePanel.activeSelf)
-                                ClubTableController.instance.createTablePanel.SetActive(false);
-                        }
-                    }
-                    else
-                    {
-                        //MainMenuController.instance.ShowMessage(data["message"].ToString());
-                    }
-                }
-                break;
+            //                if (ClubTableController.instance.createTablePanel.activeSelf)
+            //                    ClubTableController.instance.createTablePanel.SetActive(false);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            //MainMenuController.instance.ShowMessage(data["message"].ToString());
+            //        }
+            //    }
+            //    break;
 
             default:
 #if ERROR_LOG
@@ -453,12 +428,6 @@ public class RingGameManager : MonoBehaviour
         {
             if (i == index)
             {
-
-                int.TryParse(data["response"][i]["tableId"].ToString(), out tableId);
-
-                Debug.Log("Setting Up Data for edit..." + tableId);
-
-
                 components[0].transform.GetComponent<TMP_InputField>().text = data["response"][i]["templateName"].ToString();
                 components[1].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["memberCount"].ToString();
                 components[2].transform.Find(data["response"][i]["settingData"]["actionTime"].ToString()).GetComponent<Toggle>().isOn = true;
@@ -523,7 +492,7 @@ public class RingGameManager : MonoBehaviour
                 }
 
                 components[12].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoStart"].ToString().Equals("On") ? true : false);
-                components[13].transform.Find("Members/"+data["response"][i]["settingData"]["autoStartWith"].ToString()).GetComponent<Toggle>().isOn = true;
+                components[13].transform.Find("Members/" + data["response"][i]["settingData"]["autoStartWith"].ToString()).GetComponent<Toggle>().isOn = true;
                 components[14].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoExtension"].ToString().Equals("On") ? true : false);
                 components[15].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["autoExtensionTimes"].ToString();
                 components[16].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoOpen"].ToString().Equals("On") ? true : false);
@@ -539,6 +508,7 @@ public class RingGameManager : MonoBehaviour
                 components[26].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["IPRestriction"].ToString().Equals("On") ? true : false);
                 components[27].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["banChatting"].ToString().Equals("On") ? true : false);
                 components[28].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["hours"].ToString();
+
             }
         }
     }

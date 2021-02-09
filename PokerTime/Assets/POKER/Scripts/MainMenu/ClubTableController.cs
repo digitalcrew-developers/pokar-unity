@@ -409,8 +409,8 @@ public class ClubTableController : MonoBehaviour
             {
                 Debug.Log("Response Table ID: " + data["response"][i]["tableId"].ToString());
                 Debug.Log("Current Table ID: " + tableId);
-                
-                Debug.Log("Game Type: " + data["response"][i]["gameType"].ToString());
+
+                //Debug.Log("Game Type: " + data["response"][i]["gameType"].ToString());
 
                 switch (data["response"][i]["gameType"].ToString())
                 {
