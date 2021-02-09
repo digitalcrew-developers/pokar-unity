@@ -352,6 +352,8 @@ public class ClubInGameUIManager : MonoBehaviour
 
                     if (player != null)
                     {
+                        if (availableCallAmount < GlobalGameManager.instance.GetRoomData().smallBlind)
+                            availableCallAmount = GlobalGameManager.instance.GetRoomData().smallBlind;
                         ToggleRaisePopUp(true, availableCallAmount + 1, player.GetPlayerData().balance, ClubInGameManager.instance.GetPotAmount());
                     }
                     else
@@ -569,8 +571,8 @@ public class ClubInGameUIManager : MonoBehaviour
         }
     }
 
-
-
+    float sliderVal;
+    int calculatedAmount;
 
     public void OnSliderValueChange()
     {
@@ -580,10 +582,16 @@ public class ClubInGameUIManager : MonoBehaviour
         }
         else
         {
-            sliderText.text = "" + (int)slider.value;
-        }
+            if (slider.value > sliderVal)
+                calculatedAmount = calculatedAmount + GlobalGameManager.instance.CalculateSliderValue(calculatedAmount);
+            else if (slider.value > 0)
+                calculatedAmount = calculatedAmount - GlobalGameManager.instance.CalculateSliderValue(calculatedAmount);
 
-        selectedRaiseAmount = slider.value;
+            sliderText.text = calculatedAmount.ToString();
+        }
+        selectedRaiseAmount = calculatedAmount;
+        Debug.Log((int)selectedRaiseAmount + "  " + slider.value);
+        sliderVal = slider.value;
     }
 
 
@@ -593,10 +601,12 @@ public class ClubInGameUIManager : MonoBehaviour
 
         if (isShow)
         {
-            slider.minValue = minBet;
+            /*slider.minValue = minBet;
             slider.maxValue = maxBet;
-            slider.value = minBet;
-
+            slider.value = minBet;*/
+            sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
+            slider.value = 0;
+            calculatedAmount = (int)GlobalGameManager.instance.GetRoomData().smallBlind;
 
             if (potAmount <= 0)
             {
@@ -931,7 +941,7 @@ public class ClubInGameUIManager : MonoBehaviour
                     }
                     else
                     {
-                        callAmountText.text = "" + callAmount;
+                        callAmountText.text = "" + GlobalGameManager.instance.ScoreShow(callAmount);
                         actionButtons[(int)PlayerAction.Check].SetActive(false);
                         actionButtons[(int)PlayerAction.AllIn].SetActive(false);
                         actionButtons[(int)PlayerAction.Call].SetActive(true);

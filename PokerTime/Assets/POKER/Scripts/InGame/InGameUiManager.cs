@@ -344,15 +344,7 @@ public class InGameUiManager : MonoBehaviour
 
                     if (player != null)
                     {
-                        /*slider.wholeNumbers = true;
-                        min = GlobalGameManager.instance.GetRoomData().smallBlind;
-                        max = player.GetPlayerData().balance;
-                        int t = (int)((max - min) / 1000f);
-                        sliderText.text = "" + min;
-                        slider.minValue = 0f;
-                        slider.maxValue = t;
-                        slider.value = 0f;*/
-                        Debug.Log("availableCallAmount..." + availableCallAmount);
+                        Debug.Log("availableCallAmount..." + availableCallAmount + ", " + player.GetPlayerData().balance + ", " + GlobalGameManager.instance.GetRoomData().smallBlind);
                         if (availableCallAmount < GlobalGameManager.instance.GetRoomData().smallBlind)
                             availableCallAmount = GlobalGameManager.instance.GetRoomData().smallBlind;
                         ToggleRaisePopUp(true, availableCallAmount, player.GetPlayerData().balance, InGameManager.instance.GetPotAmount());
@@ -574,7 +566,8 @@ public class InGameUiManager : MonoBehaviour
         }
     }
 
-    float min, max;
+    float sliderVal;
+    int calculatedAmount;
     public void OnSliderValueChange()
     {
         if (slider.value >= slider.maxValue)
@@ -583,18 +576,16 @@ public class InGameUiManager : MonoBehaviour
         }
         else
         {
-            sliderText.text = "" + (int)slider.value;
-        }
-        selectedRaiseAmount = slider.value;
+            if (slider.value > sliderVal)
+                calculatedAmount = calculatedAmount + GlobalGameManager.instance.CalculateSliderValue(calculatedAmount);
+            else if (slider.value > 0)
+                calculatedAmount = calculatedAmount - GlobalGameManager.instance.CalculateSliderValue(calculatedAmount);
+
+            sliderText.text = calculatedAmount.ToString();
+        }        
+        selectedRaiseAmount = calculatedAmount;
         Debug.Log((int)selectedRaiseAmount + "  " + slider.value);
-        //float t = (max - min) / 100f;
-        //Debug.Log(min + " Min&Max " + max + ", " + t);
-        //Debug.Log(slider.value + " Slider " + (int)(min + slider.value * 100));    
-        //float prec = 500 * 100 / t;
-        //float val = float.Parse(string.IsNullOrEmpty(sliderText.text) ? GlobalGameManager.instance.GetRoomData().smallBlind.ToString() : sliderText.text);
-        //Debug.Log(slider.value + " Slider " + (val + (prec * t) / 100));
-        //sliderText.text = "" + (val + (prec * t) / 100);
-        //slider.value += (prec / 10);
+        sliderVal = slider.value;
     }
 
 
@@ -604,10 +595,12 @@ public class InGameUiManager : MonoBehaviour
 
         if (isShow)
         {
-            slider.minValue = minBet;
+            /*slider.minValue = GlobalGameManager.instance.GetRoomData().smallBlind; //minBet;
             slider.maxValue = maxBet;
-            slider.value = minBet;
-
+            slider.value = minBet;*/
+            sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
+            slider.value = 0;
+            calculatedAmount = (int)GlobalGameManager.instance.GetRoomData().smallBlind;
 
             if (potAmount <= 0)
             {
@@ -691,7 +684,6 @@ public class InGameUiManager : MonoBehaviour
                     }
                 }
             }
-
 
             OnSliderValueChange();
         }
@@ -879,7 +871,7 @@ public class InGameUiManager : MonoBehaviour
                     }
                     else
                     {
-                        callAmountText.text = "" + callAmount;
+                        callAmountText.text = "" + GlobalGameManager.instance.ScoreShow(callAmount);
                         actionButtons[(int)PlayerAction.Check].SetActive(false);
                         actionButtons[(int)PlayerAction.AllIn].SetActive(false);
                         actionButtons[(int)PlayerAction.Call].SetActive(true);

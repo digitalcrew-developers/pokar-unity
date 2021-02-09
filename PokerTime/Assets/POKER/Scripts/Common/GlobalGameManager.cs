@@ -51,7 +51,9 @@ public class GlobalGameManager : MonoBehaviour
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
         LoadScene(Scenes.MainMenu);
-       // FireBaseAnalyticsIntegration.SharedInstance.LogEvent(FireBaseEvents.Game_Launch);
+        // FireBaseAnalyticsIntegration.SharedInstance.LogEvent(FireBaseEvents.Game_Launch);
+
+        //Debug.Log("Score " + CalculateSliderValue(100000));
     }
 
 
@@ -151,13 +153,44 @@ public class GlobalGameManager : MonoBehaviour
           "\"token\":\"" + token + "\"}";
 
             WebServices.instance.SendRequest(RequestType.SendNotificationToken, requestData, true);
-        }
-        
-
-       
+        }       
     }
 
+    public string ScoreShow(int Score)
+    {
+        float Scor = Score;
+        string result;
+        string[] ScoreNames = new string[] { "", "K", "M", "B", "T", "aa", "ab", "ac", "ad", "ae", "af", "ag", "ah", "ai", "aj", "ak", "al", "am", "an", "ao", "ap", "aq", "ar", "as", "at", "au", "av", "aw", "ax", "ay", "az", "ba", "bb", "bc", "bd", "be", "bf", "bg", "bh", "bi", "bj", "bk", "bl", "bm", "bn", "bo", "bp", "bq", "br", "bs", "bt", "bu", "bv", "bw", "bx", "by", "bz", };
+        int i;
 
+        for (i = 0; i < ScoreNames.Length; i++)
+            if (Scor < 10000)
+                break;
+            else Scor = Mathf.Floor(Scor / 100f) / 10f;
+
+        if (Scor == Mathf.Floor(Scor))
+            result = Scor.ToString() + ScoreNames[i];
+        else result = Scor.ToString("F1") + ScoreNames[i];
+        return result;
+    }
+
+    public int CalculateSliderValue(int amount)
+    {
+        int digit = GetDigitOfANumber(amount, 0);
+        if (digit == 1)
+            return amount;
+        digit = digit - 2;
+        Debug.Log("Raise Amount " + (2 * Mathf.Pow(10, digit)));
+        return (int)(2 * Mathf.Pow(10, digit));
+    }
+
+    int GetDigitOfANumber(int num, int totalDigit)
+    {
+        if (num == 0)
+            return totalDigit;
+
+        return GetDigitOfANumber(num / 10, ++totalDigit);
+    }
 }
 
 

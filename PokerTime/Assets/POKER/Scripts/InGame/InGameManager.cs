@@ -24,7 +24,7 @@ public class InGameManager : MonoBehaviour
 
 
     [SerializeField]
-    private GameObject cardAnimationPrefab,betAnimationPrefab;
+    private GameObject cardAnimationPrefab, betAnimationPrefab;
     [SerializeField]
     private Transform animationLayer;
 
@@ -32,12 +32,12 @@ public class InGameManager : MonoBehaviour
     public List<float> PotValues = new List<float>();
 
     public GameObject Pot;
-    
+
     [SerializeField]
     private Text potText;
 
     [SerializeField]
-    private GameObject winningPrefab,chipscoine;
+    private GameObject winningPrefab, chipscoine;
 
     [SerializeField]
     public Image[] communityCards;
@@ -45,17 +45,17 @@ public class InGameManager : MonoBehaviour
     public bool isGameStart;
 
     private PlayerScript[] onlinePlayersScript = null;
-    private PlayerScript myPlayerObject = null,currentPlayer = null;
+    private PlayerScript myPlayerObject = null, currentPlayer = null;
     private int MATCH_ROUND = 0, LAST_BET_AMOUNT = 0;
     private CardData[] openCards = null;
-    
+
     private string lastPlayerAction = "";
     private List<GameObject> winnersObject = new List<GameObject>();
     private int communityCardsAniamtionShowedUpToRound = 0;
     private int currentRoundTotalBets = 0;
     private float pot1Amount = 0;
 
-    private bool isRematchRequestSent = false,isTopUpDone = false;
+    private bool isRematchRequestSent = false, isTopUpDone = false;
     private float availableBalance = 0;
 
     public GameObject WinnAnimationpos;
@@ -75,7 +75,7 @@ public class InGameManager : MonoBehaviour
     public int videoWidth /* = 1280*/;
     public int videoHeight /*= 720*/;
     public bool isRecording = false;
-    
+
 
     //To Store Player Data
     public string cardValue = "";          //To Store Card Number with Card Icon
@@ -141,7 +141,7 @@ public class InGameManager : MonoBehaviour
 
     public void DeactivateAllPots()
     {
-        foreach(GameObject g in AllPots)
+        foreach (GameObject g in AllPots)
         {
             g.SetActive(false);
         }
@@ -163,7 +163,7 @@ public class InGameManager : MonoBehaviour
         int.TryParse(seatNo, out seat);
 
         seat = seat - 1;
-        if(seat < 0) { seat = 0; }
+        if (seat < 0) { seat = 0; }
 
         return AllSeatButtons[seat];
     }
@@ -200,12 +200,12 @@ public class InGameManager : MonoBehaviour
         {
             //g.SetActive(false);            
         }
-            for (int i = 0; i < AllSeatButtons.Count; i++)
-            {
-                AllSeatButtons[i].SetActive(true);
-                AllSeatButtons[i].GetComponent<PlayerSeat>().UpdateState();
-            }
-        
+        for (int i = 0; i < AllSeatButtons.Count; i++)
+        {
+            AllSeatButtons[i].SetActive(true);
+            AllSeatButtons[i].GetComponent<PlayerSeat>().UpdateState();
+        }
+
         //GetSeatObject(myPlayerSeat).SetActive(false);
     }
     private bool DontShowCommunityCardAnimation = false;
@@ -217,7 +217,7 @@ public class InGameManager : MonoBehaviour
         InGameUiManager.instance.ToggleActionButton(false);
         int vipCard = 0;
         int.TryParse(GetMyPlayerObject().GetPlayerData().userVIPCard, out vipCard);
-        
+
         if (vipCard > 0)
         {
             RabbitButton.SetActive(true);
@@ -265,7 +265,7 @@ public class InGameManager : MonoBehaviour
             else
             {
                 allPlayersObject[i].TogglePlayerUI(false);
-            }   
+            }
         }
 
         if (playerScriptWhosTurn != null)
@@ -324,7 +324,7 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < players.Length; i++)
         {
-            Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe() + ", " + players[i].playerData.isStart);
+            //Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe() + ", " + players[i].playerData.isStart);
             if (!players[i].playerData.isStart)
                 players[i].ToggleCards(false, players[i].IsMe());
             else
@@ -333,7 +333,7 @@ public class InGameManager : MonoBehaviour
 
         if (isGameStart)
             SocketController.instance.SetSocketState(SocketState.Game_Running);
-        SwitchTurn(playerScriptWhosTurn,false);
+        SwitchTurn(playerScriptWhosTurn, false);
     }
 
     public IEnumerator SwitchTables()
@@ -347,7 +347,7 @@ public class InGameManager : MonoBehaviour
             StartCoroutine(SwitchTables());
             yield break;
         }
-        
+
         data.isLobbyRoom = true;
         GlobalGameManager.instance.SetRoomData(data);
 
@@ -406,7 +406,7 @@ public class InGameManager : MonoBehaviour
         }
     }
 
-    private void SwitchTurn(PlayerScript playerScript,bool isCheckAvailable)
+    private void SwitchTurn(PlayerScript playerScript, bool isCheckAvailable)
     {
         //SoundManager.instance.PlaySound(SoundType.TurnSwitch);
 
@@ -414,8 +414,9 @@ public class InGameManager : MonoBehaviour
         {
             onlinePlayersScript[i].ResetTurn();
         }
-        
+
         currentPlayer = playerScript;
+        //Debug.LogWarning(currentPlayer.playerData.userName + " - " + currentPlayer.playerData.isTurn + " - " + isCheckAvailable);
         if (currentPlayer.IsMe())
         {
             InGameUiManager.instance.ToggleSuggestionButton(false);
@@ -458,12 +459,12 @@ public class InGameManager : MonoBehaviour
 
                     default:
                         {
-                            Debug.LogError("Unhandled suggetion type found = "+selectedSuggestionAction);
+                            Debug.LogError("Unhandled suggetion type found = " + selectedSuggestionAction);
                         }
-                    break;
+                        break;
                 }
             }
-            else if(!userWinner)
+            else if (!userWinner)
             {
                 //Debug.LogWarning("LAST BET AMOUNT 1" + LAST_BET_AMOUNT);
                 //InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
@@ -478,7 +479,7 @@ public class InGameManager : MonoBehaviour
                 int callAmount = GetLastBetAmount() - (int)GetMyPlayerObject().GetPlayerData().totalBet;
                 InGameUiManager.instance.ToggleSuggestionButton(true, isCheckAvailable, callAmount, GetMyPlayerObject().GetPlayerData().balance);
             }
-        }        
+        }
     }
 
     private List<MatchMakingPlayerData> ReArrangePlayersList(List<MatchMakingPlayerData> matchMakingPlayerData)
@@ -645,13 +646,13 @@ public class InGameManager : MonoBehaviour
             }
         }
         Debug.Log("Active Users " + onlinePlayersScript.Length);
-        
+
         /*for (int i = onlinePlayersScript.Length - 1; i < allPlayersObject.Length; i++)
         {
             allPlayersObject[i].ResetAllData();
             allPlayersObject[i].TogglePlayerUI(false);
         }*/
-        
+
         /*if (isMatchStarted)
         {
             if (playerData.Count > 0)
@@ -708,7 +709,7 @@ public class InGameManager : MonoBehaviour
                 }
             }
         }*/
-        
+
         /*if (isMatchStarted && onlinePlayersScript != null && onlinePlayersScript.Length > 0)
         {
             List<PlayerScript> leftPlayers = new List<PlayerScript>();
@@ -740,7 +741,7 @@ public class InGameManager : MonoBehaviour
 
         //int maxPlayerOnTable = GlobalGameManager.instance.GetRoomData().players;
     }
-    
+
 
     private void AdjustAllPlayersOnTable(int totalPlayerCount)
     {
@@ -785,34 +786,35 @@ public class InGameManager : MonoBehaviour
         if (!playerScript.localBg().activeSelf)
         {
             GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
-            gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
+            gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/ GlobalGameManager.instance.ScoreShow(int.Parse(betAmount));
             gm.transform.position = playerScript.transform.position;
             Vector3 initialScale = gm.transform.localScale;
             gm.transform.localScale = Vector3.zero;
 
             gm.transform.DOMove(playerScript.localBg().transform.position, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-            gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack).OnComplete(() => { playerScript.localBg().SetActive(true); });
+            gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack).OnComplete(() => { playerScript.GetLocaPot().text = GlobalGameManager.instance.ScoreShow(int.Parse(betAmount)); playerScript.localBg().SetActive(true); });
             SoundManager.instance.PlaySound(SoundType.Bet);
             yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
             Destroy(gm);
         }
         else
         {
-            playerScript.GetLocaPot().text = betAmount;
+            //Debug.Log("Last All in Bet: " + /*playerScript.GetLocalBetAmount()*/GlobalGameManager.instance.ScoreShow(int.Parse(betAmount)));
+            playerScript.GetLocaPot().text = GlobalGameManager.instance.ScoreShow(int.Parse(betAmount));
         }
     }
 
     private bool winnerAnimationFound = false;
 
-    private IEnumerator WaitAndShowWinnersAnimation(PlayerScript playerScript, string betAmount,GameObject amount)
+    private IEnumerator WaitAndShowWinnersAnimation(PlayerScript playerScript, string betAmount, GameObject amount)
     {
         winnerAnimationFound = true;
         yield return new WaitForSeconds(.6f);
 
         SoundManager.instance.PlaySound(SoundType.IncomingPot);
 
-        GameObject gm = Instantiate(chipscoine,WinnAnimationpos.transform) as GameObject;
-    //    gm.GetComponent<Text>().text = betAmount;
+        GameObject gm = Instantiate(chipscoine, WinnAnimationpos.transform) as GameObject;
+        //    gm.GetComponent<Text>().text = betAmount;
         gm.transform.position = WinnAnimationpos.transform.position;
         /*        Vector3 initialScale = gm.transform.localScale;
                 gm.transform.localScale = Vector3.zero;*/
@@ -852,8 +854,9 @@ public class InGameManager : MonoBehaviour
         //{
         //    Pot.SetActive(true);
         //}
+
         potText.text = textToShow;
-        foreach(GameObject g in AllPots)
+        foreach (GameObject g in AllPots)
         {
             g.SetActive(false);
         }
@@ -865,7 +868,7 @@ public class InGameManager : MonoBehaviour
             if (!string.IsNullOrEmpty(s))
             {
                 AllPots[i].SetActive(true);
-                AllPots[i].transform.Find("Text").GetComponent<Text>().text = s;
+                AllPots[i].transform.Find("Text").GetComponent<Text>().text = GlobalGameManager.instance.ScoreShow(int.Parse(s));
             }
         }
 
@@ -954,7 +957,7 @@ public class InGameManager : MonoBehaviour
                 onlinePlayersScript[i].UpdateRealTimeResult(handtype);
             }
             Text text = onlinePlayersScript[i].GetLocaPot();
-
+            Debug.Log("<color=yellow>Amount " + text.text + "</color>");
             if (text.gameObject.activeInHierarchy && !string.IsNullOrEmpty(text.text))
             {
                 isBetFound = true;
@@ -962,7 +965,7 @@ public class InGameManager : MonoBehaviour
                 GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
                 gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
                 gm.transform.position = onlinePlayersScript[i].localBg().transform.position;
-                gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
+                //gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
                 gm.transform.DOMove(Pot.transform.position, 0.3f).OnComplete(() => { Destroy(gm); });
             }
 
@@ -1305,7 +1308,7 @@ public class InGameManager : MonoBehaviour
             if (isWin)
             {
                 gm.transform.Find("WinBy").GetComponent<Text>().text = name;
-                gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
+                gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + GlobalGameManager.instance.ScoreShow(int.Parse(winAmount));
                 if (string.IsNullOrEmpty(name))
                 {
                     gm.transform.Find("WinBy").gameObject.SetActive(false);
@@ -1560,7 +1563,7 @@ public class InGameManager : MonoBehaviour
             {
                 InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isMyTurn, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
             }*/
-            Debug.Log("Me&Other " + currentPlayer.IsMe() + ", " + remainingTime + ", " + GameConstants.TURN_TIME);
+            Debug.Log("Me&Other " + currentPlayer.IsMe() + ", " + currentPlayer.playerData.isTurn + ", " + remainingTime + ", " + GameConstants.TURN_TIME);
             if (currentPlayer != null)
             {
                 if (remainingTime == 0)
@@ -1586,9 +1589,11 @@ public class InGameManager : MonoBehaviour
                     }
                     currentPlayer.ShowRemainingTime(remainingTime);
                     //currentPlayer.StartPlayerTimer(remainingTime);
-                    if (remainingTime >= GameConstants.TURN_TIME - 1)
+                    Debug.LogWarning(currentPlayer.playerData.userName + " - " + currentPlayer.playerData.isTurn);
+                    if (remainingTime >= GameConstants.TURN_TIME - 1 && currentPlayer.playerData.isTurn)
                     {
                         InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isMyTurn, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
+                        currentPlayer.playerData.isTurn = false;
                     }
                 }
                 else if (!currentPlayer.IsMe())
@@ -1622,7 +1627,7 @@ public class InGameManager : MonoBehaviour
 
         //Debug.LogWarning("side pot length; " + betData.sidePot.Count);
         PotValues.Clear();
-        for (int i=0;i< betData.sidePot.Count; i++)
+        for (int i = 0; i < betData.sidePot.Count; i++)
         {
             var value = float.Parse(betData.sidePot[i].amount.ToString());
             PotValues.Add(value);
@@ -1642,14 +1647,14 @@ public class InGameManager : MonoBehaviour
             isCardValueSet = true;
 
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
-            Debug.Log(userId + " " + PlayerManager.instance.GetPlayerGameData().userId);
+            //Debug.Log(userId + " " + PlayerManager.instance.GetPlayerGameData().userId);
             if (betAmount > 0 /*&& userId != PlayerManager.instance.GetPlayerGameData().userId*/)
             {
                 PlayerScript playerObject = GetPlayerObject(userId);
 
                 if (playerObject != null)
                 {
-                    Debug.Log("Current Bet Amount : " + betAmount);
+                    //Debug.Log("Current Bet Amount : " + betAmount);
                     //StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
                     StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));
                 }
@@ -1860,7 +1865,9 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
                         playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
-
+                        playerData.playerData.isTurn = bool.Parse(data[0][i]["isTurn"].ToString());
+                        //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
+                        Debug.LogWarning(data[0][i]["userName"].ToString() + " Waiting " + data[0][i]["isTurn"] + " === " + playerData.isTurn);
                         //Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
                         if (playerData.isTurn)
@@ -1927,11 +1934,11 @@ public class InGameManager : MonoBehaviour
                         playerData.cardValidity = data[0][i]["cardValidity"].ToString();
                         playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         playerData.seatNo = data[0][i]["seatNo"].ToString();
-                        
+                        playerObject.playerData.isTurn = bool.Parse(data[0][i]["isTurn"].ToString());
                         //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
+                        Debug.LogWarning(data[0][i]["userName"].ToString() + " Running " + data[0][i]["isTurn"] + " === " + playerData.isTurn);
                         if (data[0][i]["isTurn"].Equals(true))
                         {
-                            Debug.LogWarning(data[0][i]["userName"].ToString() + " isTurn is true");
                             playerWhosTurn = playerObject;
                             isCheckAvailable = data[0][i]["isCheck"].Equals(true);
                             isMyTurn = isCheckAvailable;

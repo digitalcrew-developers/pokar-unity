@@ -986,20 +986,20 @@ public class ClubInGameManager : MonoBehaviour
         if (!playerScript.localBg().activeSelf)
         {
             GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
-            gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
+            gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/GlobalGameManager.instance.ScoreShow(int.Parse(betAmount));
             gm.transform.position = playerScript.transform.position;
             Vector3 initialScale = gm.transform.localScale;
             gm.transform.localScale = Vector3.zero;
 
             gm.transform.DOMove(playerScript.localBg().transform.position, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-            gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack).OnComplete(() => { playerScript.localBg().SetActive(true); });
+            gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack).OnComplete(() => { playerScript.GetLocaPot().text = GlobalGameManager.instance.ScoreShow(int.Parse(betAmount)); playerScript.localBg().SetActive(true); });
             SoundManager.instance.PlaySound(SoundType.Bet);
             yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
             Destroy(gm);
         }
         else
         {
-            playerScript.GetLocaPot().text = betAmount;
+            playerScript.GetLocaPot().text = GlobalGameManager.instance.ScoreShow(int.Parse(betAmount));
         }
     }
 
@@ -1061,7 +1061,7 @@ public class ClubInGameManager : MonoBehaviour
             if (!string.IsNullOrEmpty(s))
             {
                 AllPots[i].SetActive(true);
-                AllPots[i].transform.Find("Text").GetComponent<Text>().text = s;
+                AllPots[i].transform.Find("Text").GetComponent<Text>().text = GlobalGameManager.instance.ScoreShow(int.Parse(s));
             }
         }
 
@@ -1646,7 +1646,7 @@ public class ClubInGameManager : MonoBehaviour
                     gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
                     gm.GetComponent<Image>().sprite = openCards[0].cardsSprite;
                     gm.transform.Rotate(0, -90, 0);
-                    gm.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.2f).OnComplete(() => 
+                    gm.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.4f).OnComplete(() => 
                     {
                         Debug.Log("One card....");
                         //yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.8f);
@@ -1660,7 +1660,7 @@ public class ClubInGameManager : MonoBehaviour
                         gm2.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
                         gm2.GetComponent<Image>().sprite = openCards[1].cardsSprite;
                         gm2.transform.Rotate(0, -90, 0);
-                        gm2.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.1f).OnComplete(() => 
+                        gm2.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.4f).OnComplete(() => 
                         {
                             Debug.Log("Second card....");
                             //yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.8f);
@@ -1942,7 +1942,7 @@ public class ClubInGameManager : MonoBehaviour
             if (isWin)
             {
                 gm.transform.Find("WinBy").GetComponent<Text>().text = name;
-                gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
+                gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + GlobalGameManager.instance.ScoreShow(int.Parse(winAmount));
                 if (string.IsNullOrEmpty(name))
                 {
                     gm.transform.Find("WinBy").gameObject.SetActive(false);

@@ -375,7 +375,7 @@ public class PlayerScript : MonoBehaviour
         if (amount > 0)
         {
             //ToggleLocalPot(true);
-            localBetPot.text = "" + amount;
+            localBetPot.text = "" + GlobalGameManager.instance.ScoreShow(amount);
         }
         else
         {
@@ -792,7 +792,7 @@ public class PlayerScript : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("Cards 3333....." + isItMe + ", " + gameObject.name);
+                            //Debug.Log("Cards 3333....." + isItMe + ", " + gameObject.name);
                             cardsImage[i].GetComponent<RectTransform>().sizeDelta = new Vector3(58f, 83f);
                             
                             if (i == 0)
@@ -821,7 +821,7 @@ public class PlayerScript : MonoBehaviour
             }
             else
             {
-                Debug.Log(GetPlayerData().userName + " " + isShow + " " + isItMe);
+                //Debug.Log(GetPlayerData().userName + " " + isShow + " " + isItMe);
                 for (int i = 0; i < cardsImage.Length; i++)
                 {
                     if (!isItMe)
