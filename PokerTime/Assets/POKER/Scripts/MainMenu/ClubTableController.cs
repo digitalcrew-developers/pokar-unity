@@ -427,7 +427,7 @@ public class ClubTableController : MonoBehaviour
                                 RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode/HoursData/EditBtn").gameObject.SetActive(true);
                                 OpenScreen("Ring_NLH");
                                 OpenScreen("NLH_RegularMode");
-                                RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").GetComponent<RingGameManager>().SetDataForEdit(data, i);
+                                RingGamePanel_NLH.transform.Find("Viewport/Content_RegularMode").GetComponent<RingGameManager>().SetDataForEdit(data, i);
                             }
                             else if (data["response"][i]["templateType"].ToString().Equals("Ring Game") && data["response"][i]["settingData"]["templateSubType"].ToString().Equals("6+"))
                             {
@@ -440,7 +440,7 @@ public class ClubTableController : MonoBehaviour
                                 RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus/HoursData/EditBtn").gameObject.SetActive(true);
                                 OpenScreen("Ring_NLH");
                                 OpenScreen("NLH_6Plus");
-                                RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").GetComponent<RingGameManager>().SetDataForEdit(data, i);
+                                RingGamePanel_NLH.transform.Find("Viewport/Content_6Plus").GetComponent<RingGameManager>().SetDataForEdit(data, i);
                             }
                         }
                         break;
@@ -458,7 +458,7 @@ public class ClubTableController : MonoBehaviour
                                 RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO4/HoursData/EditBtn").gameObject.SetActive(true);
                                 OpenScreen("Ring_PLO");
                                 OpenScreen("PLO4Mode");
-                                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO4").GetComponent<RingGameManager>().SetDataForEdit(data, i);
+                                RingGamePanel_PLO.transform.Find("Viewport/Content_PLO4").GetComponent<RingGameManager>().SetDataForEdit(data, i);
                             }
                             else if (data["response"][i]["templateType"].ToString().Equals("Ring Game") && data["response"][i]["settingData"]["templateSubType"].ToString().Equals("PLO5"))
                             {
@@ -471,7 +471,7 @@ public class ClubTableController : MonoBehaviour
                                 RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO5/HoursData/EditBtn").gameObject.SetActive(true);
                                 OpenScreen("Ring_PLO");
                                 OpenScreen("PLO5Mode");
-                                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO5").GetComponent<RingGameManager>().SetDataForEdit(data, i);
+                                RingGamePanel_PLO.transform.Find("Viewport/Content_PLO5").GetComponent<RingGameManager>().SetDataForEdit(data, i);
                             }
                         }
                         break;
@@ -489,7 +489,7 @@ public class ClubTableController : MonoBehaviour
                                 RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO4/HoursData/EditBtn").gameObject.SetActive(true);
                                 OpenScreen("Ring_MIXED");
                                 OpenScreen("NLHPLO4");
-                                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO4").GetComponent<RingGameManager>().SetDataForEdit(data, i);
+                                RingGamePanel_MIXED.transform.Find("Viewport/Content_NLH_PLO4").GetComponent<RingGameManager>().SetDataForEdit(data, i);
                             }
                             else if (data["response"][i]["templateType"].ToString().Equals("Ring Game") && data["response"][i]["settingData"]["templateSubType"].ToString().Equals("NLH&PLO5"))
                             {
@@ -502,7 +502,7 @@ public class ClubTableController : MonoBehaviour
                                 RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO5/HoursData/EditBtn").gameObject.SetActive(true);
                                 OpenScreen("Ring_MIXED");
                                 OpenScreen("NLHPLO5");
-                                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO5").GetComponent<RingGameManager>().SetDataForEdit(data, i);
+                                RingGamePanel_MIXED.transform.Find("Viewport/Content_NLH_PLO5").GetComponent<RingGameManager>().SetDataForEdit(data, i);
                             }
                         }
                         break;

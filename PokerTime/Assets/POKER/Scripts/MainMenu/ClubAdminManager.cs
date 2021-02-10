@@ -472,7 +472,7 @@ public class ClubAdminManager : MonoBehaviour
         WebServices.instance.SendRequest(RequestType.GetClubDetails, clubRatingRequest, true, OnServerResponseFound);        
 
         //Fill Diamonds available
-        DiamondsCountText.text = PlayerManager.instance.GetPlayerGameData().diamonds.ToString();
+        DiamondsCountText.text = Utility.GetTrimmedAmount(PlayerManager.instance.GetPlayerGameData().diamonds.ToString());
 
         if (ClubRatingScrollParent.transform.childCount > 0)
         {

@@ -326,7 +326,8 @@ public class CreateTableManagerTeen : MonoBehaviour
             "\"gameIcon\":\"" + "test" + "\"," +
             "\"iconBaseUrl\":\"" + "test" + "\"," +
             "\"backgroundImg\":\"" + "test" + "\"," +
-            "\"backgroundImg\":\"" + "test" + "\"}";
+            "\"tableId\":\"" + "1" + "\"," +
+            "\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"}";
 
         WebServices.instance.SendRequestTP(RequestTypeTP.CreateTable, requestData, true, OnServerResponseFound);
 
@@ -362,6 +363,7 @@ public class CreateTableManagerTeen : MonoBehaviour
         {
             case RequestTypeTP.CreateTable:
                 {
+                    Debug.Log("Response => TP_CreateTable: " + serverResponse);
                     JsonData data = JsonMapper.ToObject(serverResponse);
 
                     if (data["success"].ToString() == "1")

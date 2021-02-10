@@ -17,6 +17,11 @@ public class RingGameManager : MonoBehaviour
     public string templateType = "";
     public string templateSubType = "";
 
+    public static string gameTypeStatic = "";
+    public static string templateTypeStatic = "";
+    public static string templateSubTypeStatic = "";
+    public static string templateNameStatic = "";
+
     [Space(7)]
     public List<GameObject> components = new List<GameObject>();
 
@@ -43,6 +48,14 @@ public class RingGameManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+
+        gameTypeStatic = gameType;
+        templateTypeStatic = templateType;
+        templateSubTypeStatic = templateSubType;
+
+        Debug.Log("GameType Static:" + gameTypeStatic);
+        Debug.Log("TemplateType Static:" + templateTypeStatic);
+        Debug.Log("TemplateSubType Static:" + templateSubTypeStatic);
     }
 
 
@@ -249,7 +262,7 @@ public class RingGameManager : MonoBehaviour
         string callTimeText = "";
         string chipWithdrawal = "";
 
-        if (templateSubType.Equals("6 Plus"))
+        if (templateSubTypeStatic.Equals("6 Plus"))
         {
             anteString = components[5].transform.GetComponent<TMP_Text>().text.ToString();
             chipWithdrawal = components[23].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off";
@@ -274,55 +287,56 @@ public class RingGameManager : MonoBehaviour
         //Debug.Log("Call Time" + callTime);
         //Debug.Log("Call Time Text" + callTimeText);
 
+        Debug.Log("Name: " + transform.name);
 
-        //Debug.Log("ClubID: " + ClubDetailsUIManager.instance.GetClubId());
-        //Debug.Log("GameType: " + gameType);
-        //Debug.Log("TemplateName: " + components[0].transform.GetComponent<TMP_InputField>().text.ToString());
-        //Debug.Log("templateType: " + templateType);
-        //Debug.Log("Status: " + "Saved");
+        Debug.Log("ClubID: " + ClubDetailsUIManager.instance.GetClubId());
+        Debug.Log("GameType: " + gameTypeStatic);
+        Debug.Log("TemplateName: " + components[0].transform.Find("Text Area/Text").GetComponent<TMP_Text>().text);
+        Debug.Log("templateType: " + templateTypeStatic);
+        Debug.Log("Status: " + "Saved");
         Debug.Log("TableId: " + tableId);
-        //Debug.Log("Template Sub Type: " + templateSubType);
-        //Debug.Log("Member Count: " + components[1].transform.GetComponent<TMP_Text>().text);
-        //Debug.Log("ActionTime: " + actionTime);
-        //Debug.Log("ExclusiveTable: " + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        //Debug.Log("Blinds Type: " + blindString);
-        //Debug.Log("Ante Type: " + anteString);
-        //Debug.Log("high_low: " + hi_Lo);
-        //Debug.Log("MinBuy: " + components[7].transform.GetComponent<TMP_Text>().text);
-        //Debug.Log("MaxBuy: " + components[8].transform.GetComponent<TMP_Text>().text);
-        //Debug.Log("MinVPIP: " + components[9].transform.GetComponent<TMP_Text>().text.Substring(0, components[9].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
-        //Debug.Log("VPIP Level: " + components[10].transform.GetComponent<TMP_Text>().text.Substring(0, components[10].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
-        //Debug.Log("Hand Threshold: " + components[11].transform.GetComponent<TMP_Text>().text);
-        //Debug.Log("AutoStart: " + (components[12].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        //Debug.Log("AutoStartWith: " + autoStartWith);
-        //Debug.Log("AutoExtension: " + (components[14].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        //Debug.Log("AutoExtensionTimes: " + components[15].transform.GetComponent<TMP_Text>().text.ToString());
-        //Debug.Log("AutoOpen: " + (components[16].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        //Debug.Log("RunItMulti: " + (components[17].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
-        //Debug.Log("EVChop: " + (components[18].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
-        //Debug.Log("Fee : " + components[19].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[19].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
-        //Debug.Log("Cap: " + components[20].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[20].transform.GetComponent<TMP_Text>().text.ToString().Length - 3));
-        //Debug.Log("Call Time: " + callTime);
-        //Debug.Log("Time Text: " + callTimeText);
-        //Debug.Log("Chip Withdrawal: " +chipWithdrawal);
-        //Debug.Log("Authorized: " + (components[24].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        //Debug.Log("GPS: " + (components[25].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        //Debug.Log("IP: " + (components[26].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        //Debug.Log("Ban Chatting: " + (components[27].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        //Debug.Log("Hours: " + components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2));
+        Debug.Log("Template Sub Type: " + templateSubTypeStatic);
+        Debug.Log("Member Count: " + components[1].transform.GetComponent<TMP_Text>().text);
+        Debug.Log("ActionTime: " + actionTime);
+        Debug.Log("ExclusiveTable: " + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("Blinds Type: " + blindString);
+        Debug.Log("Ante Type: " + anteString);
+        Debug.Log("high_low: " + hi_Lo);
+        Debug.Log("MinBuy: " + components[7].transform.GetComponent<TMP_Text>().text);
+        Debug.Log("MaxBuy: " + components[8].transform.GetComponent<TMP_Text>().text);
+        Debug.Log("MinVPIP: " + components[9].transform.GetComponent<TMP_Text>().text.Substring(0, components[9].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        Debug.Log("VPIP Level: " + components[10].transform.GetComponent<TMP_Text>().text.Substring(0, components[10].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        Debug.Log("Hand Threshold: " + components[11].transform.GetComponent<TMP_Text>().text);
+        Debug.Log("AutoStart: " + (components[12].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("AutoStartWith: " + autoStartWith);
+        Debug.Log("AutoExtension: " + (components[14].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("AutoExtensionTimes: " + components[15].transform.GetComponent<TMP_Text>().text.ToString());
+        Debug.Log("AutoOpen: " + (components[16].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("RunItMulti: " + (components[17].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
+        Debug.Log("EVChop: " + (components[18].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
+        Debug.Log("Fee : " + components[19].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[19].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        Debug.Log("Cap: " + components[20].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[20].transform.GetComponent<TMP_Text>().text.ToString().Length - 3));
+        Debug.Log("Call Time: " + callTime);
+        Debug.Log("Time Text: " + callTimeText);
+        Debug.Log("Chip Withdrawal: " + chipWithdrawal);
+        Debug.Log("Authorized: " + (components[24].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("GPS: " + (components[25].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("IP: " + (components[26].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("Ban Chatting: " + (components[27].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("Hours: " + components[28].transform.GetComponent<TMP_Text>().text/*components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2)*/);
 
 
         //Request Data
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-            "\"gameType\":\"" + gameType + "\"," +
+            "\"gameType\":\"" + gameTypeStatic.ToString() + "\"," +
             "\"templateName\":\"" + components[0].transform.GetComponent<TMP_InputField>().text.ToString() + "\"," +
-            "\"templateType\":\"" + templateType + "\"," +
+            "\"templateType\":\"" + templateTypeStatic.ToString() + "\"," +
+            "\"exclusiveTable\":\"" + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
             "\"status\":\"" + "Saved" + "\"," +
             "\"tableId\":\"" + ((tableId != 0)?tableId.ToString():"") + "\"," +
-            "\"settingData\":[{\"templateSubType\":\"" + templateSubType + "\"," +
+            "\"settingData\":[{\"templateSubType\":\"" + templateSubTypeStatic.ToString() + "\"," +
             "\"memberCount\":\"" + components[1].transform.GetComponent<TMP_Text>().text.ToString() + "\"," +
             "\"actionTime\":\"" + actionTime + "\"," +
-            "\"exclusiveTable\":\"" + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
             "\"blinds\":\"" + blindString + "\"," +
             "\"ante\":\"" + anteString + "\"," +
             "\"high_low\":\"" + hi_Lo + "\"," +
@@ -348,7 +362,8 @@ public class RingGameManager : MonoBehaviour
             "\"GPSRestriction\":\"" + (components[25].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
             "\"IPRestriction\":\"" + (components[26].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
             "\"banChatting\":\"" + (components[27].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
-            "\"hours\":\"" + components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2) + "\"}]}";
+            //"\"hours\":\"" + /*components[28].transform.GetComponent<TMP_Text>().text*/"" + "\"}]}";
+            "\"hours\":\"" + ((components[28].transform.GetComponent<TMP_Text>().text.Length > 2) ? components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2) : components[28].transform.GetComponent<TMP_Text>().text) + "\"}]}";
 
         WebServices.instance.SendRequest(RequestType.CreateTemplate, requestData, true, OnServerResponseFound);
 
@@ -389,12 +404,17 @@ public class RingGameManager : MonoBehaviour
 
                     if (data["success"].ToString() == "1")
                     {
-                        tableId = 0;
                         ClubTableController.instance.ShowPopUp("Template saved successfully.");
                         //Debug.Log(data["message"].ToString());
                         //joinClubPopUp.SetActive(false);
                         //MainMenuController.instance.ShowMessage(data["message"].ToString());
                         ClubTableController.instance.RequestTemplateData(false);
+
+                        tableId = 0;
+
+                        gameTypeStatic = "";
+                        templateTypeStatic = "";
+                        templateSubTypeStatic = "";
                     }
                     else
                     {
@@ -419,7 +439,6 @@ public class RingGameManager : MonoBehaviour
 
                     if (data["success"].ToString() == "1")
                     {
-                        tableId = 0;
                         if (data["message"].ToString().Equals("Template Published"))
                         {
                             Debug.Log("Tamplate Published Successfully");
@@ -430,6 +449,12 @@ public class RingGameManager : MonoBehaviour
 
                             if (ClubTableController.instance.createTablePanel.activeSelf)
                                 ClubTableController.instance.createTablePanel.SetActive(false);
+
+                            tableId = 0;
+
+                            gameTypeStatic = "";
+                            templateTypeStatic = "";
+                            templateSubTypeStatic = "";
                         }
                     }
                     else
@@ -449,6 +474,7 @@ public class RingGameManager : MonoBehaviour
 
     public void SetDataForEdit(JsonData data, int index)
     {
+        Debug.LogError("Transform Name:" + transform.name);
         for (int i = 0; i < data["response"].Count; i++)
         {
             if (i == index)
@@ -458,6 +484,9 @@ public class RingGameManager : MonoBehaviour
 
                 Debug.Log("Setting Up Data for edit..." + tableId);
 
+                gameTypeStatic = data["response"][i]["gameType"].ToString();
+                templateTypeStatic = data["response"][i]["templateType"].ToString();
+                templateSubTypeStatic = data["response"][i]["settingData"]["templateSubType"].ToString();
 
                 components[0].transform.GetComponent<TMP_InputField>().text = data["response"][i]["templateName"].ToString();
                 components[1].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["memberCount"].ToString();

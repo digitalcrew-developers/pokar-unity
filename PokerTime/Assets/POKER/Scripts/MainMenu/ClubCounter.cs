@@ -1067,40 +1067,36 @@ public class ClubCounter : MonoBehaviour, IPointerDownHandler
 
         float.TryParse(AmountToSendInputField.text, out claimBackAmount);
 
-        selectedMembers = selectedMembers.Remove(selectedMembers.Length - 1, 1);
-
-        Debug.Log("Selected Members: " + selectedMembers);
-        Debug.Log("Player ID: " + PlayerManager.instance.GetPlayerGameData().userId);
-
-        string role = "";
-        if (MemberListUIManager.instance.GetClubOwnerObject().memberRole == ClubMemberRole.Owner)
+        if (claimBackAmount > 0)
         {
-            role = "Creater";
+            selectedMembers = selectedMembers.Remove(selectedMembers.Length - 1, 1);
+
+            Debug.Log("Selected Members: " + selectedMembers);
+            Debug.Log("Player ID: " + PlayerManager.instance.GetPlayerGameData().userId);
+
+            string role = "";
+            if (MemberListUIManager.instance.GetClubOwnerObject().memberRole == ClubMemberRole.Owner)
+            {
+                role = "Creater";
+            }
+            else
+            {
+                role = MemberListUIManager.instance.GetClubOwnerObject().memberRole.ToString();
+            }
+
+            string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                "\"role\":\"" + (role.Equals("Creater") ? "Creater" : "") + "\"," +
+                "\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "," +
+                "\"amount\":" + claimBackAmount.ToString() + "," +
+                "\"membersArray\":[" + selectedMembers + "]}";
+
+            Debug.Log("request is - " + request);
+            WebServices.instance.SendRequest(RequestType.ClaimBackChips, request, true, OnServerResponseFound);
         }
         else
         {
-            role = MemberListUIManager.instance.GetClubOwnerObject().memberRole.ToString();
+            StartCoroutine(ShowPopUp("Please enter the amount", 1.29f));
         }
-
-
-        //OLD REQUEST
-        //string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-        //    "\"role\":\"" + /*MemberListUIManager.instance.GetClubOwnerObject().memberRole*/"Member" + "\"," +
-        //    "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-        //    "\"amount\":\"" + claimBackAmount.ToString() + "\"," +
-        //    "\"membersArray\":[" + selectedMembers + "]}";
-        //"\"membersArray\":[{\"userId\":" + selectedMembers + "}]}";
-
-
-        //NEW REQUEST
-        string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-            "\"role\":\"" + (role.Equals("Creater") ? "Creater" : "") + "\"," +
-            "\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "," +
-            "\"amount\":" + claimBackAmount.ToString() + "," +
-            "\"membersArray\":[" + selectedMembers + "]}";
-
-        Debug.Log("request is - " + request);
-        WebServices.instance.SendRequest(RequestType.ClaimBackChips, request, true, OnServerResponseFound);
     }
 
     private void SendChipsAPIRequest()
@@ -1112,15 +1108,22 @@ public class ClubCounter : MonoBehaviour, IPointerDownHandler
 
         float.TryParse(AmountToSendInputField.text, out sendOutAmount);
 
-        selectedMembers = selectedMembers.Remove(selectedMembers.Length-1, 1);
+        if (sendOutAmount > 0)
+        {
+            selectedMembers = selectedMembers.Remove(selectedMembers.Length - 1, 1);
 
-        string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-            "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-            "\"amount\":\"" + sendOutAmount.ToString() + "\"," +
-            "\"membersArray\":[" + selectedMembers + "]}";
+            string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                "\"amount\":\"" + sendOutAmount.ToString() + "\"," +
+                "\"membersArray\":[" + selectedMembers + "]}";
 
-        Debug.Log("request is - " + request);
-        WebServices.instance.SendRequest(RequestType.SendChipsOut, request, true, OnServerResponseFound);
+            Debug.Log("request is - " + request);
+            WebServices.instance.SendRequest(RequestType.SendChipsOut, request, true, OnServerResponseFound);
+        }
+        else
+        {
+            StartCoroutine(ShowPopUp("Please enter the amount", 1.29f));
+        }
     }
 
     private void OpenScreen(string screenName)
