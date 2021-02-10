@@ -30,6 +30,7 @@ public class PlayerScript : MonoBehaviour
     private bool isItMe;
     public string otheruserId;
     public string seat;
+    public GameObject winPercentage;
    
     private int localBetAmount = 0;
     private int localBetRoundNo = 0;
@@ -209,12 +210,12 @@ public class PlayerScript : MonoBehaviour
         TogglePlayerUI(false);
     }
 
-    public void TogglePlayerUI(bool isShow, string avatarUrl = null)
+    public void TogglePlayerUI(bool isShow, string avatarUrl = null, string flagUrl = null)
     {
         LoadUI();
         parentObject.SetActive(isShow);
-        if (avatarUrl != null)
-            LoadAvtars_Frame_Flag(avatarUrl);
+        if (avatarUrl != null && flagUrl != null)
+            LoadAvtars_Frame_Flag(avatarUrl, flagUrl);
     }
 
     public bool IsPlayerObjectActive()
@@ -276,9 +277,13 @@ public class PlayerScript : MonoBehaviour
         ToggleFoldScreen(playerData.isFold);
     }
 
-    private void LoadAvtars_Frame_Flag(string avtar_Url)
+    private void LoadAvtars_Frame_Flag(string avtar_Url, string flag_Url)
     {
+        //To load Avtar
         StartCoroutine(loadSpriteImageFromUrl(avtar_Url, avtar));
+
+        //To load Flag
+        StartCoroutine(loadSpriteImageFromUrl(flag_Url, flag));
     }
 
     public void ToggleFoldScreen(bool isShow)
@@ -296,7 +301,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void UpdateRealTimeResult(string result)
     {
-        Debug.LogWarning("Success data send " + result);
+        //Debug.LogWarning("Success data send " + result);
         JsonData data = JsonMapper.ToObject(result);
         //  [{"currentSubRounds":1.0,"currentRounds":0.0,"handType":[{"userId":64.0,"handType":"Straight"},{"userId":65.0,"handType":"Pair"}]}]
         for (int i = 0; i < data[0]["handType"].Count; i++)
@@ -787,16 +792,26 @@ public class PlayerScript : MonoBehaviour
                         }
                         else
                         {
+                            Debug.Log("Cards 3333....." + isItMe + ", " + gameObject.name);
                             cardsImage[i].GetComponent<RectTransform>().sizeDelta = new Vector3(58f, 83f);
+                            
                             if (i == 0)
                             {
-                                cardsImage[i].transform.localPosition = new Vector3(-11, 0);
+                                if (InGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(-11, 0);
+                                else if (ClubInGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(-22, 0);
+
                                 cardsImage[i].transform.localScale = new Vector3(0.87f, 0.87f);
                                 cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                             }
                             if (i == 1)
                             {
-                                cardsImage[i].transform.localPosition = new Vector3(11, 0);
+                                if (InGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(11, 0);
+                                else if (ClubInGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(0, 0);
+                                
                                 cardsImage[i].transform.localScale = new Vector3(0.87f, 0.87f);
                                 cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                             }
@@ -913,6 +928,8 @@ public class PlayerData
     public string avatarurl;
     public string userVIPCard, cardValidity, bufferTime;
     public string seatNo;
+    public string winPercent;
+    public string flagurl;
 }
 
 public class GetData

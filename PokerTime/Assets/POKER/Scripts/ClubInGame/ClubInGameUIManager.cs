@@ -76,6 +76,7 @@ public class ClubInGameUIManager : MonoBehaviour
     public GameObject inGamePopUp;
 
     public List<GameObject> TableImages = new List<GameObject>();
+    public Animator actionPanelAnimator;
 
     private void Awake()
     {
@@ -779,7 +780,7 @@ public class ClubInGameUIManager : MonoBehaviour
     public void ToggleActionButton(bool isShow, PlayerScript playerObject = null, bool isCheckAvailable = false, int lastBetAmount = 0, float availableBalance = 0)
     {
         //DEV_CODE Added 
-        if (isShow)
+        /*if (isShow)
         {
             ResetSuggetionAction();
             //raisePopUp.SetActive(false);
@@ -833,7 +834,7 @@ public class ClubInGameUIManager : MonoBehaviour
             availableCallAmount = callAmount;
         }
         actionButtonParent.SetActive(isShow);
-
+        */
 
 
 
@@ -902,6 +903,64 @@ public class ClubInGameUIManager : MonoBehaviour
 
         //    availableCallAmount = callAmount;
         //}
+
+        if (isShow)
+        {
+            ResetSuggetionAction();
+            //raisePopUp.SetActive(false);
+            int callAmount = lastBetAmount - (int)playerObject.GetPlayerData().totalBet;
+
+            if (callAmount > 0)
+            {
+                isCheckAvailable = false;
+            }
+
+            useRaisePotWise = isCheckAvailable;
+
+            Debug.LogError("call amount  " + callAmount + "  lba  " + lastBetAmount + " availableBalance " + availableBalance + " totalBet " + playerObject.GetPlayerData().totalBet);
+
+            //if (!isCheckAvailable)
+            {
+                if (callAmount > 0) // amount available to bet
+                {
+                    if (lastBetAmount > availableBalance)
+                    {
+                        actionButtons[(int)PlayerAction.Check].SetActive(false);
+                        actionButtons[(int)PlayerAction.Call].SetActive(false);
+                        actionButtons[(int)PlayerAction.AllIn].SetActive(true);
+                    }
+                    else
+                    {
+                        callAmountText.text = "" + callAmount;
+                        actionButtons[(int)PlayerAction.Check].SetActive(false);
+                        actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+                        actionButtons[(int)PlayerAction.Call].SetActive(true);
+                    }
+                }
+                else // dont have amount to bet hence show only fold and all-in
+                {
+                    actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+                    actionButtons[(int)PlayerAction.Raise].SetActive(true);
+                    actionButtons[(int)PlayerAction.Check].SetActive(true);
+                    actionButtons[(int)PlayerAction.Fold].SetActive(true);
+                }
+
+                if (callAmount == 0)
+                {
+                    callAmountText.text = "";
+                    //actionButtons[(int)PlayerAction.Call].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Raise].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Check].SetActive(false);
+                    //actionButtons[(int)PlayerAction.AllIn].SetActive(false);
+                    //actionButtons[(int)PlayerAction.Fold].SetActive(false);
+                }
+            }
+
+            availableCallAmount = callAmount;
+        }
+        actionButtonParent.SetActive(isShow);
+        actionPanelAnimator.SetBool("isOpen", true);
     }
 
 

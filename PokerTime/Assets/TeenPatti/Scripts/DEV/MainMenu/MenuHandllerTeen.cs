@@ -175,6 +175,11 @@ public class MenuHandllerTeen : MonoBehaviour
 				}
 			break;
 
+			case "PlayPoker":
+				GameConstants.poker = true;
+				GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
+				break;
+
 			case "consecutiveLoginReward":
 				{
 					MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.ConsecutiveLoginReward);

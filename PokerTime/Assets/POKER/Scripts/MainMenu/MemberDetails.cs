@@ -684,6 +684,10 @@ public class MemberDetails : MonoBehaviour
 
             if (data["status"].Equals(true))
             {
+				//Clear all list of players
+                MemberListUIManager.instance.oldMembersList.Clear();
+                MemberListUIManager.instance.newMembersList.Clear();
+				
                 MemberListUIManager.instance.ShowMemberDetails(data);
             }
             else
@@ -973,9 +977,9 @@ public class MemberDetails : MonoBehaviour
             GameObject obj = Instantiate(AgentPrefabForDownline, AgentSelectDownlineContainer) as GameObject;
 
             //Set Instantiated Object name to user name
-            obj.name = data["response"][i]["userAlias"].ToString();
+            obj.name = (data["response"][i]["userAlias"].ToString().Equals("") ? "Alias" : data["response"][i]["userAlias"].ToString());
 
-            obj.transform.Find("TextName").GetComponent<TMP_Text>().text = data["response"][i]["userAlias"].ToString();
+            obj.transform.Find("TextName").GetComponent<TMP_Text>().text = (data["response"][i]["userAlias"].ToString().Equals("")?"Alias": data["response"][i]["userAlias"].ToString());
             obj.transform.Find("TextId").GetComponent<TMP_Text>().text = data["response"][i]["requestUserId"].ToString();
             obj.transform.Find("TextNickname").GetComponent<TMP_Text>().text = data["response"][i]["nickName"].ToString();
             //obj.transform.Find("Coins").GetComponent<TMP_Text>().text = data["response"][i]["ptChips"].ToString();

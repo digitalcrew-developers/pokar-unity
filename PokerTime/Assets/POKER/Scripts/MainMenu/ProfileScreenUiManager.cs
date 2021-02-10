@@ -60,7 +60,7 @@ public class ProfileScreenUiManager : MonoBehaviour
         }
         if (requestType == RequestType.GetUserDetails)
         {
-            //Debug.Log("profile :" + serverResponse);
+            Debug.Log("Response => GetUserDetails :" + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["success"].ToString() == "1")

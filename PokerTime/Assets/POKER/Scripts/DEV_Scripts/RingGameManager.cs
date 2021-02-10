@@ -385,7 +385,7 @@ public class RingGameManager : MonoBehaviour
                         //Debug.Log(data["message"].ToString());
                         //joinClubPopUp.SetActive(false);
                         //MainMenuController.instance.ShowMessage(data["message"].ToString());
-                        ClubTableController.instance.RequestTemplateData();
+                        ClubTableController.instance.RequestTemplateData(false);
                     }
                     else
                     {
@@ -416,7 +416,10 @@ public class RingGameManager : MonoBehaviour
                             isPublishTemplateWithCreate = false;
                             //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
                             ClubDetailsUIManager.instance.GetClubTemplates();
-                            ClubTableController.instance.RequestTemplateData();
+                            ClubTableController.instance.RequestTemplateData(true);
+
+                            if (ClubTableController.instance.createTablePanel.activeSelf)
+                                ClubTableController.instance.createTablePanel.SetActive(false);
                         }
                     }
                     else

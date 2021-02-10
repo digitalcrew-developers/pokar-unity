@@ -129,10 +129,22 @@ public class ClubSocketController : MonoBehaviour
         socketManager.Socket.On("minMaxAppEmit", MinimizeAppServer);
         socketManager.Socket.On("seatObject", SeatObjectsReceived);
         socketManager.Socket.On("rabbitOpenCards", RabbitCardDataReceived);
-        socketManager.Socket.On("evChopData", EVChopDataReceived);  //DEV_CODE Added Event for EVChopDataReceived called
+        //socketManager.Socket.On("evChopData", EVChopDataReceived);  //DEV_CODE Added Event for EVChopDataReceived called
         socketManager.Socket.On("playerExit", PlayerExit);          //DEV_CODE Added Event for PlayerExit called
         socketManager.Socket.On("askEvChop", EVChopDataReceived);
         socketManager.Socket.On("closePopUp", EVChopCloseDataReceived);
+
+        //DEV_CODE
+        socketManager.Socket.On("askMultiRunAction", OnAskMultiRunAction);
+        socketManager.Socket.On("confirmMultiRunAction", OnConfirmMultiRunAction);
+
+        socketManager.Socket.On("askMultiRun", OnAskMultiRun);
+        socketManager.Socket.On("confirmMultiRun", OnConfirmMultiRun);
+
+        //socketManager.Socket.On("closePopUp", OnClosePopUp);
+        socketManager.Socket.On("comCard1", OnComCards1);
+        socketManager.Socket.On("comCard2", OnComCards2);
+
         socketManager.Open();
     }
 
@@ -177,13 +189,62 @@ public class ClubSocketController : MonoBehaviour
         Debug.Log(responseText);
     }
 
-    //DEV_CODE Added this method to be called when EVChopDataReceived emited
+    //DEV_CODE 
+    private void OnAskMultiRunAction(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("OnAskMultiRunReceived :" + responseText);
+    }
+
+    private void OnConfirmMultiRunAction(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("ConfirmMultiRunActionReceived :" + responseText);
+        //ClubInGameManager.instance.MultiRunActionPanel.SetActive(true);
+    }
+
+    private void OnAskMultiRun(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("OnAskMultiRun :" + responseText);
+        ClubInGameManager.instance.MultiRunPanel.SetActive(true);
+    }
+
+    private void OnConfirmMultiRun(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("OnConfirmMultiRun :" + responseText);
+        ClubInGameManager.instance.MultiRunActionPanel.SetActive(true);
+    }
+
+
+    /*private void OnClosePopUp(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("OnClosePopUp :" + responseText);
+    }*/
+
+    private void OnComCards1(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("<color=magenta>OnComCards1 :</color> " + responseText);
+        StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer1.position));
+    }
+
+    private void OnComCards2(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("<color=magenta>OnComCards2 :</color> " + responseText);
+        StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer2.position));
+    }
+
+    //This method to be called when EVChopDataReceived emited
     private void EVChopDataReceived(Socket socket, Packet packet, object[] args)
     {
-        Debug.Log("<color=magenta>EVChopDataReceived :</color>" + args);
+        //Debug.Log("<color=magenta>EVChopDataReceived :</color>" + args);
         string responseText = JsonMapper.ToJson(args);
 
-        Debug.LogError("EVChopDataReceived :" + responseText);
+        //Debug.LogError("EVChopDataReceived :" + responseText);
 
 #if DEBUG
 
@@ -207,6 +268,7 @@ public class ClubSocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.LogError("EVChopCloseDataReceived :" + responseText);
+        ClubInGameManager.instance.HideEVChopButtons();
     }
 
     private void RabbitCardDataReceived(Socket socket, Packet packet, object[] args)
@@ -269,7 +331,7 @@ public class ClubSocketController : MonoBehaviour
 #endif
 
 #endif
-            Debug.Log(ClubInGameManager.instance.userWinner + " <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
+            Debug.LogWarning(ClubInGameManager.instance.userWinner + " <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
             switch (responseObject.eventType)
             {
                 case SocketEvetns.CONNECT:
@@ -496,7 +558,7 @@ public class ClubSocketController : MonoBehaviour
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.PLAYER_OBJECT))
         {
-            Debug.Log("OnPlayerObjectFound = " + responseText + "  Time = " + System.DateTime.Now);
+            //Debug.Log("OnPlayerObjectFound = " + responseText + "  Time = " + System.DateTime.Now);
 
         }
 #else
@@ -1132,23 +1194,65 @@ public class ClubSocketController : MonoBehaviour
 
 
     #region EMIT_METHODS
-
-    /*public void RequestEVCHOP()
+    //DEV_CODE
+    public void RequestAskMultiRunAction(int value)
     {
-        EVChopData requestData = new EVChopData();
-        requestData.tableId = TABLE_ID;
+        ClubInGameManager.instance.MultiRunPanel.SetActive(false);
+        AskMultiRunAction requestData = new AskMultiRunAction();
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+        requestData.tableId = TABLE_ID;
+        if (value == 0)
+            requestData.action = false;
+        else
+            requestData.action = true;
+        requestData.runIt = value;
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
 
         SocketRequest request = new SocketRequest();
-        request.emitEvent = "calculateEvChop"; //rabbitCardData //rabbitOpenCards
+        request.emitEvent = "askMultiRunAction"; //rabbitCardData //rabbitOpenCards
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;
         request.requestDataStructure = requestStringData;
         socketRequest.Add(request);
-    }*/
+    }
+
+    public void RequestConfirmMultiRunAction(bool action)
+    {
+        ClubInGameManager.instance.MultiRunActionPanel.SetActive(false);
+        ConfirmMultiRunAction requestData = new ConfirmMultiRunAction();
+        requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+        requestData.tableId = TABLE_ID;
+        requestData.action = action;
+
+        string requestStringData = JsonMapper.ToJson(requestData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "confirmMultiRunAction"; //rabbitCardData //rabbitOpenCards
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+    }
+
+    //public void RequestEVCHOP()
+    //{
+    //    EVChopData requestData = new EVChopData();
+    //    requestData.tableId = TABLE_ID;
+    //    requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+
+    //    string requestStringData = JsonMapper.ToJson(requestData);
+    //    object requestObjectData = Json.Decode(requestStringData);
+
+    //    SocketRequest request = new SocketRequest();
+    //    request.emitEvent = "calculateEvChop"; //rabbitCardData //rabbitOpenCards
+    //    request.plainDataToBeSend = null;
+    //    request.jsonDataToBeSend = requestObjectData;
+    //    request.requestDataStructure = requestStringData;
+    //    socketRequest.Add(request);
+    //}
 
     public void RequestRabbitCard()
     {
@@ -1344,7 +1448,7 @@ public class ClubSocketController : MonoBehaviour
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
-
+        Debug.Log("<color=magenta>Fold Request </color>" + requestStringData);
         SocketRequest request = new SocketRequest();
         request.emitEvent = "foldCards";
         request.plainDataToBeSend = null;
@@ -1557,10 +1661,14 @@ public class ClubSocketController : MonoBehaviour
         requestData.index = index;
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
-
+        Debug.LogError("evChopAction " + requestStringData);
         SocketRequest request = new SocketRequest();
         request.emitEvent = "evChopAction";
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
         socketRequest.Add(request);
+        //SendSocketRequest();
     }
 
     #endregion

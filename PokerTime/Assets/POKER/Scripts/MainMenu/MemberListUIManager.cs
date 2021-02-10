@@ -167,6 +167,11 @@ public class MemberListUIManager : MonoBehaviour
 
         if (isShowNewMembers)
         {
+            for (int i = 0; i < container.childCount; i++)
+            {
+                Destroy(container.GetChild(i).gameObject);
+            }
+
             for (int i = 0; i < newMembersList.Count; i++)
             {
                 ClubMemberDetails memberDetails = newMembersList[i];
@@ -197,6 +202,11 @@ public class MemberListUIManager : MonoBehaviour
         }
         else
         {
+            for (int i = 0; i < container.childCount; i++)
+            {
+                Destroy(container.GetChild(i));
+            }
+
             for (int i = 0; i < oldMembersList.Count; i++)
             {
                 int x = i;
@@ -259,7 +269,7 @@ public class MemberListUIManager : MonoBehaviour
     {
         MemberDetailsPanel.SetActive(true);
         Debug.Log(oldMembersList.Count);
-        Debug.Log("i is"  + i);
+        //Debug.Log("i is"  + i);
         MemberDetails.instance.Initialise(oldMembersList[i], gm);
     }
 
@@ -394,17 +404,24 @@ public class MemberListUIManager : MonoBehaviour
             clubMemberDetails.ptChips = data["data"][i]["ptChips"].ToString();
             clubMemberDetails.creditChips = data["data"][i]["creditChips"].ToString();
             clubMemberDetails.profileImagePath = data["data"][i]["profileImage"].ToString();
-            
+
+            //DEV_CODE
+            //To display Players' credit Chips on club dashboard
+            if (data["data"][i]["requestUserId"].ToString().Equals(PlayerManager.instance.GetPlayerGameData().userId))
+            {
+                if (data["data"][i]["assignRole"].ToString().Equals("Member"))
+                    ClubDetailsUIManager.instance.CLubChips.text = data["data"][i]["ptChips"].ToString();
+                else if (data["data"][i]["assignRole"].ToString().Equals("Creater"))
+                    ClubDetailsUIManager.instance.CLubChips.text = data["data"][i]["clubPtChips"].ToString();
+                else
+                    ClubDetailsUIManager.instance.CLubChips.text = data["data"][i]["creditChips"].ToString();
+            }
 
             if (!newMembers)
             {
                 clubMemberDetails.nickName = data["data"][i]["nickName"].ToString();
             }
-            else
-            {
-
-            }
-
+            
             switch (data["data"][i]["assignRole"].ToString())
             {
                 case "Creater":
@@ -448,10 +465,11 @@ public class MemberListUIManager : MonoBehaviour
                 oldMembersList.Add(clubMemberDetails);
             }
 
-            OnClickOnButton("oldMember");
+            //OnClickOnButton("oldMember");
         }
+        OnClickOnButton("oldMember");
     }
-    
+
 
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -480,6 +498,11 @@ public class MemberListUIManager : MonoBehaviour
             if (data["status"].Equals(true))
             {
                 newMemberButton.transform.Find("Notification").gameObject.SetActive(true);
+
+                //Clear all list of players
+                oldMembersList.Clear();
+                newMembersList.Clear();
+
                 ShowMemberDetails(data,true);
             }
             else
@@ -500,6 +523,10 @@ public class MemberListUIManager : MonoBehaviour
                 {
                     Destroy(container.GetChild(i).gameObject);
                 }
+
+                //Clear all list of players
+                oldMembersList.Clear();
+                newMembersList.Clear();
 
                 ShowMemberDetails(data);
             }

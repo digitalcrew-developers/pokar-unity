@@ -6,14 +6,26 @@ using UnityEngine.UI;
 
 public class CareerMnuScreenManager : MonoBehaviour
 {
+    public static CareerMnuScreenManager instance;
+
     public List<GameObject> btnList;
     public GameObject multiAccountList, multiAccountBtn;
 
     public InputField requestedUserID;
-    
+
+    [Header("Available Club Data")]
+    public Transform clubContainer;
+    public GameObject clubObject;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
+
     public void OnEnable()
     {
-        Debug.Log("selectedIndex---------------   " + CareerManager.instance.selectedIndex_CareerMenuScreen);
+        //Debug.Log("selectedIndex---------------   " + CareerManager.instance.selectedIndex_CareerMenuScreen);
         for (int i = 0; i < btnList.Count; i++)
         {
             //btnList[i].GetComponent<Image>().color = new Color32(42, 42, 42, 255);
@@ -26,6 +38,7 @@ public class CareerMnuScreenManager : MonoBehaviour
         }
 
         LoadPlayerAccounts();
+        LoadAvailableClubList();
     }
 
     private void LoadPlayerAccounts()
@@ -49,7 +62,6 @@ public class CareerMnuScreenManager : MonoBehaviour
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
-
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
@@ -120,7 +132,22 @@ public class CareerMnuScreenManager : MonoBehaviour
                 CareerManager.instance.headingTxt.text = btnList[i].transform.GetChild(0).GetComponent<Text>().text;
             }
         }
-        Debug.Log("selectedIndex-----0000----------   " + CareerManager.instance.selectedIndex_CareerMenuScreen);
+        //Debug.Log("selectedIndex-----0000----------   " + CareerManager.instance.selectedIndex_CareerMenuScreen);
+    }
 
+    //DEV_CODE
+    public void LoadAvailableClubList()
+    {
+        for (int i = 0; i < clubContainer.childCount; i++)
+        {
+            Destroy(clubContainer.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < ClubListUiManager.instance.container.childCount; i++)
+        {
+            GameObject obj = Instantiate(clubObject, clubContainer);
+
+            obj.transform.Find("Text").GetComponent<Text>().text = ClubListUiManager.instance.container.GetChild(i).Find("ClubName").GetComponent<Text>().text;
+        }
     }
 }

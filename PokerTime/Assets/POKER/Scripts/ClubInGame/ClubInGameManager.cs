@@ -100,6 +100,16 @@ public class ClubInGameManager : MonoBehaviour
     [HideInInspector]
     public bool userWinner = false;
 
+    public GameObject runItMultiAllCards;
+    public GameObject runItMultiTwoCards;
+    public GameObject runItMultiOneCard;
+
+    public Transform communityCardLayer1;
+    public Transform communityCardLayer2;
+
+    public GameObject MultiRunPanel;
+    public GameObject MultiRunActionPanel;
+
     private void Awake()
     {
         instance = this;
@@ -220,6 +230,12 @@ public class ClubInGameManager : MonoBehaviour
 
     public void OnEVChopDataFound(string responseText)
     {
+        for (int i = 0; i < onlinePlayersScript.Length; i++)
+        {
+            Debug.Log("Win% :" + onlinePlayersScript[i].playerData.winPercent);
+            onlinePlayersScript[i].winPercentage.SetActive(true);
+            onlinePlayersScript[i].winPercentage.transform.GetChild(0).GetComponent<Text>().text = onlinePlayersScript[i].playerData.winPercent;
+        }
         Debug.LogError("EV :" + responseText);
         JsonData data = JsonMapper.ToObject(responseText);
         Debug.LogError("EV2 :" + data[0][0]["amount"]);
@@ -301,7 +317,7 @@ public class ClubInGameManager : MonoBehaviour
                 //Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn);
                 //Debug.Log("Url " + newMatchMakingPlayerData[i].playerData.avatarurl);
                 allPlayersObject[i].seat = (i + 1).ToString();
-                allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl);
+                allPlayersObject[i].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl, newMatchMakingPlayerData[i].playerData.flagurl);
                 onlinePlayersScript[i] = allPlayersObject[i];
                 onlinePlayersScript[i].Init(newMatchMakingPlayerData[i]);
 
@@ -400,7 +416,7 @@ public class ClubInGameManager : MonoBehaviour
             if (!players[i].playerData.isStart)
                 players[i].ToggleCards(false, players[i].IsMe());
             else
-            players[i].ToggleCards(true, players[i].IsMe());
+                players[i].ToggleCards(true, players[i].IsMe());
         }
 
         ClubSocketController.instance.SetSocketState(SocketState.Game_Running);
@@ -462,70 +478,71 @@ public class ClubInGameManager : MonoBehaviour
         //Debug.LogWarning("Buffer Time :  " + GameConstants.BUFFER_TIME);
 
         if (float.Parse(t) < 1)
+            ResetMatchData();
         //{
-            //if (!isRematchRequestSent)
-            //{
-                //Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
+        //if (!isRematchRequestSent)
+        //{
+        //Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
 
-                //if (remainingTime > GameConstants.BUFFER_TIME)
-                //{
-                    //Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
+        //if (remainingTime > GameConstants.BUFFER_TIME)
+        //{
+        //Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
 
-                    //DEV_CODE
-                    //ClubInGameUIManager.instance.isSelectedWinningBooster = false;
+        //DEV_CODE
+        //ClubInGameUIManager.instance.isSelectedWinningBooster = false;
 
-                    //if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
-                    //{
-                        //Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
-                        //ToggleTopUpDone(false);
-                        //ClubSocketController.instance.SendReMatchRequest("Yes", "0");
-                    //}
-                    //else
-                    //{
-                    //    //int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn - (int)availableBalance;
-                    //    //float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
-
-                    //    //now we are adding balance if userbalance is 0.
-                    //    int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn;
-                    //    float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
-                    //    Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance);
-                    //    //if (userMainBalance >= balanceToAdd)
-                    //    if (userMainBalance < EPSILON)
-                    //    {
-                    //        Debug.Log("<color=pink>" + "UserMainBalance: " + userMainBalance + " </color>");
-                    //        ClubSocketController.instance.SendReMatchRequest("Yes", "0");
-                    //        //send topup request with the below api.. for clarification contact Pradeep - Digital Crew
-                    //        ClubSocketController.instance.SendTopUpRequest(balanceToAdd);
-
-                    //        //userMainBalance -= balanceToAdd;
-                    //        PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
-                    //        //playerData.coins = userMainBalance;
-                    //        playerData.coins = balanceToAdd;
-                    //        PlayerManager.instance.SetPlayerGameData(playerData);
-                    //    }
-                    //    else
-                    //    {
-                    //        if (availableBalance > GlobalGameManager.instance.GetRoomData().smallBlind)
-                    //        {
-                    //            Debug.Log("<color=pink>" + "SmallBlind: " + GlobalGameManager.instance.GetRoomData().smallBlind + " and Available Balance: " + availableBalance + "</color>");
-                    //            ClubSocketController.instance.SendReMatchRequest("Yes", "0");
-                    //        }
-                    //        else
-                    //        {
-                    //            ClubInGameUIManager.instance.ShowMessage("You don't have enough coins to play, please purchase some coins to continue");
-                    //            // TODO call sit out
-                    //            // TODO show coin purchase screen
-                    //        }
-                    //    }
-                    //}
-                //}
-                //else
-                //{
-                //    ClubSocketController.instance.SendReMatchRequest("No", "0");
-                //}
-            //}
+        //if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
+        //{
+        //Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
+        //ToggleTopUpDone(false);
+        //ClubSocketController.instance.SendReMatchRequest("Yes", "0");
         //}
-        ResetMatchData();
+        //else
+        //{
+        //    //int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn - (int)availableBalance;
+        //    //float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
+
+        //    //now we are adding balance if userbalance is 0.
+        //    int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn;
+        //    float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
+        //    Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance);
+        //    //if (userMainBalance >= balanceToAdd)
+        //    if (userMainBalance < EPSILON)
+        //    {
+        //        Debug.Log("<color=pink>" + "UserMainBalance: " + userMainBalance + " </color>");
+        //        ClubSocketController.instance.SendReMatchRequest("Yes", "0");
+        //        //send topup request with the below api.. for clarification contact Pradeep - Digital Crew
+        //        ClubSocketController.instance.SendTopUpRequest(balanceToAdd);
+
+        //        //userMainBalance -= balanceToAdd;
+        //        PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
+        //        //playerData.coins = userMainBalance;
+        //        playerData.coins = balanceToAdd;
+        //        PlayerManager.instance.SetPlayerGameData(playerData);
+        //    }
+        //    else
+        //    {
+        //        if (availableBalance > GlobalGameManager.instance.GetRoomData().smallBlind)
+        //        {
+        //            Debug.Log("<color=pink>" + "SmallBlind: " + GlobalGameManager.instance.GetRoomData().smallBlind + " and Available Balance: " + availableBalance + "</color>");
+        //            ClubSocketController.instance.SendReMatchRequest("Yes", "0");
+        //        }
+        //        else
+        //        {
+        //            ClubInGameUIManager.instance.ShowMessage("You don't have enough coins to play, please purchase some coins to continue");
+        //            // TODO call sit out
+        //            // TODO show coin purchase screen
+        //        }
+        //    }
+        //}
+        //}
+        //else
+        //{
+        //    ClubSocketController.instance.SendReMatchRequest("No", "0");
+        //}
+        //}
+        //}
+
     }
 
     public void UpdateAvailableBalance(float balance)
@@ -789,7 +806,8 @@ public class ClubInGameManager : MonoBehaviour
                 playerDataObject.tableId = data[0][i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[0][i]["totalCoins"].ToString());
                 playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
-				playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
+                playerDataObject.flagurl = data[0][i]["countryFlag"].ToString();
+                playerDataObject.isFold = bool.Parse(data[0][i]["isFold"].ToString());
                 playerDataObject.isBlock = bool.Parse(data[0][i]["isBlocked"].ToString());
                 playerDataObject.isStart = bool.Parse(data[0][i]["isStart"].ToString());
                 //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
@@ -944,10 +962,10 @@ public class ClubInGameManager : MonoBehaviour
         }
     }
 
-    public void EmitEVChop()
+    public void EmitEVChop(string action)
     {
         //EVCHOPPanel.SetActive(true);
-        ClubSocketController.instance.ConfrimEvChop("1", "0");
+        ClubSocketController.instance.ConfrimEvChop(action, "0");
     }
 
     public void HideEVChopButtons()
@@ -956,7 +974,10 @@ public class ClubInGameManager : MonoBehaviour
         EVCHOPButton.SetActive(false);
         EVCHOPPanel.SetActive(false);
         //loop through and hide all ev chop values from players
-
+        for (int i = 0; i < onlinePlayersScript.Length; i++)
+        {
+            onlinePlayersScript[i].winPercentage.SetActive(false);
+        }
     }
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
@@ -1261,6 +1282,8 @@ public class ClubInGameManager : MonoBehaviour
 
                     yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
 
+                    //GameObject gmTwoCards = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+
                     for (int i = 0; i < 4; i++)
                     {
                         if (openCards[i].cardIcon == CardIcon.NONE) { break; }
@@ -1301,12 +1324,37 @@ public class ClubInGameManager : MonoBehaviour
 
                     yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
 
+                    yield return new WaitForSeconds(0.5f);
+
+                    //GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    //GameObject gmTwoCard = Instantiate(runItMultiTwoCards, animationLayer) as GameObject;
+
                     for (int i = 0; i < communityCards.Length; i++)
                     {
                         if (openCards[i].cardIcon == CardIcon.NONE) { break; }
                         communityCards[i].sprite = openCards[i].cardsSprite;
-                        communityCards[i].gameObject.SetActive(true);                        
+                        communityCards[i].gameObject.SetActive(true);
+
+                        //gmAllCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
                     }
+
+                    //for (int i = 3; i < communityCards.Length; i++)
+                    //{
+                        //if (openCards[i].cardIcon == CardIcon.NONE)
+                        //{ break; }
+                        //communityCards[i].sprite = openCards[i].cardsSprite;
+                        //communityCards[i].gameObject.SetActive(true);
+
+                        //gmTwoCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                    //}
+
+                    //gmTwoCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    //gmTwoCard.transform.DOMove(communityCardLayer1.transform.position, 0.7f);
+
+                    //yield return new WaitForSeconds(0.7f);
+
+                    //gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    //gmAllCard.transform.DOMove(communityCardLayer2.transform.position, 0.7f);
                 }
                 break;
 
@@ -1354,6 +1402,220 @@ public class ClubInGameManager : MonoBehaviour
 
         isHighlightCard = false;
         yield return new WaitForSeconds(0.1f);
+    }
+
+    public IEnumerator ShowMultiRunCards(string cardData, Vector3 pos)
+    {
+        JsonData data = JsonMapper.ToObject(cardData);
+        Debug.Log(data[0].Count + " Multi Cards " + data.Count);
+        openCards = new CardData[data[0].Count];
+
+        for (int i = 0; i < data[0].Count; i++)
+        {
+            if (string.IsNullOrEmpty(data[0][i].ToString()))
+            {
+                openCards[i] = CardsManager.instance.GetEmptyCardData();
+            }
+            else
+            {
+                openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
+            }
+            //openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
+        }
+        switch (data[0].Count)
+        {
+            case 3:
+                {
+                    GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    for (int i = 0; i < communityCards.Length; i++)
+                    {
+                        //if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+                        //communityCards[i].sprite = openCards[i].cardsSprite;
+                        //communityCards[i].gameObject.SetActive(true);
+                        gmAllCard.transform.GetChild(i).GetComponent<Image>().sprite = communityCards[i].sprite;
+                        communityCards[i].gameObject.SetActive(false);
+                    }
+                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    gmAllCard.transform.DOMove(pos, 0.5f).OnComplete(() => { gmAllCard.transform.DOScale(0.8f, 0.1f); });
+
+                    //WinnersNameText.text = "";   //DEV_CODE Added this line as per InGameManager script
+                    HideEVChopButtons();
+                    //canShowEVChop = true;
+                    //SoundManager.instance.PlaySound(SoundType.CardMove);
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i].cardsSprite;
+                    }
+                    yield return new WaitForSeconds(1f);
+                    SoundManager.instance.PlaySound(SoundType.CardMove);
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                        gm.transform.localScale = communityCards[0].transform.localScale;
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                        gm.transform.Rotate(0, -90, 0);
+                        gm.transform.position = communityCards[0].transform.position;
+
+                        gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                        gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+                        //gm.transform.DOScale(communityCards[i].transform.localScale, GameConstants.CARD_ANIMATION_DURATION).SetEase(Ease.OutBack);
+
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 3);
+                    }
+
+                    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
+                    }
+                }
+                break;
+
+            case 4:
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
+                    }
+                    yield return new WaitForSeconds(1f);
+
+                    SoundManager.instance.PlaySound(SoundType.CardMove);
+
+                    for (int i = 3; i < 4; i++)
+                    {
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.transform.localScale = communityCards[i].transform.localScale;
+                        gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                        gm.transform.Rotate(0, -90, 0);
+                        gm.transform.position = communityCards[i].transform.position;
+
+                        gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                        gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                    }
+
+                    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+
+                    //GameObject gmTwoCards = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
+                    }
+                }
+                break;
+
+            case 5:
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i].cardsSprite;
+                    }
+                    yield return new WaitForSeconds(1f);
+
+                    if (DontShowCommunityCardAnimation) { yield break; }
+                    SoundManager.instance.PlaySound(SoundType.CardMove);
+
+                    for (int i = 4; i < 5; i++)
+                    {
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.transform.localScale = communityCards[i].transform.localScale;
+                        gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                        gm.transform.Rotate(0, -90, 0);
+                        gm.transform.position = communityCards[i].transform.position;
+
+                        gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                        gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                    }
+
+                    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+
+                    //yield return new WaitForSeconds(0.5f);
+                    //Debug.Log("<color=magenta>CCCCCCC :</color> ");
+                    //GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    //GameObject gmTwoCard = Instantiate(runItMultiTwoCards, animationLayer) as GameObject;
+
+                    for (int i = 0; i < communityCards.Length; i++)
+                    {
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
+
+                        //gmAllCard.transform.GetChild(i).GetComponent<Image>().sprite = openCards[i].cardsSprite;
+                    }
+
+                    //yield return new WaitForSeconds(0.7f);
+
+                    //gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    //gmAllCard.transform.DOMove(communityCardLayer2.transform.position, 0.7f);
+                }
+                break;
+
+            default:
+                {
+
+                    for (int i = 0; i < communityCards.Length; i++)
+                    {
+                        if (openCards[i].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
+
+                        //DEV_CODE Added this line as per InGameManager script
+                        communityCards[i].transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                        //DEV_CODE Added this line as per InGameManager script
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+                    }
+
+                    //DEV_CODE
+                    if (isHighlightCard)
+                    {
+                        for (int n = 0; n < communityCards.Length; n++)
+                        {
+                            //communityCards[n].color = Color.white;
+                            communityCards[n].transform.GetChild(0).gameObject.SetActive(false);
+                        }
+                    }
+                    for (int num = 0; num < communityCards.Length; num++)
+                    {
+                        for (int num2 = 0; num2 < highlightCards.Length; num2++)
+                        {
+                            if (isHighlightCard && highlightCards[num2] != null && communityCards[num].sprite.name == highlightCards[num2].cardsSprite.name)
+                            {
+                                //communityCards[num].color = Color.yellow;
+                                communityCards[num].transform.GetChild(0).gameObject.SetActive(true);
+
+                                //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                            }
+                        }
+                    }
+                }
+                break;
+        }
     }
 
     public void SendEmoji(string serverResponse)
@@ -1413,7 +1675,16 @@ public class ClubInGameManager : MonoBehaviour
         }
     }
 
+    //DEV_CODE
+    public void OnClickResumeGamePlay(int value)
+    {
+        ClubSocketController.instance.RequestAskMultiRunAction(value);
+    }
 
+    public void OnClickResumeGamePlayAction(bool action)
+    {
+        ClubSocketController.instance.RequestConfirmMultiRunAction(action);
+    }
 
     public void ToggleTopUpDone(bool isDone)
     {
@@ -1429,7 +1700,7 @@ public class ClubInGameManager : MonoBehaviour
 
         string s = serverResponse.Remove(serverResponse.Length - 1, 1);
         s = s.Remove(0, 1);
-        Debug.LogWarning("s" + s);
+        //Debug.LogWarning("s" + s);
 
 
         AllShowdownSidePots showdownSidePot = JsonUtility.FromJson<AllShowdownSidePots>(s);
@@ -1693,25 +1964,25 @@ public class ClubInGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
-        Debug.LogWarning("NEXT ROUND In: " + remainingTime);
+        //Debug.LogWarning("NEXT ROUND In: " + remainingTime);
         if (remainingTime > 1)
         {
             //ClubInGameUIManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
             // ClubInGameUIManager.instance.LoadingImage.SetActive(true);
             if (!isRematchRequestSent)
             {
-                Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
+                //Debug.LogWarning("Not setup Rematch Request @@@@!!!!!!");
 
                 if (remainingTime > GameConstants.BUFFER_TIME)
                 {
-                    Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
+                    //Debug.LogWarning("Remaining Time Is More Than Buffer Time....");
 
                     //DEV_CODE
                     ClubInGameUIManager.instance.isSelectedWinningBooster = false;
 
                     if (isTopUpDone || availableBalance >= GlobalGameManager.instance.GetRoomData().minBuyIn)
                     {
-                        Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
+                        //Debug.LogWarning("ToggleTOPUP False........!!!!!!!! And Send Rematch Request....");
                         ToggleTopUpDone(false);
                         ClubSocketController.instance.SendReMatchRequest("Yes", "0");
                     }
@@ -1915,7 +2186,9 @@ public class ClubInGameManager : MonoBehaviour
     {
         //UnityEngine.Debug.LogWarning("Round Data :- " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
-        MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
+
+        if(data[0] != null)
+            MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
 		if (MATCH_ROUND == -1)
             MATCH_ROUND = 1;
         handtype = serverResponse;
@@ -2091,6 +2364,7 @@ public class ClubInGameManager : MonoBehaviour
 
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
                         playerData.playerData.avatarurl = data[0][i]["profileImage"].ToString();    //DEV_CODE Added this line as per InGameManager script
+                        playerData.playerData.flagurl = data[0][i]["countryFlag"].ToString();
                         playerData.playerData.tableId = data[0][i]["tableId"].ToString();
                         ClubInGameUIManager.instance.tableId = data[0][i]["tableId"].ToString();
 						playerData.playerData.isFold = bool.Parse(data[0][i]["isFold"].ToString());
@@ -2111,7 +2385,8 @@ public class ClubInGameManager : MonoBehaviour
                         playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
                         playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
-
+                        Debug.Log("Win% ww :" + data[0][i]["winPercent"].ToString());
+                        playerData.playerData.winPercent = data[0][i]["winPercent"].ToString();
                         //Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
                         if (playerData.isTurn)
@@ -2178,11 +2453,12 @@ public class ClubInGameManager : MonoBehaviour
                         playerData.cardValidity = data[0][i]["cardValidity"].ToString();
                         playerData.bufferTime = data[0][i]["bufferTime"].ToString();
                         playerData.seatNo = data[0][i]["seatNo"].ToString();
-
+                        Debug.Log("Win% rr :" + data[0][i]["winPercent"].ToString());
+                        playerObject.playerData.winPercent = data[0][i]["winPercent"].ToString();
                         //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
                         {
-                            Debug.LogWarning(data[0][i]["userName"].ToString() + " isTurn is true");    //DEV_CODE Added
+                            //Debug.LogWarning(data[0][i]["userName"].ToString() + " isTurn is true");    //DEV_CODE Added
                             playerWhosTurn = playerObject;
                             isCheckAvailable = data[0][i]["isCheck"].Equals(true);
                             isMyTurn = isCheckAvailable;    //DEV_CODE Added
@@ -2200,21 +2476,21 @@ public class ClubInGameManager : MonoBehaviour
 
                         playerData.cards = new CardData[data[0][i]["cards"].Count];
 
-                        Debug.Log("Player Cards Length : " + playerData.cards.Length);
+                        //Debug.Log("Player Cards Length : " + playerData.cards.Length);
 
                         for (int j = 0; j < playerData.cards.Length; j++)
                         {
                             if (playerData == null)
                             {
 #if ERROR_LOG
-                                Debug.LogError("matchmaking object is null");
+                                //Debug.LogError("matchmaking object is null");
 #endif
                             }
 
                             if (playerData.cards == null)
                             {
 #if ERROR_LOG
-                                Debug.LogError("cards is null");
+                                //Debug.LogError("cards is null");
 #endif
                             }
 
@@ -2260,7 +2536,7 @@ public class ClubInGameManager : MonoBehaviour
                 {
                     ClubInGameUIManager.instance.ToggleSuggestionButton(false);
                     ClubInGameUIManager.instance.ToggleActionButton(false);
-                    Debug.LogError("Null reference exception found playerWhosTurn is not found");
+                    //Debug.LogError("Null reference exception found playerWhosTurn is not found");
                 }
             }
 
@@ -2366,6 +2642,7 @@ public class ClubInGameManager : MonoBehaviour
         {
             Destroy(animationLayer.GetChild(i).gameObject);
         }
+        ClubInGameUIManager.instance.ResetSuggetionAction();
     }
 
     private void ClearPotAmount()

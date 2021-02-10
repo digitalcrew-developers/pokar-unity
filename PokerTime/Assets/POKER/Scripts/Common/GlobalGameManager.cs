@@ -36,7 +36,8 @@ public class GlobalGameManager : MonoBehaviour
     public static bool IsJoiningPreviousGame = false;
     public bool isTokenSent = false;
 
-
+    //DEV_CODE
+    public static int RunItMultiTimes = 0;
 
     private void Awake()
     {

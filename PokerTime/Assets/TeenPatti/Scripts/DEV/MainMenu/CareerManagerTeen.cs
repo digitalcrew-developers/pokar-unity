@@ -175,13 +175,13 @@ public class CareerManagerTeen : MonoBehaviour
                 Debug.Log("Req Counter:" + requestCounter);
                 if (requestDataList.Count > 0)
                 {
-                    dataObj.transform.localPosition = new Vector3(0, -75, 0);
+                    //dataObj.transform.localPosition = new Vector3(0, -75, 0);
                     ShowRequestList();
                 }
                 else
                 {
                     requestObj.SetActive(false);
-                    dataObj.transform.localPosition = new Vector3(0, 15, 0);
+                    //dataObj.transform.localPosition = new Vector3(0, 15, 0);
                 }
             }
             else
@@ -221,13 +221,13 @@ public class CareerManagerTeen : MonoBehaviour
 
                         if (requestDataList.Count > 0)
                         {
-                            dataObj.transform.localPosition = new Vector3(0, -75, 0);
+                            //dataObj.transform.localPosition = new Vector3(0, -75, 0);
                             ShowRequestList();
                         }
                         else
                         {
                             requestObj.SetActive(false);
-                            dataObj.transform.localPosition = new Vector3(0, 15, 0);
+                            //dataObj.transform.localPosition = new Vector3(0, 15, 0);
                         }
                     } 
                 }
@@ -241,7 +241,7 @@ public class CareerManagerTeen : MonoBehaviour
                     //else
                     //{
                         requestObj.SetActive(false);
-                        dataObj.transform.localPosition = new Vector3(0, 15, 0);
+                        //dataObj.transform.localPosition = new Vector3(0, 15, 0);
                     //}
                 }
             }

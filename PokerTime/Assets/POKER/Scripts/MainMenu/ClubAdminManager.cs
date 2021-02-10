@@ -160,7 +160,6 @@ public class ClubAdminManager : MonoBehaviour
                 ShowScreen(ClubScreens.CreateTable);
                 break;
             case "Members":
-                Debug.Log("Showing Member Screen");
                 ShowScreen(ClubScreens.Members);
                 MemberListUIManager.instance.ToggleScreen(true);
                 break;
@@ -530,11 +529,11 @@ public class ClubAdminManager : MonoBehaviour
     {
         //To-Do.. when opening notification screen. get data from server for existing notification sent
         //allow edit of existing text, image notification
-        
+
         //OldNotificationText.text = ""; 
-        
-        //NotificationClubImage.sprite = ClubDetailsUIManager.instance.GetClubImage();
-        //NotificationClubName.text = ClubDetailsUIManager.instance.GetClubName();
+
+        NotificationClubImage.sprite = ClubDetailsUIManager.instance.GetClubImage();
+        NotificationClubName.text = ClubDetailsUIManager.instance.GetClubName();
 
         NotificationEditButton.onClick.RemoveAllListeners();
         //NotificationHelpButton.onClick.RemoveAllListeners();

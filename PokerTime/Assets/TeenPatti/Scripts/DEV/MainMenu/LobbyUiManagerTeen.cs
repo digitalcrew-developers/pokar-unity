@@ -376,8 +376,8 @@ public void ShowMissonScreen()
             roomData.maxBuyIn = float.Parse(data["data"][i]["maxBet"].ToString());
 
             //DEV_CODE
-            roomData.roomBG = data["data"][i]["backgroundImg"].ToString();
-            roomData.roomIconUrl = data["data"][i]["iconBaseUrl"].ToString();
+            //roomData.roomBG = data["data"][i]["backgroundImg"].ToString();
+            //roomData.roomIconUrl = data["data"][i]["iconBaseUrl"].ToString();
             roomData.totalActivePlayers = int.Parse(data["data"][i]["totalActivePlayer"].ToString());            
 
             switch (data["data"][i]["gameType"].ToString())

@@ -12,7 +12,7 @@ public class ConsecutiveLoginRewardManager : MonoBehaviour
     private void Start()
     {
         dayFocusVal = 1;
-        ShowFocusVal(dayFocusVal);
+        //ShowFocusVal(dayFocusVal);
     }
 
     public void ShowFocusVal(int val)
