@@ -62,13 +62,13 @@ public class ButtonManager : MonoBehaviour
         {
 			if(i < currentDateIndex)
             {
-				BodyManager.totalCells[i].transform.GetComponent<Image>().color = Color.black;
+                BodyManager.totalCells[i].transform.GetComponent<Image>().color = CalendarManager.instance.disselectedDateBGColor;
                 BodyManager.totalCells[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.white;
             }
 
 			if(i == currentDateIndex)
             {
-                BodyManager.totalCells[i].transform.GetComponent<Image>().color = Color.black;
+                BodyManager.totalCells[i].transform.GetComponent<Image>().color = CalendarManager.instance.disselectedDateBGColor;
                 BodyManager.totalCells[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.yellow;
 			}
 		}
@@ -84,8 +84,8 @@ public class ButtonManager : MonoBehaviour
 
             CalendarManager.instance.endDate = "";
 
-            transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateColor;
-            this.label.color = Color.green;
+            transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateBGColor;
+            this.label.color = CalendarManager.instance.selectedDateTextColor;
             return;
         }
 
@@ -99,8 +99,8 @@ public class ButtonManager : MonoBehaviour
 
             CalendarManager.instance.endDate = "";
 
-            transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateColor;
-            this.label.color = Color.green;
+            transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateBGColor;
+            this.label.color = CalendarManager.instance.selectedDateTextColor;
         }
         else if(index > CalendarManager.previousClickIndex)
         {
@@ -110,15 +110,18 @@ public class ButtonManager : MonoBehaviour
 
             if (distance > CalendarManager.instance.daysToSelect)
             {
-                BodyManager.totalCells[CalendarManager.previousClickIndex].transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateColor;
-                BodyManager.totalCells[CalendarManager.previousClickIndex].transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.green;
+                BodyManager.totalCells[CalendarManager.previousClickIndex].transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateBGColor;
+                BodyManager.totalCells[CalendarManager.previousClickIndex].transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = CalendarManager.instance.selectedDateTextColor;
+
+                if(CalendarManager.instance.popUpText != null)
+                    StartCoroutine(CalendarManager.instance.ShowPopUp(1.29f));
             }
             else
             {
                 for (int i = CalendarManager.previousClickIndex; i <= CalendarManager.nextClickIndex; i++)
                 {
-                    BodyManager.totalCells[i].transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateColor;
-                    BodyManager.totalCells[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.green;
+                    BodyManager.totalCells[i].transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateBGColor;
+                    BodyManager.totalCells[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = CalendarManager.instance.selectedDateTextColor;
                 }
 
                 CalendarManager.instance.endDate = year.ToString() + "." +
@@ -137,8 +140,8 @@ public class ButtonManager : MonoBehaviour
             CalendarManager.instance.startDate = "";
             CalendarManager.instance.endDate = "";
 
-            transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateColor;
-            this.label.color = Color.green;
+            transform.GetComponent<Image>().color = CalendarManager.instance.selectedDateBGColor;
+            this.label.color = CalendarManager.instance.selectedDateTextColor;
         }
     }
 

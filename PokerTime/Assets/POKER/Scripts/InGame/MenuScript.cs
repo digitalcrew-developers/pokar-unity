@@ -264,6 +264,15 @@ public class MenuScript : MonoBehaviour
                 }
                 break;
 
+            case "Share":
+                {
+                    Debug.Log("On Click On Share....");
+#if UNITY_ANDROID
+                    new NativeShare().SetText("https://www.google.com/").Share();
+#endif
+                }
+                break;
+
             default:
 #if ERROR_LOG
             Debug.LogError("Unhandled eventName found = "+eventName);

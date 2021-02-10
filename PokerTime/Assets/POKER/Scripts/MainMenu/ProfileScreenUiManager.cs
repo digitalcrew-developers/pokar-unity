@@ -60,6 +60,15 @@ public class ProfileScreenUiManager : MonoBehaviour
         }
         if (requestType == RequestType.GetUserDetails)
         {
+
+            GetUserDetails userdata = JsonUtility.FromJson<GetUserDetails>(serverResponse);
+
+
+            Debug.LogError("Status -> " + userdata.status);
+            Debug.LogError("Respnse -> " + userdata.response);
+            //Debug.LogError("UserID -> " + userdata.getData.Length);
+
+
             Debug.Log("Response => GetUserDetails :" + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
@@ -67,6 +76,8 @@ public class ProfileScreenUiManager : MonoBehaviour
             {
                 for (int i = 0; i < data["getData"].Count; i++)
                 {
+                    //Debug.Log("UserID -> " + userdata.getData[i].userId);
+
                     //loadImages(data["getData"][i]["profileImage"].ToString(), data["getData"][i]["frameURL"].ToString(), data["getData"][i]["countryFlag"].ToString());
                     userLevel.text = "Lvl. " + data["getData"][i]["userLevel"].ToString() + ">>";
                     userName.text = data["getData"][i]["userName"].ToString();
@@ -201,4 +212,53 @@ public class ProfileScreenUiManager : MonoBehaviour
         }
     }
 
+}
+
+public class GetUserDetails
+{
+    public int success;
+    public bool status;
+    public string message;
+    public string response;
+    public getData []getData;
+}
+
+public class getData
+{
+    public int userId;
+    public string userName;
+    public string socialId;
+    public string mobile;
+    public string playerType;
+    public string emailId;
+    public string otp;
+    public string isEmailVerified;
+    public string profileImage;
+    public int userLevel;
+    public string language;
+    public float silver;
+    public float coins;
+    public float diamond;
+    public float points;
+    public float rabbit;
+    public float emoji;
+    public float time;
+    public int day;
+    public float totalWin;
+    public string claimedDate;
+    public string referalCode;
+    public string playerProgress;
+    public string registrationType;
+    public string status;
+    public string firebaseToken;
+    public string created;
+    public string modified;
+    public string nickName;
+    public string soundToggle;
+    public string countryCode;
+    public string countryName;
+    public string countryFlag;
+    public string avatarID;
+    public string frameID;
+    public string frameURL;
 }

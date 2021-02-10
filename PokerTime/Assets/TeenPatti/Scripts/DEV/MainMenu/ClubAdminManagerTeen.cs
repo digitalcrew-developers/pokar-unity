@@ -732,5 +732,6 @@ public enum ClubScreensTeen
     Exchange,
     CreateTable,
     Members,
-    GameData
+    GameData,
+    ExpertData
 }

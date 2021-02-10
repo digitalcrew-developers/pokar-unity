@@ -72,6 +72,11 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     public GameObject careerListPrefab, careerDayListContainer, careerMonthListContainer, careerYearListContainer;
     GameObject listObj; // Add By GP
 
+    [Space(10)]
+    public Transform dayContainer, monthContainer, yearContainer;
+
+    private Transform graphData;
+
     public void Awake()
     {
         instance = this;
@@ -120,15 +125,20 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             case "YearScroll":
                 //changeIndexTxt.text = "202" + _currentPage ;
                 changeIndexTxt.text = CareerManager.instance.currentYear.ToString();
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
                 break;
             case "MonthScroll":
                 //changeIndexTxt.text = "2020 - "+_currentPage + 1 ;
                 changeIndexTxt.text = CareerManager.instance.currentYear + "-" + ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString());
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
                 break;
             case "DayScroll":
                 //changeIndexTxt.text = _currentPage + 1 + "/25";
                 //Debug.Log("Setting New Date..");
-                changeIndexTxt.text = CareerManager.instance.currentMonth + "/" + ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
+                changeIndexTxt.text = ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) + "/" +
+                                      ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
+                //Debug.Log("Current Page " + _currentPage);
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
                 break;
         }
         //GameObject g = GameObject.Find("Date");//Add By Gp
@@ -173,13 +183,20 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                     Destroy(careerDayListContainer.transform.GetChild(i).gameObject);
                 }
 
-                    listObj = Instantiate(careerListPrefab, careerDayListContainer.transform);
-                    listObj.name = "Date";
-                    listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
-                    listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
-                    listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
+                listObj = Instantiate(careerListPrefab, careerDayListContainer.transform);
+                listObj.name = "Date";
+                listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
+                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
+                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
 
-                    //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
+
+                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
+
+                //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
                 //}
                 //else
                 //{
@@ -199,6 +216,13 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                 listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
                 listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
 
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
+
+                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
+
                 //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
             }
             else if (containerScroll_Name.Equals("YearScroll"))
@@ -213,6 +237,13 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
                 listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
                 listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
                 listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
+
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
+
+                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
 
                 //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
             }
@@ -418,16 +449,13 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         // unselect old
         if (_previousPageSelectionIndex >= 0) 
         {
-            if(transform.gameObject.activeSelf)    
-            {
-                _pageSelectionImages[_previousPageSelectionIndex].sprite = unselectedPage;
-                _pageSelectionImages[_previousPageSelectionIndex].SetNativeSize();
-            }
+            //_pageSelectionImages[_previousPageSelectionIndex].sprite = unselectedPage;
+            //_pageSelectionImages[_previousPageSelectionIndex].SetNativeSize();
         }
 
         // select new
-        _pageSelectionImages[aPageIndex].sprite = selectedPage;
-        _pageSelectionImages[aPageIndex].SetNativeSize();
+        //_pageSelectionImages[aPageIndex].sprite = selectedPage;
+        //_pageSelectionImages[aPageIndex].SetNativeSize();
 
         _previousPageSelectionIndex = aPageIndex;
     }

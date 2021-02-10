@@ -128,7 +128,8 @@ public class ScrollSnapRectTeen : MonoBehaviour, IBeginDragHandler, IEndDragHand
             case "DayScroll":
                 //changeIndexTxt.text = _currentPage + 1 + "/25";
                 //Debug.Log("Setting New Date..");
-                changeIndexTxt.text = CareerManagerTeen.instance.currentMonth + "/" + ((CareerManagerTeen.instance.currentDate.ToString().Length == 1) ? "0" + CareerManagerTeen.instance.currentDate.ToString() : CareerManagerTeen.instance.currentDate.ToString());
+                changeIndexTxt.text = ((CareerManagerTeen.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManagerTeen.instance.currentMonth.ToString() : CareerManagerTeen.instance.currentMonth.ToString()) + "/" +
+                                      ((CareerManagerTeen.instance.currentDate.ToString().Length == 1) ? "0" + CareerManagerTeen.instance.currentDate.ToString() : CareerManagerTeen.instance.currentDate.ToString());
                 break;
         }
         //GameObject g = GameObject.Find("Date");//Add By Gp
@@ -416,14 +417,15 @@ public class ScrollSnapRectTeen : MonoBehaviour, IBeginDragHandler, IEndDragHand
         }
         
         // unselect old
-        if (_previousPageSelectionIndex >= 0) {
-            _pageSelectionImages[_previousPageSelectionIndex].sprite = unselectedPage;
-            _pageSelectionImages[_previousPageSelectionIndex].SetNativeSize();
+        if (_previousPageSelectionIndex >= 0) 
+        {
+            //_pageSelectionImages[_previousPageSelectionIndex].sprite = unselectedPage;
+            //_pageSelectionImages[_previousPageSelectionIndex].SetNativeSize();
         }
 
         // select new
-        _pageSelectionImages[aPageIndex].sprite = selectedPage;
-        _pageSelectionImages[aPageIndex].SetNativeSize();
+        //_pageSelectionImages[aPageIndex].sprite = selectedPage;
+        //_pageSelectionImages[aPageIndex].SetNativeSize();
 
         _previousPageSelectionIndex = aPageIndex;
     }

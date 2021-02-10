@@ -60,12 +60,12 @@ public class JackpotManagerTeen : MonoBehaviour
         JackpotTopUpConfimButton.onClick.RemoveAllListeners();
         JackpotTopUpConfimButton.onClick.AddListener(SendTopUpJackpotRequest);
 
-        ChipsAvailableText.text = ClubDetailsUIManager.instance.CLubChips.text;
+        ChipsAvailableText.text = ClubDetailsUIManagerTeen.instance.CLubChips.text;
     }
 
     public void RequestJackpotDetails()
     {
-        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+        string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"}";
         //WebServices.instance.SendRequest(RequestType.GetJackpotDetailByClubId, requestData, true, OnServerResponseFound);
     }
 
@@ -89,8 +89,8 @@ public class JackpotManagerTeen : MonoBehaviour
         }
         else
         {
-            string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-                                     "\"userId\":\"" + MemberListUIManager.instance.GetClubOwnerObject().userId + "\"," +
+            string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
+                                     "\"userId\":\"" + MemberListUIManagerTeen.instance.GetClubOwnerObject().userId + "\"," +
                                      "\"jackpotAmount\":\"" + amount + "\"}";
 
             //WebServices.instance.SendRequest(RequestType.TopUpJackpot, requestData, true, OnServerResponseFound);
@@ -104,17 +104,17 @@ public class JackpotManagerTeen : MonoBehaviour
         {
             if (isJackpotActivated)
             {
-                ClubDetailsUIManager.instance.SetJackpotStatus(val);
+                ClubDetailsUIManagerTeen.instance.SetJackpotStatus(val);
                 Debug.Log("jackpot status :" + val.ToString());
                 string b = string.Empty;
                 if (val) { b = "1"; } else { b = "0"; }
-                //Debug.Log(ClubDetailsUIManager.instance.GetClubUniqueId());
+                //Debug.Log(ClubDetailsUIManagerTeen.instance.GetClubUniqueId());
 
-                string requestData = "{\"uniqueClubId\":\"" + ClubDetailsUIManager.instance.GetClubUniqueId() + "\"," +
-                                    "\"clubName\":\"" + ClubDetailsUIManager.instance.GetClubName() + "\"," +
+                string requestData = "{\"uniqueClubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubUniqueId() + "\"," +
+                                    "\"clubName\":\"" + ClubDetailsUIManagerTeen.instance.GetClubName() + "\"," +
                                     "\"clubStatus\":\"" + "1" + "\"," +
                                     "\"jackpotToggle\":\"" + b + "\"," +
-                                    "\"layout\":\"" + ClubDetailsUIManager.instance.GetLayout() //to-do. get layout from club details ui manager
+                                    "\"layout\":\"" + ClubDetailsUIManagerTeen.instance.GetLayout() //to-do. get layout from club details ui manager
                                     + "\"}";
 
                 WebServices.instance.SendRequestTP(RequestTypeTP.UpdateClub, requestData, true, OnServerResponseFound);
@@ -127,13 +127,13 @@ public class JackpotManagerTeen : MonoBehaviour
                 TurnOffJackpotPanel.SetActive(true);
                 TurnOffJackpotPanel.transform.Find("BG1/Heading/Close").GetComponent<Button>().onClick.RemoveAllListeners();
                 TurnOffJackpotPanel.transform.Find("BG1/Heading/Close").GetComponent<Button>().onClick.AddListener(() => OnCloseTurnOffJackpotPanel());
-                TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/Text (TMP)").GetComponent<TMP_Text>().text = "ID: " + ClubDetailsUIManager.instance.GetClubId();
+                TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/Text (TMP)").GetComponent<TMP_Text>().text = "ID: " + ClubDetailsUIManagerTeen.instance.GetClubId();
                 TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/BtnConfirm").GetComponent<Button>().onClick.AddListener(() => CheckToConfirm(val));
             }
             else if (val)
             {
                 TurnOffJackpotPanel.SetActive(false);
-                string req = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                string req = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                              "\"status\":\"" + "Active" + "\"}";
 
                 //WebServices.instance.SendRequest(RequestType.OnOffJackpot, req, true, OnServerResponseFound);
@@ -168,7 +168,7 @@ public class JackpotManagerTeen : MonoBehaviour
         {
             StartCoroutine(ShowPopUp("Enter Club ID", 1.29f));
         }
-        else if (!TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField (TMP)").GetComponent<TMP_InputField>().text.Equals(ClubDetailsUIManager.instance.GetClubId()))
+        else if (!TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField (TMP)").GetComponent<TMP_InputField>().text.Equals(ClubDetailsUIManagerTeen.instance.GetClubId()))
         {
             StartCoroutine(ShowPopUp("ID incorrect", 1.29f));
         }
@@ -262,12 +262,12 @@ public class JackpotManagerTeen : MonoBehaviour
         TopUpPanel.SetActive(false);
         TopRecordPanel.SetActive(true);
 
-        //WebServices.instance.SendRequest(RequestType.GetTopUpDetailsByClubId, "{\"clubId\":" + ClubDetailsUIManager.instance.GetClubId() + "}", true, OnServerResponseFound);
+        //WebServices.instance.SendRequest(RequestType.GetTopUpDetailsByClubId, "{\"clubId\":" + ClubDetailsUIManagerTeen.instance.GetClubId() + "}", true, OnServerResponseFound);
     }
 
     private void OnConfirmDisableJackpot()
     {
-        string req = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+        string req = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                      "\"status\":\"" + "Inactive" + "\"}";
 
         //WebServices.instance.SendRequest(RequestType.OnOffJackpot, req, true, OnServerResponseFound);
@@ -279,7 +279,7 @@ public class JackpotManagerTeen : MonoBehaviour
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                MainMenuControllerTeen.instance.ShowMessage(errorMessage);
             }
 
             return;
@@ -292,21 +292,21 @@ public class JackpotManagerTeen : MonoBehaviour
                     JsonData data = JsonMapper.ToObject(serverResponse);
                     if (data["status"].Equals(true))
                     {
-                        if (ClubAdminManager.instance.DisbandClub.activeInHierarchy)//api response is for disband club
+                        if (ClubAdminManagerTeen.instance.DisbandClub.activeInHierarchy)//api response is for disband club
                         {
-                            MainMenuController.instance.ShowMessage("Club has been disbanded", () => {
-                                ClubDetailsUIManager.instance.OnClickOnButton("back");
-                                for (int i = 0; i < ClubListUiManager.instance.container.childCount; i++)
+                            MainMenuControllerTeen.instance.ShowMessage("Club has been disbanded", () => {
+                                ClubDetailsUIManagerTeen.instance.OnClickOnButton("back");
+                                for (int i = 0; i < ClubListUiManagerTeen.instance.container.childCount; i++)
                                 {
-                                    Destroy(ClubListUiManager.instance.container.GetChild(i).gameObject);
+                                    Destroy(ClubListUiManagerTeen.instance.container.GetChild(i).gameObject);
                                 }
-                                ClubListUiManager.instance.FetchList(true);
+                                ClubListUiManagerTeen.instance.FetchList(true);
                             });
                         }
                     }
                     else
                     {
-                        MainMenuController.instance.ShowMessage(data["message"].ToString());
+                        MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
                     }
                 }
                 break;
@@ -419,11 +419,11 @@ public class JackpotManagerTeen : MonoBehaviour
             //            {
             //                TurnOffJackpotPanel.SetActive(false);
             //                TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField (TMP)").GetComponent<TMP_InputField>().text = "";
-            //                ClubDetailsUIManager.instance.jackpotData.SetActive(false);
-            //                ClubDetailsUIManager.instance.otherDetails.transform.localPosition = new  Vector3(-51, 0, 0);
+            //                ClubDetailsUIManagerTeen.instance.jackpotData.SetActive(false);
+            //                ClubDetailsUIManagerTeen.instance.otherDetails.transform.localPosition = new  Vector3(-51, 0, 0);
             //            }
 
-            //            ClubDetailsUIManager.instance.FetchJackpotDetails();
+            //            ClubDetailsUIManagerTeen.instance.FetchJackpotDetails();
             //        }
             //    }
             //    break;

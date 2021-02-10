@@ -62,6 +62,10 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	private void OnEnable()
 	{
+		//Disable Jackpot
+		jackpotData.SetActive(false);
+		otherDetails.transform.localPosition = new Vector3(-51, 0, 0);
+
 		//Deactivate Bottom Panel
 		if (MainMenuController.instance.bottomPanel.activeSelf/* && GameConstants.poker*/)
 		{
@@ -286,7 +290,9 @@ public class ClubDetailsUIManager : MonoBehaviour
 					Debug.Log("Response => GetTemplates : " + serverResponse);
 					JsonData data = JsonMapper.ToObject(serverResponse);
 					templateList = data;
-					LoadAllTemplates(data, "ALL");
+
+					if (!data["response"].ToString().Equals(""))
+						LoadAllTemplates(data, "ALL");
 				}
 				break;
 
@@ -298,7 +304,7 @@ public class ClubDetailsUIManager : MonoBehaviour
         }
     }
 
-	private void LoadAllTemplates(JsonData data, string type)
+	public void LoadAllTemplates(JsonData data, string type)
 	{
 		//Debug.Log("Total Templates: " + data["response"].Count);
 

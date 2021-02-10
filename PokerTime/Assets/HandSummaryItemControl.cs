@@ -52,11 +52,15 @@ public class HandSummaryItemControl : MonoBehaviour
             {
                 CardData p1Card = CardsManager.instance.GetCardData(handSummary.cards[0].ToString());
                 p_I1.sprite = p1Card.cardsSprite;
+                if (handSummary.winningCards.Contains(handSummary.cards[0].ToString()))
+                    p_I1.color = new Color(1f, 1f, 1f, 1f);
             }
             if (!string.IsNullOrEmpty(handSummary.cards[1].ToString()))
             {
                 CardData p2Card = CardsManager.instance.GetCardData(handSummary.cards[1].ToString());
                 p_I2.sprite = p2Card.cardsSprite;
+                if (handSummary.winningCards.Contains(handSummary.cards[1].ToString()))
+                    p_I2.color = new Color(1f, 1f, 1f, 1f);
             }
         }
 
@@ -67,26 +71,36 @@ public class HandSummaryItemControl : MonoBehaviour
             {
                 CardData c1Card = CardsManager.instance.GetCardData(handSummary.communityCard[0].ToString());
                 c_image0.sprite = c1Card.cardsSprite;
+                if (handSummary.winningCards.Contains(handSummary.communityCard[0].ToString()))
+                    c_image0.color = new Color(1f, 1f, 1f, 1f);
             }
             if (!string.IsNullOrEmpty(handSummary.communityCard[1].ToString()))
             {
                 CardData c2Card = CardsManager.instance.GetCardData(handSummary.communityCard[1].ToString());
                 c_image1.sprite = c2Card.cardsSprite;
+                if (handSummary.winningCards.Contains(handSummary.communityCard[1].ToString()))
+                    c_image1.color = new Color(1f, 1f, 1f, 1f);
             }
             if (!string.IsNullOrEmpty(handSummary.communityCard[2].ToString()))
             {
                 CardData c3Card = CardsManager.instance.GetCardData(handSummary.communityCard[2].ToString());
                 c_image2.sprite = c3Card.cardsSprite;
+                if (handSummary.winningCards.Contains(handSummary.communityCard[2].ToString()))
+                    c_image2.color = new Color(1f, 1f, 1f, 1f);
             }
             if (!string.IsNullOrEmpty(handSummary.communityCard[3].ToString()))
             {
                 CardData c4Card = CardsManager.instance.GetCardData(handSummary.communityCard[3].ToString());
                 c_image3.sprite = c4Card.cardsSprite;
+                if (handSummary.winningCards.Contains(handSummary.communityCard[3].ToString()))
+                    c_image3.color = new Color(1f, 1f, 1f, 1f);
             }
             if (!string.IsNullOrEmpty(handSummary.communityCard[4].ToString()))
             {
                 CardData c5Card = CardsManager.instance.GetCardData(handSummary.communityCard[4].ToString());
                 c_image4.sprite = c5Card.cardsSprite;
+                if (handSummary.winningCards.Contains(handSummary.communityCard[4].ToString()))
+                    c_image4.color = new Color(1f, 1f, 1f, 1f);
             }
         }
         

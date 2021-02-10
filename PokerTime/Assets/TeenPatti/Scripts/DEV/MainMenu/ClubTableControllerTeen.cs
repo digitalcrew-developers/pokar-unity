@@ -271,7 +271,7 @@ public class ClubTableControllerTeen : MonoBehaviour
 
     public void RequestTemplateData()
     {
-        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+        string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                                 "\"tableId\":\"" + "" + "\"," +
                                 "\"status\":\"" + "" + "\"," +
                                 "\"settingData\":\"" + "Yes" + "\"}";

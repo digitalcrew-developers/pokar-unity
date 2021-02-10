@@ -359,7 +359,7 @@ public class LobbyUiManager: MonoBehaviour
 
         if (requestType == RequestType.GetLobbyRooms)
         {
-            //Debug.Log("Response => GetLobbyRooms: " + serverResponse);
+            Debug.Log("Response => GetLobbyRooms: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["status"].Equals(true))

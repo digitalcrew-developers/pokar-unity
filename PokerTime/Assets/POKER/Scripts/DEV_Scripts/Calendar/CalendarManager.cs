@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
@@ -36,8 +37,12 @@ public class CalendarManager : MonoBehaviour
 
 	public string startDate, endDate;
 
-	public Color selectedDateColor;
+	public Color selectedDateBGColor;
+	public Color disselectedDateBGColor;
+	public Color selectedDateTextColor;
 
+	public GameObject popUpText;
+	public string msg;
 	#endregion
 
 	#region Public Methods
@@ -56,9 +61,10 @@ public class CalendarManager : MonoBehaviour
     {
 		instance = this;
 
-		ColorUtility.TryParseHtmlString("#004D1F", out selectedDateColor);
+        //ColorUtility.TryParseHtmlString("#004D1F", out selectedDateColor);
+        //selectedDateColor = Color.black;
 
-		startDate = endDate = "";
+        startDate = endDate = "";
 	}
 
     private void OnEnable()
@@ -110,19 +116,25 @@ public class CalendarManager : MonoBehaviour
 
 	public void OnClickConfirmButton(TMP_Text dateText)
     {
-		if (endDate.Equals(""))
-			dateText.text = startDate + " - " + startDate;
+		if (dateText.gameObject != null)
+		{
+			if (endDate.Equals(""))
+				dateText.text = startDate + " - " + startDate;
 			//ClubExportDataManager.instance.dateText.text = startDate + " - " + startDate;
-		else
-			dateText.text = startDate + " - " + endDate;
+			else
+				dateText.text = startDate + " - " + endDate;
 			//ClubExportDataManager.instance.dateText.text = startDate + " - " + endDate;
+		}
 
 		startDate = endDate = "";
     }
 
-	public void OnClickOnClose()
-    {
-
-    }
+	public IEnumerator ShowPopUp(float delay)
+	{
+		popUpText.SetActive(true);
+		popUpText.transform.GetChild(0).GetComponent<Text>().text = msg;
+		yield return new WaitForSeconds(delay);
+		popUpText.SetActive(false);
+	}
 	#endregion
 }

@@ -226,6 +226,7 @@ public class ClubSocketController : MonoBehaviour
 
     private void OnComCards1(Socket socket, Packet packet, object[] args)
     {
+        //ClubInGameManager.instance.DontShowCommunityCardAnimation = true;
         string responseText = JsonMapper.ToJson(args);
         Debug.Log("<color=magenta>OnComCards1 :</color> " + responseText);
         StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer1.position));
@@ -233,6 +234,7 @@ public class ClubSocketController : MonoBehaviour
 
     private void OnComCards2(Socket socket, Packet packet, object[] args)
     {
+        //ClubInGameManager.instance.DontShowCommunityCardAnimation = true;
         string responseText = JsonMapper.ToJson(args);
         Debug.Log("<color=magenta>OnComCards2 :</color> " + responseText);
         StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer2.position));

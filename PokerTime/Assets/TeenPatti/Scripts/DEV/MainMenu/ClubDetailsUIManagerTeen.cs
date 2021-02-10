@@ -62,6 +62,10 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 
 	private void OnEnable()
 	{
+		//Disable Jackpot
+		jackpotData.SetActive(false);
+		otherDetails.transform.localPosition = new Vector3(-51, 0, 0);
+
 		//Deactivate Bottom Panel
 		if (MainMenuControllerTeen.instance.bottomPanel.activeSelf/* && GameConstants.poker*/)
 		{
@@ -293,7 +297,9 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 					Debug.Log("Response => GetTemplates : " + serverResponse);
 					JsonData data = JsonMapper.ToObject(serverResponse);
 					templateList = data;
-					LoadAllTemplates(data, "ALL");
+
+					if(!data["response"].ToString().Equals(""))
+						LoadAllTemplates(data, "ALL");
 				}
 				break;
 
@@ -307,8 +313,7 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 
 	private void LoadAllTemplates(JsonData data, string type)
 	{
-		Debug.Log("Total Templates: " + data["response"].Count);
-
+		//Debug.Log("Total Templates: " + data["response"].Count);
 
 		//DEV_CODE	
 		//To enable selected menu from menu bar and disselect all other menus

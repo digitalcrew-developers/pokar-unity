@@ -246,7 +246,7 @@ public class ClubInGameManager : MonoBehaviour
         ResumeHand.SetActive(true);
         for (int i = 0; i < data.Count; i++)
         {
-            EVCHOPButton.transform.GetChild(0).GetComponent<Text>().text = data[0][i]["amount"].ToString();
+            EVCHOPButton.transform.GetChild(0).GetComponent<Text>().text = float.Parse(data[0][i]["amount"].ToString()).ToString("F2");
         }
         /*if (data[0].Count > 0)
         {
@@ -268,8 +268,8 @@ public class ClubInGameManager : MonoBehaviour
     }
 
 
-
-    private bool DontShowCommunityCardAnimation = false;    //DEV_CODE Added this line as done inside InGameManager script
+    [HideInInspector]
+    public bool DontShowCommunityCardAnimation = false;    //DEV_CODE Added this line as done inside InGameManager script
     public void OnRabbitDataFound(string responseText)
     {
         //Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
@@ -377,7 +377,7 @@ public class ClubInGameManager : MonoBehaviour
     {
         if (!GlobalGameManager.IsJoiningPreviousGame)
         {
-			GlobalGameManager.IsJoiningPreviousGame = true;
+			GlobalGameManager.IsJoiningPreviousGame = isGameStart;
             List<GameObject> animatedCards = new List<GameObject>();
             for (int i = 0; i < players.Length; i++)
             {
@@ -418,8 +418,8 @@ public class ClubInGameManager : MonoBehaviour
             else
                 players[i].ToggleCards(true, players[i].IsMe());
         }
-
-        ClubSocketController.instance.SetSocketState(SocketState.Game_Running);
+        if (isGameStart)
+            ClubSocketController.instance.SetSocketState(SocketState.Game_Running);
         SwitchTurn(playerScriptWhosTurn, false);
     }
 
@@ -983,18 +983,24 @@ public class ClubInGameManager : MonoBehaviour
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
         //Debug.Log("Last All in Bet: " + playerScript.GetLocalBetAmount()/*betAmount*/);
-        
-        GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
-        gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/betAmount;
-        gm.transform.position = playerScript.transform.position;
-        Vector3 initialScale = gm.transform.localScale;
-        gm.transform.localScale = Vector3.zero;
+        if (!playerScript.localBg().activeSelf)
+        {
+            GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
+            gm.transform.GetChild(0).GetComponent<Text>().text = /*playerScript.GetLocalBetAmount().ToString()*/GlobalGameManager.instance.ScoreShow(int.Parse(betAmount));
+            gm.transform.position = playerScript.transform.position;
+            Vector3 initialScale = gm.transform.localScale;
+            gm.transform.localScale = Vector3.zero;
 
-        gm.transform.DOMove(playerScript.localBg().transform.position, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        SoundManager.instance.PlaySound(SoundType.Bet);
-        yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
-        Destroy(gm);
+            gm.transform.DOMove(playerScript.localBg().transform.position, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+            gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack).OnComplete(() => { playerScript.GetLocaPot().text = GlobalGameManager.instance.ScoreShow(int.Parse(betAmount)); playerScript.localBg().SetActive(true); });
+            SoundManager.instance.PlaySound(SoundType.Bet);
+            yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
+            Destroy(gm);
+        }
+        else
+        {
+            playerScript.GetLocaPot().text = GlobalGameManager.instance.ScoreShow(int.Parse(betAmount));
+        }
     }
 
     private bool winnerAnimationFound = false;
@@ -1055,7 +1061,7 @@ public class ClubInGameManager : MonoBehaviour
             if (!string.IsNullOrEmpty(s))
             {
                 AllPots[i].SetActive(true);
-                AllPots[i].transform.Find("Text").GetComponent<Text>().text = s;
+                AllPots[i].transform.Find("Text").GetComponent<Text>().text = GlobalGameManager.instance.ScoreShow(int.Parse(s));
             }
         }
 
@@ -1186,11 +1192,12 @@ public class ClubInGameManager : MonoBehaviour
             if (text.gameObject.activeInHierarchy && !string.IsNullOrEmpty(text.text))
             {
                 isBetFound = true;
+                text.transform.parent.gameObject.SetActive(false);
                 GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
-
                 gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
-                //gm.transform.DOMove(potText.transform.position, GameConstants.LOCAL_BET_ANIMATION_DURATION).SetEase(Ease.OutBack);    //DEV_CODE Commented this line as per InGameManager script
-                Destroy(gm, GameConstants.LOCAL_BET_ANIMATION_DURATION + 0.1f);
+                gm.transform.position = onlinePlayersScript[i].localBg().transform.position;
+                gm.transform.GetChild(0).GetComponent<Text>().text = text.text;
+                gm.transform.DOMove(Pot.transform.position, 0.3f).OnComplete(() => { Destroy(gm); });
             }
 
             onlinePlayersScript[i].UpdateRoundNo(GetMatchRound());
@@ -1407,7 +1414,7 @@ public class ClubInGameManager : MonoBehaviour
     public IEnumerator ShowMultiRunCards(string cardData, Vector3 pos)
     {
         JsonData data = JsonMapper.ToObject(cardData);
-        Debug.Log(data[0].Count + " Multi Cards " + data.Count);
+        
         openCards = new CardData[data[0].Count];
 
         for (int i = 0; i < data[0].Count; i++)
@@ -1422,7 +1429,8 @@ public class ClubInGameManager : MonoBehaviour
             }
             //openCards[i] = CardsManager.instance.GetCardData(data[0][i].ToString());
         }
-        switch (data[0].Count)
+        Debug.Log("Cards = " + openCards.Length);
+        switch (openCards.Length)
         {
             case 3:
                 {
@@ -1575,6 +1583,135 @@ public class ClubInGameManager : MonoBehaviour
                 }
                 break;
 
+            case 1:
+                {
+                    communityCards[4].gameObject.SetActive(false);
+                    GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        gmAllCard.transform.GetChild(i).gameObject.SetActive(false);
+                    }
+                    gmAllCard.transform.GetChild(4).GetComponent<Image>().sprite = communityCards[4].sprite;
+                    gmAllCard.transform.GetChild(4).gameObject.SetActive(true);
+                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    gmAllCard.transform.DOMove(pos, 0.5f).OnComplete(() => { gmAllCard.transform.DOScale(0.8f, 0.1f); });
+                    yield return new WaitForSeconds(1f);
+
+                    SoundManager.instance.PlaySound(SoundType.CardMove);
+
+                    //for (int i = 3; i < 4; i++)
+                    {
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.transform.localScale = communityCards[4].transform.localScale;
+                        gm.GetComponent<Image>().sprite = openCards[0].cardsSprite;
+                        gm.transform.Rotate(0, -90, 0);
+                        gm.transform.position = communityCards[3].transform.position;
+
+                        gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                        gm.transform.DOMove(communityCards[4].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.3f);
+
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                    }
+
+                    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+                    communityCards[4].sprite = openCards[0].cardsSprite;
+                    communityCards[4].gameObject.SetActive(true);
+                }
+                break;
+            case 2:
+                {
+                    communityCards[3].gameObject.SetActive(false);
+                    communityCards[4].gameObject.SetActive(false);
+                    GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        gmAllCard.transform.GetChild(i).gameObject.SetActive(false);
+                    }
+                    gmAllCard.transform.GetChild(3).GetComponent<Image>().sprite = communityCards[3].sprite;
+                    gmAllCard.transform.GetChild(3).gameObject.SetActive(true);
+                    gmAllCard.transform.GetChild(4).GetComponent<Image>().sprite = communityCards[4].sprite;
+                    gmAllCard.transform.GetChild(4).gameObject.SetActive(true);
+                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    gmAllCard.transform.DOMove(pos, 0.5f).OnComplete(() => { gmAllCard.transform.DOScale(0.8f, 0.1f); });
+                    yield return new WaitForSeconds(0.3f);
+                    SoundManager.instance.PlaySound(SoundType.CardMove);
+
+                    GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                    gm.transform.position = communityCards[3].transform.position;
+                    gm.transform.localScale = communityCards[0].transform.localScale;
+                    gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                    gm.GetComponent<Image>().sprite = openCards[0].cardsSprite;
+                    gm.transform.Rotate(0, -90, 0);
+                    gm.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.4f).OnComplete(() => 
+                    {
+                        Debug.Log("One card....");
+                        //yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.8f);
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                        communityCards[3].sprite = openCards[0].cardsSprite;
+                        communityCards[3].gameObject.SetActive(true);
+
+                        GameObject gm2 = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                        gm2.transform.position = communityCards[4].transform.position;
+                        gm2.transform.localScale = communityCards[0].transform.localScale;
+                        gm2.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm2.GetComponent<Image>().sprite = openCards[1].cardsSprite;
+                        gm2.transform.Rotate(0, -90, 0);
+                        gm2.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.4f).OnComplete(() => 
+                        {
+                            Debug.Log("Second card....");
+                            //yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 0.8f);
+                            //Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 1);
+                            //communityCards[3].sprite = openCards[0].cardsSprite;
+                            //communityCards[3].gameObject.SetActive(true);
+                            Destroy(gm2, GameConstants.CARD_ANIMATION_DURATION * 1);
+                            communityCards[4].sprite = openCards[1].cardsSprite;
+                            communityCards[4].gameObject.SetActive(true);
+                            StartCoroutine(CardsAnim(gm2));
+                        });                        
+                    });
+                    
+
+                    /*yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+                    for (int i = 3; i < 5; i++)
+                    {
+                        if (openCards[i - 3].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i - 3].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
+                    }*/
+
+                    /*for (int i = 3; i < 5; i++)
+                    {
+                        Debug.Log("Generating cards....." + System.DateTime.Now);
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                        gm.transform.localScale = communityCards[0].transform.localScale;
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.GetComponent<Image>().sprite = openCards[i-3].cardsSprite;
+                        gm.transform.Rotate(0, -90, 0);
+                        gm.transform.position = communityCards[i].transform.position;
+
+                        gm.transform.DORotate(new Vector3(0, 90, 0), GameConstants.CARD_ANIMATION_DURATION, RotateMode.LocalAxisAdd);
+                        gm.transform.DOMove(communityCards[i].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+                        //gm.transform.DOScale(communityCards[i].transform.localScale, GameConstants.CARD_ANIMATION_DURATION).SetEase(Ease.OutBack);
+
+                        yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION * 1.5f);
+
+                        Destroy(gm, GameConstants.CARD_ANIMATION_DURATION * 2);
+                    }
+                    yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+
+                    for (int i = 3; i < 5; i++)
+                    {
+                        if (openCards[i-3].cardIcon == CardIcon.NONE) { break; }
+                        communityCards[i].sprite = openCards[i-3].cardsSprite;
+                        communityCards[i].gameObject.SetActive(true);
+                    }*/
+                }
+                break;
+
             default:
                 {
 
@@ -1616,6 +1753,20 @@ public class ClubInGameManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    IEnumerator CardsAnim(GameObject g)
+    {
+        yield return new WaitForSeconds(1.9f);
+        //Destroy(g);
+        Debug.Log("Both card....");
+        for (int i = 3; i < 5; i++)
+        {
+            if (openCards[i - 3].cardIcon == CardIcon.NONE) { break; }
+            communityCards[i].sprite = openCards[i - 3].cardsSprite;
+            communityCards[i].gameObject.SetActive(true);
+        }
+
     }
 
     public void SendEmoji(string serverResponse)
@@ -1782,7 +1933,8 @@ public class ClubInGameManager : MonoBehaviour
 
             for (int i = 0; i < animationLayer.childCount; i++)
             {
-                Destroy(animationLayer.GetChild(i).gameObject);
+                if (!animationLayer.GetChild(i).gameObject.name.Contains("RunItMultiAllCards"))
+                    Destroy(animationLayer.GetChild(i).gameObject);
             }
 
             GameObject gm = Instantiate(winningPrefab, animationLayer) as GameObject;
@@ -1790,7 +1942,7 @@ public class ClubInGameManager : MonoBehaviour
             if (isWin)
             {
                 gm.transform.Find("WinBy").GetComponent<Text>().text = name;
-                gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + winAmount;
+                gm.transform.Find("winAmount").GetComponent<Text>().text = "+" + GlobalGameManager.instance.ScoreShow(int.Parse(winAmount));
                 if (string.IsNullOrEmpty(name))
                 {
                     gm.transform.Find("WinBy").gameObject.SetActive(false);
@@ -2145,7 +2297,7 @@ public class ClubInGameManager : MonoBehaviour
             PotValues.Add(value);
         }
 
-        if (ClubSocketController.instance.GetSocketState() == SocketState.Game_Running)
+        //if (ClubSocketController.instance.GetSocketState() == SocketState.Game_Running)
         {
             //DEV_CODE
             if (!isCardValueSet)
@@ -2159,14 +2311,14 @@ public class ClubInGameManager : MonoBehaviour
             isCardValueSet = true;
 
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
-
-            if (betAmount > 0 && userId != PlayerManager.instance.GetPlayerGameData().userId)
+            Debug.Log(userId + " " + PlayerManager.instance.GetPlayerGameData().userId);
+            if (betAmount > 0 /*&& userId != PlayerManager.instance.GetPlayerGameData().userId*/)
             {
                 PlayerScript playerObject = GetPlayerObject(userId);
 
                 if (playerObject != null)
                 {
-                    //Debug.Log("Current Bet Amount : " + betAmount);
+                    Debug.Log("Current Bet Amount : " + betAmount);
                     //StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
                     StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));
                 }
@@ -2187,7 +2339,7 @@ public class ClubInGameManager : MonoBehaviour
         //UnityEngine.Debug.LogWarning("Round Data :- " + serverResponse);
         JsonData data = JsonMapper.ToObject(serverResponse);
 
-        if(data[0] != null)
+        if (data[0] != null && data[0]["currentSubRounds"] != null)
             MATCH_ROUND = (int)float.Parse(data[0]["currentSubRounds"].ToString());
 		if (MATCH_ROUND == -1)
             MATCH_ROUND = 1;

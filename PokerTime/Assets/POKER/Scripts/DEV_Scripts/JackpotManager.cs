@@ -65,8 +65,8 @@ public class JackpotManager : MonoBehaviour
 
     public void RequestJackpotDetails()
     {
-        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
-        WebServices.instance.SendRequest(RequestType.GetJackpotDetailByClubId, requestData, true, OnServerResponseFound);
+        //string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+        //WebServices.instance.SendRequest(RequestType.GetJackpotDetailByClubId, requestData, true, OnServerResponseFound);
     }
 
     private void SendTopUpJackpotRequest()
