@@ -63,7 +63,7 @@ public class PlayerScriptTeenPatti : MonoBehaviour
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                MainMenuControllerTeen.instance.ShowMessage(errorMessage);
             }
             return;
         }
@@ -86,7 +86,7 @@ public class PlayerScriptTeenPatti : MonoBehaviour
             }
             else
             {
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
             }
         }
     }
@@ -279,7 +279,7 @@ public class PlayerScriptTeenPatti : MonoBehaviour
         //      StartCoroutine("CountDownAnimation");
         WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" + userId + "\"}", true, OnServerResponseFound);
     }
-    public void ShowDetailsAsNewPlayer(PlayerData playerData)
+    public void ShowDetailsAsNewPlayer(PlayerDataTeenPatti playerData)
     {
         //    Debug.LogError("Player data "+playerData.userName);
 

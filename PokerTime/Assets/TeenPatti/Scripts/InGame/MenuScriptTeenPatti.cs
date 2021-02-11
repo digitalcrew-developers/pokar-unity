@@ -56,13 +56,23 @@ public class MenuScriptTeenPatti : MonoBehaviour
 
             case "topUp":
                 {
-                    if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
+                    Debug.LogError("Call top up1");
+                  //  if (SocketControllerTeenPatti.instance.GetSocketState() == SocketStateTeenPatti.Game_Running)
                     {
                         if (PlayerManager.instance.GetPlayerGameData().coins > GlobalGameManager.instance.GetRoomData().minBuyIn)
                         {
-                            if (InGameManagerTeenPatti.instance.GetMyPlayerObject() != null)
+                            Debug.LogError("Call top up2");
+                            if (InGameUiManagerTeenPatti.instance != null)
                             {
-                                InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.TopUp,new object[] { InGameManagerTeenPatti.instance.GetMyPlayerObject().GetPlayerData().balance});
+                                Debug.LogError("Call top up4" + InGameManagerTeenPatti.instance.GetMyPlayerObject().playerData.userId);
+
+                                //if (InGameManagerTeenPatti.instance.GetMyPlayerObject() != null)
+                                //{
+                                //    Debug.LogError("Call top up5");
+                                //InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.TopUp, new object[] { InGameManagerTeenPatti.instance.GetMyPlayerObject().GetPlayerData().balance });
+                                //}
+
+                                InGameUiManagerTeenPatti.instance.ShowScreen(InGameScreensTeenPatti.TopUp);
                             }
                         }
                         else

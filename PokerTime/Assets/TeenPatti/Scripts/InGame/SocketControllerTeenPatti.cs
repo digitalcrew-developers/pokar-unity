@@ -153,7 +153,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
 
     private void HandleSocketResponse()
     {
-        Debug.LogError("Counts are : " + socketResponse.Count);
+   //     Debug.LogError("Counts are : " + socketResponse.Count);
         if (socketResponse.Count > 0)
         {
             SocketResponseTeenPatti responseObject = socketResponse[0];
