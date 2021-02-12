@@ -16,7 +16,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
     public static ClubInGameManagerTeen instance;
 
     [SerializeField]
-    private PlayerScript[] allPlayersObject;
+    private PlayerScriptTeenPatti[] allPlayersObject;
 
     [SerializeField]
     private Transform[] allPlayerPos;
@@ -43,8 +43,8 @@ public class ClubInGameManagerTeen : MonoBehaviour
 
     public bool isGameStart;
 
-    private PlayerScript[] onlinePlayersScript = null;
-    private PlayerScript myPlayerObject = null, currentPlayer = null;
+    private PlayerScriptTeenPatti[] onlinePlayersScript = null;
+    private PlayerScriptTeenPatti myPlayerObject = null, currentPlayer = null;
     private int MATCH_ROUND = 0, LAST_BET_AMOUNT = 0;
     private CardData[] openCards = null;
 
@@ -118,7 +118,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
         UpdatePot("");
         Pot.SetActive(false);
         DeactivateAllPots();
-        onlinePlayersScript = new PlayerScript[0];
+        onlinePlayersScript = new PlayerScriptTeenPatti[0];
 
         for (int i = 0; i < allPlayersObject.Length; i++)
         {
@@ -209,19 +209,19 @@ public class ClubInGameManagerTeen : MonoBehaviour
 
     public void OnRabbitDataFound(string responseText)
     {
-        Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
+        //Debug.LogError("vip catd is :" + GetMyPlayerObject().GetPlayerData().userVIPCard);
         Debug.LogError("isFold :" + GetMyPlayerObject().GetPlayerData().isFold);
 
-        int vipCard = 0;
-        int.TryParse(GetMyPlayerObject().GetPlayerData().userVIPCard, out vipCard);
+        //int vipCard = 0;
+        ////int.TryParse(GetMyPlayerObject().GetPlayerData().userVIPCard, out vipCard);
 
 
-        if (vipCard > 0)
-        {
-            RabbitButton.SetActive(true);
-            StartCoroutine(DisableRabbitButton());
-            OnOpenCardsDataFound(responseText);
-        }
+        //if (vipCard > 0)
+        //{
+        //    RabbitButton.SetActive(true);
+        //    StartCoroutine(DisableRabbitButton());
+        //    OnOpenCardsDataFound(responseText);
+        //}
     }
 
     private IEnumerator DisableRabbitButton()
@@ -230,12 +230,12 @@ public class ClubInGameManagerTeen : MonoBehaviour
         RabbitButton.SetActive(false);
     }
 
-    private void Init(List<MatchMakingPlayerData> matchMakingPlayerData)
+    private void Init(List<MatchMakingPlayerDataTeenPatti> matchMakingPlayerData)
     {
         isRematchRequestSent = false;
         matchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
-        onlinePlayersScript = new PlayerScript[matchMakingPlayerData.Count];
-        PlayerScript playerScriptWhosTurn = null;
+        onlinePlayersScript = new PlayerScriptTeenPatti[matchMakingPlayerData.Count];
+        PlayerScriptTeenPatti playerScriptWhosTurn = null;
 
         for (int i = 0; i < allPlayersObject.Length; i++)
         {
@@ -271,7 +271,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitAndShowCardAnimation(PlayerScript[] players, PlayerScript playerScriptWhosTurn)
+    private IEnumerator WaitAndShowCardAnimation(PlayerScriptTeenPatti[] players, PlayerScriptTeenPatti playerScriptWhosTurn)
     {
         if (!GlobalGameManager.IsJoiningPreviousGame)
         {
@@ -378,7 +378,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
         }
     }
 
-    private void SwitchTurn(PlayerScript playerScript, bool isCheckAvailable)
+    private void SwitchTurn(PlayerScriptTeenPatti playerScript, bool isCheckAvailable)
     {
         SoundManager.instance.PlaySound(SoundType.TurnSwitch);
 
@@ -411,7 +411,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
                             else
                             {
                                 Debug.LogWarning("LAST BET AMOUNT " + LAST_BET_AMOUNT);
-                                ClubInGameUIManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT);
+                                ClubInGameUIManagerTeen.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT);
                             }
                         }
                         break;
@@ -438,7 +438,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
             else
             {
                 //Debug.LogWarning("LAST BET AMOUNT 1" + LAST_BET_AMOUNT);
-                ClubInGameUIManager.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
+                ClubInGameUIManagerTeen.instance.ToggleActionButton(true, currentPlayer, isCheckAvailable, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
             }
         }
         else
@@ -457,9 +457,9 @@ public class ClubInGameManagerTeen : MonoBehaviour
 
 
 
-    private List<MatchMakingPlayerData> ReArrangePlayersList(List<MatchMakingPlayerData> matchMakingPlayerData)
+    private List<MatchMakingPlayerDataTeenPatti> ReArrangePlayersList(List<MatchMakingPlayerDataTeenPatti> matchMakingPlayerData)
     {
-        List<MatchMakingPlayerData> updatedList = new List<MatchMakingPlayerData>();
+        List<MatchMakingPlayerDataTeenPatti> updatedList = new List<MatchMakingPlayerDataTeenPatti>();
 
         for (int i = 0; i < matchMakingPlayerData.Count; i++)
         {
@@ -524,7 +524,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
         ClubSocketController.instance.ResetConnection();
     }
 
-    public PlayerScript GetMyPlayerObject()
+    public PlayerScriptTeenPatti GetMyPlayerObject()
     {
         if (myPlayerObject == null)
         {
@@ -535,7 +535,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
     }
 
 
-    public PlayerScript GetPlayerObject(string userId)
+    public PlayerScriptTeenPatti GetPlayerObject(string userId)
     {
         if (onlinePlayersScript == null)
         {
@@ -553,7 +553,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
         return null;
     }
 
-    public PlayerScript[] GetAllPlayers()
+    public PlayerScriptTeenPatti[] GetAllPlayers()
     {
         return onlinePlayersScript;
     }
@@ -562,13 +562,13 @@ public class ClubInGameManagerTeen : MonoBehaviour
 
     private void ShowNewPlayersOnTable(JsonData data, bool isMatchStarted)
     {
-        List<PlayerData> playerData = new List<PlayerData>();
+        List<PlayerDataTeenPatti> playerData = new List<PlayerDataTeenPatti>();
 
         for (int i = 0; i < data[0].Count; i++)
         {
             if (GetPlayerObject(data[0][i]["userId"].ToString()) == null) // player not in our list
             {
-                PlayerData playerDataObject = new PlayerData();
+                PlayerDataTeenPatti playerDataObject = new PlayerDataTeenPatti();
 
                 playerDataObject.userId = data[0][i]["userId"].ToString();
                 playerDataObject.userName = data[0][i]["userName"].ToString();
@@ -635,7 +635,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
 
         if (isMatchStarted && onlinePlayersScript != null && onlinePlayersScript.Length > 0)
         {
-            List<PlayerScript> leftPlayers = new List<PlayerScript>();
+            List<PlayerScriptTeenPatti> leftPlayers = new List<PlayerScriptTeenPatti>();
 
             for (int i = 0; i < onlinePlayersScript.Length; i++)
             {
@@ -729,7 +729,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
 
     }
 
-    private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
+    private IEnumerator WaitAndShowBetAnimation(PlayerScriptTeenPatti playerScript, string betAmount)
     {
         Debug.Log("Last All in Bet: " + playerScript.GetLocalBetAmount()/*betAmount*/);
         GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
@@ -747,7 +747,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
 
     private bool winnerAnimationFound = false;
 
-    private IEnumerator WaitAndShowWinnersAnimation(PlayerScript playerScript, string betAmount, GameObject amount)
+    private IEnumerator WaitAndShowWinnersAnimation(PlayerScriptTeenPatti playerScript, string betAmount, GameObject amount)
     {
         winnerAnimationFound = true;
         yield return new WaitForSeconds(.6f);
@@ -1151,7 +1151,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
 
     private void InstantiateWin(string userId, string name, string winAmount)
     {
-        PlayerScript winnerPlayer = GetPlayerObject(userId);
+        PlayerScriptTeenPatti winnerPlayer = GetPlayerObject(userId);
 
         if (winnerPlayer != null)
         {
@@ -1394,7 +1394,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
 
             if (betAmount > 0 && userId != PlayerManager.instance.GetPlayerGameData().userId)
             {
-                PlayerScript playerObject = GetPlayerObject(userId);
+                PlayerScriptTeenPatti playerObject = GetPlayerObject(userId);
 
                 if (playerObject != null)
                 {
@@ -1538,24 +1538,24 @@ public class ClubInGameManagerTeen : MonoBehaviour
                 }
             }
 
-            if (ClubSocketController.instance.GetSocketState() == SocketState.WaitingForOpponent)
+            if (ClubSocketControllerTeen.instance.GetSocketState() == SocketState.WaitingForOpponent)
             {
-                ClubSocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
+                ClubSocketControllerTeen.instance.SetTableId(data[0][0]["tableId"].ToString());
 
                 if (isMatchStarted) // Match is started
                 {
                     Debug.Log("isMatchStarted" + isMatchStarted);
 
-                    List<MatchMakingPlayerData> matchMakingPlayerData = new List<MatchMakingPlayerData>();
+                    List<MatchMakingPlayerDataTeenPatti> matchMakingPlayerData = new List<MatchMakingPlayerDataTeenPatti>();
 
                     ClubSocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
                     for (int i = 0; i < data[0].Count; i++)
                     {
-                        MatchMakingPlayerData playerData = new MatchMakingPlayerData();
+                        MatchMakingPlayerDataTeenPatti playerData = new MatchMakingPlayerDataTeenPatti();
 
                         PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
 
-                        playerData.playerData = new PlayerData();
+                        playerData.playerData = new PlayerDataTeenPatti();
                         playerData.playerData.userId = data[0][i]["userId"].ToString();
 
                         playerData.playerData.userName = data[0][i]["userName"].ToString();
@@ -1573,10 +1573,10 @@ public class ClubInGameManagerTeen : MonoBehaviour
                         playerData.playerData.isSmallBlind = data[0][i]["smallBlind"].Equals(true);
                         playerData.playerData.isBigBlind = data[0][i]["bigBlind"].Equals(true);
 
-                        playerData.playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
-                        playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
-                        playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
-                        playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
+                        //playerData.playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
+                        //playerData.playerData.cardValidity = data[0][i]["cardValidity"].ToString();
+                        //playerData.playerData.bufferTime = data[0][i]["bufferTime"].ToString();
+                        //playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
 
                         Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
@@ -1613,28 +1613,28 @@ public class ClubInGameManagerTeen : MonoBehaviour
                     Init(matchMakingPlayerData);
                 }
             }
-            else if (ClubSocketController.instance.GetSocketState() == SocketState.Game_Running)
+            else if (ClubSocketControllerTeen.instance.GetSocketState() == SocketState.Game_Running)
             {
                 Debug.Log("Game not started" + isMatchStarted);
 
-                PlayerScript playerWhosTurn = null;
+                PlayerScriptTeenPatti playerWhosTurn = null;
                 bool isCheckAvailable = false;
                 for (int i = 0; i < data[0].Count; i++)
                 {
-                    PlayerScript playerObject = GetPlayerObject(data[0][i]["userId"].ToString());
+                    PlayerScriptTeenPatti playerObject = GetPlayerObject(data[0][i]["userId"].ToString());
 
                     if (playerObject != null)
                     {
-                        PlayerData playerData = new PlayerData();
+                        PlayerDataTeenPatti playerData = new PlayerDataTeenPatti();
                         //Debug.LogError("************************************************************");
                         playerData.isFold = data[0][i]["isBlocked"].Equals(true);
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
 
-                        playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
-                        playerData.cardValidity = data[0][i]["cardValidity"].ToString();
-                        playerData.bufferTime = data[0][i]["bufferTime"].ToString();
-                        playerData.seatNo = data[0][i]["seatNo"].ToString();
+                        //playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
+                        //playerData.cardValidity = data[0][i]["cardValidity"].ToString();
+                        //playerData.bufferTime = data[0][i]["bufferTime"].ToString();
+                        //playerData.seatNo = data[0][i]["seatNo"].ToString();
 
                         //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
                         if (data[0][i]["isTurn"].Equals(true))
@@ -1645,8 +1645,8 @@ public class ClubInGameManagerTeen : MonoBehaviour
                         }
                         else
                         {
-                            ClubInGameUIManager.instance.ToggleSuggestionButton(false);
-                            ClubInGameUIManager.instance.ToggleActionButton(false);
+                            ClubInGameUIManagerTeen.instance.ToggleSuggestionButton(false);
+                            ClubInGameUIManagerTeen.instance.ToggleActionButton(false);
                         }
 
                         if (data[0][i]["userData"] != null && data[0][i]["userData"].ToString().Length > 0)
@@ -1676,8 +1676,8 @@ public class ClubInGameManagerTeen : MonoBehaviour
                 }
                 else
                 {
-                    ClubInGameUIManager.instance.ToggleSuggestionButton(false);
-                    ClubInGameUIManager.instance.ToggleActionButton(false);
+                    ClubInGameUIManagerTeen.instance.ToggleSuggestionButton(false);
+                    ClubInGameUIManagerTeen.instance.ToggleActionButton(false);
                     Debug.LogError("Null reference exception found playerWhosTurn is not found");
                 }
             }
@@ -1745,7 +1745,7 @@ public class ClubInGameManagerTeen : MonoBehaviour
         myPlayerObject = null;
 
         onlinePlayersScript = null;
-        onlinePlayersScript = new PlayerScript[0];
+        onlinePlayersScript = new PlayerScriptTeenPatti[0];
     }
 
     private void ClearPotAmount()

@@ -386,6 +386,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     public PlayerScriptTeenPatti GetMyPlayerObject()
     {
+        Debug.Log("My Player Object is: " + PlayerManager.instance.GetPlayerGameData().userId);
         if (myPlayerObject == null)
         {
             myPlayerObject = GetPlayerObject(PlayerManager.instance.GetPlayerGameData().userId);
@@ -423,13 +424,13 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     private void ShowNewPlayersOnTable(JsonData data, bool isMatchStarted)
     {
-        List<PlayerData> playerData = new List<PlayerData>();
+        List<PlayerDataTeenPatti> playerData = new List<PlayerDataTeenPatti>();
 
         for (int i = 0; i < data.Count; i++)
         {
             if (GetPlayerObject(data[i]["userId"].ToString()) == null) // player not in our list
             {
-                PlayerData playerDataObject = new PlayerData();
+                PlayerDataTeenPatti playerDataObject = new PlayerDataTeenPatti();
 
                 playerDataObject.userId = data[i]["userId"].ToString();
                 playerDataObject.userName = data[i]["userName"].ToString();
@@ -447,6 +448,8 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 }
 
                 playerData.Add(playerDataObject);
+
+                Debug.Log("Player added to list with user id: " + playerDataObject.userId);
             }
         }
 
@@ -1494,7 +1497,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                         playerData.playerData.userName = newData[i]["userName"].ToString();
                         playerData.playerData.tableId = newData[i]["tableId"].ToString();
                         InGameUiManagerTeenPatti.instance.tableId = newData[i]["tableId"].ToString();
-                         playerData.playerData.isFold = newData[i]["isBlocked"].Equals(true);
+                        playerData.playerData.isFold = newData[i]["isBlocked"].Equals(true);
 
                         playerData.playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
                         //Debug.LogError("Check User balance is :" + newData[i]["minBet"].ToString());
@@ -1557,15 +1560,15 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
                     if (playerObject != null)
                     {
-                        //PlayerData playerData = new PlayerData();
+                        PlayerDataTeenPatti playerData = new PlayerDataTeenPatti();
                         //Debug.LogError("************************************************************");
-                        playerObject.playerData.isFold = newData[i]["isBlocked"].Equals(true);
-                        playerObject.playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
-                        playerObject.playerData.playerAllBet = float.Parse(newData[i]["totalBet"].ToString());
-                        playerObject.playerData.balance = float.Parse(newData[i]["totalCoins"].ToString());
-                        playerObject.playerData.isBlind = newData[i]["isBlind"].Equals(true);
-                        playerObject.playerData.isShow = newData[i]["isShow"].Equals(true);
-                        playerObject.playerData.isSideShow = newData[i]["isSideShow"].Equals(true);
+                        playerData.isFold = newData[i]["isBlocked"].Equals(true);
+                        playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
+                        playerData.playerAllBet = float.Parse(newData[i]["totalBet"].ToString());
+                        playerData.balance = float.Parse(newData[i]["totalCoins"].ToString());
+                        playerData.isBlind = newData[i]["isBlind"].Equals(true);
+                        playerData.isShow = newData[i]["isShow"].Equals(true);
+                        playerData.isSideShow = newData[i]["isSideShow"].Equals(true);
 
                         if (newData[i]["isTurn"].Equals(true))
                         {

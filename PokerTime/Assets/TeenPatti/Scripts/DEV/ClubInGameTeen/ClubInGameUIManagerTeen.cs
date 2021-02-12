@@ -759,7 +759,7 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
         return actionButtonParent.activeInHierarchy;
     }
 
-    public void ToggleActionButton(bool isShow, PlayerScript playerObject = null, bool isCheckAvailable = false, int lastBetAmount = 0, float availableBalance = 0)
+    public void ToggleActionButton(bool isShow, PlayerScriptTeenPatti playerObject = null, bool isCheckAvailable = false, int lastBetAmount = 0, float availableBalance = 0)
     {
         actionButtonParent.SetActive(isShow);
 

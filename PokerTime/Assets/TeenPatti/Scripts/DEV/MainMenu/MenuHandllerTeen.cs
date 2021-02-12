@@ -22,7 +22,7 @@ public class MenuHandllerTeen : MonoBehaviour
     {
 		instance = this;
 
-		/*Debug.Log("Current Date and time:" + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));*/		
+		Debug.LogError("Current Date and time:" + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
 	}
 
     private void OnDestroy()
@@ -52,7 +52,7 @@ public class MenuHandllerTeen : MonoBehaviour
 		}
 
 
-		//UpdateAllText();
+		UpdateAllText();
 		//UpdateNotificationData(MainMenuControllerTeen.instance.GetNotificationDetails().unreadMessageCount);
     }
 
@@ -78,6 +78,7 @@ public class MenuHandllerTeen : MonoBehaviour
 	public void UpdateAllText()
 	{
 		PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
+		Debug.LogError("Data =====" + playerData.coins);
 		coinsText.text = Utility.GetTrimmedAmount(""+playerData.coins);
 		diamondsText.text = Utility.GetTrimmedAmount("" + playerData.diamonds);
 		pointsText.text = Utility.GetTrimmedAmount("" + playerData.points);
