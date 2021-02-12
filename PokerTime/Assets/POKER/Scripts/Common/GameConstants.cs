@@ -61,7 +61,7 @@ public class GameConstants : MonoBehaviour
     ////public const string API_URL = BASE_URL + ":3001"; /*":3000";*/// ":3009";
     //public const string SOCKET_URL = BASE_URL + ":3334";/*":3333";*/// ":3008";
 
-    public const string SOCKET_URL_FLASH = "http://3.137.10.78" + ":8888";
+    public const string SOCKET_URL_FLASH = "http://3.17.201.78" + ":8888";
 
     //public const string GAME_PORTAL_URL = "http://3.137.10.123";// "http://192.168.0.151";//"http://3.17.201.78";//"http://3.137.10.123";//90// "http://3.17.201.78";//"http://18.191.15.121";//"http://3.6.137.204";
    // public const string GAME_PORTAL_URL = "http://3.17.201.78";// "http://192.168.0.151";//"http://3.17.201.78";//"http://3.137.10.123";//90// "http://3.17.201.78";//"http://18.191.15.121";//"http://3.6.137.204";

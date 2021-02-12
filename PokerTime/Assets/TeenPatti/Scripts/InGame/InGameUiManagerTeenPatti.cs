@@ -817,7 +817,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
             if (!isCheckAvailable)
             {
-                Debug.LogError("Player is :" + playerObject.GetPlayerData().userId);
+                //Debug.LogError("Player is :" + playerObject.GetPlayerData().userId);
 
                 if (playerObject.GetPlayerData().isShow)
                 {
@@ -1437,7 +1437,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
         JsonData data = JsonMapper.ToObject(serverResponse);
 
-        Debug.LogError("ShowMatch is :" + data.ToJson());
+        //Debug.LogError("ShowMatch is :" + data.ToJson());
         InGameManagerTeenPatti.instance.PlayerTimerReset();
         
         PlayerScriptTeenPatti cardSeenPlayer1 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["p1"]["userId"].ToString());
@@ -1515,7 +1515,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
         JsonData data = JsonMapper.ToObject(serverResponse);
 
-        Debug.LogError("Chaal Notification is :" + data.ToJson());
+        //Debug.LogError("Chaal Notification is :" + data.ToJson());
 
         PlayerScriptTeenPatti cardSeenPlayer1 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["userId"].ToString());
 
@@ -1541,7 +1541,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
         JsonData data = JsonMapper.ToObject(serverResponse);
 
-        Debug.LogError("Show Notification is :" + data.ToJson());
+        //Debug.LogError("Show Notification is :" + data.ToJson());
 
 
         // GameConstants.sideShowRequesterId = int.Parse(data["0"].ToString());
@@ -1567,7 +1567,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
         // [{ "Status":true,"message":"Success","sentBy":"52","sentTo":"0","emojiIndex":"2","balanceDiamond":208990.0}]
         JsonData data = JsonMapper.ToObject(serverResponse);
 
-        Debug.LogError("Fold Notification is :" + data.ToJson());
+        //Debug.LogError("Fold Notification is :" + data.ToJson());
 
         PlayerScriptTeenPatti cardSeenPlayer1 = InGameManagerTeenPatti.instance.GetPlayerObject(data[0]["userId"].ToString());
 

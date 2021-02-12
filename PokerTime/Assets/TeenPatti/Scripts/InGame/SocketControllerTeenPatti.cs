@@ -153,13 +153,13 @@ public class SocketControllerTeenPatti : MonoBehaviour
 
     private void HandleSocketResponse()
     {
-        Debug.LogError("Counts are : " + socketResponse.Count);
+        //Debug.LogError("Counts are : " + socketResponse.Count);
         if (socketResponse.Count > 0)
         {
             SocketResponseTeenPatti responseObject = socketResponse[0];
             socketResponse.RemoveAt(0);
 
-            Debug.LogError("Response is :" + responseObject.eventType);
+            //Debug.LogError("Response is :" + responseObject.eventType);
 
 #if DEBUG
 
@@ -253,7 +253,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
                     break;
 
                 case SocketEvetnsTeenPatti.ON_GAME_OVER_TIMER_FOUND:
-                    Debug.LogError("Game Over - " + responseObject.data);
+                    //Debug.LogError("Game Over - " + responseObject.data);
                     //InGameManager.instance.OnGameOverCountDownFound(responseObject.data);
                     break;
 
@@ -410,14 +410,14 @@ public class SocketControllerTeenPatti : MonoBehaviour
     void OnPlayerObjectFound(Socket socket, Packet packet, params object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
-        Debug.LogError("Objecyt is :" + responseText);
+        //Debug.LogError("Objecyt is :" + responseText);
 
 #if DEBUG
 
 #if UNITY_EDITOR
         if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.PLAYER_OBJECT))
         {
-            Debug.Log("OnPlayerObjectFound = " + responseText + "  Time = " + System.DateTime.Now);
+           // Debug.Log("OnPlayerObjectFound = " + responseText + "  Time = " + System.DateTime.Now);
            
         }
 #else
@@ -533,7 +533,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
     void OnCallTimerFound(Socket socket, Packet packet, params object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
-        Debug.LogError("CheckTimer");
+       // Debug.LogError("CheckTimer");
 #if DEBUG
 
 #if UNITY_EDITOR
@@ -842,7 +842,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
                 Debug.LogError("Exception in an event handler! Time = " + System.DateTime.Now);
                 break;
             case SocketIOErrors.Internal:
-                Debug.LogError("Internal error! Time = " + System.DateTime.Now);
+                Debug.Log("Internal error! Time = " + System.DateTime.Now);
                 break;
             default:
                 Debug.LogError("server error! Time = " + System.DateTime.Now);
@@ -1527,7 +1527,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
         requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.tableId = TABLE_ID;
         requestData.bet = "" + GameConstants.playerbetAmount;
-        Debug.LogError("Amount in bet is :" + GameConstants.playerbetAmount);
+        //Debug.LogError("Amount in bet is :" + GameConstants.playerbetAmount);
 
         string requestStringData = JsonMapper.ToJson(requestData);
         object requestObjectData = Json.Decode(requestStringData);
@@ -1747,7 +1747,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
                 if (counter % reInitialisationCount == 0)
                 {
                     ReConnect();
-                    Debug.LogError("Functionality written");
+                   // Debug.LogError("Functionality written");
                 }
             }
 
