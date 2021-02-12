@@ -15,44 +15,36 @@ public class ClubTableControllerTeen : MonoBehaviour
     public static ClubTableControllerTeen instance;
     public Text popUpText;
 
-    [Header ("Table Template")]
+    [Header("Table Templates Data")]
+    public Transform tableListContainer;
     public GameObject templateObj;
-    public Transform container;
     public Toggle selectAllToggle;
-    public Text noTemplateText;
+    public GameObject availableTemplatePanel;
+    public GameObject noTemplatePanel;
     public Button createBtn;
 
+    [Header("Menu Buttons")]
+    public Button createTable;
+    public Button tableTemplates;
 
-    [Header("NLH")]
-    public Button RingGame_RegularModeTabNLH;
-    public Button RingGame_6PlusModeTabNLH;
+    [Header("Buttons")]
+    public Button saveBtn;
+    public Button startBtn;
+    public Button editBtn;
 
-    public Button RingGameTabButton_NLH;
-    public Button SNGGameTabButton_NLH;
-    public Button MTTGameTabButton_NLH;
+    [Header("Panels")]
+    public GameObject createTablePanel;
+    public GameObject tableTemplatesPanel;
 
-    public GameObject RingGamePanel_NLH, SNGamePanel_NLH, MTTGamePanel_NLH;
+    [Header("Components")]
+    public List<GameObject> components;
 
+    [HideInInspector]
+    public bool isPublishTemplateWithCreate = false;
+    public static int tableIdStatic = 0;
 
-    [Header("PLO")]
-    public Button RingGameTabButton_PLO;
-    public Button SNGGameTabButton_PLO;
-    public Button MTTGameTabButton_PLO;
-    public GameObject RingGamePanel_PLO, SNGamePanel_PLO, MTTGamePanel_PLO;
-    
-    public Button RingGame_PLO4ModePLO;
-    public Button RingGame_PLO5ModePLO;
-
-    [Space(5)]
-    [Header("MIXED GAME")]
-    public Button RingGameTabButton_MIXED;
-    public Button SNGGameTabButton_MIXED;
-    public Button MTTGameTabButton_MIXED;
-    public GameObject RingGamePanel_MIXED, SNGamePanel_MIXED, MTTGamePanel_MIXED;
-    
-
-    public Button RingGame_NLHPLO4ModePLO;
-    public Button RingGame_NLHPLO5ModePLO;
+    public static bool isEditingTemplate = false;
+    TableData tableData;
 
     private void Awake()
     {
@@ -61,60 +53,30 @@ public class ClubTableControllerTeen : MonoBehaviour
             instance = this;
         }
 
-        //popUpText.gameObject.SetActive(false);
-        //RequestTemplateData();
+        popUpText.gameObject.SetActive(false);
+        RequestTemplateData(false);
+
+        createTable.onClick.RemoveAllListeners();
+        tableTemplates.onClick.RemoveAllListeners();
+
+        createTable.onClick.AddListener(() => OpenScreen("CreateTemplate"));
+        tableTemplates.onClick.AddListener(() => OpenScreen("TableTemplates"));        
     }
 
-    private void Start()
+    //void Initialize()
+    //{
+    //    tableData.userId = PlayerManager.instance.GetPlayerGameData().userId;
+    //}
+
+    private void OnEnable()
     {
-        //Initialise();
+        OpenScreen("CreateTemplate");
     }
 
-    private void Initialise()
+    private void OnDisable()
     {
-        //NLH
-        RingGameTabButton_NLH.onClick.RemoveAllListeners();
-        SNGGameTabButton_NLH.onClick.RemoveAllListeners();
-        MTTGameTabButton_NLH.onClick.RemoveAllListeners();
-
-
-        RingGameTabButton_NLH.onClick.AddListener(() => OpenScreen("Ring_NLH"));
-        SNGGameTabButton_NLH.onClick.AddListener(() => OpenScreen("SNG_NLH"));
-        MTTGameTabButton_NLH.onClick.AddListener(() => OpenScreen("MTT_NLH"));
-
-        RingGame_RegularModeTabNLH.onClick.RemoveAllListeners();
-        RingGame_6PlusModeTabNLH.onClick.RemoveAllListeners();
-
-        RingGame_RegularModeTabNLH.onClick.AddListener(() => OpenScreen("NLH_RegularMode"));
-        RingGame_6PlusModeTabNLH.onClick.AddListener(() => OpenScreen("NLH_6Plus"));
-
-
-        //PLO
-        RingGameTabButton_PLO.onClick.RemoveAllListeners();
-        SNGGameTabButton_PLO.onClick.RemoveAllListeners();
-        MTTGameTabButton_PLO.onClick.RemoveAllListeners();
-
-
-        RingGameTabButton_PLO.onClick.AddListener(() => OpenScreen("Ring_PLO"));
-        SNGGameTabButton_PLO.onClick.AddListener(() => OpenScreen("SNG_PLO"));
-        MTTGameTabButton_PLO.onClick.AddListener(() => OpenScreen("MTT_PLO"));
-
-        RingGame_PLO4ModePLO.onClick.AddListener(() => OpenScreen("PLO4Mode"));
-        RingGame_PLO5ModePLO.onClick.AddListener(() => OpenScreen("PLO5Mode"));
-
-
-        //MIXED
-        RingGameTabButton_MIXED.onClick.RemoveAllListeners();
-        SNGGameTabButton_MIXED.onClick.RemoveAllListeners();
-        MTTGameTabButton_MIXED.onClick.RemoveAllListeners();
-
-
-        RingGameTabButton_MIXED.onClick.AddListener(() => OpenScreen("Ring_MIXED"));
-        SNGGameTabButton_MIXED.onClick.AddListener(() => OpenScreen("SNG_MIXED"));
-        MTTGameTabButton_MIXED.onClick.AddListener(() => OpenScreen("MTT_MIXED"));
-
-        RingGame_NLHPLO4ModePLO.onClick.AddListener(() => OpenScreen("NLHPLO4"));
-        RingGame_NLHPLO5ModePLO.onClick.AddListener(() => OpenScreen("NLHPLO5"));
+        isEditingTemplate = false;
+        tableIdStatic = 0;
     }
 
     private void OpenScreen(string screenName)
@@ -124,156 +86,46 @@ public class ClubTableControllerTeen : MonoBehaviour
 
         switch (screenName)
         {
-            case "Ring_NLH":
-                RingGameTabButton_NLH.GetComponent<Image>().color = c;
-                SNGGameTabButton_NLH.GetComponent<Image>().color = c1;
-                MTTGameTabButton_NLH.GetComponent<Image>().color = c1;
+            case "CreateTemplate":
+                createTable.GetComponent<Image>().color = c;
+                tableTemplates.GetComponent<Image>().color = c1;
 
-                RingGamePanel_NLH.SetActive(true);
-                SNGamePanel_NLH.SetActive(false);
-                MTTGamePanel_NLH.SetActive(false);
-                break;
-            case "SNG_NLH":
-                RingGameTabButton_NLH.GetComponent<Image>().color = c1;
-                SNGGameTabButton_NLH.GetComponent<Image>().color = c;
-                MTTGameTabButton_NLH.GetComponent<Image>().color = c1;
+                createTablePanel.SetActive(true);
+                tableTemplatesPanel.SetActive(false);
 
-                RingGamePanel_NLH.SetActive(false);
-                SNGamePanel_NLH.SetActive(true);
-                MTTGamePanel_NLH.SetActive(false);
-                break;
-            case "MTT_NLH":
-                RingGameTabButton_NLH.GetComponent<Image>().color = c1;
-                SNGGameTabButton_NLH.GetComponent<Image>().color = c1;
-                MTTGameTabButton_NLH.GetComponent<Image>().color = c;
-
-                RingGamePanel_NLH.SetActive(false);
-                SNGamePanel_NLH.SetActive(false);
-                MTTGamePanel_NLH.SetActive(true);
-                break;
-
-            case "Ring_PLO":
-                RingGameTabButton_PLO.GetComponent<Image>().color = c;
-                SNGGameTabButton_PLO.GetComponent<Image>().color = c1;
-                MTTGameTabButton_PLO.GetComponent<Image>().color = c1;
-
-                RingGamePanel_PLO.SetActive(true);
-                SNGamePanel_PLO.SetActive(false);
-                MTTGamePanel_PLO.SetActive(false);
-                break;
-            case "SNG_PLO":
-                RingGameTabButton_PLO.GetComponent<Image>().color = c1;
-                SNGGameTabButton_PLO.GetComponent<Image>().color = c;
-                MTTGameTabButton_PLO.GetComponent<Image>().color = c1;
-
-                RingGamePanel_PLO.SetActive(false);
-                SNGamePanel_PLO.SetActive(true);
-                MTTGamePanel_PLO.SetActive(false);
-                break;
-            case "MTT_PLO":
-                RingGameTabButton_PLO.GetComponent<Image>().color = c1;
-                SNGGameTabButton_PLO.GetComponent<Image>().color = c1;
-                MTTGameTabButton_PLO.GetComponent<Image>().color = c;
-
-                RingGamePanel_PLO.SetActive(false);
-                SNGamePanel_PLO.SetActive(false);
-                MTTGamePanel_PLO.SetActive(true);
-                break;
-
-            case "Ring_MIXED":
-                RingGameTabButton_MIXED.GetComponent<Image>().color = c;
-                SNGGameTabButton_MIXED.GetComponent<Image>().color = c1;
-                MTTGameTabButton_MIXED.GetComponent<Image>().color = c1;
-
-                RingGamePanel_MIXED.SetActive(true);
-                SNGamePanel_MIXED.SetActive(false);
-                MTTGamePanel_MIXED.SetActive(false);
-                break;
-            case "SNG_MIXED":
-                RingGameTabButton_MIXED.GetComponent<Image>().color = c1;
-                SNGGameTabButton_MIXED.GetComponent<Image>().color = c;
-                MTTGameTabButton_MIXED.GetComponent<Image>().color = c1;
-
-                RingGamePanel_MIXED.SetActive(false);
-                SNGamePanel_MIXED.SetActive(true);
-                MTTGamePanel_MIXED.SetActive(false);
-                break;
-            case "MTT_MIXED":
-                RingGameTabButton_MIXED.GetComponent<Image>().color = c1;
-                SNGGameTabButton_MIXED.GetComponent<Image>().color = c1;
-                MTTGameTabButton_MIXED.GetComponent<Image>().color = c;
-
-                RingGamePanel_MIXED.SetActive(false);
-                SNGamePanel_MIXED.SetActive(false);
-                MTTGamePanel_MIXED.SetActive(true);
-                break;
-
-
-            case "NLH_RegularMode":
-                Debug.Log("OnClick Regular Mode");
-
-                RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").gameObject.SetActive(true);
-                RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").gameObject.SetActive(false);
-
-                RingGamePanel_NLH.transform.GetComponent<ScrollRect>().content = RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").GetComponent<RectTransform>();
+                if(isEditingTemplate)
+                {
+                    saveBtn.gameObject.SetActive(false);
+                    startBtn.gameObject.SetActive(false);
+                    editBtn.gameObject.SetActive(true);
+                }
+                else
+                {
+                    saveBtn.gameObject.SetActive(true);
+                    startBtn.gameObject.SetActive(true);
+                    editBtn.gameObject.SetActive(false);
+                }
 
                 break;
 
-            case "NLH_6Plus":
-                Debug.Log("OnClick 6+ Mode");
-                
-                RingGamePanel_NLH.transform.GetChild(0).Find("Content_RegularMode").gameObject.SetActive(false);
-                RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").gameObject.SetActive(true);
+            case "TableTemplates":
+                createTable.GetComponent<Image>().color = c1;
+                tableTemplates.GetComponent<Image>().color = c;
 
-                RingGamePanel_NLH.transform.GetComponent<ScrollRect>().content = RingGamePanel_NLH.transform.GetChild(0).Find("Content_6Plus").GetComponent<RectTransform>();
+                createTablePanel.SetActive(false);
+                tableTemplatesPanel.SetActive(true);
                 break;
-
-            case "PLO4Mode":
-                Debug.Log("OnClick PLO4 Mode");
-
-                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO4").gameObject.SetActive(true);
-                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO5").gameObject.SetActive(false);
-
-                RingGamePanel_PLO.transform.GetComponent<ScrollRect>().content = RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO4").GetComponent<RectTransform>();
-                break;
-
-            case "PLO5Mode":
-                Debug.Log("OnClick PLO5 Mode");
-
-                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO4").gameObject.SetActive(false);
-                RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO5").gameObject.SetActive(true);
-
-                RingGamePanel_PLO.transform.GetComponent<ScrollRect>().content = RingGamePanel_PLO.transform.GetChild(0).Find("Content_PLO5").GetComponent<RectTransform>();
-                break;
-
-            case "NLHPLO4":
-                Debug.Log("OnClick NLH & PLO4 Mode");
-
-                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO4").gameObject.SetActive(true);
-                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO5").gameObject.SetActive(false);
-
-                RingGamePanel_MIXED.transform.GetComponent<ScrollRect>().content = RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO4").GetComponent<RectTransform>();
-                break;
-
-            case "NLHPLO5":
-                Debug.Log("OnClick NLH & PLO5 Mode");
-
-                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO4").gameObject.SetActive(false);
-                RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO5").gameObject.SetActive(true);
-
-                RingGamePanel_MIXED.transform.GetComponent<ScrollRect>().content = RingGamePanel_MIXED.transform.GetChild(0).Find("Content_NLH_PLO5").GetComponent<RectTransform>();
-                break;
-
+            
             default:
                 break;
         }
     }
 
-    public void RequestTemplateData()
+    public void RequestTemplateData(bool isPublish)
     {
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                                 "\"tableId\":\"" + "" + "\"," +
-                                "\"status\":\"" + "" + "\"," +
+                                "\"status\":\"" + (isPublish ? "Published" : "") + "\"," +
                                 "\"settingData\":\"" + "Yes" + "\"}";
 
         WebServices.instance.SendRequestTP(RequestTypeTP.GetTemplates, requestData, true, OnServerResponseFound);
@@ -281,87 +133,101 @@ public class ClubTableControllerTeen : MonoBehaviour
 
     private void LoadAllTemplates(JsonData data)
     {
-        for (int i = 0; i < container.childCount; i++)
+        for (int i = 0; i < tableListContainer.childCount; i++)
         {
-            Destroy(container.GetChild(i).gameObject);
+            Destroy(tableListContainer.GetChild(i).gameObject);
         }
 
         //Debug.Log("After RESET Total Templates: " + container.childCount);
 
         for (int i = 0; i < data["response"].Count; i++)
         {
-            GameObject obj = Instantiate(templateObj, container) as GameObject;
+            GameObject obj = Instantiate(templateObj, tableListContainer) as GameObject;
 
-            obj.GetComponent<ClubTemplateManager>().tableId = data["response"][i]["tableId"].ToString();
-            
-            if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
-                obj.GetComponent<ClubTemplateManager>().templateName.text = data["response"][i]["templateName"].ToString();
+            obj.GetComponent<ClubTemplateManagerTeen>().tableId = data["response"][i]["tableId"].ToString();
+
+            if (data["response"][i]["tableName"] != null && !data["response"][i]["tableName"].ToString().Equals(""))
+                obj.GetComponent<ClubTemplateManagerTeen>().templateName.text = data["response"][i]["tableName"].ToString();
             else
-                obj.GetComponent<ClubTemplateManager>().templateName.text = "Unnamed Tab...";
+                obj.GetComponent<ClubTemplateManagerTeen>().templateName.text = "Unnamed Tab...";
 
-            obj.GetComponent<ClubTemplateManager>().gameType.text = data["response"][i]["gameType"].ToString();
-
-            if (data["response"][i]["settingData"].Count > 0 && data["response"][i]["templateType"].ToString().Equals("Ring Game"))
-            {
-                if (data["response"][i]["settingData"]["templateSubType"].ToString().Equals("6+"))
-                {
-                    obj.GetComponent<ClubTemplateManager>()._6PlusObj.SetActive(true);
-                    obj.GetComponent<ClubTemplateManager>().blindsInfoObj.SetActive(false);
-                    obj.GetComponent<ClubTemplateManager>().anteInfoObj.SetActive(true);
-                    obj.GetComponent<ClubTemplateManager>().anteText.text = data["response"][i]["settingData"]["ante"].ToString();
-                }
-                else
-                {
-                    obj.GetComponent<ClubTemplateManager>()._6PlusObj.SetActive(false);
-                    obj.GetComponent<ClubTemplateManager>().blindsInfoObj.SetActive(true);
-                    obj.GetComponent<ClubTemplateManager>().anteInfoObj.SetActive(false);
-
-                    if (data["response"][i]["settingData"]["blinds"] != null)
-                        obj.GetComponent<ClubTemplateManager>().blindsText.text = data["response"][i]["settingData"]["blinds"].ToString();
-                    else
-                        obj.GetComponent<ClubTemplateManager>().blindsText.text = "";
-                }
-
-                obj.GetComponent<ClubTemplateManager>().playerText.text = data["response"][i]["settingData"]["memberCount"].ToString();
-                obj.GetComponent<ClubTemplateManager>().timeText.text = data["response"][i]["settingData"]["hours"].ToString();
-            }
+            obj.GetComponent<ClubTemplateManagerTeen>().gameMode.text = data["response"][i]["gameMode"].ToString();
+            obj.GetComponent<ClubTemplateManagerTeen>().bootText.text = data["response"][i]["bootAmount"].ToString();
+            obj.GetComponent<ClubTemplateManagerTeen>().playerText.text = data["response"][i]["playerCount"].ToString();
+            obj.GetComponent<ClubTemplateManagerTeen>().timeText.text = data["response"][i]["tableTime"].ToString();
             
-            obj.GetComponent<ClubTemplateManager>().deleteButton.onClick.AddListener(() => OnClickOnDeleteButton(obj.GetComponent<ClubTemplateManager>().tableId));
-            obj.GetComponent<ClubTemplateManager>().editButton.onClick.AddListener(() => OnClickOnEditButton());
-        }      
+            obj.GetComponent<ClubTemplateManagerTeen>().deleteButton.onClick.AddListener(() => OnClickOnDeleteButton(obj.GetComponent<ClubTemplateManagerTeen>().tableId));
+            obj.GetComponent<ClubTemplateManagerTeen>().editButton.onClick.AddListener(() => OnClickOnEditButton(obj.GetComponent<ClubTemplateManagerTeen>().tableId, data));
+        }
     }
 
     private void OnClickOnDeleteButton(string tableId)
     {
         Debug.Log("Table to delete: " + tableId);
-        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId().ToString() + "\"," +
+        string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                                "\"status\":\"" + "Deleted" + "\"," +
                                "\"tableId\":\"" + tableId + "\"}";
 
-        //WebServices.instance.SendRequest(RequestType.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
+        WebServices.instance.SendRequestTP(RequestTypeTP.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
     }
 
-    private void OnClickOnEditButton()
+    private void OnClickOnEditButton(string tableId, JsonData data)
     {
+        for (int i = 0; i < data["response"].Count; i++)
+        {
+            if (data["response"][i]["tableId"].ToString().Equals(tableId))
+            {
+                Debug.Log("Response Table ID: " + data["response"][i]["tableId"].ToString());
+                Debug.Log("Current Table ID: " + tableId);
 
+                int.TryParse(data["response"][i]["tableId"].ToString(), out tableIdStatic);
+
+                Debug.Log("Setting Up Data for edit..." + tableIdStatic);
+                                
+                components[0].transform.GetComponent<TMP_InputField>().text = data["response"][i]["tableName"].ToString();
+                components[1].transform.GetComponent<TMP_Text>().text = data["response"][i]["playerCount"].ToString();
+                components[2].GetComponent<TMP_Dropdown>().captionText.text = data["response"][i]["gameMode"].ToString();
+                components[3].transform.Find(data["response"][i]["actionTime"].ToString()).GetComponent<Toggle>().isOn = true;
+                components[5].transform.GetComponent<TMP_Text>().text = data["response"][i]["minBuyIn"].ToString();
+                components[7].transform.GetComponent<TMP_Text>().text = data["response"][i]["fee"].ToString();
+                components[8].transform.GetComponent<TMP_Text>().text = data["response"][i]["cap"].ToString();
+
+                components[9].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["hideRealTimeResult"].ToString().Equals("1") ? true : false);
+                components[10].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["gpsRestriction"].ToString().Equals("1") ? true : false);
+                components[11].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["ipRestriction"].ToString().Equals("1") ? true : false);
+
+                for (int j = 0; j < components[4].transform.parent.parent.GetComponent<SliderChange>().sliderValues.Length; j++)
+                {
+                    if (components[4].transform.parent.parent.GetComponent<SliderChange>().sliderValues[j].Equals(data["response"][i]["bootAmount"].ToString()))
+                    {
+                        components[4].transform.parent.parent.Find("BootSlider").GetComponent<Slider>().value = j;
+                    }
+                }
+
+                components[12].transform.GetComponent<TMP_Text>().text = data["response"][i]["tableTime"].ToString();
+
+                isEditingTemplate = true;
+                OpenScreen("CreateTemplate");
+            }
+        }
     }
-
+    
     public void OnClickSelectAllToggle()
     {
         if(selectAllToggle.isOn)
         {
-            for (int i = 0; i < container.childCount; i++)
+            for (int i = 0; i < tableListContainer.childCount; i++)
             {
-                container.GetChild(i).GetComponent<ClubTemplateManager>().selectToggle.isOn = true;
-                container.GetChild(i).GetComponent<ClubTemplateManager>().OnSelectedCheckBox();
+                tableListContainer.GetChild(i).GetComponent<ClubTemplateManagerTeen>().selectToggle.isOn = true;
+                tableListContainer.GetChild(i).GetComponent<ClubTemplateManagerTeen>().OnSelectedCheckBox();
             }
         }
         else
         {
-            for (int i = 0; i < container.childCount; i++)
+            for (int i = 0; i < tableListContainer.childCount; i++)
             {
-                container.GetChild(i).GetComponent<ClubTemplateManager>().selectToggle.isOn = false;
-                container.GetChild(i).GetComponent<ClubTemplateManager>().OnSelectedCheckBox();
+                tableListContainer.GetChild(i).GetComponent<ClubTemplateManagerTeen>().selectToggle.isOn = false;
+                tableListContainer.GetChild(i).GetComponent<ClubTemplateManagerTeen>().OnSelectedCheckBox();
             }
         }
     }
@@ -371,30 +237,30 @@ public class ClubTableControllerTeen : MonoBehaviour
         int selectedTemplateCounter = 0;
         string tableIds = "";
 
-        for (int i = 0; i < container.childCount; i++)
+        for (int i = 0; i < tableListContainer.childCount; i++)
         {
-            if (container.GetChild(i).GetComponent<ClubTemplateManager>().selectToggle.isOn)
+            if (tableListContainer.GetChild(i).GetComponent<ClubTemplateManagerTeen>().selectToggle.isOn)
                 selectedTemplateCounter++;           
         }
 
         if(selectedTemplateCounter > 0)
         {
-            for (int i = 0; i < container.childCount; i++)
+            for (int i = 0; i < tableListContainer.childCount; i++)
             {
-                if (container.GetChild(i).GetComponent<ClubTemplateManager>().selectToggle.isOn)
+                if (tableListContainer.GetChild(i).GetComponent<ClubTemplateManagerTeen>().selectToggle.isOn)
                 {
                     if (tableIds == "")
-                        tableIds += tableIds + container.GetChild(i).GetComponent<ClubTemplateManager>().tableId;
+                        tableIds += tableIds + tableListContainer.GetChild(i).GetComponent<ClubTemplateManagerTeen>().tableId;
                     else
-                        tableIds += "," + container.GetChild(i).GetComponent<ClubTemplateManager>().tableId;                   
+                        tableIds += "," + tableListContainer.GetChild(i).GetComponent<ClubTemplateManagerTeen>().tableId;                   
                 }                
             }
 
-            string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+            string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                                 "\"status\":\"" + "Published" + "\"," +
-                                "\"tableIds\":[\"" + tableIds  + "\"]}";
+                                "\"tableIds\":[\"" + tableIds + "\"]}";
 
-            //WebServices.instance.SendRequest(RequestType.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
+            WebServices.instance.SendRequestTP(RequestTypeTP.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
         }
         else
         {
@@ -420,6 +286,8 @@ public class ClubTableControllerTeen : MonoBehaviour
 
     public void OnServerResponseFound(RequestTypeTP requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
+        tableIdStatic = 0;
+
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
@@ -435,76 +303,100 @@ public class ClubTableControllerTeen : MonoBehaviour
         {
             case RequestTypeTP.GetTemplates:
                 {
-                    Debug.Log("Response => GetTemplates : " + serverResponse);
+                    Debug.Log("Response => GetTemplates (TP) : " + serverResponse);
                     JsonData data = JsonMapper.ToObject(serverResponse);
                     if (data["success"].ToString() == "1")
                     {
-                        //if (data[ <= 0)
-                        //{
-                        //    Debug.Log("No Data Found");
-                        //    noTemplateText.gameObject.SetActive(true);
-                        //    createBtn.interactable = false;
-                        //}
-                        //else
-                        //{ 
-                        noTemplateText.gameObject.SetActive(false);
-                        createBtn.interactable = true;
-                        LoadAllTemplates(data);
-                        //}
+                        if (data["response"].Count <= 0)
+                        {
+                            Debug.Log("No Data Found");
+                            noTemplatePanel.gameObject.SetActive(true);
+                            availableTemplatePanel.SetActive(false);
+                            createBtn.interactable = false;
+                        }
+                        else
+                        {
+                            noTemplatePanel.SetActive(false);
+                            availableTemplatePanel.SetActive(true);
+                            createBtn.interactable = true;
+
+                            LoadAllTemplates(data);
+                        }
                     }
                     else
                     {
-                        MainMenuControllerTeen.instance.ShowMessage("Unable to get room data");
+                        noTemplatePanel.gameObject.SetActive(true);
+                        availableTemplatePanel.SetActive(false);
+                        createBtn.interactable = false;
+                        //    MainMenuController.instance.ShowMessage("Unable to get room data");
                     }
                 }
                 break;
 
-            //case RequestType.UpdateTemplateStatus:
-            //    {
-            //        Debug.Log("Response => UpdateTemplateStatus : " + serverResponse);
-            //        JsonData data = JsonMapper.ToObject(serverResponse);
+            case RequestTypeTP.UpdateTemplateStatus:
+                {
+                    Debug.Log("Response => UpdateTemplateStatus : " + serverResponse);
+                    JsonData data = JsonMapper.ToObject(serverResponse);
 
-            //        if (data["success"].ToString() == "1")
-            //        {
-            //            if (data["message"].ToString().Equals("Template Deleted"))
-            //            {
-            //                MainMenuController.instance.ShowMessage("Deleted successfully");
-            //                for (int i = 0; i < container.childCount; i++)
-            //                {
-            //                    Destroy(container.GetChild(i).gameObject);
-            //                }
-            //                RequestTemplateData();
-            //            }
-            //            else if (data["message"].ToString().Equals("Template Published"))
-            //            {
-            //                //StartCoroutine(ShowPopUp("Template Published ", 1.25f));
-            //                Debug.Log("Tamplate Published Successfully");                            
-            //            }
-            //        }
-            //        else
-            //        {
-            //            //MainMenuController.instance.ShowMessage(data["message"].ToString());
-            //        }
-            //    }
-            //    break;
+                    if (data["success"].ToString() == "1")
+                    {
+                        if (data["message"].ToString().Equals("Template Deleted"))
+                        {
+                            MainMenuController.instance.ShowMessage("Deleted successfully");
+                            for (int i = 0; i < tableListContainer.childCount; i++)
+                            {
+                                Destroy(tableListContainer.GetChild(i).gameObject);
+                            }
+                            RequestTemplateData(false);
+                        }
+                        else if (data["message"].ToString().Equals("Template Published"))
+                        {
+                            StartCoroutine(ShowPopUp("Template Published ", 1.25f));
+                            //Debug.Log("Tamplate Published Successfully");
+
+                            isPublishTemplateWithCreate = false;
+
+                            ClubDetailsUIManagerTeen.instance.GetClubTemplates();
+                            RequestTemplateData(true);                            
+                        }
+                    }
+                    else
+                    {
+                        //MainMenuController.instance.ShowMessage(data["message"].ToString());
+                    }
+                }
+                break;
 
 
             case RequestTypeTP.CreateTable:
                 {
                     Debug.Log("Response => Create Table: " + serverResponse);
-                    //JsonData data = JsonMapper.ToObject(serverResponse);
+                    JsonData data = JsonMapper.ToObject(serverResponse);
 
-                    //if (data["success"].ToString() == "1")
-                    //{
-                    //    Debug.Log(data["message"].ToString());
-                    //    //joinClubPopUp.SetActive(false);
-                    //    MainMenuController.instance.ShowMessage(data["message"].ToString());
-                    //}
-                    //else
-                    //{
-                    //    Debug.Log(data["message"].ToString());
-                    //    MainMenuController.instance.ShowMessage(data["message"].ToString());
-                    //}
+                    if (data["success"].ToString() == "1")
+                    {
+                        ShowPopUp("Template saved successfully.");
+                        //Debug.Log(data["message"].ToString());
+                        //joinClubPopUp.SetActive(false);
+                        //MainMenuController.instance.ShowMessage(data["message"].ToString());
+                        RequestTemplateData(false);
+
+                        tableIdStatic = 0;
+                    }
+                    else
+                    {
+                        Debug.Log(data["message"].ToString());
+                        MainMenuController.instance.ShowMessage(data["message"].ToString());
+                    }
+
+                    if (isPublishTemplateWithCreate)
+                    {
+                        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                                "\"status\":\"" + "Published" + "\"," +
+                                "\"tableIds\":[\"" + data["tableId"].ToString() + "\"]}";
+
+                        WebServices.instance.SendRequestTP(RequestTypeTP.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
+                    }
                 }
                 break;
             
@@ -521,43 +413,96 @@ public class ClubTableControllerTeen : MonoBehaviour
     //TEMPORARY METHODS
     public void OnClickOnButton(string name)
     {
-        switch(name)
+        //ActionTime Toggle Group
+        string actionTime = "";
+        Toggle[] toggles_ActionTime = components[3].transform.GetComponentsInChildren<Toggle>();
+        foreach (var t in toggles_ActionTime)
+        {
+            if (t.isOn)
+            {
+                actionTime = t.name;
+                //Debug.Log("Toggle Name:" + actionTime);
+            }
+        }
+
+        switch (name)
         {
             case "Start":
+                {
+                    isPublishTemplateWithCreate = true;
+                    OnClickOnButton("Create");
+                }
+                break;
             case "Create":
             {
-                string requestData = "{\"userId\":" + 58 + "," +
-                                "\"tableName\":\"" + "ak47" + "\"," +
-                                "\"playerCount\":\"" + 5 + "\"," +
-                                "\"gameMode\":\"" + "clssic" + "\"," +
-                                "\"actionTime\": " + 5 + "," +
-                                "\"bootValue\":" + 100 + "," +
-                                "\"minBuyIn\":" + 1 + "," +
-                                "\"fee\":" + 1 + "," +
-                                "\"cap\":" + 1 + "," +
-                                "\"hideRealTimeResult\":" + 1 + "," +
-                                "\"gpsRestriction\":" + 1 + "," +
-                                "\"ipRestriction\":" + 1 + "," +
-                                "\"tableTime\":" + 5 + "," +
-                                "\"entryCurrency\":" + 100 + "," +
-                                "\"players\":" + 5 + "," +
-                                "\"bootAmount\":" + 100 + "," +
-                                "\"smallBlind\":" + 100 + "," +
-                                "\"bigBlind\":" + 1200 + "," +
-                                "\"minBet\":" + 500 + "," +
-                                "\"maxBet\":" + 300 + "," +
-                                "\"potLimit\":" + 2800 + "," +
-                                "\"callTimmer\":" + 5 + "," +
-                                "\"startGameTimmer\":" + 5 + "," +
-                                "\"nextRoundTimmer\":" + 5 + "," +
-                                "\"gameOverTimmer\":" + 5 + "," +
-                                "\"gameIcon\":\"" + "test" + "\"," +
-                                "\"iconBaseUrl\":\"" + "test" + "\"," +
-                                "\"backgroundImg\":\"" + "test" + "\"}";
+                    string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                                "\"tableName\":\"" + components[0].GetComponent<TMP_InputField>().text + "\"," +
+                                "\"playerCount\":" + components[1].GetComponent<TMP_Text>().text + "," +
+                                "\"gameMode\":\"" + components[2].GetComponent<TMP_Dropdown>().captionText.text + "\"," +
+                                "\"actionTime\": " + actionTime + "," +
+                                "\"minBuyIn\":" + components[5].GetComponent<TMP_Text>().text + "," +
+                                //"\"maxBuyIn\":" + components[6].GetComponent<TMP_Text>().text + "," +
+                                "\"fee\":" + components[7].transform.GetComponent<TMP_Text>().text.Replace("%", "") + "," +
+                                "\"cap\":" + components[8].transform.GetComponent<TMP_Text>().text.Replace("BB", "") + "," +
+                                "\"hideRealTimeResult\":" + (components[9].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? 1 : 0) + "," +
+                                "\"gpsRestriction\":" + (components[10].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? 1 : 0) + "," +
+                                "\"ipRestriction\":" + (components[11].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? 1 : 0) + "," +
+                                "\"tableTime\":" + components[12].GetComponent<TMP_Text>().text + "," +
+                                "\"entryCurrency\":" + 0 + "," +
+                                "\"players\":" + 0 + "," +
+                                "\"bootAmount\":\"" + components[4].GetComponent<TMP_Text>().text + "\"," +
+                                "\"smallBlind\":" + 0 + "," +
+                                "\"bigBlind\":" + 0 + "," +
+                                "\"minBet\":" + 0 + "," +
+                                "\"maxBet\":" + 0 + "," +
+                                "\"potLimit\":" + 0 + "," +
+                                "\"callTimmer\":" + 0 + "," +
+                                "\"startGameTimmer\":" + 0 + "," +
+                                "\"nextRoundTimmer\":" + 0 + "," +
+                                "\"gameOverTimmer\":" + 0 + "," +
+                                "\"gameIcon\":\"" + "" + "\"," +
+                                "\"iconBaseUrl\":\"" + "" + "\"," +
+                                "\"backgroundImg\":\"" + "" + "\"," +
+                                "\"status\":\"" + "Saved" + "\"," +
+                                "\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
+                                "\"tableId\":\"" + ((tableIdStatic != 0) ? tableIdStatic.ToString() : "") + "\"}";
 
                     WebServices.instance.SendRequestTP(RequestTypeTP.CreateTable, requestData, true, OnServerResponseFound);
                 }
                 break;
         }
     }
+}
+
+public class TableData
+{
+    public string userId;
+    public string tableName;
+    public string playerCount;
+    public string gameMode;
+    public string actionTime;
+    public string minBuyIn;
+    public string fee;
+    public string cap;
+    public string hideRealTimeResult;
+    public string gpsRestriction;
+    public string ipRestriction;
+    public string tableTime;
+    public string entryCurrency;
+    public string players;
+    public string bootAmount;
+    public string smallBlind;
+    public string bigBlind;
+    public string minBet;
+    public string maxBet;
+    public string potLimit;
+    public string callTimmer;
+    public string startGameTimmer;
+    public string nextRoundTimmer;
+    public string gameOverTimmer;
+    public string gameIcon;
+    public string iconBaseUrl;
+    public string backgroundImg;
+    public string tableId;
+    public string clubId;
 }

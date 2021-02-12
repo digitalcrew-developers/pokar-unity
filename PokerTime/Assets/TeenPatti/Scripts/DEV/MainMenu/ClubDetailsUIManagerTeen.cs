@@ -251,12 +251,12 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 
 	public void GetClubTemplates()
 	{
-		string requestData = "{\"clubId\":\"" + GetClubId() + "\"}";
-								//"\"tableId\":\"" + "" + "\"," +
-								//"\"status\":\"" + "Published" + "\"," +
-								//"\"settingData\":\"" + "Yes" + "\"}";
+		string requestData = "{\"clubId\":\"" + GetClubId() + "\"," +
+							"\"tableId\":\"" + "" + "\"," +
+							"\"status\":\"" + "Published" + "\"," +
+							"\"settingData\":\"" + "Yes" + "\"}";
 
-		WebServices.instance.SendRequestTP(RequestTypeTP.GetTemplates, requestData, true, OnServerResponseFound);
+        WebServices.instance.SendRequestTP(RequestTypeTP.GetTemplates, requestData, true, OnServerResponseFound);
 	}
 
 	public void OnServerResponseFound(RequestTypeTP requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -277,12 +277,10 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
         {
 			case RequestTypeTP.GetClubDetails:
 				{
-					Debug.Log("Response => GetClubDetails : " + serverResponse);
+					Debug.Log("Response => GetClubDetails (TP) : " + serverResponse);
 					JsonData data = JsonMapper.ToObject(serverResponse);
 					string chipsText = data["data"][0]["ptChips"].ToString();
 					CLubChips.text = chipsText;
-
-
 				}
 				break;
 
@@ -294,7 +292,7 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 
 			case RequestTypeTP.GetTemplates:
 				{
-					Debug.Log("Response => GetTemplates : " + serverResponse);
+					Debug.Log("Response => GetTemplates (TP) : " + serverResponse);
 					JsonData data = JsonMapper.ToObject(serverResponse);
 					templateList = data;
 

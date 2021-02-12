@@ -53,9 +53,9 @@ public class RingGameManager : MonoBehaviour
         templateTypeStatic = templateType;
         templateSubTypeStatic = templateSubType;
 
-        Debug.Log("GameType Static:" + gameTypeStatic);
-        Debug.Log("TemplateType Static:" + templateTypeStatic);
-        Debug.Log("TemplateSubType Static:" + templateSubTypeStatic);
+        //Debug.Log("GameType Static:" + gameTypeStatic);
+        //Debug.Log("TemplateType Static:" + templateTypeStatic);
+        //Debug.Log("TemplateSubType Static:" + templateSubTypeStatic);
     }
 
 
