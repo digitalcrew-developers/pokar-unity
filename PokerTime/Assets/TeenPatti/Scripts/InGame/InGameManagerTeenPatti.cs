@@ -163,7 +163,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
             else
             {
 #if ERROR_LOG
-            Debug.LogError("Null Reference exception found playerId whos turn is not found");
+            //Debug.LogError("Null Reference exception found playerId whos turn is not found");
 #endif
             }
         }
@@ -373,7 +373,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     private IEnumerator WaitAndSendLeaveRequest()
     {
-        Debug.LogError("WaitAndSendLeaveRequest");
+        //Debug.LogError("WaitAndSendLeaveRequest");
         yield return new WaitForEndOfFrame();
         SocketControllerTeenPatti.instance.SendLeaveMatchRequest();
         yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
@@ -954,7 +954,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     public void StandUpPlayer(string serverResponse)
     {
-        Debug.LogError("standUp serverResponse  " + serverResponse);       
+       //Debug.LogError("standUp serverResponse  " + serverResponse);       
         GetMyPlayerObject().StandUp();
     }
 
@@ -1015,7 +1015,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
             return;
         }
 
-        Debug.LogError("OnResultSuccessFound :" + serverResponse);
+       // Debug.LogError("OnResultSuccessFound :" + serverResponse);
 
         MATCH_ROUND = 10; // ToShow all cards
         ShowCommunityCardsAnimation();
@@ -1055,7 +1055,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 Debug.Log(id);
                 PlayerScriptTeenPatti winnerPlayer = GetPlayerObject(data[0][0][0]["userId"].ToString());
                 // show Winner notification
-                Debug.LogError("user Id :" + data[0][0][0]["userId"].ToString());
+                //Debug.LogError("user Id :" + data[0][0][0]["userId"].ToString());
                 matchWinner.text = winnerPlayer.playerData.userName + " wins the game.";
                 notifyUser.SetActive(true);
 
@@ -1086,7 +1086,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
         }
         
 
-        Debug.LogError("OnResultSuccessFound :" + serverResponse);
+        //Debug.LogError("OnResultSuccessFound :" + serverResponse);
 
         MATCH_ROUND = 10; // ToShow all cards
         //ShowCommunityCardsAnimation();
@@ -1234,7 +1234,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
                 else if(!currentPlayer.IsMe())
                 {
-                    Debug.LogError("Timer runs Here");
+                    //Debug.LogError("Timer runs Here");
                     currentPlayer.ShowRemainingTime(remainingTime);
                 }
                 //   Debug.Log("^^^^^^^^^^^^^^^^^^^   end time " + remainingTime);
@@ -1437,7 +1437,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
         
         if (data[0].Count > 0)
         {
-            Debug.LogError("Data is :" + data[0].ToJson());
+            //Debug.LogError("Data is :" + data[0].ToJson());
             JsonData newData = data[0]["players"];
             //AdjustAllPlayersOnTable(data[0].Count);
             bool isMatchStarted = data[0]["isGameStart"].Equals(true);
@@ -1500,7 +1500,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                         playerData.playerData.isFold = newData[i]["isBlocked"].Equals(true);
 
                         playerData.playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
-                        Debug.LogError("Check User balance is :" + newData[i]["minBet"].ToString());
+                        //Debug.LogError("Check User balance is :" + newData[i]["minBet"].ToString());
                         playerData.playerData.playerAllBet = float.Parse(newData[i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(newData[i]["totalCoins"].ToString());
 
@@ -1581,7 +1581,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                         {
                             string playerAction = newData[i]["userData"]["playerAction"].ToString();
                             int betAmount = (int)float.Parse(newData[i]["userData"]["betData"].ToString());
-                            Debug.LogError("BetAmount od user is :" + betAmount);
+                            //Debug.LogError("BetAmount od user is :" + betAmount);
                             int roundNo = (int)float.Parse(newData[i]["userData"]["roundNo"].ToString());
                             playerObject.UpdateDetails(playerObject.playerData, playerAction, betAmount, roundNo);
                         }
@@ -1677,7 +1677,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
     void OnApplicationQuit()
     {
 
-        Debug.LogError("OnApplicationQuitOnApplicationQuitOnApplicationQuit");
+        //Debug.LogError("OnApplicationQuitOnApplicationQuitOnApplicationQuit");
         SocketControllerTeenPatti.instance.SendLeaveMatchRequest();
         // StartCoroutine(WaitAndSendLeaveRequest());
 //        LoadMainMenu();  

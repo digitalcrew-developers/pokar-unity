@@ -17,6 +17,11 @@ public class FriendListManager : MonoBehaviour
         OnClickBtn("Friends");
     }
 
+    public void OnClickClose()
+    {
+        DestroyImmediate(this.gameObject);
+    }
+
     public void OnClickBtn(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);

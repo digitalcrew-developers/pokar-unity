@@ -33,7 +33,7 @@ public class ClubListUiManagerTeen : MonoBehaviour
 
 	public void FetchList(bool isShowLoading = true)
 	{
-        Debug.LogError("user id is :" + PlayerManager.instance.GetPlayerGameData().userId);
+        //Debug.LogError("user id is :" + PlayerManager.instance.GetPlayerGameData().userId);
 		string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
 
 		if (isShowLoading)
