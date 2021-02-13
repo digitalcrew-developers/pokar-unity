@@ -77,6 +77,7 @@ public class ClubTableControllerTeen : MonoBehaviour
     {
         isEditingTemplate = false;
         tableIdStatic = 0;
+        ResetTaleData();
     }
 
     private void OpenScreen(string screenName)
@@ -109,6 +110,8 @@ public class ClubTableControllerTeen : MonoBehaviour
                 break;
 
             case "TableTemplates":
+                ResetTaleData();
+
                 createTable.GetComponent<Image>().color = c1;
                 tableTemplates.GetComponent<Image>().color = c;
 
@@ -204,6 +207,9 @@ public class ClubTableControllerTeen : MonoBehaviour
                     }
                 }
 
+                float sliderVal;
+                float.TryParse(data["response"][i]["tableTime"].ToString(), out sliderVal);
+                components[12].transform.parent.Find("TimeMarkerSlider").GetComponent<Slider>().value = sliderVal;
                 components[12].transform.GetComponent<TMP_Text>().text = data["response"][i]["tableTime"].ToString();
 
                 isEditingTemplate = true;
@@ -357,7 +363,7 @@ public class ClubTableControllerTeen : MonoBehaviour
                             isPublishTemplateWithCreate = false;
 
                             ClubDetailsUIManagerTeen.instance.GetClubTemplates();
-                            RequestTemplateData(true);                            
+                            RequestTemplateData(false);                            
                         }
                     }
                     else
@@ -375,7 +381,18 @@ public class ClubTableControllerTeen : MonoBehaviour
 
                     if (data["success"].ToString() == "1")
                     {
-                        ShowPopUp("Template saved successfully.");
+                        if (isPublishTemplateWithCreate)
+                        {
+                            string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                                    "\"status\":\"" + "Published" + "\"," +
+                                    "\"tableIds\":[\"" + data["tableId"].ToString() + "\"]}";
+
+                            WebServices.instance.SendRequestTP(RequestTypeTP.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
+                        }
+                        else
+                        {
+                            ShowPopUp("Template saved successfully.");
+                        }
                         //Debug.Log(data["message"].ToString());
                         //joinClubPopUp.SetActive(false);
                         //MainMenuController.instance.ShowMessage(data["message"].ToString());
@@ -387,16 +404,7 @@ public class ClubTableControllerTeen : MonoBehaviour
                     {
                         Debug.Log(data["message"].ToString());
                         MainMenuController.instance.ShowMessage(data["message"].ToString());
-                    }
-
-                    if (isPublishTemplateWithCreate)
-                    {
-                        string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
-                                "\"status\":\"" + "Published" + "\"," +
-                                "\"tableIds\":[\"" + data["tableId"].ToString() + "\"]}";
-
-                        WebServices.instance.SendRequestTP(RequestTypeTP.UpdateTemplateStatus, requestData, true, OnServerResponseFound);
-                    }
+                    }                    
                 }
                 break;
             
@@ -471,6 +479,34 @@ public class ClubTableControllerTeen : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    void ResetTaleData()
+    {
+        components[0].GetComponent<TMP_InputField>().text = "";
+        components[1].GetComponent<TMP_Text>().text = "9";
+        components[2].GetComponent<TMP_Dropdown>().value = 0;
+        components[3].transform.Find("5").GetComponent<Toggle>().isOn = true;
+        components[4].transform.parent.parent.Find("BootSlider").GetComponent<Slider>().value = 0;
+
+        components[4].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().sliderValues[0];
+        components[5].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().lowValueText.text;
+
+        components[7].transform.GetComponent<TMP_Text>().text = "5";
+        components[8].transform.GetComponent<TMP_Text>().text = "3 BB";
+        components[9].transform.GetComponent<ToggleController>().isOn = false;
+        components[10].transform.GetComponent<ToggleController>().isOn = false;
+        components[11].transform.GetComponent<ToggleController>().isOn = false;
+        components[12].transform.parent.Find("TimeMarkerSlider").GetComponent<Slider>().value = 0;
+
+        saveBtn.gameObject.SetActive(true);
+        startBtn.gameObject.SetActive(true);
+        editBtn.gameObject.SetActive(false);
+
+        isEditingTemplate = false;
+        tableIdStatic = 0;
+
+        Debug.Log("All Data Reset...");    
     }
 }
 

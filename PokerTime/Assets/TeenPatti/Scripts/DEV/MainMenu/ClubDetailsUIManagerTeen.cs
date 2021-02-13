@@ -340,306 +340,343 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 			int index = i;
 			GameObject obj;
 
-			RoomData roomData = new RoomData();
+			RoomDataTeen roomData = new RoomDataTeen();
 			roomData.isLobbyRoom = false;
 
-			counter++;
+            counter++;
 
-			if ((data["response"][i]["settingData"]["templateSubType"].ToString().Equals("NLH&PLO4") || data["response"][i]["settingData"]["templateSubType"].ToString().Equals("NLH&PLO5")) && type.Equals("NLH&PLO"))
-			{
-				//counter++;
-				//roomData.gameMode = GameMode.NLH;
+			//roomData.gameMode = data["response"][i]["gameMode"].ToString();
+			if ((counter) % 2 == 0)
+            {
+                obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
+            }
+            else
+            {
+                obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
+            }
 
-				List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
-				.Split('/').Select(float.Parse).ToList();
+            if (data["response"][i]["tableName"] != null)
+                obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["tableName"].ToString();
 
-				roomData.bigBlind = blinds[1];
-				roomData.smallBlind = blinds[0];
-				roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
-				roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
-				roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
-				roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
-				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
-				roomData.roomId = data["response"][i]["tableId"].ToString();
-				roomData.title = data["response"][i]["templateName"].ToString();
+            //obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
+            obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["players"].ToString() + "/10";
 
-				if (data["response"][i]["gameType"].ToString().Equals("NLH"))
-				{
-					roomData.gameMode = GameMode.NLH;
-				}
-				else if (data["response"][i]["gameType"].ToString().Equals("PLO"))
-				{
-					roomData.gameMode = GameMode.PLO;
-				}
-				else if (data["response"][i]["gameType"].ToString().Equals("OFC"))
-				{
-					roomData.gameMode = GameMode.OFC;
-				}
+            if (data["response"][i]["bootAmount"] != null)
+                obj.transform.Find("Image/Boots").GetComponent<Text>().text = "Boots: " + data["response"][i]["bootAmount"].ToString();
 
-				//DEV_CODE
-				//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
-				if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
-					roomData.isEVChop = true;
-				else
-					roomData.isEVChop = false;
+            obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["createdDate"].ToString().Substring(11, 8);
+            obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameMode"].ToString();
+            //obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
+            //obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
 
-				if ((counter) % 2 == 0)
-				{
-					obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
-				}
-				else
-				{
-					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
-				}
-
-				if (data["response"][i]["templateName"] != null)
-					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
-
-				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
-				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
-
-				if (data["response"][i]["settingData"].Count > 0)
-				{
-					if (data["response"][i]["settingData"]["blinds"] != null)
-						obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
-
-					//else if (data["response"][i]["settingData"]["ante"] != null)
-					//	obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
-				}
-
-				obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
-				obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
-				obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
-				//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
-
-				obj.GetComponent<Button>().onClick.RemoveAllListeners();
-				obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
-			}
-
-			else if (data["response"][i]["settingData"]["templateSubType"].ToString().Equals(type))
-			{
-				//counter++;
-				//roomData.gameMode = GameMode.NLH;
-
-				List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
-				.Split('/').Select(float.Parse).ToList();
-
-				roomData.bigBlind = blinds[1];
-				roomData.smallBlind = blinds[0];
-				roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
-				roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
-				roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
-				roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
-				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
-				roomData.roomId = data["response"][i]["tableId"].ToString();
-				roomData.title = data["response"][i]["templateName"].ToString();
-
-				if (data["response"][i]["gameType"].ToString().Equals("NLH"))
-				{
-					roomData.gameMode = GameMode.NLH;
-				}
-				else if (data["response"][i]["gameType"].ToString().Equals("PLO"))
-				{
-					roomData.gameMode = GameMode.PLO;
-				}
-				else if (data["response"][i]["gameType"].ToString().Equals("OFC"))
-				{
-					roomData.gameMode = GameMode.OFC;
-				}
-
-				//DEV_CODE
-				//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
-				if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
-					roomData.isEVChop = true;
-				else
-					roomData.isEVChop = false;
-
-				if ((counter) % 2 == 0)
-				{
-					obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
-				}
-				else
-				{
-					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
-				}
-
-				if (data["response"][i]["templateName"] != null)
-					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
-
-				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
-				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
-
-				if (data["response"][i]["settingData"].Count > 0)
-				{
-					if (data["response"][i]["settingData"]["blinds"] != null)
-						obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
-
-					//else if (data["response"][i]["settingData"]["ante"] != null)
-					//	obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
-				}
-
-				obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
-				obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
-				obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
-				//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
-
-				obj.GetComponent<Button>().onClick.RemoveAllListeners();
-				obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
-			}
-
-			else if(type.Equals("ALL"))
-			{
-				List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
-				.Split('/').Select(float.Parse).ToList();
-
-				roomData.bigBlind = blinds[1];
-				roomData.smallBlind = blinds[0];
-				roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
-				roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
-				roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
-				roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
-				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
-				roomData.roomId = data["response"][i]["tableId"].ToString();
-				roomData.title = data["response"][i]["templateName"].ToString();
-
-				if (data["response"][i]["gameType"].ToString().Equals("NLH"))
-				{
-					roomData.gameMode = GameMode.NLH;
-				}
-				else if (data["response"][i]["gameType"].ToString().Equals("PLO"))
-				{
-					roomData.gameMode = GameMode.PLO;
-				}
-				else if (data["response"][i]["gameType"].ToString().Equals("OFC"))
-				{
-					roomData.gameMode = GameMode.OFC;
-				}
-
-				//DEV_CODE
-				//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
-				if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
-					roomData.isEVChop = true;
-				else
-					roomData.isEVChop = false;
-
-				if ((counter) % 2 == 0)
-				{
-					obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
-				}
-				else
-				{
-					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
-				}
-
-				if (data["response"][i]["templateName"] != null)
-					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
-
-				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
-				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
-
-				if (data["response"][i]["settingData"].Count > 0)
-				{
-					if (data["response"][i]["settingData"]["blinds"] != null)
-						obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
-
-					//else if (data["response"][i]["settingData"]["ante"] != null)
-					//	obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
-				}
-
-				obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
-				obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
-				obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
-				//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
-
-				obj.GetComponent<Button>().onClick.RemoveAllListeners();
-				obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
-			}
-		}
+            obj.GetComponent<Button>().onClick.RemoveAllListeners();
+            //obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
 
 
 
 
-		//for (int i = 1; i < clubTablesContainer.transform.childCount; i++)
-		//{
-		//	Destroy(clubTablesContainer.transform.GetChild(i).gameObject);
-		//}
 
-		//for (int i = 0; i < data["response"].Count; i++)
-		//{
-		//          int index = i;
-		//	GameObject obj;
 
-		//          RoomData roomData = new RoomData();
-		//          roomData.isLobbyRoom = false;
 
-		//	//roomData.gameMode = GameMode.NLH;
 
-		//	List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
-		//	.Split('/').Select(float.Parse).ToList();
+            //POKR TEMPLATE CREATING LOGIC
 
-		//	roomData.bigBlind = blinds[1];
-		//	roomData.smallBlind = blinds[0];
-		//	roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
-		//	roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
-		//	roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
-		//	roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
-		//	roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
-		//	roomData.roomId = data["response"][i]["tableId"].ToString();
-		//	roomData.title = data["response"][i]["templateName"].ToString();
 
-		//	if (data["response"][i]["gameType"].ToString().Equals("NLH"))
-		//	{
-		//		roomData.gameMode = GameMode.NLH;
-		//	}
-		//	else if (data["response"][i]["gameType"].ToString().Equals("PLO"))
-		//	{
-		//		roomData.gameMode = GameMode.PLO;
-		//	}
-		//	else if (data["response"][i]["gameType"].ToString().Equals("OFC"))
-		//	{
-		//		roomData.gameMode = GameMode.OFC;
-		//	}
+            ////if ((data["response"][i]["settingData"]["templateSubType"].ToString().Equals("NLH&PLO4") || data["response"][i]["settingData"]["templateSubType"].ToString().Equals("NLH&PLO5")) && type.Equals("NLH&PLO"))
+            ////{
+            ////	//counter++;
+            ////	//roomData.gameMode = GameMode.NLH;
 
-		//	//DEV_CODE
-		//	//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
-		//	if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
-		//		roomData.isEVChop = true;
-		//	else
-		//		roomData.isEVChop = false;
+            ////	List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
+            ////	.Split('/').Select(float.Parse).ToList();
 
-		//	if ((i + 1) % 2 == 0)
-		//	{
-		//		obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
-		//	}
-		//	else
-		//	{
-		//		obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
-		//	}
+            ////	roomData.bigBlind = blinds[1];
+            ////	roomData.smallBlind = blinds[0];
+            ////	roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
+            ////	roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
+            ////	roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
+            ////	roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
+            ////	roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
+            ////	roomData.roomId = data["response"][i]["tableId"].ToString();
+            ////	roomData.title = data["response"][i]["templateName"].ToString();
 
-		//	if (data["response"][i]["templateName"] != null)
-		//		obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+            ////	if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+            ////	{
+            ////		roomData.gameMode = GameMode.NLH;
+            ////	}
+            ////	else if (data["response"][i]["gameType"].ToString().Equals("PLO"))
+            ////	{
+            ////		roomData.gameMode = GameMode.PLO;
+            ////	}
+            ////	else if (data["response"][i]["gameType"].ToString().Equals("OFC"))
+            ////	{
+            ////		roomData.gameMode = GameMode.OFC;
+            ////	}
 
-		//	obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
-		//	//obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = "";
+            ////	//DEV_CODE
+            ////	//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
+            ////	if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
+            ////		roomData.isEVChop = true;
+            ////	else
+            ////		roomData.isEVChop = false;
 
-		//	//if(data["response"][i]["settingData"].Count > 0)
-		//	//{
-		//	//	if (data["response"][i]["settingData"]["blinds"] != null)
-		//	//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
+            ////	if ((counter) % 2 == 0)
+            ////	{
+            ////		obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
+            ////	}
+            ////	else
+            ////	{
+            ////		obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
+            ////	}
 
-		//	//	else if (data["response"][i]["settingData"]["ante"] != null)
-		//	//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
-		//	//}
+            ////	if (data["response"][i]["templateName"] != null)
+            ////		obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
-		//	obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
-		//	obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
-		//	obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
-		//	//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
+            ////	obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
+            ////	obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
 
-		//	obj.GetComponent<Button>().onClick.RemoveAllListeners();
-		//	obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));					
-		//      }
-	}
+            ////	if (data["response"][i]["settingData"].Count > 0)
+            ////	{
+            ////		if (data["response"][i]["settingData"]["blinds"] != null)
+            ////			obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
+
+            ////		//else if (data["response"][i]["settingData"]["ante"] != null)
+            ////		//	obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
+            ////	}
+
+            ////	obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
+            ////	obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
+            ////	obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
+            ////	//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
+
+            ////	obj.GetComponent<Button>().onClick.RemoveAllListeners();
+            ////	obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
+            ////}
+
+            ////else if (data["response"][i]["settingData"]["templateSubType"].ToString().Equals(type))
+            ////{
+            ////	//counter++;
+            ////	//roomData.gameMode = GameMode.NLH;
+
+            ////	List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
+            ////	.Split('/').Select(float.Parse).ToList();
+
+            ////	roomData.bigBlind = blinds[1];
+            ////	roomData.smallBlind = blinds[0];
+            ////	roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
+            ////	roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
+            ////	roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
+            ////	roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
+            ////	roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
+            ////	roomData.roomId = data["response"][i]["tableId"].ToString();
+            ////	roomData.title = data["response"][i]["templateName"].ToString();
+
+            ////	if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+            ////	{
+            ////		roomData.gameMode = GameMode.NLH;
+            ////	}
+            ////	else if (data["response"][i]["gameType"].ToString().Equals("PLO"))
+            ////	{
+            ////		roomData.gameMode = GameMode.PLO;
+            ////	}
+            ////	else if (data["response"][i]["gameType"].ToString().Equals("OFC"))
+            ////	{
+            ////		roomData.gameMode = GameMode.OFC;
+            ////	}
+
+            ////	//DEV_CODE
+            ////	//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
+            ////	if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
+            ////		roomData.isEVChop = true;
+            ////	else
+            ////		roomData.isEVChop = false;
+
+            ////	if ((counter) % 2 == 0)
+            ////	{
+            ////		obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
+            ////	}
+            ////	else
+            ////	{
+            ////		obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
+            ////	}
+
+            ////	if (data["response"][i]["templateName"] != null)
+            ////		obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+
+            ////	obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
+            ////	obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
+
+            ////	if (data["response"][i]["settingData"].Count > 0)
+            ////	{
+            ////		if (data["response"][i]["settingData"]["blinds"] != null)
+            ////			obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
+
+            ////		//else if (data["response"][i]["settingData"]["ante"] != null)
+            ////		//	obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
+            ////	}
+
+            ////	obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
+            ////	obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
+            ////	obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
+            ////	//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
+
+            ////	obj.GetComponent<Button>().onClick.RemoveAllListeners();
+            ////	obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
+            ////}
+
+            //else if(type.Equals("ALL"))
+            //{
+            //	List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
+            //	.Split('/').Select(float.Parse).ToList();
+
+            //	roomData.bigBlind = blinds[1];
+            //	roomData.smallBlind = blinds[0];
+            //	roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
+            //	roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
+            //	roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
+            //	roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
+            //	roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
+            //	roomData.roomId = data["response"][i]["tableId"].ToString();
+            //	roomData.title = data["response"][i]["templateName"].ToString();
+
+            //	if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+            //	{
+            //		roomData.gameMode = GameMode.NLH;
+            //	}
+            //	else if (data["response"][i]["gameType"].ToString().Equals("PLO"))
+            //	{
+            //		roomData.gameMode = GameMode.PLO;
+            //	}
+            //	else if (data["response"][i]["gameType"].ToString().Equals("OFC"))
+            //	{
+            //		roomData.gameMode = GameMode.OFC;
+            //	}
+
+            //	//DEV_CODE
+            //	//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
+            //	if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
+            //		roomData.isEVChop = true;
+            //	else
+            //		roomData.isEVChop = false;
+
+            //	if ((counter) % 2 == 0)
+            //	{
+            //		obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
+            //	}
+            //	else
+            //	{
+            //		obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
+            //	}
+
+            //	if (data["response"][i]["templateName"] != null)
+            //		obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+
+            //	obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
+            //	obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
+
+            //	if (data["response"][i]["settingData"].Count > 0)
+            //	{
+            //		if (data["response"][i]["settingData"]["blinds"] != null)
+            //			obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
+
+            //		//else if (data["response"][i]["settingData"]["ante"] != null)
+            //		//	obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
+            //	}
+
+            //	obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
+            //	obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
+            //	obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
+            //	//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
+
+            //	obj.GetComponent<Button>().onClick.RemoveAllListeners();
+            //	obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
+            //}
+        }
+
+
+
+
+        //for (int i = 1; i < clubTablesContainer.transform.childCount; i++)
+        //{
+        //	Destroy(clubTablesContainer.transform.GetChild(i).gameObject);
+        //}
+
+        //for (int i = 0; i < data["response"].Count; i++)
+        //{
+        //          int index = i;
+        //	GameObject obj;
+
+        //          RoomData roomData = new RoomData();
+        //          roomData.isLobbyRoom = false;
+
+        //	//roomData.gameMode = GameMode.NLH;
+
+        //	List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
+        //	.Split('/').Select(float.Parse).ToList();
+
+        //	roomData.bigBlind = blinds[1];
+        //	roomData.smallBlind = blinds[0];
+        //	roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
+        //	roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
+        //	roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
+        //	roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
+        //	roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
+        //	roomData.roomId = data["response"][i]["tableId"].ToString();
+        //	roomData.title = data["response"][i]["templateName"].ToString();
+
+        //	if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+        //	{
+        //		roomData.gameMode = GameMode.NLH;
+        //	}
+        //	else if (data["response"][i]["gameType"].ToString().Equals("PLO"))
+        //	{
+        //		roomData.gameMode = GameMode.PLO;
+        //	}
+        //	else if (data["response"][i]["gameType"].ToString().Equals("OFC"))
+        //	{
+        //		roomData.gameMode = GameMode.OFC;
+        //	}
+
+        //	//DEV_CODE
+        //	//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
+        //	if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
+        //		roomData.isEVChop = true;
+        //	else
+        //		roomData.isEVChop = false;
+
+        //	if ((i + 1) % 2 == 0)
+        //	{
+        //		obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
+        //	}
+        //	else
+        //	{
+        //		obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
+        //	}
+
+        //	if (data["response"][i]["templateName"] != null)
+        //		obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+
+        //	obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
+        //	//obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = "";
+
+        //	//if(data["response"][i]["settingData"].Count > 0)
+        //	//{
+        //	//	if (data["response"][i]["settingData"]["blinds"] != null)
+        //	//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
+
+        //	//	else if (data["response"][i]["settingData"]["ante"] != null)
+        //	//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
+        //	//}
+
+        //	obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
+        //	obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
+        //	obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
+        //	//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
+
+        //	obj.GetComponent<Button>().onClick.RemoveAllListeners();
+        //	obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));					
+        //      }
+    }
 
 	private void OnClickOnPlayButton(RoomData data, int gameMode = -1)
     {

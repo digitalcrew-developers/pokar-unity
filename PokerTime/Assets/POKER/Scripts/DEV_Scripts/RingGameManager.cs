@@ -568,7 +568,39 @@ public class RingGameManager : MonoBehaviour
                 components[26].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["IPRestriction"].ToString().Equals("On") ? true : false);
                 components[27].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["banChatting"].ToString().Equals("On") ? true : false);
                 components[28].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["hours"].ToString();
+
+                float sliderVal;
+                float.TryParse(data["response"][i]["settingData"]["hours"].ToString(), out sliderVal);
+                components[28].transform.parent.Find("TimeMarkerSlider").GetComponent<Slider>().value = sliderVal;
             }
         }
     }
+
+    //void ResetTaleData()
+    //{
+    //    components[0].GetComponent<TMP_InputField>().text = "";
+    //    components[1].GetComponent<TMP_Text>().text = "9";
+    //    components[2].GetComponent<TMP_Dropdown>().value = 0;
+    //    components[3].transform.Find("5").GetComponent<Toggle>().isOn = true;
+    //    components[4].transform.parent.parent.Find("BootSlider").GetComponent<Slider>().value = 0;
+
+    //    components[4].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().sliderValues[0];
+    //    components[5].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().lowValueText.text;
+
+    //    components[7].transform.GetComponent<TMP_Text>().text = "5";
+    //    components[8].transform.GetComponent<TMP_Text>().text = "3 BB";
+    //    components[9].transform.GetComponent<ToggleController>().isOn = false;
+    //    components[10].transform.GetComponent<ToggleController>().isOn = false;
+    //    components[11].transform.GetComponent<ToggleController>().isOn = false;
+    //    components[12].transform.parent.Find("TimeMarkerSlider").GetComponent<Slider>().value = 0;
+
+    //    saveBtn.gameObject.SetActive(true);
+    //    startBtn.gameObject.SetActive(true);
+    //    editBtn.gameObject.SetActive(false);
+
+    //    isEditingTemplate = false;
+    //    tableIdStatic = 0;
+
+    //    Debug.Log("All Data Reset...");
+    //}
 }
