@@ -38,7 +38,7 @@ public class TeenDashboardManager : MonoBehaviour
             case "mainMenuTeen":
                 {
                     //MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.MainMenuTeenPatti);
-                    Debug.LogError("Showing Screen MainMenuTeen...");
+                    //Debug.LogError("Showing Screen MainMenuTeen...");
                     MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.MainMenu);
                 }
                 break;

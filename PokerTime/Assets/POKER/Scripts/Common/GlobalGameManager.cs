@@ -246,4 +246,25 @@ public class RoomData
     public bool isRunMulti = false;
 }
 
+public class RoomDataTeen
+{
+    public string roomId;
+    public string socketTableId;
+    public string title;
+    public int players;
+    public float commision;
 
+    //DEV_CODE
+    public string roomIconUrl;
+    public string roomBG;
+
+    public float smallBlind;
+    public float bigBlind;
+    public float minBuyIn;
+    public float maxBuyIn;
+    public int callTimer;
+    public GameModeTeen gameMode;
+    public bool isLobbyRoom;
+
+    public int totalActivePlayers;
+}

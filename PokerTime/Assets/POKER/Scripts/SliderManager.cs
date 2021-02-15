@@ -13,7 +13,7 @@ public class SliderManager : MonoBehaviour
     private bool isTimeSlider = false;
 
     [SerializeField]
-    private TMP_Text sliderValueText;
+    public TMP_Text sliderValueText;
 
     [SerializeField]
     private TMP_Text[] timeValues;
@@ -47,6 +47,8 @@ public class SliderManager : MonoBehaviour
                     timeValues[i].color = new Color32(255, 146, 49, 255);
                     if(ClubDetailsUIManager.instance != null)
                         RingGameManager.instance.components[28].transform.GetComponent<TMP_Text>().text = timeValues[i].text;
+                    else if(ClubDetailsUIManagerTeen.instance !=null)
+                        ClubTableControllerTeen.instance.components[12].transform.GetComponent<TMP_Text>().text = timeValues[i].text.Substring(0, timeValues[i].text.Length - 2);
                 }
                 else
                     timeValues[i].color = new Color32(255, 255, 255, 255);
