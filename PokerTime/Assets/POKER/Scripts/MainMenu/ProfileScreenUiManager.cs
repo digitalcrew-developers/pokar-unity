@@ -64,12 +64,12 @@ public class ProfileScreenUiManager : MonoBehaviour
             GetUserDetails userdata = JsonUtility.FromJson<GetUserDetails>(serverResponse);
 
 
-            Debug.LogError("Status -> " + userdata.status);
-            Debug.LogError("Respnse -> " + userdata.response);
+            //Debug.LogError("Status -> " + userdata.status);
+            //Debug.LogError("Respnse -> " + userdata.response);
             //Debug.LogError("UserID -> " + userdata.getData.Length);
 
 
-            Debug.Log("Response => GetUserDetails :" + serverResponse);
+            //Debug.Log("Response => GetUserDetails :" + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["success"].ToString() == "1")
