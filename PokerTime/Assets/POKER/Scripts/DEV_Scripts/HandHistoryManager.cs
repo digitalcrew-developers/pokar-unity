@@ -134,7 +134,7 @@ public class HandHistoryManager : MonoBehaviour
 
     private void Start()
     {
-
+        Debug.Log("Hello");
     }
 
     private void OpenScreen(string screenName)
