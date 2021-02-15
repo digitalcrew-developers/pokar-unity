@@ -33,6 +33,7 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 	public GameObject otherDetails;
 
 	[Header("Prefabs")]
+	public GameObject tablePrefab;
 	public GameObject tableType2;
 	public GameObject tableType3;
 
@@ -337,41 +338,83 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 		int counter = 0;
 		for (int i = 0; i < data["response"].Count; i++)
 		{
-			int index = i;
-			GameObject obj;
+			if (type == "ALL")
+			{
+				int index = i;
+				GameObject obj;
 
-			RoomDataTeen roomData = new RoomDataTeen();
-			roomData.isLobbyRoom = false;
+				RoomDataTeen roomData = new RoomDataTeen();
+				roomData.isLobbyRoom = false;
 
-            counter++;
+				counter++;
 
-			//roomData.gameMode = data["response"][i]["gameMode"].ToString();
-			if ((counter) % 2 == 0)
-            {
-                obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
-            }
-            else
-            {
-                obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
-            }
+				//roomData.gameMode = data["response"][i]["gameMode"].ToString();
+				if ((counter) % 2 == 0)
+				{
+					obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
+				}
+				else
+				{
+					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
+				}
 
-            if (data["response"][i]["tableName"] != null)
-                obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["tableName"].ToString();
+				if (data["response"][i]["tableName"] != null)
+					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["tableName"].ToString();
 
-            //obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
-            obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["players"].ToString() + "/10";
+				//obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
+				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["players"].ToString() + "/10";
 
-            if (data["response"][i]["bootAmount"] != null)
-                obj.transform.Find("Image/Boots").GetComponent<Text>().text = "Boots: " + data["response"][i]["bootAmount"].ToString();
+				if (data["response"][i]["bootAmount"] != null)
+					obj.transform.Find("Image/Boots").GetComponent<Text>().text = "Boots: " + data["response"][i]["bootAmount"].ToString();
 
-            obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["createdDate"].ToString().Substring(11, 8);
-            obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameMode"].ToString();
-            //obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
-            //obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
+				obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["createdDate"].ToString().Substring(11, 8);
+				obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameMode"].ToString();
+				//obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
+				//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
 
-            obj.GetComponent<Button>().onClick.RemoveAllListeners();
-            //obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
+				obj.GetComponent<Button>().onClick.RemoveAllListeners();
+				//obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
+			}
+			else
+			{
+				if (data["response"][i]["gameMode"].ToString().Equals(type))
+				{
+					int index = i;
+					GameObject obj;
 
+					RoomDataTeen roomData = new RoomDataTeen();
+					roomData.isLobbyRoom = false;
+
+					counter++;
+
+					//roomData.gameMode = data["response"][i]["gameMode"].ToString();
+					if ((counter) % 2 == 0)
+					{
+						obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
+					}
+					else
+					{
+						obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
+					}
+
+					if (data["response"][i]["tableName"] != null)
+						obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["tableName"].ToString();
+
+					//obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
+					obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["players"].ToString() + "/10";
+
+					if (data["response"][i]["bootAmount"] != null)
+						obj.transform.Find("Image/Boots").GetComponent<Text>().text = "Boots: " + data["response"][i]["bootAmount"].ToString();
+
+					obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["createdDate"].ToString().Substring(11, 8);
+					obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameMode"].ToString();
+					//obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
+					//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
+
+					obj.GetComponent<Button>().onClick.RemoveAllListeners();
+					//obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
+				}
+			}
 
 
 
@@ -769,71 +812,47 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 				}
 				break;
 
-			case "NLH":
+			case "AK47":
 				{
-					/*LoadData*/LoadAllTemplates(templateList, "Regular Mode");
+					/*LoadData*/LoadAllTemplates(templateList, "AK47");
 				}
 				break;
 
-			case "PLO4":
+			case "MUFUS":
 				{
 					/*LoadData*/
-					LoadAllTemplates(templateList, "PLO4");
+					LoadAllTemplates(templateList, "MUFUS");
 				}
 				break;
 
-			case "PLO5":
+			case "JOKER":
 				{
 					/*LoadData*/
-					LoadAllTemplates(templateList, "PLO5");
+					LoadAllTemplates(templateList, "JOKER");
 				}
 				break;
 
-			case "SPINUP":
+			case "HUKUM":
 				{
 					/*LoadData*/
-					LoadAllTemplates(templateList, "Spin Up");
+					LoadAllTemplates(templateList, "HUKUM");
 				}
 				break;
 
-			case "OFC":
+			case "999":
 				{
 					/*LoadData*/
-					LoadAllTemplates(templateList, "OFC");
+					LoadAllTemplates(templateList, "999");
 				}
 				break;
 
-			case "6PLUS":
+			case "FOOTBALL":
 				{
 					/*LoadData*/
-					LoadAllTemplates(templateList, "6+");
+					LoadAllTemplates(templateList, "FOOTBALL");
 				}
 				break;
-			case "PLO H/L":
-				{
-					/*LoadData*/
-					LoadAllTemplates(templateList, "PLO H/L");
-				}
-				break;
-			case "NLH&PLO":
-				{
-					/*LoadData*/
-					LoadAllTemplates(templateList, "NLH&PLO");
-				}
-				break;
-			case "SNG":
-				{
-					/*LoadData*/
-					LoadAllTemplates(templateList, "SNG");
-				}
-				break;
-			case "MTT":
-				{
-					/*LoadData*/
-					LoadAllTemplates(templateList, "MTT");
-				}
-				break;
-
+			
 			default:
 				#if ERROR_LOG
 				Debug.LogError("Unhandled eventName found in ClubDetailsUiManager = "+eventName);

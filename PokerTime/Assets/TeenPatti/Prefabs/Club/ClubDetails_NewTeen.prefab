@@ -4266,7 +4266,7 @@ GameObject:
   - component: {fileID: 8857871279691337130}
   - component: {fileID: 3793834629883802202}
   m_Layer: 5
-  m_Name: HUKU
+  m_Name: HUKUM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4372,7 +4372,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8554269178252990568}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1322568829984013854}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: HUKUM
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3793834629883802202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10495,8 +10506,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.0501099, y: 5.0999756}
-  m_SizeDelta: {x: -56.02063, y: -190.12598}
+  m_AnchoredPosition: {x: 0, y: 5.081482}
+  m_SizeDelta: {x: 0, y: -190.16296}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6947233343251632720
 CanvasRenderer:
@@ -20508,7 +20519,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8231318574086475461}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1322568829984013854}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: JOKER
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5447545411744524256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35544,7 +35566,7 @@ GameObject:
   - component: {fileID: 5558728403060503696}
   - component: {fileID: 2564389978023943155}
   m_Layer: 5
-  m_Name: AllBtn
+  m_Name: ALL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35650,7 +35672,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7798133035416870379}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1322568829984013854}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ALL
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2564389978023943155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35971,7 +36004,7 @@ GameObject:
   - component: {fileID: 6050726733418311206}
   - component: {fileID: 5125217389515747795}
   m_Layer: 5
-  m_Name: 6PLusBtn
+  m_Name: FOOTBALL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36077,7 +36110,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7154464889347002127}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1322568829984013854}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: FOOTBALL
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5125217389515747795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38078,7 +38122,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3879361548283306777}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1322568829984013854}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: AK47
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2753969464490789846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38929,6 +38984,7 @@ MonoBehaviour:
   clubNotice: {fileID: 8245666682220194359}
   jackpotData: {fileID: 6244959787932232079}
   otherDetails: {fileID: 2036555399728735713}
+  tablePrefab: {fileID: 0}
   tableType2: {fileID: 5498858272516829922, guid: 26b7382e668154c48939381724477232,
     type: 3}
   tableType3: {fileID: 4709095129715114225, guid: 1a33767a7925f074c91bd98937ec00c7,
@@ -43942,7 +43998,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 6+
+  m_text: FOOTBALL
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 30e3e450ecabeb347be73f256feb80f6, type: 2}
   m_sharedMaterial: {fileID: -6124664884291830468, guid: 30e3e450ecabeb347be73f256feb80f6,
@@ -46669,7 +46725,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: OFC
+  m_text: 999
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 30e3e450ecabeb347be73f256feb80f6, type: 2}
   m_sharedMaterial: {fileID: -6124664884291830468, guid: 30e3e450ecabeb347be73f256feb80f6,
@@ -53457,7 +53513,7 @@ GameObject:
   - component: {fileID: 5342567234559215301}
   - component: {fileID: 439425831677124507}
   m_Layer: 5
-  m_Name: OFCBtn
+  m_Name: 999
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53563,7 +53619,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 80922912000938844}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1322568829984013854}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 999
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &439425831677124507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54645,7 +54712,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4554968301741884035}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1322568829984013854}
+        m_MethodName: OnClickOnButton
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MUFUS
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8087969569063899302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55654,7 +55732,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: HUKU
+  m_text: HUKUM
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 30e3e450ecabeb347be73f256feb80f6, type: 2}
   m_sharedMaterial: {fileID: -6124664884291830468, guid: 30e3e450ecabeb347be73f256feb80f6,

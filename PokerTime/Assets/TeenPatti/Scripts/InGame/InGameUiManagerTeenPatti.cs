@@ -529,7 +529,11 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     }
                 }
                 break;
-
+            case "tableInfo":
+                {
+                    ShowScreen(InGameScreensTeenPatti.TableInfoTeen);
+                }
+                break;
             default:
 #if ERROR_LOG
                 Debug.LogError("unhdnled eventName found in InGameUiManager = " + eventName);
@@ -1684,7 +1688,8 @@ public enum InGameScreensTeenPatti
     DealerImageScreen,
     SwitchTable,
     GameDisplay,
-    MenuTeenPatti
+    MenuTeenPatti,
+    TableInfoTeen
 }
 
 public enum PlayerActionTeenPatti

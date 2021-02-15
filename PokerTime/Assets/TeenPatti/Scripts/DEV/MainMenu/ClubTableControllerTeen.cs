@@ -293,6 +293,9 @@ public class ClubTableControllerTeen : MonoBehaviour
     public void OnServerResponseFound(RequestTypeTP requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         tableIdStatic = 0;
+        saveBtn.interactable = true;
+        startBtn.interactable = true;
+        editBtn.interactable = true;
 
         if (errorMessage.Length > 0)
         {
@@ -476,6 +479,10 @@ public class ClubTableControllerTeen : MonoBehaviour
                                 "\"tableId\":\"" + ((tableIdStatic != 0) ? tableIdStatic.ToString() : "") + "\"}";
 
                     WebServices.instance.SendRequestTP(RequestTypeTP.CreateTable, requestData, true, OnServerResponseFound);
+
+                    saveBtn.interactable = false;
+                    startBtn.interactable = false;
+                    editBtn.interactable = false;
                 }
                 break;
         }
