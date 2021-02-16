@@ -287,38 +287,50 @@ public class InGameManager : MonoBehaviour
         {
             GlobalGameManager.IsJoiningPreviousGame = isGameStart;
             List<GameObject> animatedCards = new List<GameObject>();
+            bool dontAnimateCards = false;
             for (int i = 0; i < players.Length; i++)
             {
-                Image[] playerCards = players[i].GetCardsImage();
-
-                /*                Debug.Log("Player Cards: " + playerCards[i].name);*/
-
-                if (players[i].playerData.isStart)
+                if(!players[i].playerData.isStart)
                 {
-                    for (int j = 0; j < playerCards.Length; j++)
-                    {
-                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-                        gm.transform.DOMove(playerCards[j].transform.position, GameConstants.CARD_ANIMATION_DURATION);
-                        gm.transform.DOScale(Vector3.one/*playerCards[j].transform.localScale*/, GameConstants.CARD_ANIMATION_DURATION);
-                        gm.transform.DORotateQuaternion(playerCards[j].transform.rotation, GameConstants.CARD_ANIMATION_DURATION);
-                        animatedCards.Add(gm);
-                        SoundManager.instance.PlaySound(SoundType.CardMove);
-                        yield return new WaitForSeconds(0.1f);
-                    }
-
-
-                    yield return new WaitForSeconds(0.1f);
+                    dontAnimateCards = true;
+                    break;
                 }
             }
 
-            yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
-
-            for (int i = 0; i < animatedCards.Count; i++)
+            if (!dontAnimateCards)
             {
-                Destroy(animatedCards[i]);
-            }
+                for (int i = 0; i < players.Length; i++)
+                {
+                    Image[] playerCards = players[i].GetCardsImage();
+                    //Debug.Log("Player Cards: " + players[i].playerData.userName + " - " + players[i].playerData.isStart);
 
-            animatedCards.Clear();
+                    if (players[i].playerData.isStart)
+                    {
+                        for (int j = 0; j < playerCards.Length; j++)
+                        {
+                            GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                            gm.transform.DOMove(playerCards[j].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+                            gm.transform.DOScale(Vector3.one/*playerCards[j].transform.localScale*/, GameConstants.CARD_ANIMATION_DURATION);
+                            gm.transform.DORotateQuaternion(playerCards[j].transform.rotation, GameConstants.CARD_ANIMATION_DURATION);
+                            animatedCards.Add(gm);
+                            SoundManager.instance.PlaySound(SoundType.CardMove);
+                            yield return new WaitForSeconds(0.1f);
+                        }
+
+
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                }
+
+                yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+
+                for (int i = 0; i < animatedCards.Count; i++)
+                {
+                    Destroy(animatedCards[i]);
+                }
+
+                animatedCards.Clear();
+            }
         }
 
 
@@ -338,8 +350,10 @@ public class InGameManager : MonoBehaviour
 
     public IEnumerator SwitchTables()
     {
+        yield return new WaitForSeconds(0f);
+        SocketController.instance.SendSwitchTable();
         //set new table id
-        InGameUiManager.instance.ShowScreen(InGameScreens.Loading);
+        /*InGameUiManager.instance.ShowScreen(InGameScreens.Loading);
         yield return new WaitForSeconds(2f);
         RoomData data = GetRandomRoom();
         if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
@@ -354,7 +368,7 @@ public class InGameManager : MonoBehaviour
         StartCoroutine(SwitchToAnotherTableReset());
 
         resetGame = true;
-        StartCoroutine(StartWaitingCountdown(0));
+        StartCoroutine(StartWaitingCountdown(0));*/
     }
 
     public RoomData GetRandomRoom()
@@ -366,7 +380,7 @@ public class InGameManager : MonoBehaviour
 
         System.Random rnd = new System.Random();
         int randomVal = rnd.Next(0, allRoomData[gameMode].Count);
-
+        Debug.Log("Val " + randomVal + ", " + allRoomData[gameMode].Count);
         data = allRoomData[gameMode][randomVal];
 
         return data;
@@ -474,7 +488,7 @@ public class InGameManager : MonoBehaviour
         {
             InGameUiManager.instance.ToggleActionButton(false);
 
-            if (GetMyPlayerObject().GetPlayerData() != null && !GetMyPlayerObject().GetPlayerData().isFold)
+            if (GetMyPlayerObject().GetPlayerData() != null && !GetMyPlayerObject().GetPlayerData().isFold && GetMyPlayerObject().GetPlayerData().isStart)
             {
                 int callAmount = GetLastBetAmount() - (int)GetMyPlayerObject().GetPlayerData().totalBet;
                 InGameUiManager.instance.ToggleSuggestionButton(true, isCheckAvailable, callAmount, GetMyPlayerObject().GetPlayerData().balance);
@@ -951,13 +965,13 @@ public class InGameManager : MonoBehaviour
         bool isBetFound = false;
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
-            if (MATCH_ROUND != 0)
+            if (MATCH_ROUND != 0 && onlinePlayersScript[i].playerData.isStart)
             {
-                Debug.LogError("HT @ " + handtype);
+                Debug.LogError("HT @ " + handtype + ", " + onlinePlayersScript[i].playerData.userName + " - " + onlinePlayersScript[i].playerData.isStart);
                 onlinePlayersScript[i].UpdateRealTimeResult(handtype);
             }
             Text text = onlinePlayersScript[i].GetLocaPot();
-            Debug.Log("<color=yellow>Amount " + text.text + "</color>");
+            //Debug.Log("<color=yellow>Amount " + text.text + "</color>");
             if (text.gameObject.activeInHierarchy && !string.IsNullOrEmpty(text.text))
             {
                 isBetFound = true;
@@ -1450,7 +1464,7 @@ public class InGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
-        //Debug.LogWarning("NEXT ROUND In: " + remainingTime);
+        Debug.LogWarning("NEXT ROUND In: " + remainingTime + ", " + isRematchRequestSent + ", " + availableBalance);
         if (remainingTime > 1)
         {
            //InGameUiManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
@@ -1476,7 +1490,7 @@ public class InGameManager : MonoBehaviour
                         //now we are adding balance if userbalance is 0.
                         int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn;
                         float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
-                        Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance);
+                        Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance+", "+ EPSILON);
                         //if (userMainBalance >= balanceToAdd)
                         if (userMainBalance < EPSILON)
                         {
@@ -1853,7 +1867,7 @@ public class InGameManager : MonoBehaviour
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
-                        Debug.LogError("******************************* total coins" + playerData.playerData.balance);
+                        //Debug.LogError("******************************* total coins" + playerData.playerData.balance);
                         playerData.playerType = data[0][i]["playerType"].ToString();
 
                         playerData.isTurn = data[0][i]["isTurn"].Equals(true);
@@ -1867,7 +1881,7 @@ public class InGameManager : MonoBehaviour
                         playerData.playerData.seatNo = data[0][i]["seatNo"].ToString();
                         playerData.playerData.isTurn = bool.Parse(data[0][i]["isTurn"].ToString());
                         //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
-                        Debug.LogWarning(data[0][i]["userName"].ToString() + " Waiting " + data[0][i]["isTurn"] + " === " + playerData.isTurn);
+                        //Debug.LogWarning(data[0][i]["userName"].ToString() + " Waiting " + data[0][i]["isTurn"] + " === " + playerData.isTurn);
                         //Debug.LogWarning("buffer Time 0" + data[0][i]["bufferTime"].ToString());
 
                         if (playerData.isTurn)
@@ -1936,7 +1950,7 @@ public class InGameManager : MonoBehaviour
                         playerData.seatNo = data[0][i]["seatNo"].ToString();
                         playerObject.playerData.isTurn = bool.Parse(data[0][i]["isTurn"].ToString());
                         //Debug.LogWarning("buffer Time " + data[0][i]["bufferTime"].ToString());
-                        Debug.LogWarning(data[0][i]["userName"].ToString() + " Running " + data[0][i]["isTurn"] + " === " + playerData.isTurn);
+                        //Debug.LogWarning(data[0][i]["userName"].ToString() + " Running " + data[0][i]["isTurn"] + " === " + playerData.isTurn);
                         if (data[0][i]["isTurn"].Equals(true))
                         {
                             playerWhosTurn = playerObject;

@@ -1653,6 +1653,29 @@ public class SocketController : MonoBehaviour
         socketRequest.Add(request);
     }
 
+    public void SendSwitchTable(string seatNo = null)
+    {
+        string requestStringData = "{\"tableId\":" + TABLE_ID + "," + "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+             "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
+             "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
+             "\"playerType\":\"Real\"," +
+             "\"isPrivate\":\"No\"," + "\"seatNo\":\"" + seatNo + "\"," +
+             "\"isFree\":\"No\"}";
+
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "switchTable";
+
+        Debug.LogError("switchTable: " + requestStringData);
+
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        //socketRequest.Add(request);
+        socketManager.Socket.Emit(request.emitEvent, request.jsonDataToBeSend);
+    }
+
 
     private IEnumerator WaitAndCheckInternetConnection()
     {

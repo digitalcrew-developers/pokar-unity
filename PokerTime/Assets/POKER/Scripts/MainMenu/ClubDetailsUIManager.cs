@@ -358,8 +358,10 @@ public class ClubDetailsUIManager : MonoBehaviour
 				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
 				roomData.roomId = data["response"][i]["tableId"].ToString();
 				roomData.title = data["response"][i]["templateName"].ToString();
+                roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+                roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
 
-				if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+                if (data["response"][i]["gameType"].ToString().Equals("NLH"))
 				{
 					roomData.gameMode = GameMode.NLH;
 				}
@@ -429,8 +431,10 @@ public class ClubDetailsUIManager : MonoBehaviour
 				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
 				roomData.roomId = data["response"][i]["tableId"].ToString();
 				roomData.title = data["response"][i]["templateName"].ToString();
+                roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+                roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
 
-				if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+                if (data["response"][i]["gameType"].ToString().Equals("NLH"))
 				{
 					roomData.gameMode = GameMode.NLH;
 				}
@@ -497,8 +501,10 @@ public class ClubDetailsUIManager : MonoBehaviour
 				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
 				roomData.roomId = data["response"][i]["tableId"].ToString();
 				roomData.title = data["response"][i]["templateName"].ToString();
+                roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+                roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
 
-				if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+                if (data["response"][i]["gameType"].ToString().Equals("NLH"))
 				{
 					roomData.gameMode = GameMode.NLH;
 				}

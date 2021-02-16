@@ -118,10 +118,16 @@ public class ClubInGameManager : MonoBehaviour
 
     public Text TableName;
     public GameObject RabbitButton;
-    public GameObject ResumeHand, EVCHOPButton, EVCHOPPanel;
+    public GameObject ResumeHand, EVCHOPButton, EVCHOPPanel, passwordScreen;
 
     private void Start()
     {
+        Debug.Log("Data " + GlobalGameManager.instance.GetRoomData().exclusiveTable);
+        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On"))
+        {
+            passwordScreen.SetActive(true);
+        }
+
         //DEV_CODE
         highlightCardString = new string[5];
         highlightCards = new CardData[5];
@@ -377,38 +383,50 @@ public class ClubInGameManager : MonoBehaviour
     {
         if (!GlobalGameManager.IsJoiningPreviousGame)
         {
-			GlobalGameManager.IsJoiningPreviousGame = isGameStart;
+            GlobalGameManager.IsJoiningPreviousGame = isGameStart;
             List<GameObject> animatedCards = new List<GameObject>();
+            bool dontAnimateCards = false;
             for (int i = 0; i < players.Length; i++)
             {
-                Image[] playerCards = players[i].GetCardsImage();
-
-                /*                Debug.Log("Player Cards: " + playerCards[i].name);*/
-
-                for (int j = 0; j < playerCards.Length; j++)
+                if (!players[i].playerData.isStart)
                 {
-                    GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-                    gm.transform.DOMove(playerCards[j].transform.position, GameConstants.CARD_ANIMATION_DURATION);
-                    gm.transform.DOScale(Vector3.one/*playerCards[j].transform.localScale*/, GameConstants.CARD_ANIMATION_DURATION);
-                    gm.transform.DORotateQuaternion(playerCards[j].transform.rotation, GameConstants.CARD_ANIMATION_DURATION);
-                    animatedCards.Add(gm);
-                    SoundManager.instance.PlaySound(SoundType.CardMove);
+                    dontAnimateCards = true;
+                    break;
+                }
+            }
+
+            if (!dontAnimateCards)
+            {
+                for (int i = 0; i < players.Length; i++)
+                {
+                    Image[] playerCards = players[i].GetCardsImage();
+
+                    /*                Debug.Log("Player Cards: " + playerCards[i].name);*/
+
+                    for (int j = 0; j < playerCards.Length; j++)
+                    {
+                        GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
+                        gm.transform.DOMove(playerCards[j].transform.position, GameConstants.CARD_ANIMATION_DURATION);
+                        gm.transform.DOScale(Vector3.one/*playerCards[j].transform.localScale*/, GameConstants.CARD_ANIMATION_DURATION);
+                        gm.transform.DORotateQuaternion(playerCards[j].transform.rotation, GameConstants.CARD_ANIMATION_DURATION);
+                        animatedCards.Add(gm);
+                        SoundManager.instance.PlaySound(SoundType.CardMove);
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
                     yield return new WaitForSeconds(0.1f);
                 }
 
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
+
+                for (int i = 0; i < animatedCards.Count; i++)
+                {
+                    Destroy(animatedCards[i]);
+                }
+
+                animatedCards.Clear();
             }
-
-            yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
-
-            for (int i = 0; i < animatedCards.Count; i++)
-            {
-                Destroy(animatedCards[i]);
-            }
-
-            animatedCards.Clear();
         }
-
 
         for (int i = 0; i < players.Length; i++)
         {
@@ -634,7 +652,7 @@ public class ClubInGameManager : MonoBehaviour
             ClubInGameUIManager.instance.ToggleActionButton(false);
 
             //DEV_CODE Added this condition as per InGameManager script
-            if (GetMyPlayerObject().GetPlayerData() != null && !GetMyPlayerObject().GetPlayerData().isFold)
+            if (GetMyPlayerObject().GetPlayerData() != null && !GetMyPlayerObject().GetPlayerData().isFold && GetMyPlayerObject().GetPlayerData().isStart)
             {
                 int callAmount = GetLastBetAmount() - (int)GetMyPlayerObject().GetPlayerData().totalBet;
                 ClubInGameUIManager.instance.ToggleSuggestionButton(true, isCheckAvailable, callAmount, GetMyPlayerObject().GetPlayerData().balance);
@@ -1182,7 +1200,7 @@ public class ClubInGameManager : MonoBehaviour
         bool isBetFound = false;
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
-            if (MATCH_ROUND != 0)
+            if (MATCH_ROUND != 0 && onlinePlayersScript[i].playerData.isStart)
             {
                 //Debug.LogError("HT @ " + handtype);
                 onlinePlayersScript[i].UpdateRealTimeResult(handtype);
@@ -1232,7 +1250,7 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
                         gm.transform.localScale = communityCards[0].transform.localScale;
-						gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+						gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(51.70454f, 72.72727f), 0f);
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
                         gm.transform.position = communityCards[0].transform.position;
@@ -1273,7 +1291,7 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
 
-						gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+						gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(51.70454f, 72.72727f), 0f);
                         gm.transform.localScale = communityCards[i].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
@@ -1315,7 +1333,7 @@ public class ClubInGameManager : MonoBehaviour
                     for (int i = 4; i < 5; i++)
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-						gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+						gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(51.70454f, 72.72727f), 0f);
                         gm.transform.localScale = communityCards[i].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
@@ -1443,7 +1461,7 @@ public class ClubInGameManager : MonoBehaviour
                         gmAllCard.transform.GetChild(i).GetComponent<Image>().sprite = communityCards[i].sprite;
                         communityCards[i].gameObject.SetActive(false);
                     }
-                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    //gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
                     gmAllCard.transform.DOMove(pos, 0.5f).OnComplete(() => { gmAllCard.transform.DOScale(0.8f, 0.1f); });
 
                     //WinnersNameText.text = "";   //DEV_CODE Added this line as per InGameManager script
@@ -1463,7 +1481,7 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
                         gm.transform.localScale = communityCards[0].transform.localScale;
-                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(51.70454f, 72.72727f), 0f);
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
                         gm.transform.position = communityCards[0].transform.position;
@@ -1504,7 +1522,7 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
 
-                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(51.70454f, 72.72727f), 0f);
                         gm.transform.localScale = communityCards[i].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
@@ -1546,7 +1564,7 @@ public class ClubInGameManager : MonoBehaviour
                     for (int i = 4; i < 5; i++)
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
-                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(51.70454f, 72.72727f), 0f);
                         gm.transform.localScale = communityCards[i].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[i].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
@@ -1593,7 +1611,7 @@ public class ClubInGameManager : MonoBehaviour
                     }
                     gmAllCard.transform.GetChild(4).GetComponent<Image>().sprite = communityCards[4].sprite;
                     gmAllCard.transform.GetChild(4).gameObject.SetActive(true);
-                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    //gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
                     gmAllCard.transform.DOMove(pos, 0.5f).OnComplete(() => { gmAllCard.transform.DOScale(0.8f, 0.1f); });
                     yield return new WaitForSeconds(1f);
 
@@ -1603,7 +1621,7 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
 
-                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(51.70454f, 72.72727f), 0f);
                         gm.transform.localScale = communityCards[4].transform.localScale;
                         gm.GetComponent<Image>().sprite = openCards[0].cardsSprite;
                         gm.transform.Rotate(0, -90, 0);
@@ -1635,7 +1653,7 @@ public class ClubInGameManager : MonoBehaviour
                     gmAllCard.transform.GetChild(3).gameObject.SetActive(true);
                     gmAllCard.transform.GetChild(4).GetComponent<Image>().sprite = communityCards[4].sprite;
                     gmAllCard.transform.GetChild(4).gameObject.SetActive(true);
-                    gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
+                    //gmAllCard.GetComponent<RectTransform>().DOSizeDelta(new Vector2(68f, 96f), 0f);
                     gmAllCard.transform.DOMove(pos, 0.5f).OnComplete(() => { gmAllCard.transform.DOScale(0.8f, 0.1f); });
                     yield return new WaitForSeconds(0.3f);
                     SoundManager.instance.PlaySound(SoundType.CardMove);
@@ -1643,7 +1661,7 @@ public class ClubInGameManager : MonoBehaviour
                     GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
                     gm.transform.position = communityCards[3].transform.position;
                     gm.transform.localScale = communityCards[0].transform.localScale;
-                    gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                    gm.GetComponent<RectTransform>().DOSizeDelta(new Vector2(51.70454f, 72.72727f), 0f);
                     gm.GetComponent<Image>().sprite = openCards[0].cardsSprite;
                     gm.transform.Rotate(0, -90, 0);
                     gm.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.4f).OnComplete(() => 
@@ -1657,7 +1675,7 @@ public class ClubInGameManager : MonoBehaviour
                         GameObject gm2 = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
                         gm2.transform.position = communityCards[4].transform.position;
                         gm2.transform.localScale = communityCards[0].transform.localScale;
-                        gm2.GetComponent<RectTransform>().DOSizeDelta(new Vector2(56.875f, 80f), 0f);
+                        gm2.GetComponent<RectTransform>().DOSizeDelta(new Vector2(51.70454f, 72.72727f), 0f);
                         gm2.GetComponent<Image>().sprite = openCards[1].cardsSprite;
                         gm2.transform.Rotate(0, -90, 0);
                         gm2.transform.DORotate(new Vector3(0, 90, 0), 0.25f, RotateMode.LocalAxisAdd).SetDelay(0.4f).OnComplete(() => 
@@ -2116,7 +2134,7 @@ public class ClubInGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
-        //Debug.LogWarning("NEXT ROUND In: " + remainingTime);
+        Debug.LogWarning("NEXT ROUND In: " + remainingTime + ", " + availableBalance);
         if (remainingTime > 1)
         {
             //ClubInGameUIManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
@@ -2590,6 +2608,12 @@ public class ClubInGameManager : MonoBehaviour
                 for (int i = 0; i < data[0].Count; i++)
                 {
                     PlayerScript playerObject = GetPlayerObject(data[0][i]["userId"].ToString());
+                    if (data[0][i]["coins"] != null)
+                    {
+                        //Debug.LogError("Player Coins: " + data[0][i]["coins"].ToString());
+
+                        PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
+                    }
 
                     if (playerObject != null)
                     {
