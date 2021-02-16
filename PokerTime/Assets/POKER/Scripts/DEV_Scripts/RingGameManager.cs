@@ -567,11 +567,11 @@ public class RingGameManager : MonoBehaviour
                 components[25].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["GPSRestriction"].ToString().Equals("On") ? true : false);
                 components[26].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["IPRestriction"].ToString().Equals("On") ? true : false);
                 components[27].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["banChatting"].ToString().Equals("On") ? true : false);
-                components[28].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["hours"].ToString();
 
                 float sliderVal;
                 float.TryParse(data["response"][i]["settingData"]["hours"].ToString(), out sliderVal);
                 components[28].transform.parent.Find("TimeMarkerSlider").GetComponent<Slider>().value = sliderVal;
+                components[28].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["hours"].ToString();
             }
         }
     }
