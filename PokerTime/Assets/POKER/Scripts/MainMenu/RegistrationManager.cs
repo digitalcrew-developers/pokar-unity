@@ -283,6 +283,12 @@ public class RegistrationManager : MonoBehaviour
                 }
                 break;
 
+            case "LoginWithGoogle":
+                {
+                    GoogleManager.instance.SignInWithGoogle();
+                }
+                break;
+
             default:
             Debug.LogError("Unhandled eventName found = "+eventName);
             break;
