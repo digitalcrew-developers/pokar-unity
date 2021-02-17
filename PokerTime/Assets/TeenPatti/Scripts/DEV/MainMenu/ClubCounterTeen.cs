@@ -763,7 +763,7 @@ public class ClubCounterTeen : MonoBehaviour
         SendOutPanel.SetActive(false);
     }
 
-    public TMPro.TMP_InputField AmountToSendInputField;
+    public /*TMP_InputField*/InputField AmountToSendInputField;
     public TextMeshProUGUI PlayerSelected, TotalAmountSendText;
     private int selectedSendPlayerCount = 0;
 

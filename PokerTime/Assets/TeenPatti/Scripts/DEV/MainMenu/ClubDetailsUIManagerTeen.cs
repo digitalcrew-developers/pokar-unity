@@ -358,8 +358,13 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
 				}
 
-				if (data["response"][i]["tableName"] != null)
+				if (data["response"][i]["tableName"] != null && !data["response"][i]["tableName"].ToString().Equals(""))
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["tableName"].ToString();
+				else
+					obj.transform.Find("Image/title").GetComponent<Text>().text = "Unnamed Tab...";
+
+				//if (data["response"][i]["tableName"] != null)
+				//	obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["tableName"].ToString();
 
 				//obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["players"].ToString() + "/10";
@@ -397,8 +402,13 @@ public class ClubDetailsUIManagerTeen : MonoBehaviour
 						obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
 					}
 
-					if (data["response"][i]["tableName"] != null)
+					if (data["response"][i]["tableName"] != null && !data["response"][i]["tableName"].ToString().Equals(""))
 						obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["tableName"].ToString();
+					else
+						obj.transform.Find("Image/title").GetComponent<Text>().text = "Unnamed Tab...";
+
+					//if (data["response"][i]["tableName"] != null)
+					//	obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["tableName"].ToString();
 
 					//obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 					obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["players"].ToString() + "/10";

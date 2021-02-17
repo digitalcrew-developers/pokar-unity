@@ -29,7 +29,7 @@ public class MemberDetailsTeen : MonoBehaviour
     [Space(10)]
     public GameObject TipsObj;
 
-    public TMP_InputField editMemberAlias, editMemberNote;
+    public /*TMP_InputField*/InputField editMemberAlias, editMemberNote;
 
     private ClubMemberDetailsTeen clubMemberDetails;
 
@@ -603,7 +603,7 @@ public class MemberDetailsTeen : MonoBehaviour
                 clubChips -= sendOutAmount;
                 ClubDetailsUIManagerTeen.instance.CLubChips.text = clubChips.ToString();
                 AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/ChipsData/Text").GetComponent<Text>().text = ClubDetailsUIManagerTeen.instance.CLubChips.text;
-                AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text = string.Empty;
+                AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent</*TMP_InputField*/InputField>().text = string.Empty;
                 AgentSendOutPanel.SetActive(false);
 
                 //GetTradeRecordList();
@@ -625,7 +625,7 @@ public class MemberDetailsTeen : MonoBehaviour
             {
                 clubChips += claimBackAmount;
                 ClubDetailsUIManagerTeen.instance.CLubChips.text = clubChips.ToString();
-                AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/EnterAmountInputField").GetComponent<TMP_InputField>().text = string.Empty;
+                AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/EnterAmountInputField").GetComponent</*TMP_InputField*/InputField>().text = string.Empty;
                 AgentClaimBackPanel.SetActive(false);
 
                 //GetTradeRecordList();
@@ -757,14 +757,14 @@ public class MemberDetailsTeen : MonoBehaviour
     {
         string request = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
             "\"clubId\":" + ClubDetailsUIManagerTeen.instance.GetClubId() + "," +
-            "\"amount\":" + AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text + "," +
+            "\"amount\":" + AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent</*TMP_InputField*/InputField>().text + "," +
             "\"membersArray\":[{\"userId\":" + clubMemberDetails.userId + "}]}";/*",\"role\":\"" + clubMemberDetails.memberRole + "\"}]}";*/
 
         //float totalAmount = 0;
         //float currentAmount = 0;
 
         float.TryParse(ClubDetailsUIManagerTeen.instance.CLubChips.text, out clubChips);
-        float.TryParse(AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent<TMP_InputField>().text, out sendOutAmount);
+        float.TryParse(AgentSendOutPanel.transform.Find("BG1/BG2/SendOut/EnterAmountInputField").GetComponent</*TMP_InputField*/InputField>().text, out sendOutAmount);
 
         Debug.Log("Current Amount: " + sendOutAmount);
         Debug.Log("Total Amount: " + clubChips);
@@ -794,7 +794,7 @@ public class MemberDetailsTeen : MonoBehaviour
         //float currentAmount = 0;
         
         float.TryParse(AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/ChipsData/Text").GetComponent<Text>().text, out totalAmount);
-        float.TryParse(AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/EnterAmountInputField").GetComponent<TMP_InputField>().text, out claimBackAmount);
+        float.TryParse(AgentClaimBackPanel.transform.Find("BG1/BG2/ClaimBack/EnterAmountInputField").GetComponent</*TMP_InputField*/InputField>().text, out claimBackAmount);
 
         Debug.Log("Current Amount: " + claimBackAmount);
         Debug.Log("Total Amount: " + totalAmount);
