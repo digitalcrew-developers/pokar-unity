@@ -36,7 +36,7 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
 
 
     private float availableCallAmount = 0, selectedRaiseAmount = 0;
-    private List<InGameActiveScreens> inGameActiveScreens = new List<InGameActiveScreens>();
+    private List<InGameActiveScreensTeenPatti> inGameActiveScreens = new List<InGameActiveScreensTeenPatti>();
     private bool useRaisePotWise = false;
     private int suggestionCallAmount = 0;
 
@@ -203,7 +203,7 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
         Debug.Log("IIII  SpinWheelArrowBtnClick");
         SoundManager.instance.PlaySound(SoundType.Click);
 
-        ShowScreen(InGameScreens.SpinWheelScreen);
+        ShowScreen(InGameScreensTeenPatti.SpinWheelScreen);
     }
 
     public void OnArrowBtnClick()
@@ -280,32 +280,32 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
                 break;
             case "store":
                 {
-                    ShowScreen(InGameScreens.InGameShop);
+                    ShowScreen(InGameScreensTeenPatti.InGameShop);
                 }
                 break;
 
 
             case "menu":
                 {
-                    ShowScreen(InGameScreens.Menu);
+                    ShowScreen(InGameScreensTeenPatti.Menu);
                 }
                 break;
 
             case "missions":
                 {
-                    ShowScreen(InGameScreens.Missions);
+                    ShowScreen(InGameScreensTeenPatti.Missions);
                 }
                 break;
             case "emojiScreen":
                 {
-                    ShowScreen(InGameScreens.EmojiScreen);
+                    ShowScreen(InGameScreensTeenPatti.EmojiScreen);
                 }
                 break;
             case "fold":
                 {
                     PlayerScript player = ClubInGameManager.instance.GetMyPlayerObject();
                     player.ResetTurn();
-                    ClubInGameManager.instance.OnPlayerActionCompleted(PlayerAction.Fold, 0, "Fold");
+                    ClubInGameManagerTeen.instance.OnPlayerActionCompleted(PlayerAction.Fold, 0, "Fold");
                 }
                 break;
 
@@ -520,26 +520,26 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
 
             case "handHistory":
                 {
-                    ShowScreen(InGameScreens.HandHistory);
+                    ShowScreen(InGameScreensTeenPatti.HandHistory);
                 }
                 break;
 
             case "realTimeResult":
                 {
-                    ShowScreen(InGameScreens.RealTimeResult);
+                    ShowScreen(InGameScreensTeenPatti.RealTimeResult);
                 }
                 break;
             case "pointEarnopen":
                 {
-                    ShowScreen(InGameScreens.PointEarnMsg);
+                    ShowScreen(InGameScreensTeenPatti.PointEarnMsg);
                 }
                 break;
 
             case "chat":
                 {
-                    if (ClubSocketController.instance.GetSocketState() == SocketState.Game_Running)
+                    if (ClubSocketControllerTeen.instance.GetSocketState() == SocketState.Game_Running)
                     {
-                        ShowScreen(InGameScreens.Chat);
+                        ShowScreen(InGameScreensTeenPatti.Chat);
                     }
                     else
                     {
@@ -825,7 +825,7 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
     }
 
 
-    public void ShowScreen(InGameScreens screenName, object[] parameter = null)
+    public void ShowScreen(InGameScreensTeenPatti screenName, object[] parameter = null)
     {
         int layer = (int)GetScreenLayer(screenName);
         for (int i = layer + 1; i < screenLayers.Length; i++)
@@ -837,7 +837,7 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
         {
             DestroyScreen(GetScreenLayer(screenName));
 
-            InGameActiveScreens mainMenuScreen = new InGameActiveScreens();
+            InGameActiveScreensTeenPatti mainMenuScreen = new InGameActiveScreensTeenPatti();
             mainMenuScreen.screenName = screenName;
             mainMenuScreen.screenLayer = GetScreenLayer(screenName);
 
@@ -848,33 +848,33 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
 
             switch (screenName)
             {
-                case InGameScreens.TopUp:
+                case InGameScreensTeenPatti.TopUp:
                     {
                         Debug.Log("Init topUp screen");
                         gm.GetComponent<TopUpScript>().Init((float)parameter[0]);
                     }
                     break;
-                case InGameScreens.EmojiScreen:
+                case InGameScreensTeenPatti.EmojiScreen:
                     {
                         gm.GetComponent<EmojiUIScreenManager>().containerVal = emojiContainerVal;
                     }
                     break;
-                case InGameScreens.GameDisplay:
+                case InGameScreensTeenPatti.GameDisplay:
                     {
                         gm.GetComponent<SwitchTable>().TableImages = TableImages;
                     }
                     break;
-                case InGameScreens.RealTimeResult:
+                case InGameScreensTeenPatti.RealTimeResult:
                     {
                         gm.GetComponent<RealTimeResultUiManager>().OnOpen();
                     }
                     break;
-                case InGameScreens.HandHistory:
+                case InGameScreensTeenPatti.HandHistory:
                     {
                         gm.GetComponent<HandHistoryManager>().Init();
                     }
                     break;
-                case InGameScreens.PointEarnMsg:
+                case InGameScreensTeenPatti.PointEarnMsg:
                     {
                         gm.GetComponent<PointEarnMsg>().OnOpen();
                     }
@@ -889,11 +889,11 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
 
     public void ShowMessage(string messageToShow, Action callBackMethod = null, string okButtonText = "Ok")
     {
-        if (!IsScreenActive(InGameScreens.Message))
+        if (!IsScreenActive(InGameScreensTeenPatti.Message))
         {
-            InGameActiveScreens mainMenuScreen = new InGameActiveScreens();
-            mainMenuScreen.screenName = InGameScreens.Message;
-            mainMenuScreen.screenLayer = GetScreenLayer(InGameScreens.Message);
+            InGameActiveScreensTeenPatti mainMenuScreen = new InGameActiveScreensTeenPatti();
+            mainMenuScreen.screenName = InGameScreensTeenPatti.Message;
+            mainMenuScreen.screenLayer = GetScreenLayer(InGameScreensTeenPatti.Message);
 
             GameObject gm = Instantiate(screens[(int)InGameScreens.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
             mainMenuScreen.screenObject = gm;
@@ -907,11 +907,11 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
 
     public void ShowMessage(string messageToShow, Action yesButtonCallBack, Action noButtonCallBack, string yesButtonText = "Yes", string noButtonText = "No")
     {
-        if (!IsScreenActive(InGameScreens.Message))
+        if (!IsScreenActive(InGameScreensTeenPatti.Message))
         {
-            InGameActiveScreens mainMenuScreen = new InGameActiveScreens();
-            mainMenuScreen.screenName = InGameScreens.Message;
-            mainMenuScreen.screenLayer = GetScreenLayer(InGameScreens.Message);
+            InGameActiveScreensTeenPatti mainMenuScreen = new InGameActiveScreensTeenPatti();
+            mainMenuScreen.screenName = InGameScreensTeenPatti.Message;
+            mainMenuScreen.screenLayer = GetScreenLayer(InGameScreensTeenPatti.Message);
 
             GameObject gm = Instantiate(screens[(int)InGameScreens.Message], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
             mainMenuScreen.screenObject = gm;
@@ -923,7 +923,7 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
 
 
 
-    public void DestroyScreen(InGameScreens screenName)
+    public void DestroyScreen(InGameScreensTeenPatti screenName)
     {
         for (int i = 0; i < inGameActiveScreens.Count; i++)
         {
@@ -947,7 +947,7 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
         }
     }
 
-    private bool IsScreenActive(InGameScreens screenName)
+    private bool IsScreenActive(InGameScreensTeenPatti screenName)
     {
         for (int i = 0; i < inGameActiveScreens.Count; i++)
         {
@@ -961,17 +961,17 @@ public class ClubInGameUIManagerTeen : MonoBehaviour
     }
 
 
-    private ScreenLayer GetScreenLayer(InGameScreens screenName)
+    private ScreenLayer GetScreenLayer(InGameScreensTeenPatti screenName)
     {
         switch (screenName)
         {
-            case InGameScreens.Message:
+            case InGameScreensTeenPatti.Message:
                 return ScreenLayer.LAYER2;
 
-            case InGameScreens.Reconnecting:
+            case InGameScreensTeenPatti.Reconnecting:
                 return ScreenLayer.LAYER3;
 
-            case InGameScreens.Loading:
+            case InGameScreensTeenPatti.Loading:
                 return ScreenLayer.LAYER4;
 
             default:

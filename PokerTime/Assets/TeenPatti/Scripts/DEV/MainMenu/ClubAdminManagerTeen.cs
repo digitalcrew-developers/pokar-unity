@@ -37,7 +37,7 @@ public class ClubAdminManagerTeen : MonoBehaviour
     public GameObject NotificationPanel, NotTextPanel, NotImagePanel;
     public Button NotificationEditButton, NotificationHelpButton;
     public Button NotificationTextTabButton, NotificationImageTabButton;
-    public TMP_InputField NotificationText;
+    public /*TMP_InputField*/InputField NotificationText;
     public TextMeshProUGUI OldNotificationText;
     public RawImage NotificationImage;
     public Button SendNotificationButton;
@@ -47,7 +47,7 @@ public class ClubAdminManagerTeen : MonoBehaviour
 
     #region DisbandClub
     [Header("DISBAND CLUB")]
-    public TMP_InputField ClubIdInputField;
+    public /*TMP_InputField*/InputField ClubIdInputField;
     public Button DisbandClubConfirmButton;
     public Text DisbandClubIdText;
     public GameObject DisbandClub;

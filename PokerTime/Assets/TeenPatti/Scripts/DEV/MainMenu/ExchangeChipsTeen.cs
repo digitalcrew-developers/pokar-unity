@@ -10,8 +10,8 @@ using UnityEngine.Networking;
 public class ExchangeChipsTeen : MonoBehaviour
 {
     public TextMeshProUGUI TotalDiamonds;
-    public TMP_InputField Diamonds;
-    public TMP_InputField PTChips;
+    public /*TMP_InputField*/InputField Diamonds;
+    public /*TMP_InputField*/InputField PTChips;
 
     public Button ConfirmButton;
 

@@ -363,8 +363,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 				roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
 				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
 				roomData.roomId = data["response"][i]["tableId"].ToString();
-				roomData.title = data["response"][i]["templateName"].ToString();
-                roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
+					roomData.title = data["response"][i]["templateName"].ToString();
+				else
+					roomData.title = "Unnamed Tab...";
+
+				roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
                 roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
 
                 if (data["response"][i]["gameType"].ToString().Equals("NLH"))
@@ -396,8 +401,14 @@ public class ClubDetailsUIManager : MonoBehaviour
 					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
 				}
 
-				if (data["response"][i]["templateName"] != null)
+
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+				else
+					obj.transform.Find("Image/title").GetComponent<Text>().text = "Unnamed Tab...";
+
+				//if (data["response"][i]["templateName"] != null)
+				//	obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
@@ -436,8 +447,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 				roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
 				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
 				roomData.roomId = data["response"][i]["tableId"].ToString();
-				roomData.title = data["response"][i]["templateName"].ToString();
-                roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
+					roomData.title = data["response"][i]["templateName"].ToString();
+				else
+					roomData.title = "Unnamed Tab...";
+
+				roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
                 roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
 
                 if (data["response"][i]["gameType"].ToString().Equals("NLH"))
@@ -469,8 +485,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
 				}
 
-				if (data["response"][i]["templateName"] != null)
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+				else
+					obj.transform.Find("Image/title").GetComponent<Text>().text = "Unnamed Tab...";
+
+				//if (data["response"][i]["templateName"] != null)
+				//	obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
@@ -506,8 +527,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 				roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
 				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
 				roomData.roomId = data["response"][i]["tableId"].ToString();
-				roomData.title = data["response"][i]["templateName"].ToString();
-                roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
+					roomData.title = data["response"][i]["templateName"].ToString();
+				else
+					roomData.title = "Unnamed Tab...";
+
+				roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
                 roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
 
                 if (data["response"][i]["gameType"].ToString().Equals("NLH"))
@@ -539,8 +565,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
 				}
 
-				if (data["response"][i]["templateName"] != null)
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+				else
+					obj.transform.Find("Image/title").GetComponent<Text>().text = "Unnamed Tab...";
+
+				//if (data["response"][i]["templateName"] != null)
+				//	obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
