@@ -1236,7 +1236,8 @@ public enum InGameScreens
     GameDisplay,
     Counter,
     EVChopRules,
-    HostPrivilege
+    HostPrivilege,
+    CounterClub
 }
 
 public enum PlayerAction

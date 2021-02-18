@@ -1055,6 +1055,14 @@ public class ClubInGameUIManager : MonoBehaviour
                         }
                     }
                     break;
+                case InGameScreens.CounterClub:
+                    {
+                        if (!gm.activeSelf)
+                        {
+                            gm.SetActive(true);
+                        }
+                    }
+                    break;
                 default:
                     break;
             }

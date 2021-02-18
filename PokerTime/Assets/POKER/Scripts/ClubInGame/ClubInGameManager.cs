@@ -317,7 +317,7 @@ public class ClubInGameManager : MonoBehaviour
         //Debug.Log("Arranged Users " + newMatchMakingPlayerData.Count);
         for (int i = 0; i < allPlayersObject.Length; i++)
         {
-            allPlayersObject[i].ResetAllData();
+            // allPlayersObject[i].ResetAllData();
             if (i < newMatchMakingPlayerData.Count)
             {
                 //Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn);
@@ -2134,7 +2134,7 @@ public class ClubInGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
-        Debug.LogWarning("NEXT ROUND In: " + remainingTime + ", " + availableBalance);
+        Debug.LogWarning(GameConstants.BUFFER_TIME + ", NEXT ROUND In: " + remainingTime + ", " + availableBalance + ", " + isRematchRequestSent);
         if (remainingTime > 1)
         {
             //ClubInGameUIManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);

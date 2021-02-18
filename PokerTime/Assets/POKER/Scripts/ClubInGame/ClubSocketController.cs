@@ -144,6 +144,7 @@ public class ClubSocketController : MonoBehaviour
         //socketManager.Socket.On("closePopUp", OnClosePopUp);
         socketManager.Socket.On("comCard1", OnComCards1);
         socketManager.Socket.On("comCard2", OnComCards2);
+        socketManager.Socket.On("matchRunItTimes", MatchRunItTimes);
 
         socketManager.Open();
     }
@@ -223,13 +224,28 @@ public class ClubSocketController : MonoBehaviour
         string responseText = JsonMapper.ToJson(args);
         Debug.Log("OnClosePopUp :" + responseText);
     }*/
+    int runItTimes = 0;
+    private void MatchRunItTimes(Socket socket, Packet packet, object[] args)
+    {
+        //JsonData data = JsonMapper.ToObject(args);
+
+        //int remainingTime = (int)float.Parse(data[0].ToString());
+
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("<color=magenta>MatchRunItTimes :</color> " + responseText + ", " + args[0] + ", " + runItTimes);
+        runItTimes = int.Parse(args[0].ToString());
+        Debug.Log("<color=magenta>MatchRunItTimes :</color> " + responseText + ", " + runItTimes);
+    }
 
     private void OnComCards1(Socket socket, Packet packet, object[] args)
     {
         //ClubInGameManager.instance.DontShowCommunityCardAnimation = true;
         string responseText = JsonMapper.ToJson(args);
         Debug.Log("<color=magenta>OnComCards1 :</color> " + responseText);
-        StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer1.position));
+        if (runItTimes == 2)
+            StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer2.position));
+        else if (runItTimes == 1)
+            StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer1.position));
     }
 
     private void OnComCards2(Socket socket, Packet packet, object[] args)
@@ -237,7 +253,7 @@ public class ClubSocketController : MonoBehaviour
         //ClubInGameManager.instance.DontShowCommunityCardAnimation = true;
         string responseText = JsonMapper.ToJson(args);
         Debug.Log("<color=magenta>OnComCards2 :</color> " + responseText);
-        StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer2.position));
+        StartCoroutine(ClubInGameManager.instance.ShowMultiRunCards(responseText, ClubInGameManager.instance.communityCardLayer1.position));
     }
 
     //This method to be called when EVChopDataReceived emited

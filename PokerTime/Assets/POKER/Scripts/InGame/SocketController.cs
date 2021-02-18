@@ -265,7 +265,7 @@ public class SocketController : MonoBehaviour
 #endif
 
 #endif
-            Debug.Log(InGameManager.instance.userWinner + " <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
+            Debug.Log(" <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
             switch (responseObject.eventType)
             {
                 case SocketEvetns.CONNECT:
@@ -1655,7 +1655,8 @@ public class SocketController : MonoBehaviour
 
     public void SendSwitchTable(string seatNo = null)
     {
-        string requestStringData = "{\"tableId\":" + TABLE_ID + "," + "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+        string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"tableId\":\"" + TABLE_ID + "\"," +
              "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
              "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
              "\"playerType\":\"Real\"," +

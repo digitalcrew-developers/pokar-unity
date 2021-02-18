@@ -51,7 +51,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	private string path;
 	public Text pathText;
-
+    public GameObject popUp;
 
 	private JsonData templateList;
 
@@ -295,6 +295,12 @@ public class ClubDetailsUIManager : MonoBehaviour
 						LoadAllTemplates(data, "ALL");
 				}
 				break;
+            case RequestType.getClubUserDetail:
+                {
+                    Debug.Log("Response => getClubUserDetail : " + serverResponse);
+                    
+                }
+                break;
 
             default:
 #if ERROR_LOG
@@ -559,10 +565,18 @@ public class ClubDetailsUIManager : MonoBehaviour
 		}
 	}
 
-	private void OnClickOnPlayButton(RoomData data, int gameMode = -1)
+    public void GetClubUserDetail()
+    {
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                           "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.getClubUserDetail, requestData, true, (res, s1, t, s2) => { Debug.Log(s1); });
+    }
+
+    private void OnClickOnPlayButton(RoomData data, int gameMode = -1)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
-
+        //GetClubUserDetail();
 		//DEV_CODE Commented this code to re enter into the table 
         //if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
         //{
@@ -570,12 +584,32 @@ public class ClubDetailsUIManager : MonoBehaviour
         //    return;
         //}
 
-        data.isLobbyRoom = false;
+        //data.isLobbyRoom = false;
 		
-		GlobalGameManager.instance.SetRoomData(data);
-        GameConstants.TURN_TIME = data.callTimer;
-		//Debug.LogError("Call Timer On Click: " + GameConstants.TURN_TIME);
-        SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
+		//GlobalGameManager.instance.SetRoomData(data);
+        //GameConstants.TURN_TIME = data.callTimer;
+        //Debug.LogError("Call Timer On Click: " + GameConstants.TURN_TIME);
+        //SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
+        Debug.LogError("Call Timer On Click: " + PlayerManager.instance.GetPlayerGameData().coins + " " + data.minBuyIn);
+
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                           "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.getClubUserDetail, requestData, true, (res, s1, t, s2) => 
+        {
+            Debug.Log(s1);
+            JsonData d = JsonMapper.ToObject(s1);
+            Debug.Log(d["response"]["ptChips"].ToString());
+            if (int.Parse(d["response"]["ptChips"].ToString()) < data.minBuyIn)
+                popUp.SetActive(true);
+            else
+            {
+                data.isLobbyRoom = false;
+                GlobalGameManager.instance.SetRoomData(data);
+                GameConstants.TURN_TIME = data.callTimer;
+                SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
+            }
+        });
     }
 
     public void OnClickOnButton(string eventName)
