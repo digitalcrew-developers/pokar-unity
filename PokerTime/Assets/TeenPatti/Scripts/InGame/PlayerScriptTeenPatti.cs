@@ -149,6 +149,13 @@ public class PlayerScriptTeenPatti : MonoBehaviour
         if (playerData.playerAllBet > 0)
         {
             UpdateLocalPot((int)playerData.playerAllBet, InGameManagerTeenPatti.instance.GetMatchRound());
+            InGameManagerTeenPatti.instance.UpdatePot("" + (int)InGameManagerTeenPatti.instance.potAmount);
+            InGameManagerTeenPatti.instance.Pot.SetActive(true);
+            //Debug.Log("Current Bet Amount : " + betAmount);
+            //StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
+            //InGameManagerTeenPatti.instance.WaitAndShowBetAnimationPot(Pot, "" + playerData.playerAllBet);
+            ///StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.t));
+            /*StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));*/
         }
     }
     private void LoadUI()
