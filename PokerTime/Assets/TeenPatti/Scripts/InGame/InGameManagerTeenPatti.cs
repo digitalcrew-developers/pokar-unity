@@ -49,7 +49,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
     private List<GameObject> winnersObject = new List<GameObject>();
     private int communityCardsAniamtionShowedUpToRound = 0;
     private int currentRoundTotalBets = 0;
-    private float potAmount = 0;
+    public float potAmount = 0;
 
     private bool isRematchRequestSent = false,isTopUpDone = false;
     private float availableBalance = 0;
@@ -677,7 +677,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
         return potAmount;
     }
 
-    private void UpdatePot(string textToShow)
+    public void UpdatePot(string textToShow)
     {
         potText.text = textToShow;
     }
