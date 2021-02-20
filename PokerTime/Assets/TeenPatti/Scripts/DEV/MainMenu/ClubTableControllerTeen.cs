@@ -187,7 +187,7 @@ public class ClubTableControllerTeen : MonoBehaviour
 
                 Debug.Log("Setting Up Data for edit..." + tableIdStatic);
                                 
-                components[0].transform.GetComponent<TMP_InputField>().text = data["response"][i]["tableName"].ToString();
+                components[0].transform.GetComponent</*TMP_InputField*/InputField>().text = data["response"][i]["tableName"].ToString();
                 components[1].transform.GetComponent<TMP_Text>().text = data["response"][i]["playerCount"].ToString();
                 components[2].GetComponent<TMP_Dropdown>().captionText.text = data["response"][i]["gameMode"].ToString();
                 components[3].transform.Find(data["response"][i]["actionTime"].ToString()).GetComponent<Toggle>().isOn = true;
@@ -293,6 +293,9 @@ public class ClubTableControllerTeen : MonoBehaviour
     public void OnServerResponseFound(RequestTypeTP requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         tableIdStatic = 0;
+        saveBtn.interactable = true;
+        startBtn.interactable = true;
+        editBtn.interactable = true;
 
         if (errorMessage.Length > 0)
         {
@@ -444,7 +447,7 @@ public class ClubTableControllerTeen : MonoBehaviour
             case "Create":
             {
                     string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-                                "\"tableName\":\"" + components[0].GetComponent<TMP_InputField>().text + "\"," +
+                                "\"tableName\":\"" + components[0].GetComponent</*TMP_InputField*/InputField>().text + "\"," +
                                 "\"playerCount\":" + components[1].GetComponent<TMP_Text>().text + "," +
                                 "\"gameMode\":\"" + components[2].GetComponent<TMP_Dropdown>().captionText.text + "\"," +
                                 "\"actionTime\": " + actionTime + "," +
@@ -476,6 +479,10 @@ public class ClubTableControllerTeen : MonoBehaviour
                                 "\"tableId\":\"" + ((tableIdStatic != 0) ? tableIdStatic.ToString() : "") + "\"}";
 
                     WebServices.instance.SendRequestTP(RequestTypeTP.CreateTable, requestData, true, OnServerResponseFound);
+
+                    saveBtn.interactable = false;
+                    startBtn.interactable = false;
+                    editBtn.interactable = false;
                 }
                 break;
         }
@@ -483,7 +490,7 @@ public class ClubTableControllerTeen : MonoBehaviour
 
     void ResetTaleData()
     {
-        components[0].GetComponent<TMP_InputField>().text = "";
+        components[0].GetComponent</*TMP_InputField*/InputField>().text = "";
         components[1].GetComponent<TMP_Text>().text = "9";
         components[2].GetComponent<TMP_Dropdown>().value = 0;
         components[3].transform.Find("5").GetComponent<Toggle>().isOn = true;

@@ -644,6 +644,7 @@ public class MainMenuController : MonoBehaviour
 
         if (requestType == RequestType.GetUserDetails)
         {
+            Debug.Log("Response => GetUserDetails: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["success"].ToString() == "1")
@@ -652,6 +653,9 @@ public class MainMenuController : MonoBehaviour
                 playerData.password = PlayerManager.instance.GetPlayerGameData().password;
                 playerData.userName = PlayerManager.instance.GetPlayerGameData().userName;
                 PlayerManager.instance.SetPlayerGameData(playerData);
+
+                if (MenuHandller.instance != null)
+                    MenuHandller.instance.UpdateAllText();
             }
             else
             {

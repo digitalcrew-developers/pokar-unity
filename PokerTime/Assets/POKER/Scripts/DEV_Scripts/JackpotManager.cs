@@ -17,7 +17,7 @@ public class JackpotManager : MonoBehaviour
     public Transform TopUpJackpotContainer;
     public TMP_Text TotalJackpotAmountText;
     public TextMeshProUGUI ChipsAvailableText;
-    public TMP_InputField JackpotAmountInputField;
+    public /*TMP_InputField*/InputField JackpotAmountInputField;
     public Button JackpotTopUpConfimButton;
     public ToggleController JackpotToggleController;
     public GameObject JackpotTopUpPopup, JackpotExplanationPanel, JackpotPayoutPanel, TopUpPanel, TopRecordPanel;
@@ -164,11 +164,11 @@ public class JackpotManager : MonoBehaviour
 
     private void CheckToConfirm(bool val)
     {
-        if (TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField (TMP)").GetComponent<TMP_InputField>().text.Length <= 0)
+        if (TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField").GetComponent</*TMP_InputField*/InputField>().text.Length <= 0)
         {
             StartCoroutine(ShowPopUp("Enter Club ID", 1.29f));
         }
-        else if (!TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField (TMP)").GetComponent<TMP_InputField>().text.Equals(ClubDetailsUIManager.instance.GetClubId()))
+        else if (!TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField").GetComponent</*TMP_InputField*/InputField>().text.Equals(ClubDetailsUIManager.instance.GetClubId()))
         {
             StartCoroutine(ShowPopUp("ID incorrect", 1.29f));
         }
@@ -418,7 +418,7 @@ public class JackpotManager : MonoBehaviour
                         if (TurnOffJackpotPanel.activeSelf)
                         {
                             TurnOffJackpotPanel.SetActive(false);
-                            TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField (TMP)").GetComponent<TMP_InputField>().text = "";
+                            TurnOffJackpotPanel.transform.Find("BG1/BG2/CenterArea/InputField").GetComponent</*TMP_InputField*/InputField>().text = "";
                             ClubDetailsUIManager.instance.jackpotData.SetActive(false);
                             ClubDetailsUIManager.instance.otherDetails.transform.localPosition = new  Vector3(-51, 0, 0);
                         }

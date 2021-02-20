@@ -430,7 +430,7 @@ public class CreateTableManagerTeen : MonoBehaviour
         {
             if (i == index)
             {
-                components[0].transform.GetComponent<TMP_InputField>().text = data["response"][i]["templateName"].ToString();
+                components[0].transform.GetComponent</*TMP_InputField*/InputField>().text = data["response"][i]["templateName"].ToString();
                 components[1].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["memberCount"].ToString();
                 components[2].transform.Find(data["response"][i]["settingData"]["actionTime"].ToString()).GetComponent<Toggle>().isOn = true;
                 components[3].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["exclusiveTable"].ToString().Equals("On") ? true : false);

@@ -386,7 +386,7 @@ public class InGameUiManager : MonoBehaviour
                     }
                     else
                     {
-                        OnSliderValueChange();
+                        //OnSliderValueChange();
                         InGameManager.instance.OnPlayerActionCompleted(PlayerAction.Raise, (int)selectedRaiseAmount, "Raise");
                     }
                 }
@@ -567,12 +567,13 @@ public class InGameUiManager : MonoBehaviour
     }
 
     float sliderVal;
-    int calculatedAmount;
+    int calculatedAmount, myTableBalance;
     public void OnSliderValueChange()
     {
         if (slider.value >= slider.maxValue)
         {
             sliderText.text = "All In";
+            calculatedAmount = myTableBalance;
         }
         else
         {
@@ -598,10 +599,14 @@ public class InGameUiManager : MonoBehaviour
             /*slider.minValue = GlobalGameManager.instance.GetRoomData().smallBlind; //minBet;
             slider.maxValue = maxBet;
             slider.value = minBet;*/
-            sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
+            if (minBet > GlobalGameManager.instance.GetRoomData().smallBlind)
+                sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
+            else
+                sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
             slider.value = 0;
-            calculatedAmount = (int)GlobalGameManager.instance.GetRoomData().smallBlind;
-
+            calculatedAmount = int.Parse(sliderText.text);
+            myTableBalance = (int)maxBet;
+            Debug.Log("Total Bal " + maxBet);
             if (potAmount <= 0)
             {
                 useRaisePotWise = false;
@@ -776,74 +781,6 @@ public class InGameUiManager : MonoBehaviour
 
     public void ToggleActionButton(bool isShow, PlayerScript playerObject = null, bool isCheckAvailable = false, int lastBetAmount = 0, float availableBalance = 0)
     {
-        /*if (!InGameManager.instance.userWinner)
-            actionButtonParent.SetActive(isShow);
-        else
-            actionButtonParent.SetActive(false);*/
-        /*actionButtonParent.SetActive(isShow);
-        if (isShow)
-        {
-            ResetSuggetionAction();
-
-            for (int i = 0; i < actionButtons.Length; i++)
-            {
-                actionButtons[i].SetActive(true);
-            }
-
-            raisePopUp.SetActive(false);
-
-
-            int callAmount = lastBetAmount - (int)playerObject.GetPlayerData().totalBet;
-
-            if (callAmount > 0)
-            {
-                isCheckAvailable = false;
-            }
-
-            useRaisePotWise = isCheckAvailable;
-
-            actionButtons[(int)PlayerAction.Check].SetActive(isCheckAvailable);
-            actionButtons[(int)PlayerAction.AllIn].SetActive(false);
-
-            Debug.LogError("isShow " + isShow + " isCheckAvailable " + isCheckAvailable + " call amount  " + callAmount + "  lba  " + lastBetAmount + " availableBalance " + availableBalance + " totalBet " + playerObject.GetPlayerData().totalBet);
-
-            if (!isCheckAvailable)
-            {
-                if (callAmount > 0) // amount available to bet
-                {
-                    if(lastBetAmount > availableBalance)
-                    {
-                        actionButtons[(int)PlayerAction.Call].SetActive(false);
-                        actionButtons[(int)PlayerAction.AllIn].SetActive(true);
-                    }
-                    else
-                    {
-                        callAmountText.text = "" + callAmount;
-
-                        actionButtons[(int)PlayerAction.AllIn].SetActive(false);
-                        actionButtons[(int)PlayerAction.Call].SetActive(true);
-                    }
-                }
-                else // dont have amount to bet hence show only fold and all-in
-                {
-                    actionButtons[(int)PlayerAction.Call].SetActive(false);
-                    actionButtons[(int)PlayerAction.Raise].SetActive(false);
-                }
-               
-                if (callAmount == 0)
-                {
-                    callAmountText.text = "";
-                    //actionButtons[(int)PlayerAction.Call].SetActive(false);
-                    //actionButtons[(int)PlayerAction.Raise].SetActive(false);
-                    //actionButtons[(int)PlayerAction.Check].SetActive(false);
-                    //actionButtons[(int)PlayerAction.AllIn].SetActive(false);
-                    //actionButtons[(int)PlayerAction.Fold].SetActive(false);
-                }
-            }
-
-            availableCallAmount = callAmount;
-        }*/
-
         if (isShow)
         {
             ResetSuggetionAction();
@@ -1299,7 +1236,8 @@ public enum InGameScreens
     GameDisplay,
     Counter,
     EVChopRules,
-    HostPrivilege
+    HostPrivilege,
+    CounterClub
 }
 
 public enum PlayerAction

@@ -168,8 +168,8 @@ public class GameConstants : MonoBehaviour
         API_URL+"/afterPayment",
         lobbyTeenUrl+"/tp_getRooms",
         API_URL+"/getClubDataAnalytics",
-        API_URL+"/getClubTableDataAnalytics"
-
+        API_URL+"/getClubTableDataAnalytics",
+        API_URL+"/getClubUserDetail"
 };
     #endregion
 
@@ -238,10 +238,10 @@ public enum RequestType
     UpdateTableSettings,
     GetTableSettingData,
     GetUserDetails,
-    GetRewardCoins, 
-    GetFriendList, 
-    GetAllFriendRequest, 
-    SendFriendRequest, 
+    GetRewardCoins,
+    GetFriendList,
+    GetAllFriendRequest,
+    SendFriendRequest,
     UpdateRequestStatus,
     GetSpinWheelItems,
     SetSpinWheelWinning,
@@ -300,7 +300,8 @@ public enum RequestType
     AfterPayment,
     LobbyRoomsTeenPatti,
     GetClubDataAnalytics,
-    GetClubTableDataAnalytics
+    GetClubTableDataAnalytics,
+    getClubUserDetail
 }
 
 [System.Serializable]

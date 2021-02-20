@@ -98,7 +98,7 @@ public class PlayerScript : MonoBehaviour
     public void Init(MatchMakingPlayerData matchMakingPlayerData)
     {
         localBetRoundNo = 0;
-        ToggleLocalPot(false);
+        //ToggleLocalPot(false);
         playerData = matchMakingPlayerData.playerData;
         if (playerData.userId == PlayerManager.instance.GetPlayerGameData().userId)
         {
@@ -379,7 +379,7 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-            ToggleLocalPot(false);
+            //ToggleLocalPot(false);
         }
     }
     public GameObject localBg()

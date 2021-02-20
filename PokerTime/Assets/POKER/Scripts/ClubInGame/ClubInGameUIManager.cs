@@ -81,7 +81,7 @@ public class ClubInGameUIManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-
+        cameraObj.gameObject.SetActive(false);
         //DEV_CODE
         inGamePopUp.SetActive(false);
         //cameraObj = GameObject.Find("VideoRecordingCamera").GetComponent<Camera>();
@@ -572,13 +572,15 @@ public class ClubInGameUIManager : MonoBehaviour
     }
 
     float sliderVal;
-    int calculatedAmount;
+    int calculatedAmount, myTableBalance;
 
     public void OnSliderValueChange()
     {
-        if (slider.value >= slider.maxValue)
+        if (slider.value >= slider.maxValue/* || calculatedAmount >= myTableBalance*/)
         {
             sliderText.text = "All In";
+            //slider.value = 1;
+            calculatedAmount = myTableBalance;
         }
         else
         {
@@ -604,9 +606,26 @@ public class ClubInGameUIManager : MonoBehaviour
             /*slider.minValue = minBet;
             slider.maxValue = maxBet;
             slider.value = minBet;*/
-            sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
+            /*if(GlobalGameManager.instance.GetDigitOfANumber((int)GlobalGameManager.instance.GetRoomData().smallBlind, 0) == 1)
+            {
+                //slider.minValue = GlobalGameManager.instance.GetRoomData().bigBlind;
+                //slider.maxValue = maxBet * 2;
+                //slider.wholeNumbers = true;
+                sliderText.text = GlobalGameManager.instance.GetRoomData().bigBlind.ToString();
+                calculatedAmount = (int)GlobalGameManager.instance.GetRoomData().bigBlind;
+            }
+            else
+            {
+                sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();                
+                calculatedAmount = (int)GlobalGameManager.instance.GetRoomData().smallBlind;
+            }*/
+            if (minBet > GlobalGameManager.instance.GetRoomData().smallBlind)
+                sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
+            else
+                sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
             slider.value = 0;
-            calculatedAmount = (int)GlobalGameManager.instance.GetRoomData().smallBlind;
+            calculatedAmount = int.Parse(sliderText.text);
+            myTableBalance = (int)maxBet;
 
             if (potAmount <= 0)
             {
@@ -1029,6 +1048,14 @@ public class ClubInGameUIManager : MonoBehaviour
                     }
                     break;
                 case InGameScreens.Counter:
+                    {
+                        if (!gm.activeSelf)
+                        {
+                            gm.SetActive(true);
+                        }
+                    }
+                    break;
+                case InGameScreens.CounterClub:
                     {
                         if (!gm.activeSelf)
                         {

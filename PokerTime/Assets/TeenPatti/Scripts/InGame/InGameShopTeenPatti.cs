@@ -51,10 +51,17 @@ public class InGameShopTeenPatti : MonoBehaviour
         {
             case "back":
                 {
-                    if (InGameUiManagerTeenPatti.instance != null) {
+                    if (InGameUiManagerTeenPatti.instance != null) 
+                    {
                         InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.InGameShop);
-                    } else {
-                        MainMenuController.instance.DestroyScreen(MainMenuScreens.InGameShop);
+                    } 
+                    else if(ClubInGameManagerTeen.instance !=null)
+                    {
+                        ClubInGameUIManagerTeen.instance.DestroyScreen(InGameScreensTeenPatti.InGameShop);
+                    }
+                    else
+                    {
+                        MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.InGameShop);
                     }
                     
                 }

@@ -192,6 +192,18 @@ public class MenuScript : MonoBehaviour
                     }
                 }
                 break;
+            case "counterclub":
+                {
+                    if (InGameUiManager.instance != null)
+                    {
+                        InGameUiManager.instance.ShowScreen(InGameScreens.Counter);
+                    }
+                    else
+                    {
+                        ClubInGameUIManager.instance.ShowScreen(InGameScreens.CounterClub);
+                    }
+                }
+                break;
 
             case "exit":
                 {

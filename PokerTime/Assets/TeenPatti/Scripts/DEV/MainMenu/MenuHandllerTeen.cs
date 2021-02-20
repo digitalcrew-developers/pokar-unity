@@ -8,11 +8,10 @@ using TMPro;
 public class MenuHandllerTeen : MonoBehaviour
 {
 	public static MenuHandllerTeen instance;
-
 	public Text coinsText, diamondsText, pointsText,notificationText;
 	public GameObject createClubPopUp,joinClubPopUp,notificationIcon;
 
-    public TMP_InputField TMP_CreateClubField, TMP_JoinClubField, TMP_AgentField;
+    public /*TMP_InputField*/InputField TMP_CreateClubField, TMP_JoinClubField, TMP_AgentField;
 
     //temp. club item until we call club list api
     [SerializeField]
@@ -92,7 +91,7 @@ public class MenuHandllerTeen : MonoBehaviour
 		{	
 		case "openCreateClub":
 			{
-				createClubPopUp.transform.Find("BG1/BG2/ClubName").GetComponent<TMP_InputField>().text = "";
+				createClubPopUp.transform.Find("BG1/BG2/ClubName").GetComponent</*TMP_InputField*/InputField>().text = "";
 				createClubPopUp.SetActive(true);
 				joinClubPopUp.SetActive(false);
 			}
@@ -100,8 +99,8 @@ public class MenuHandllerTeen : MonoBehaviour
 
 		case "openJoinClub":
 			{
-				joinClubPopUp.transform.Find("BG1/BG2/ClubIDTMP").GetComponent<TMP_InputField>().text = "";
-				joinClubPopUp.transform.Find("BG1/BG2/ReferralIDTMP").GetComponent<TMP_InputField>().text = "";
+				joinClubPopUp.transform.Find("BG1/BG2/ClubId").GetComponent</*TMP_InputField*/InputField>().text = "";
+				joinClubPopUp.transform.Find("BG1/BG2/ReferralId").GetComponent</*TMP_InputField*/InputField>().text = "";
 				createClubPopUp.SetActive(false);
 				joinClubPopUp.SetActive(true);
 			}

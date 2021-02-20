@@ -184,7 +184,7 @@ public class GlobalGameManager : MonoBehaviour
         return (int)(2 * Mathf.Pow(10, digit));
     }
 
-    int GetDigitOfANumber(int num, int totalDigit)
+    public int GetDigitOfANumber(int num, int totalDigit)
     {
         if (num == 0)
             return totalDigit;
@@ -244,6 +244,9 @@ public class RoomData
     //DEV_CODE
     public bool isEVChop = false;
     public bool isRunMulti = false;
+
+    public int passCode;
+    public string exclusiveTable;
 }
 
 public class RoomDataTeen

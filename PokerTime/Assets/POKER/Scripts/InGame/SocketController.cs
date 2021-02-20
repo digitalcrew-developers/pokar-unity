@@ -265,7 +265,7 @@ public class SocketController : MonoBehaviour
 #endif
 
 #endif
-            Debug.Log(InGameManager.instance.userWinner + " <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
+            Debug.Log(" <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
             switch (responseObject.eventType)
             {
                 case SocketEvetns.CONNECT:
@@ -1651,6 +1651,30 @@ public class SocketController : MonoBehaviour
         request.jsonDataToBeSend = requestfordeta;
         request.requestDataStructure = requestdeta;
         socketRequest.Add(request);
+    }
+
+    public void SendSwitchTable(string seatNo = null)
+    {
+        string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"tableId\":\"" + TABLE_ID + "\"," +
+             "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
+             "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
+             "\"playerType\":\"Real\"," +
+             "\"isPrivate\":\"No\"," + "\"seatNo\":\"" + seatNo + "\"," +
+             "\"isFree\":\"No\"}";
+
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "switchTable";
+
+        Debug.LogError("switchTable: " + requestStringData);
+
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        //socketRequest.Add(request);
+        socketManager.Socket.Emit(request.emitEvent, request.jsonDataToBeSend);
     }
 
 

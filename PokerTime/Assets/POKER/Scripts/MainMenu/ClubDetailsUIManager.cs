@@ -51,7 +51,7 @@ public class ClubDetailsUIManager : MonoBehaviour
 
 	private string path;
 	public Text pathText;
-
+    public GameObject popUp;
 
 	private JsonData templateList;
 
@@ -295,6 +295,12 @@ public class ClubDetailsUIManager : MonoBehaviour
 						LoadAllTemplates(data, "ALL");
 				}
 				break;
+            case RequestType.getClubUserDetail:
+                {
+                    Debug.Log("Response => getClubUserDetail : " + serverResponse);
+                    
+                }
+                break;
 
             default:
 #if ERROR_LOG
@@ -357,9 +363,16 @@ public class ClubDetailsUIManager : MonoBehaviour
 				roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
 				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
 				roomData.roomId = data["response"][i]["tableId"].ToString();
-				roomData.title = data["response"][i]["templateName"].ToString();
 
-				if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
+					roomData.title = data["response"][i]["templateName"].ToString();
+				else
+					roomData.title = "Unnamed Tab...";
+
+				roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+                roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
+
+                if (data["response"][i]["gameType"].ToString().Equals("NLH"))
 				{
 					roomData.gameMode = GameMode.NLH;
 				}
@@ -388,8 +401,14 @@ public class ClubDetailsUIManager : MonoBehaviour
 					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
 				}
 
-				if (data["response"][i]["templateName"] != null)
+
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+				else
+					obj.transform.Find("Image/title").GetComponent<Text>().text = "Unnamed Tab...";
+
+				//if (data["response"][i]["templateName"] != null)
+				//	obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
@@ -428,9 +447,16 @@ public class ClubDetailsUIManager : MonoBehaviour
 				roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
 				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
 				roomData.roomId = data["response"][i]["tableId"].ToString();
-				roomData.title = data["response"][i]["templateName"].ToString();
 
-				if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
+					roomData.title = data["response"][i]["templateName"].ToString();
+				else
+					roomData.title = "Unnamed Tab...";
+
+				roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+                roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
+
+                if (data["response"][i]["gameType"].ToString().Equals("NLH"))
 				{
 					roomData.gameMode = GameMode.NLH;
 				}
@@ -459,8 +485,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
 				}
 
-				if (data["response"][i]["templateName"] != null)
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+				else
+					obj.transform.Find("Image/title").GetComponent<Text>().text = "Unnamed Tab...";
+
+				//if (data["response"][i]["templateName"] != null)
+				//	obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
@@ -496,9 +527,16 @@ public class ClubDetailsUIManager : MonoBehaviour
 				roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
 				roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
 				roomData.roomId = data["response"][i]["tableId"].ToString();
-				roomData.title = data["response"][i]["templateName"].ToString();
 
-				if (data["response"][i]["gameType"].ToString().Equals("NLH"))
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
+					roomData.title = data["response"][i]["templateName"].ToString();
+				else
+					roomData.title = "Unnamed Tab...";
+
+				roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+                roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
+
+                if (data["response"][i]["gameType"].ToString().Equals("NLH"))
 				{
 					roomData.gameMode = GameMode.NLH;
 				}
@@ -527,8 +565,13 @@ public class ClubDetailsUIManager : MonoBehaviour
 					obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
 				}
 
-				if (data["response"][i]["templateName"] != null)
+				if (data["response"][i]["templateName"] != null && !data["response"][i]["templateName"].ToString().Equals(""))
 					obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
+				else
+					obj.transform.Find("Image/title").GetComponent<Text>().text = "Unnamed Tab...";
+
+				//if (data["response"][i]["templateName"] != null)
+				//	obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
 
 				obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
 				obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = data["response"][i]["activePlayers"].ToString() + "/10";
@@ -551,96 +594,20 @@ public class ClubDetailsUIManager : MonoBehaviour
 				obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));
 			}
 		}
-
-
-
-
-		//for (int i = 1; i < clubTablesContainer.transform.childCount; i++)
-		//{
-		//	Destroy(clubTablesContainer.transform.GetChild(i).gameObject);
-		//}
-
-		//for (int i = 0; i < data["response"].Count; i++)
-		//{
-		//          int index = i;
-		//	GameObject obj;
-
-		//          RoomData roomData = new RoomData();
-		//          roomData.isLobbyRoom = false;
-
-		//	//roomData.gameMode = GameMode.NLH;
-
-		//	List<float> blinds = data["response"][i]["settingData"]["blinds"].ToString()
-		//	.Split('/').Select(float.Parse).ToList();
-
-		//	roomData.bigBlind = blinds[1];
-		//	roomData.smallBlind = blinds[0];
-		//	roomData.callTimer = int.Parse(data["response"][i]["settingData"]["time"].ToString());
-		//	roomData.commision = float.Parse(data["response"][i]["settingData"]["ante"].ToString());
-		//	roomData.maxBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMax"].ToString());
-		//	roomData.minBuyIn = float.Parse(data["response"][i]["settingData"]["buyInMin"].ToString());
-		//	roomData.players = int.Parse(data["response"][i]["settingData"]["memberCount"].ToString());
-		//	roomData.roomId = data["response"][i]["tableId"].ToString();
-		//	roomData.title = data["response"][i]["templateName"].ToString();
-
-		//	if (data["response"][i]["gameType"].ToString().Equals("NLH"))
-		//	{
-		//		roomData.gameMode = GameMode.NLH;
-		//	}
-		//	else if (data["response"][i]["gameType"].ToString().Equals("PLO"))
-		//	{
-		//		roomData.gameMode = GameMode.PLO;
-		//	}
-		//	else if (data["response"][i]["gameType"].ToString().Equals("OFC"))
-		//	{
-		//		roomData.gameMode = GameMode.OFC;
-		//	}
-
-		//	//DEV_CODE
-		//	//Debug.Log("EVChop Status: " + data["response"][i]["settingData"]["evChop"].ToString());
-		//	if (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes"))
-		//		roomData.isEVChop = true;
-		//	else
-		//		roomData.isEVChop = false;
-
-		//	if ((i + 1) % 2 == 0)
-		//	{
-		//		obj = Instantiate(tableType2, clubTablesContainer.transform) as GameObject;
-		//	}
-		//	else
-		//	{
-		//		obj = Instantiate(tableType3, clubTablesContainer.transform) as GameObject;
-		//	}
-
-		//	if (data["response"][i]["templateName"] != null)
-		//		obj.transform.Find("Image/title").GetComponent<Text>().text = data["response"][i]["templateName"].ToString();
-
-		//	obj.transform.Find("Image/VPIP").gameObject.SetActive(true);
-		//	//obj.transform.Find("Image/UserImg/user").GetComponent<Text>().text = "";
-
-		//	//if(data["response"][i]["settingData"].Count > 0)
-		//	//{
-		//	//	if (data["response"][i]["settingData"]["blinds"] != null)
-		//	//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Blinds: " + data["response"][i]["settingData"]["blinds"].ToString();
-
-		//	//	else if (data["response"][i]["settingData"]["ante"] != null)
-		//	//		obj.transform.Find("Image/Blinds").GetComponent<Text>().text = "Ante: " + data["response"][i]["settingData"]["ante"].ToString();
-		//	//}
-
-		//	obj.transform.Find("Image/time").GetComponent<Text>().text = data["response"][i]["created"].ToString().Substring(11, 8);
-		//	obj.transform.Find("Image/status/tabletype").GetComponent<Text>().text = data["response"][i]["gameType"].ToString();
-		//	obj.transform.Find("Image/TemplateSubType").GetComponent<Text>().text = data["response"][i]["settingData"]["templateSubType"].ToString();
-		//	//obj.transform.Find("Image/PlayersWaiting/Text").GetComponent<Text>().text = "";
-
-		//	obj.GetComponent<Button>().onClick.RemoveAllListeners();
-		//	obj.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(roomData, index));					
-		//      }
 	}
 
-	private void OnClickOnPlayButton(RoomData data, int gameMode = -1)
+    public void GetClubUserDetail()
+    {
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                           "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.getClubUserDetail, requestData, true, (res, s1, t, s2) => { Debug.Log(s1); });
+    }
+
+    private void OnClickOnPlayButton(RoomData data, int gameMode = -1)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
-
+        //GetClubUserDetail();
 		//DEV_CODE Commented this code to re enter into the table 
         //if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
         //{
@@ -648,12 +615,32 @@ public class ClubDetailsUIManager : MonoBehaviour
         //    return;
         //}
 
-        data.isLobbyRoom = false;
+        //data.isLobbyRoom = false;
 		
-		GlobalGameManager.instance.SetRoomData(data);
-        GameConstants.TURN_TIME = data.callTimer;
-		//Debug.LogError("Call Timer On Click: " + GameConstants.TURN_TIME);
-        SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
+		//GlobalGameManager.instance.SetRoomData(data);
+        //GameConstants.TURN_TIME = data.callTimer;
+        //Debug.LogError("Call Timer On Click: " + GameConstants.TURN_TIME);
+        //SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
+        Debug.LogError("Call Timer On Click: " + PlayerManager.instance.GetPlayerGameData().coins + " " + data.minBuyIn);
+
+        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                           "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
+
+        WebServices.instance.SendRequest(RequestType.getClubUserDetail, requestData, true, (res, s1, t, s2) => 
+        {
+            Debug.Log(s1);
+            JsonData d = JsonMapper.ToObject(s1);
+            Debug.Log(d["response"]["ptChips"].ToString());
+            if (int.Parse(d["response"]["ptChips"].ToString()) < data.minBuyIn)
+                popUp.SetActive(true);
+            else
+            {
+                data.isLobbyRoom = false;
+                GlobalGameManager.instance.SetRoomData(data);
+                GameConstants.TURN_TIME = data.callTimer;
+                SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
+            }
+        });
     }
 
     public void OnClickOnButton(string eventName)

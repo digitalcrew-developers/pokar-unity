@@ -291,7 +291,7 @@ public class RingGameManager : MonoBehaviour
 
         Debug.Log("ClubID: " + ClubDetailsUIManager.instance.GetClubId());
         Debug.Log("GameType: " + gameTypeStatic);
-        Debug.Log("TemplateName: " + components[0].transform.Find("Text Area/Text").GetComponent<TMP_Text>().text);
+        Debug.Log("TemplateName: " + components[0].transform.GetComponent<InputField>().text);
         Debug.Log("templateType: " + templateTypeStatic);
         Debug.Log("Status: " + "Saved");
         Debug.Log("TableId: " + tableId);
@@ -329,7 +329,7 @@ public class RingGameManager : MonoBehaviour
         //Request Data
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
             "\"gameType\":\"" + gameTypeStatic.ToString() + "\"," +
-            "\"templateName\":\"" + components[0].transform.GetComponent<TMP_InputField>().text.ToString() + "\"," +
+            "\"templateName\":\"" + components[0].transform.GetComponent</*TMP_InputField*/InputField>().text.ToString() + "\"," +
             "\"templateType\":\"" + templateTypeStatic.ToString() + "\"," +
             "\"exclusiveTable\":\"" + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off") + "\"," +
             "\"status\":\"" + "Saved" + "\"," +
@@ -488,7 +488,7 @@ public class RingGameManager : MonoBehaviour
                 templateTypeStatic = data["response"][i]["templateType"].ToString();
                 templateSubTypeStatic = data["response"][i]["settingData"]["templateSubType"].ToString();
 
-                components[0].transform.GetComponent<TMP_InputField>().text = data["response"][i]["templateName"].ToString();
+                components[0].transform.GetComponent<InputField>().text = data["response"][i]["templateName"].ToString();
                 components[1].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["memberCount"].ToString();
                 components[2].transform.Find(data["response"][i]["settingData"]["actionTime"].ToString()).GetComponent<Toggle>().isOn = true;
                 components[3].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["exclusiveTable"].ToString().Equals("On") ? true : false);
@@ -558,8 +558,8 @@ public class RingGameManager : MonoBehaviour
                 components[16].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoOpen"].ToString().Equals("On") ? true : false);
                 components[17].transform.GetComponent<Toggle>().isOn = (data["response"][i]["settingData"]["runItMulti"].ToString().Equals("Yes") ? true : false);
                 components[18].transform.GetComponent<Toggle>().isOn = (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes") ? true : false);
-                components[19].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["fee"].ToString();
-                components[20].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["cap"].ToString();
+                components[19].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["fee"].ToString() + "%";
+                components[20].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["cap"].ToString() + " BB";
                 components[21].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["calltime"].ToString().Equals("On") ? true : false);
                 components[22].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["time"].ToString();
                 components[23].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["chipWithdrawal"].ToString().Equals("On") ? true : false);
@@ -567,11 +567,11 @@ public class RingGameManager : MonoBehaviour
                 components[25].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["GPSRestriction"].ToString().Equals("On") ? true : false);
                 components[26].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["IPRestriction"].ToString().Equals("On") ? true : false);
                 components[27].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["banChatting"].ToString().Equals("On") ? true : false);
-                components[28].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["hours"].ToString();
 
                 float sliderVal;
                 float.TryParse(data["response"][i]["settingData"]["hours"].ToString(), out sliderVal);
                 components[28].transform.parent.Find("TimeMarkerSlider").GetComponent<Slider>().value = sliderVal;
+                components[28].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["hours"].ToString();
             }
         }
     }
