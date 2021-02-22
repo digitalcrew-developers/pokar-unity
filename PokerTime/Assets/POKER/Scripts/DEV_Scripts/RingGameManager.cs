@@ -25,6 +25,11 @@ public class RingGameManager : MonoBehaviour
     [Space(7)]
     public List<GameObject> components = new List<GameObject>();
 
+    [Header("Buttons")]
+    public Button saveBtn;
+    public Button createBtn;
+    public Button editBtn;
+
     [Space(7)]
     public Button incrementMemberCount;
     public Button decreamentMemberCount;
@@ -47,8 +52,11 @@ public class RingGameManager : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        instance = this;        
+    }
 
+    private void OnEnable()
+    {
         gameTypeStatic = gameType;
         templateTypeStatic = templateType;
         templateSubTypeStatic = templateSubType;
@@ -58,6 +66,16 @@ public class RingGameManager : MonoBehaviour
         //Debug.Log("TemplateSubType Static:" + templateSubTypeStatic);
     }
 
+    private void OnDisable()
+    {
+        tableId = 0;
+
+        gameTypeStatic = "";
+        templateTypeStatic = "";
+        templateSubTypeStatic = "";
+        
+        ResetTaleData();
+    }
 
     private void Update()
     {
@@ -287,43 +305,43 @@ public class RingGameManager : MonoBehaviour
         //Debug.Log("Call Time" + callTime);
         //Debug.Log("Call Time Text" + callTimeText);
 
-        Debug.Log("Name: " + transform.name);
+        //Debug.Log("Name: " + transform.name);
 
-        Debug.Log("ClubID: " + ClubDetailsUIManager.instance.GetClubId());
-        Debug.Log("GameType: " + gameTypeStatic);
-        Debug.Log("TemplateName: " + components[0].transform.GetComponent<InputField>().text);
-        Debug.Log("templateType: " + templateTypeStatic);
-        Debug.Log("Status: " + "Saved");
-        Debug.Log("TableId: " + tableId);
-        Debug.Log("Template Sub Type: " + templateSubTypeStatic);
-        Debug.Log("Member Count: " + components[1].transform.GetComponent<TMP_Text>().text);
-        Debug.Log("ActionTime: " + actionTime);
-        Debug.Log("ExclusiveTable: " + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("Blinds Type: " + blindString);
-        Debug.Log("Ante Type: " + anteString);
-        Debug.Log("high_low: " + hi_Lo);
-        Debug.Log("MinBuy: " + components[7].transform.GetComponent<TMP_Text>().text);
-        Debug.Log("MaxBuy: " + components[8].transform.GetComponent<TMP_Text>().text);
-        Debug.Log("MinVPIP: " + components[9].transform.GetComponent<TMP_Text>().text.Substring(0, components[9].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
-        Debug.Log("VPIP Level: " + components[10].transform.GetComponent<TMP_Text>().text.Substring(0, components[10].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
-        Debug.Log("Hand Threshold: " + components[11].transform.GetComponent<TMP_Text>().text);
-        Debug.Log("AutoStart: " + (components[12].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("AutoStartWith: " + autoStartWith);
-        Debug.Log("AutoExtension: " + (components[14].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("AutoExtensionTimes: " + components[15].transform.GetComponent<TMP_Text>().text.ToString());
-        Debug.Log("AutoOpen: " + (components[16].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("RunItMulti: " + (components[17].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
-        Debug.Log("EVChop: " + (components[18].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
-        Debug.Log("Fee : " + components[19].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[19].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
-        Debug.Log("Cap: " + components[20].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[20].transform.GetComponent<TMP_Text>().text.ToString().Length - 3));
-        Debug.Log("Call Time: " + callTime);
-        Debug.Log("Time Text: " + callTimeText);
-        Debug.Log("Chip Withdrawal: " + chipWithdrawal);
-        Debug.Log("Authorized: " + (components[24].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("GPS: " + (components[25].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("IP: " + (components[26].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("Ban Chatting: " + (components[27].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
-        Debug.Log("Hours: " + components[28].transform.GetComponent<TMP_Text>().text/*components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2)*/);
+        //Debug.Log("ClubID: " + ClubDetailsUIManager.instance.GetClubId());
+        //Debug.Log("GameType: " + gameTypeStatic);
+        //Debug.Log("TemplateName: " + components[0].transform.GetComponent<InputField>().text);
+        //Debug.Log("templateType: " + templateTypeStatic);
+        //Debug.Log("Status: " + "Saved");
+        //Debug.Log("TableId: " + tableId);
+        //Debug.Log("Template Sub Type: " + templateSubTypeStatic);
+        //Debug.Log("Member Count: " + components[1].transform.GetComponent<TMP_Text>().text);
+        //Debug.Log("ActionTime: " + actionTime);
+        //Debug.Log("ExclusiveTable: " + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        //Debug.Log("Blinds Type: " + blindString);
+        //Debug.Log("Ante Type: " + anteString);
+        //Debug.Log("high_low: " + hi_Lo);
+        //Debug.Log("MinBuy: " + components[7].transform.GetComponent<TMP_Text>().text);
+        //Debug.Log("MaxBuy: " + components[8].transform.GetComponent<TMP_Text>().text);
+        //Debug.Log("MinVPIP: " + components[9].transform.GetComponent<TMP_Text>().text.Substring(0, components[9].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        //Debug.Log("VPIP Level: " + components[10].transform.GetComponent<TMP_Text>().text.Substring(0, components[10].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        //Debug.Log("Hand Threshold: " + components[11].transform.GetComponent<TMP_Text>().text);
+        //Debug.Log("AutoStart: " + (components[12].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        //Debug.Log("AutoStartWith: " + autoStartWith);
+        //Debug.Log("AutoExtension: " + (components[14].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        //Debug.Log("AutoExtensionTimes: " + components[15].transform.GetComponent<TMP_Text>().text.ToString());
+        //Debug.Log("AutoOpen: " + (components[16].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        //Debug.Log("RunItMulti: " + (components[17].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
+        //Debug.Log("EVChop: " + (components[18].transform.GetComponent<Toggle>().isOn.ToString().Equals("True") ? "Yes" : "No"));
+        //Debug.Log("Fee : " + components[19].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[19].transform.GetComponent<TMP_Text>().text.ToString().Length - 1));
+        //Debug.Log("Cap: " + components[20].transform.GetComponent<TMP_Text>().text.ToString().Substring(0, components[20].transform.GetComponent<TMP_Text>().text.ToString().Length - 3));
+        //Debug.Log("Call Time: " + callTime);
+        //Debug.Log("Time Text: " + callTimeText);
+        //Debug.Log("Chip Withdrawal: " + chipWithdrawal);
+        //Debug.Log("Authorized: " + (components[24].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        //Debug.Log("GPS: " + (components[25].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        //Debug.Log("IP: " + (components[26].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        //Debug.Log("Ban Chatting: " + (components[27].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        //Debug.Log("Hours: " + components[28].transform.GetComponent<TMP_Text>().text/*components[28].transform.GetComponent<TMP_Text>().text.Substring(0, components[28].transform.GetComponent<TMP_Text>().text.Length - 2)*/);
 
 
         //Request Data
@@ -410,11 +428,9 @@ public class RingGameManager : MonoBehaviour
                         //MainMenuController.instance.ShowMessage(data["message"].ToString());
                         ClubTableController.instance.RequestTemplateData(false);
 
-                        tableId = 0;
-
-                        gameTypeStatic = "";
-                        templateTypeStatic = "";
-                        templateSubTypeStatic = "";
+                        //gameTypeStatic = "";
+                        //templateTypeStatic = "";
+                        //templateSubTypeStatic = "";
                     }
                     else
                     {
@@ -450,11 +466,11 @@ public class RingGameManager : MonoBehaviour
                             if (ClubTableController.instance.createTablePanel.activeSelf)
                                 ClubTableController.instance.createTablePanel.SetActive(false);
 
-                            tableId = 0;
+                            //tableId = 0;
 
-                            gameTypeStatic = "";
-                            templateTypeStatic = "";
-                            templateSubTypeStatic = "";
+                            //gameTypeStatic = "";
+                            //templateTypeStatic = "";
+                            //templateSubTypeStatic = "";
                         }
                     }
                     else
@@ -554,7 +570,17 @@ public class RingGameManager : MonoBehaviour
                 components[12].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoStart"].ToString().Equals("On") ? true : false);
                 components[13].transform.Find("Members/"+data["response"][i]["settingData"]["autoStartWith"].ToString()).GetComponent<Toggle>().isOn = true;
                 components[14].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoExtension"].ToString().Equals("On") ? true : false);
+                
                 components[15].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["autoExtensionTimes"].ToString();
+                for (int j = 0; j < transform.Find("AutoStartWith/AutoExtensionTimesSlider").GetComponent<SliderManager>().values.Length; j++)
+                {
+                    if (transform.Find("AutoStartWith/AutoExtensionTimesSlider").GetComponent<SliderManager>().values[j].ToString().Equals(data["response"][i]["settingData"]["autoExtensionTimes"].ToString()))
+                    {
+                        Debug.Log("Slider Value for autoExtensionTimes " + j);
+                        transform.Find("AutoStartWith/AutoExtensionTimesSlider").GetComponent<Slider>().value = j;
+                    }
+                }
+
                 components[16].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["autoOpen"].ToString().Equals("On") ? true : false);
                 components[17].transform.GetComponent<Toggle>().isOn = (data["response"][i]["settingData"]["runItMulti"].ToString().Equals("Yes") ? true : false);
                 components[18].transform.GetComponent<Toggle>().isOn = (data["response"][i]["settingData"]["evChop"].ToString().Equals("Yes") ? true : false);
@@ -576,31 +602,68 @@ public class RingGameManager : MonoBehaviour
         }
     }
 
-    //void ResetTaleData()
-    //{
-    //    components[0].GetComponent<TMP_InputField>().text = "";
-    //    components[1].GetComponent<TMP_Text>().text = "9";
-    //    components[2].GetComponent<TMP_Dropdown>().value = 0;
-    //    components[3].transform.Find("5").GetComponent<Toggle>().isOn = true;
-    //    components[4].transform.parent.parent.Find("BootSlider").GetComponent<Slider>().value = 0;
+    void ResetTaleData()
+    {
+        Debug.Log("Reseting Data.....");
 
-    //    components[4].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().sliderValues[0];
-    //    components[5].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().lowValueText.text;
+        components[0].GetComponent<InputField>().text = "";
+        components[1].GetComponent<TMP_Text>().text = "9";
+        components[2].transform.Find("15").GetComponent<Toggle>().isOn = true;
+        components[3].GetComponent<ToggleController>().isOn = true;
+        components[4].transform.parent.parent.Find("BlindsSlider").GetComponent<Slider>().value = 0;
+        components[4].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().sliderValues[0];
 
-    //    components[7].transform.GetComponent<TMP_Text>().text = "5";
-    //    components[8].transform.GetComponent<TMP_Text>().text = "3 BB";
-    //    components[9].transform.GetComponent<ToggleController>().isOn = false;
-    //    components[10].transform.GetComponent<ToggleController>().isOn = false;
-    //    components[11].transform.GetComponent<ToggleController>().isOn = false;
-    //    components[12].transform.parent.Find("TimeMarkerSlider").GetComponent<Slider>().value = 0;
+        components[5].transform.parent.parent.Find("AnteSlider").GetComponent<Slider>().value = 0;
+        components[5].GetComponent<TMP_Text>().text = components[5].transform.parent.parent.GetComponent<SliderChange>().sliderValues[0];
 
-    //    saveBtn.gameObject.SetActive(true);
-    //    startBtn.gameObject.SetActive(true);
-    //    editBtn.gameObject.SetActive(false);
+        components[6].transform.Find("No").GetComponent<Toggle>().isOn = true;
 
-    //    isEditingTemplate = false;
-    //    tableIdStatic = 0;
+        components[7].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().lowValueText.text;
+        components[8].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().highValueText.text;
 
-    //    Debug.Log("All Data Reset...");
-    //}
+        components[9].transform.parent.parent.Find("MinVPIP").GetComponent<Slider>().value = 0;
+        components[9].GetComponent<TMP_Text>().text = components[9].transform.parent.parent.Find("MinVPIP").GetComponent<SliderManager>().values[0].ToString();
+
+        components[10].transform.parent.parent.Find("VPIPLevel").GetComponent<Slider>().value = 0;
+        components[10].GetComponent<TMP_Text>().text = components[10].transform.parent.parent.Find("VPIPLevel").GetComponent<SliderManager>().values[0].ToString();
+
+        components[11].transform.parent.Find("HandsThresholdSlider").GetComponent<Slider>().value = 0;
+        components[11].GetComponent<TMP_Text>().text = components[11].transform.parent.Find("HandsThresholdSlider").GetComponent<SliderManager>().values[0].ToString();
+
+        components[12].GetComponent<ToggleController>().isOn = true;
+        
+        components[13].transform.Find("Members/2").GetComponent<Toggle>().isOn = true;
+
+        components[14].GetComponent<ToggleController>().isOn = true;
+        components[15].GetComponent<TMP_Text>().text = components[15].transform.parent.parent.Find("AutoExtensionTimesSlider").GetComponent<SliderManager>().values[0].ToString();
+        components[15].transform.parent.parent.Find("AutoExtensionTimesSlider").GetComponent<Slider>().value = 0;
+
+        components[16].GetComponent<ToggleController>().isOn = true;
+        components[17].GetComponent<Toggle>().isOn = true;
+        components[18].GetComponent<Toggle>().isOn = true;
+
+        components[19].transform.GetComponent<TMP_Text>().text = "5%";
+        components[20].transform.GetComponent<TMP_Text>().text = "3 BB";
+
+        components[21].GetComponent<ToggleController>().isOn = true;
+        components[22].GetComponent<TMP_Text>().text = components[22].transform.parent.parent.Find("CallTimesSlider").GetComponent<SliderManager>().values[0].ToString();
+        components[22].transform.parent.parent.Find("CallTimesSlider").GetComponent<Slider>().value = 0;
+
+        components[23].GetComponent<ToggleController>().isOn = true;
+        components[24].GetComponent<ToggleController>().isOn = true;
+        components[25].GetComponent<ToggleController>().isOn = true;
+        components[26].GetComponent<ToggleController>().isOn = true;
+        components[27].GetComponent<ToggleController>().isOn = true;
+
+        components[28].transform.parent.Find("TimeMarkerSlider").GetComponent<Slider>().value = 0;
+
+        saveBtn.gameObject.SetActive(true);
+        createBtn.gameObject.SetActive(true);
+        editBtn.gameObject.SetActive(false);
+
+        //isEditingTemplate = false;
+        //tableIdStatic = 0;
+
+        Debug.Log("All Data Reset...");
+    }
 }

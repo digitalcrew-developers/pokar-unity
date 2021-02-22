@@ -386,7 +386,11 @@ public class ClubTableControllerTeen : MonoBehaviour
                     {
                         if (isPublishTemplateWithCreate)
                         {
-                            string requestData = "{\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+                            Debug.Log("Club ID: " + ClubDetailsUIManagerTeen.instance.GetClubId());
+                            Debug.Log("Status: " + "Published");
+                            Debug.Log("Table IDs: " + data["tableId"].ToString());
+
+                            string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                                     "\"status\":\"" + "Published" + "\"," +
                                     "\"tableIds\":[\"" + data["tableId"].ToString() + "\"]}";
 
