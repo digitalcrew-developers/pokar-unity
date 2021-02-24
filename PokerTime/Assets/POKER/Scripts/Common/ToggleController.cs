@@ -92,6 +92,8 @@ public class ToggleController : MonoBehaviour
     public void ToggleTrue()
     {
         toggleBgImage.sprite = onImage;
+        onIcon.SetActive(true);
+        offIcon.SetActive(false);
         //toggleBgImage.sprite = SmoothColor(onColorBg, offColorBg, offImage);
         //toggleBgImage.color = SmoothColor(onColorBg, offColorBg);
         Transparency(onIcon, 1f, 0f);
@@ -102,6 +104,8 @@ public class ToggleController : MonoBehaviour
     public void ToggleFalse()
     {
         toggleBgImage.sprite = offImage;
+        onIcon.SetActive(false);
+        offIcon.SetActive(true);
         //toggleBgImage.sprite = SmoothColor(onColorBg, offColorBg, offImage);
         //toggleBgImage.color = SmoothColor(onColorBg, offColorBg);
         Transparency(onIcon, 0f, 1f);

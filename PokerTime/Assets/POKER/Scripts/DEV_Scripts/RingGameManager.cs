@@ -316,7 +316,7 @@ public class RingGameManager : MonoBehaviour
         //Debug.Log("Template Sub Type: " + templateSubTypeStatic);
         //Debug.Log("Member Count: " + components[1].transform.GetComponent<TMP_Text>().text);
         //Debug.Log("ActionTime: " + actionTime);
-        //Debug.Log("ExclusiveTable: " + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
+        Debug.Log("ExclusiveTable: " + (components[3].transform.GetComponent<ToggleController>().isOn.ToString().Equals("True") ? "On" : "Off"));
         //Debug.Log("Blinds Type: " + blindString);
         //Debug.Log("Ante Type: " + anteString);
         //Debug.Log("high_low: " + hi_Lo);
@@ -507,7 +507,13 @@ public class RingGameManager : MonoBehaviour
                 components[0].transform.GetComponent<InputField>().text = data["response"][i]["templateName"].ToString();
                 components[1].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["memberCount"].ToString();
                 components[2].transform.Find(data["response"][i]["settingData"]["actionTime"].ToString()).GetComponent<Toggle>().isOn = true;
-                components[3].transform.GetComponent<ToggleController>().isOn = (data["response"][i]["settingData"]["exclusiveTable"].ToString().Equals("On") ? true : false);
+                components[3].transform.GetComponent<ToggleController>().isOn = (data["response"][i]/*["settingData"]*/["exclusiveTable"].ToString().Equals("On") ? true : false);
+                
+                if (components[3].transform.GetComponent<ToggleController>().isOn)
+                    components[3].transform.GetComponent<ToggleController>().ToggleTrue();
+                else
+                    components[3].transform.GetComponent<ToggleController>().ToggleFalse();
+
                 components[4].transform.GetComponent<TMP_Text>().text = data["response"][i]["settingData"]["blinds"].ToString();
 
                 //Debug.Log("Blinds Value:" + components[4].transform.GetComponent<TMP_Text>().text);
@@ -609,7 +615,10 @@ public class RingGameManager : MonoBehaviour
         components[0].GetComponent<InputField>().text = "";
         components[1].GetComponent<TMP_Text>().text = "9";
         components[2].transform.Find("15").GetComponent<Toggle>().isOn = true;
+        
         components[3].GetComponent<ToggleController>().isOn = true;
+        components[3].transform.GetComponent<ToggleController>().ToggleTrue();
+        
         components[4].transform.parent.parent.Find("BlindsSlider").GetComponent<Slider>().value = 0;
         components[4].GetComponent<TMP_Text>().text = components[4].transform.parent.parent.GetComponent<SliderChange>().sliderValues[0];
 

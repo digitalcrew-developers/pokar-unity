@@ -82,6 +82,7 @@ public class SpinManager : MonoBehaviour
         }
         if (requestType == RequestType.GetSpinWheelItems)
         {
+            Debug.Log("Response => GetSpinWheelItems: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["success"].ToString() == "1")

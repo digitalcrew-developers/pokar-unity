@@ -220,7 +220,7 @@ public class SpinWheelUIManager : MonoBehaviour
         {
             //if (InGameUiManager.instance != null)
                 StartCoroutine(loadSpriteImageFromUrl(SpinManager.instance.spinItemList[i].itemIcon, ImgGetContainer.transform.GetChild(i).GetComponent<Image>()));
-            //else if(MainMenuController.instance != null)
+            //else if (MainMenuController.instance != null)
             //    StartCoroutine(loadSpriteImageFromUrl(SpinManagerMainMenu.instance.spinItemList[i].itemIcon, ImgGetContainer.transform.GetChild(i).GetComponent<Image>()));
         }
     }

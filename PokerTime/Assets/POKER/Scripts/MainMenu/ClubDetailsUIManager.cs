@@ -535,7 +535,6 @@ public class ClubDetailsUIManager : MonoBehaviour
 				else
 					roomData.title = "Unnamed Tab...";
 
-                Debug.Log("exclusiveTable " + data["response"][i]["exclusiveTable"].ToString());
                 roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
                 roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
 
