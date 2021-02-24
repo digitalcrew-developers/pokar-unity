@@ -2,6 +2,7 @@
 using LitJson;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -120,12 +121,32 @@ public class ClubInGameManager : MonoBehaviour
     public GameObject RabbitButton;
     public GameObject ResumeHand, EVCHOPButton, EVCHOPPanel, passwordScreen;
 
+    public void ShowPasswordScreen(bool showPass)
+    {
+        passwordScreen.SetActive(true);
+        if (!showPass)
+        {
+            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetComponent<TMP_InputField>().text = "";
+            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(3).GetComponent<TMP_InputField>().text = "";
+            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(4).GetComponent<TMP_InputField>().text = "";
+            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(5).GetComponent<TMP_InputField>().text = "";
+        }
+        else
+        {
+            Debug.Log("Name " + passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetComponent<TMP_InputField>().text + " "+ GlobalGameManager.instance.GetRoomData().passCode.ToString()[3].ToString());
+            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetComponent<TMP_InputField>().text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[0].ToString();
+            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(3).GetComponent<TMP_InputField>().text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[1].ToString();
+            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(4).GetComponent<TMP_InputField>().text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[2].ToString();
+            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(5).GetComponent<TMP_InputField>().text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[3].ToString();
+        }        
+    }
+
     private void Start()
     {
-        Debug.Log("Data " + GlobalGameManager.instance.GetRoomData().exclusiveTable);
-        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On"))
+        Debug.Log("Data " + GlobalGameManager.instance.GetRoomData().exclusiveTable + ", " + GlobalGameManager.instance.GetRoomData().passCode + ", " + GlobalGameManager.instance.GetRoomData().assignRole);
+        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && GlobalGameManager.instance.GetRoomData().assignRole.Equals("member"))
         {
-            passwordScreen.SetActive(true);
+            ShowPasswordScreen(false);
         }
 
         //DEV_CODE

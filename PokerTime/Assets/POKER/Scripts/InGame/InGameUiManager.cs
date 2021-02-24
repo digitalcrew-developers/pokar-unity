@@ -267,7 +267,7 @@ public class InGameUiManager : MonoBehaviour
     }
     public void OnClickOnButton(string eventName)
     {
-        Debug.Log(eventName+ " " + useRaisePotWise);
+        Debug.Log(eventName + " " + useRaisePotWise + ", " + InGameManager.instance.GetPotAmount()); 
 
         SoundManager.instance.PlaySound(SoundType.Click);
 

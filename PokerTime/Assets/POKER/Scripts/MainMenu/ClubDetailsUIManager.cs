@@ -54,8 +54,10 @@ public class ClubDetailsUIManager : MonoBehaviour
     public GameObject popUp;
 
 	private JsonData templateList;
+    [HideInInspector]
+    public string assignRole;
 
-	private void Awake()
+    private void Awake()
 	{
 		instance = this;
 	}
@@ -533,7 +535,8 @@ public class ClubDetailsUIManager : MonoBehaviour
 				else
 					roomData.title = "Unnamed Tab...";
 
-				roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
+                Debug.Log("exclusiveTable " + data["response"][i]["exclusiveTable"].ToString());
+                roomData.passCode = int.Parse(data["response"][i]["passCode"].ToString());
                 roomData.exclusiveTable = data["response"][i]["exclusiveTable"].ToString();
 
                 if (data["response"][i]["gameType"].ToString().Equals("NLH"))
@@ -636,8 +639,10 @@ public class ClubDetailsUIManager : MonoBehaviour
             else
             {
                 data.isLobbyRoom = false;
+                data.assignRole = d["response"]["assignRole"].ToString();
                 GlobalGameManager.instance.SetRoomData(data);
                 GameConstants.TURN_TIME = data.callTimer;
+                assignRole = d["response"]["assignRole"].ToString();
                 SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
             }
         });

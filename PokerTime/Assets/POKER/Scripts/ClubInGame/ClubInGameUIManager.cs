@@ -1374,9 +1374,6 @@ public class ClubInGameUIManager : MonoBehaviour
 
             }
         }
-
-
     }
-
 }
 

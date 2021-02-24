@@ -600,7 +600,7 @@ public class PlayerScript : MonoBehaviour
     /// <param name="lastActionRoundNo">last round number in which action is taken</param>
     public void UpdateDetails(PlayerData dataToAssign, string lastPlayerAction, int totalBetInThisRound, int lastActionRoundNo)
     {
-
+        Debug.Log("<color=magenta>UpdateDetails </color>" + dataToAssign.balance);
         playerData.balance = dataToAssign.balance;
         playerData.totalBet = dataToAssign.totalBet;
         playerData.isFold = dataToAssign.isFold;

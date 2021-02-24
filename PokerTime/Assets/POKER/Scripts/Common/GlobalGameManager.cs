@@ -247,6 +247,7 @@ public class RoomData
 
     public int passCode;
     public string exclusiveTable;
+    public string assignRole;
 }
 
 public class RoomDataTeen

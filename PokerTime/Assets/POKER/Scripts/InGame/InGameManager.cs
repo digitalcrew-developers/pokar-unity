@@ -1609,6 +1609,10 @@ public class InGameManager : MonoBehaviour
                         InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isMyTurn, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
                         currentPlayer.playerData.isTurn = false;
                     }
+                    if(remainingTime <= 0)
+                    {
+                        InGameUiManager.instance.ToggleActionButton(false);
+                    }
                 }
                 else if (!currentPlayer.IsMe())
                 {
@@ -1661,7 +1665,7 @@ public class InGameManager : MonoBehaviour
             isCardValueSet = true;
 
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
-            //Debug.Log(userId + " " + PlayerManager.instance.GetPlayerGameData().userId);
+            Debug.Log(userId + " " + PlayerManager.instance.GetPlayerGameData().userId + "" + betAmount);
             if (betAmount > 0 /*&& userId != PlayerManager.instance.GetPlayerGameData().userId*/)
             {
                 PlayerScript playerObject = GetPlayerObject(userId);
@@ -1968,7 +1972,7 @@ public class InGameManager : MonoBehaviour
                         {
                             //Debug.Log("isBlock " + data[0][i]["isBlocked"]);
                             string playerAction = data[0][i]["userData"]["playerAction"].ToString();
-                            int betAmount = (int)float.Parse(data[0][i]["userData"]["betData"].ToString());
+                            int betAmount = (int)float.Parse(data[0][i]["totalBet"].ToString());
                             int roundNo = (int)float.Parse(data[0][i]["userData"]["roundNo"].ToString());
                             playerObject.UpdateDetails(playerData, playerAction, betAmount, roundNo);
                         }
