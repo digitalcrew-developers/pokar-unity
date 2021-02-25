@@ -14,7 +14,7 @@ public class GoogleManager : MonoBehaviour
 
     public Text statusTxt;
 
-    public string webClientId = "960874965249-ibvvotlij7dolatr62fm5p5vnf3qobak.apps.googleusercontent.com";
+    private string webClientId = "960874965249-13tfg83naj3hrieknkk2ic5s96r5g73p.apps.googleusercontent.com";
     private FirebaseAuth auth;
     private GoogleSignInConfiguration configuration;
    
@@ -72,10 +72,10 @@ public class GoogleManager : MonoBehaviour
 
     internal void OnAuthenticationFinished(Task<GoogleSignInUser> task)
     {
-        Debug.Log("Inside Autentication Finished.");
+        AddToInformation("Inside Autentication Finished.");
         if (task.IsFaulted)
         {
-            Debug.Log("Faulted Task..");
+            AddToInformation("Faulted Task..");
             using (IEnumerator<Exception> enumerator = task.Exception.InnerExceptions.GetEnumerator())
             {
                 if (enumerator.MoveNext())
@@ -97,18 +97,20 @@ public class GoogleManager : MonoBehaviour
         {
             AddToInformation("Welcome: " + task.Result.DisplayName + "!");
             AddToInformation("Email = " + task.Result.Email);
-            AddToInformation("Google ID Token = " + task.Result.IdToken);
-            AddToInformation("Email = " + task.Result.Email);
+            //AddToInformation("Google ID Token = " + task.Result.IdToken);
+            //AddToInformation("Email = " + task.Result.Email);
             SignInWithGoogleOnFirebase(task.Result.IdToken);
         }
     }
 
     private void SignInWithGoogleOnFirebase(string idToken)
     {
+        AddToInformation("Registering With Firebase..");
         Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
 
         auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
         {
+            AddToInformation("Checking For Exception..");
             AggregateException ex = task.Exception;
             if (ex != null)
             {
@@ -146,7 +148,7 @@ public class GoogleManager : MonoBehaviour
 
     private void AddToInformation(string str) 
     { 
-        Debug.Log(str);
+        //Debug.Log(str);
         statusTxt.text += str;
     }
 }

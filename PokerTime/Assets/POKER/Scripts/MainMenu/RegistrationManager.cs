@@ -289,6 +289,28 @@ public class RegistrationManager : MonoBehaviour
         }
     }
 
+    public void LoginAsGuest()
+    {
+#if UNITY_ANDROID
+        AndroidJavaClass up = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+        AndroidJavaObject currentActivity = up.GetStatic<AndroidJavaObject>("currentActivity");
+        AndroidJavaObject contentResolver = currentActivity.Call<AndroidJavaObject>("getContentResolver");
+        AndroidJavaClass secure = new AndroidJavaClass("android.provider.Settings$Secure");
+        string android_id = secure.CallStatic<string>("getString", contentResolver, "android_id");
+#endif
+
+        GoogleManager.instance.statusTxt.text = android_id;
+
+        if(android_id.Length > 0)
+        {
+            string requestData = "{\"registrationType\":\"Custom\"," +
+                           "\"socialId\":\"" + android_id + "\"}";
+
+            MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+            WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
+        }
+    }
+
     public void LoginWithSocialID(string userName, string socialId, string registrationType)
     {
         Debug.Log("UserName: " + userName);
