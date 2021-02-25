@@ -14,7 +14,7 @@ public class GoogleManager : MonoBehaviour
 
     public Text statusTxt;
 
-    public string webClientId = "960874965249-13tfg83naj3hrieknkk2ic5s96r5g73p.apps.googleusercontent.com";
+    public string webClientId = "960874965249-ibvvotlij7dolatr62fm5p5vnf3qobak.apps.googleusercontent.com";
     private FirebaseAuth auth;
     private GoogleSignInConfiguration configuration;
    
@@ -97,8 +97,8 @@ public class GoogleManager : MonoBehaviour
         {
             AddToInformation("Welcome: " + task.Result.DisplayName + "!");
             AddToInformation("Email = " + task.Result.Email);
-            //AddToInformation("Google ID Token = " + task.Result.IdToken);
-            //AddToInformation("Email = " + task.Result.Email);
+            AddToInformation("Google ID Token = " + task.Result.IdToken);
+            AddToInformation("Email = " + task.Result.Email);
             SignInWithGoogleOnFirebase(task.Result.IdToken);
         }
     }
@@ -118,6 +118,7 @@ public class GoogleManager : MonoBehaviour
             else
             {
                 AddToInformation("Sign In Successful.");
+                //RegistrationManager.instance.LoginWithSocialID(task.Result.Email, idToken, "Google");
             }
         });
     }
@@ -146,6 +147,6 @@ public class GoogleManager : MonoBehaviour
     private void AddToInformation(string str) 
     { 
         Debug.Log(str);
-        statusTxt.text = str;
+        statusTxt.text += str;
     }
 }

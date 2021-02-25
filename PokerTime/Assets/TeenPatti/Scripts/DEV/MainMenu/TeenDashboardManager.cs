@@ -49,6 +49,19 @@ public class TeenDashboardManager : MonoBehaviour
                     //MainMenuControllerTeen.instance.OnClickPlayPoker();
                 }
                 break;
+
+            case "coinShop":
+                {
+
+                    MainMenuControllerTeen.instance.OpenShopPage("item");
+                }
+                break;
+
+            case "diamondShop":
+                {
+                    MainMenuControllerTeen.instance.OpenShopPage("diamond");
+                }
+                break;
         }
     }
 }

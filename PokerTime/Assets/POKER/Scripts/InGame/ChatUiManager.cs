@@ -111,7 +111,10 @@ public class ChatUiManager : MonoBehaviour
                         suggestionScreen.SetActive(false);    
                     }
 
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.Chat);
+                    if (InGameUiManager.instance != null)
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.Chat);
+                    else if (InGameUiManagerTeenPatti.instance != null)
+                        InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.Chat);
                 }
             break;
 

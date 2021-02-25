@@ -167,7 +167,7 @@ public class RegistrationManager : MonoBehaviour
                         //}
                         else
                         {
-                            string requestData = "{\"userName\":\"" + /*tmp_registrationUserName*/registrationUserName.text + "\"," +
+                           string requestData = "{\"userName\":\"" + /*tmp_registrationUserName*/registrationUserName.text + "\"," +
                            "\"userPassword\":\"" + /*tmp_registrationPassword*/registrationPassword.text + "\"," +
                            "\"registrationType\":\"Custom\"," +
                            "\"socialId\":\"\"}";
@@ -287,6 +287,21 @@ public class RegistrationManager : MonoBehaviour
             Debug.LogError("Unhandled eventName found = "+eventName);
             break;
         }
+    }
+
+    public void LoginWithSocialID(string userName, string socialId, string registrationType)
+    {
+        Debug.Log("UserName: " + userName);
+        Debug.Log("SocialID: " + socialId);
+        Debug.Log("Registration Type: " + registrationType);
+
+        //string requestData = "{\"userName\":\"" + userName + "\"," +
+        //                   "\"userPassword\":\"" + "" + "\"," +
+        //                   "\"registrationType\":\"" + registrationType + "\"," +
+        //                   "\"socialId\":\"" + socialId + "\"}";
+
+        //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        //WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
     }
 
     public void GetVerificationCodeOnEmail()

@@ -5091,6 +5091,7 @@ GameObject:
   - component: {fileID: 6745031552395860835}
   - component: {fileID: 6745031552395860832}
   - component: {fileID: 8201864064397704665}
+  - component: {fileID: 5456112581024393510}
   m_Layer: 5
   m_Name: SpinWheelScreenTeen
   m_TagString: Untagged
@@ -5190,6 +5191,53 @@ MonoBehaviour:
   - {fileID: 8772385093303124405}
   - {fileID: 100798226859689580}
   spinWheelImage: {fileID: 8834565472364439682}
+  spinWheelSprites:
+  - {fileID: 21300000, guid: 78993d3503d49e24588ad1f0d2e681a1, type: 3}
+  - {fileID: 21300000, guid: 9aa64dc96cdc8c546b9d12ccb3c42a5e, type: 3}
+  drawButtonSprites:
+  - {fileID: 21300000, guid: ab08b09c93e2db34496d3cfe91545487, type: 3}
+  - {fileID: 21300000, guid: ccf5509e83b020b47a0149d1cd1d263b, type: 3}
+  - {fileID: 21300000, guid: 1e147cb776f97d14b875f552f18344ef, type: 3}
+  - {fileID: 21300000, guid: b1bfc071cc013204d8bdd94f0bd1206b, type: 3}
+  winnerListFirstTxt: {fileID: 1522231102889226742}
+  winnerListSecondTxt: {fileID: 7903900173482014278}
+  winnerListItemPrefabs: {fileID: 4821504500937245973, guid: c1082195b5c2f8a44b16b56803a4cfa7,
+    type: 3}
+  bottomWinnerListContainer: {fileID: 6130912808755564662}
+  eventValue: 
+--- !u!114 &5456112581024393510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6745031552395860838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4963204473b73746aa5b728d2be6f3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  oneXBtn: {fileID: 5750191272384743552}
+  fiveXBtn: {fileID: 6931958903562405702}
+  ImgGetContainer: {fileID: 3238525199650583681}
+  TextGetContainer: {fileID: 2061467135628444781}
+  spinWheel: {fileID: 3260177454056423766}
+  drawOutput: {fileID: 6073846544840730121}
+  draw1xOutputImg: {fileID: 2860481092536116287}
+  draw1xOutputText: {fileID: 8267861489244295504}
+  draw5xOutputImg:
+  - {fileID: 8388733089474782376}
+  - {fileID: 4820019533163640523}
+  - {fileID: 4620680484355124875}
+  - {fileID: 5744237045161985727}
+  - {fileID: 5164919787051181914}
+  draw5xOutputText:
+  - {fileID: 183019714827037928}
+  - {fileID: 9044698595205075415}
+  - {fileID: 7611341320674890642}
+  - {fileID: 8772385093303124405}
+  - {fileID: 100798226859689580}
+  spinWheelImage: {fileID: 0}
   spinWheelSprites:
   - {fileID: 21300000, guid: 78993d3503d49e24588ad1f0d2e681a1, type: 3}
   - {fileID: 21300000, guid: 9aa64dc96cdc8c546b9d12ccb3c42a5e, type: 3}
@@ -5324,8 +5372,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8201864064397704665}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 5456112581024393510}
+        m_TargetAssemblyTypeName: SpinWheelUIManagerTeenPatti, Assembly-CSharp
         m_MethodName: OnClickOnButton
         m_Mode: 5
         m_Arguments:

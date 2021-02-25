@@ -115,9 +115,8 @@ public class FacebookLogin : MonoBehaviour
 	public void FBlogin()
 	{
 		STATUStEXT.text = "Clicked Login..";
-        fbLoginBtn.gameObject.SetActive(value: false);
-        FB.LogInWithReadPermissions(
-									new List<string>() { "public_profile", "email", "user_friends" },
+        //fbLoginBtn.gameObject.SetActive(value: false);
+        FB.LogInWithReadPermissions(new List<string>() { "public_profile", "email", "user_friends" },
 									AuthCallBack);
 	}
 
@@ -235,8 +234,7 @@ public class FacebookLogin : MonoBehaviour
 
 
 			Firebase.Auth.FirebaseUser newUser = task.Result;
-			Debug.LogFormat("User signed in successfully: {0} ({1})",
-				newUser.DisplayName, newUser.UserId);
+			Debug.LogFormat("User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
 			string name = newUser.DisplayName;
 			string email = newUser.Email;
 			System.Uri photo_url = newUser.PhotoUrl;
@@ -244,7 +242,9 @@ public class FacebookLogin : MonoBehaviour
 			// Do NOT use this value to authenticate with your backend server, if you
 			// have one; use User.TokenAsync() instead.
 			string uid = newUser.UserId;
-			STATUStEXT.text += "name " + name + "   email " + email + " photo url " + photo_url + " uID " + uid;
+			STATUStEXT.text += "name " + name + "   email " + email + " photo url " + photo_url + " uID " + uid + " Token: " + atoken;
+
+			RegistrationManager.instance.LoginWithSocialID(email, atoken, "Facebook");
 		});
 	}
 }

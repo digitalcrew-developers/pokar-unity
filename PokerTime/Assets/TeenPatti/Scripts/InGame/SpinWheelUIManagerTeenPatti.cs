@@ -19,6 +19,10 @@ public class SpinWheelUIManagerTeenPatti : MonoBehaviour
     public Image[] draw5xOutputImg;
     public Text[] draw5xOutputText;
 
+    public Image spinWheelImage;
+    public Sprite[] spinWheelSprites;
+    public Sprite[] drawButtonSprites;
+
     public Text winnerListFirstTxt;
     public Text winnerListSecondTxt;
     public GameObject winnerListItemPrefabs;
@@ -48,121 +52,121 @@ public class SpinWheelUIManagerTeenPatti : MonoBehaviour
     {
 
         string requestData = null;
-        WebServices.instance.SendRequest(RequestType.getSpinWinnerList, requestData, true, OnServerResponseFound);
+        //WebServices.instance.SendRequestTP(RequestTypeTP.getSpinWinnerList, requestData, true, OnServerResponseFound);
 
     }
 
 
-    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    public void OnServerResponseFound(RequestTypeTP requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
 
         Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-        MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Loading);
 
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                MainMenuControllerTeen.instance.ShowMessage(errorMessage);
             }
 
             return;
         }
-        if (requestType == RequestType.getSpinWinnerList)
-        {
-            JsonData data = JsonMapper.ToObject(serverResponse);
-            if (data["success"].ToString() == "1")
-            {
+        //if (requestType == RequestTypeTP.getSpinWinnerList)
+        //{
+        //    JsonData data = JsonMapper.ToObject(serverResponse);
+        //    if (data["success"].ToString() == "1")
+        //    {
 
-                Debug.Log("i OOOOOOOOOOOOOOOOOOO   jkjkjkjkjkjjk " + data["response"].Count);
-                for (int i = 0; i < data["response"].Count; i++)
-                {
-                    string str="";
+        //        Debug.Log("i OOOOOOOOOOOOOOOOOOO   jkjkjkjkjkjjk " + data["response"].Count);
+        //        for (int i = 0; i < data["response"].Count; i++)
+        //        {
+        //            string str="";
 
-                    if (data["response"][i]["nickName"] != null)
-                    {
-                        str = str+ data["response"][i]["nickName"] + " has won Coins ";
+        //            if (data["response"][i]["nickName"] != null)
+        //            {
+        //                str = str+ data["response"][i]["nickName"] + " has won Coins ";
                         
-                    }
-                    else
-                    {
-                        str = str + " -- " + " has won Coins ";
-                    }
+        //            }
+        //            else
+        //            {
+        //                str = str + " -- " + " has won Coins ";
+        //            }
 
-                    if (data["response"][i]["coins"] != null)
-                    {
-                        str = str + data["response"][i]["coins"] + " in ";
-                    }
-                    else
-                    {
-                        str = str + "--" + " in ";
-                    }
+        //            if (data["response"][i]["coins"] != null)
+        //            {
+        //                str = str + data["response"][i]["coins"] + " in ";
+        //            }
+        //            else
+        //            {
+        //                str = str + "--" + " in ";
+        //            }
 
-                    if (data["response"][i]["gameType"] != null)
-                    {
-                        str = str + data["response"][i]["gameType"] ;
-                    }
-                    else {
-                        str = str + " -- " ;
-                    }
+        //            if (data["response"][i]["gameType"] != null)
+        //            {
+        //                str = str + data["response"][i]["gameType"] ;
+        //            }
+        //            else {
+        //                str = str + " -- " ;
+        //            }
 
-                    if (data["response"][i]["smallBlind"] != null)
-                    {
-                        str = str + " " + data["response"][i]["smallBlind"]+"/";
-                    }
-                    else
-                    {
-                        str = str + " -- " + "/";
-                    }
+        //            if (data["response"][i]["smallBlind"] != null)
+        //            {
+        //                str = str + " " + data["response"][i]["smallBlind"]+"/";
+        //            }
+        //            else
+        //            {
+        //                str = str + " -- " + "/";
+        //            }
 
-                    if (data["response"][i]["bigBlind"] != null)
-                    {
-                        str = str +" "+ data["response"][i]["bigBlind"] + " ";
-                    }
-                    else
-                    {
-                        str = str + " -- " ;
-                    }
+        //            if (data["response"][i]["bigBlind"] != null)
+        //            {
+        //                str = str +" "+ data["response"][i]["bigBlind"] + " ";
+        //            }
+        //            else
+        //            {
+        //                str = str + " -- " ;
+        //            }
 
-                    //Debug.Log("Now the STR of value ---  " + str);
+        //            //Debug.Log("Now the STR of value ---  " + str);
 
-                    if (i == 0)
-                    {
-                        winnerListFirstTxt.text = str;
-                    }
-                    else if (i == 1)
-                    {
-                        winnerListSecondTxt.text = str;
-                    }
-                    else {
-                        GameObject g = Instantiate(winnerListItemPrefabs, bottomWinnerListContainer.transform) as GameObject;
-                        g.transform.SetParent(bottomWinnerListContainer.transform);
-                        g.transform.GetComponent<Text>().text = str;
-                    }
+        //            if (i == 0)
+        //            {
+        //                winnerListFirstTxt.text = str;
+        //            }
+        //            else if (i == 1)
+        //            {
+        //                winnerListSecondTxt.text = str;
+        //            }
+        //            else {
+        //                GameObject g = Instantiate(winnerListItemPrefabs, bottomWinnerListContainer.transform) as GameObject;
+        //                g.transform.SetParent(bottomWinnerListContainer.transform);
+        //                g.transform.GetComponent<Text>().text = str;
+        //            }
                    
-                }
-                //ShowSpinWheelContent(data);
+        //        }
+        //        //ShowSpinWheelContent(data);
 
-            }
-            else
-            {
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
-            }
-        }
-        else if (requestType == RequestType.deductFromWallet)
-        {
-            JsonData data = JsonMapper.ToObject(serverResponse);
+        //    }
+        //    else
+        //    {
+        //        MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
+        //    }
+        //}
+        //else if (requestType == RequestTypeTP.deductFromWallet)
+        //{
+        //    JsonData data = JsonMapper.ToObject(serverResponse);
 
-            if (data["success"].ToString() == "1")
-            {
-                //ShowSpinWheelContent(data);
-                Debug.Log("Successfully deduct amount");
-            }
-            else
-            {
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
-            }
-        }
+        //    if (data["success"].ToString() == "1")
+        //    {
+        //        //ShowSpinWheelContent(data);
+        //        Debug.Log("Successfully deduct amount");
+        //    }
+        //    else
+        //    {
+        //        MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
+        //    }
+        //}
     }
 
     public void UpdateUserBalance(PlayerGameDetails updatedData)
@@ -179,30 +183,30 @@ public class SpinWheelUIManagerTeenPatti : MonoBehaviour
             "\"day\":\"0\"," +
             "\"playerProgress\":\"\"}";
 
-        //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        //MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Loading);
 
-        WebServices.instance.SendRequest(RequestType.UpdateUserBalance, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
-        {
-            //MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
+        //WebServices.instance.SendRequestTP(RequestTypeTP.UpdateUserBalance, requestData, true, (requestType, serverResponse, isShowErrorMessage, errorMessage) =>
+        //{
+        //    //MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Loading);
 
-            if (errorMessage.Length > 0)
-            {
-                //MainMenuController.instance.ShowMessage(errorMessage);
-            }
-            else
-            {
-                JsonData data = JsonMapper.ToObject(serverResponse);
-                if (data["status"].Equals(true))
-                {
-                    PlayerManager.instance.SetPlayerGameData(updatedData);
-                    //UpdateAlltext(updatedData);
-                }
-                else
-                {
-                    //MainMenuController.instance.ShowMessage(data["message"].ToString());
-                }
-            }
-        });
+        //    if (errorMessage.Length > 0)
+        //    {
+        //        //MainMenuControllerTeen.instance.ShowMessage(errorMessage);
+        //    }
+        //    else
+        //    {
+        //        JsonData data = JsonMapper.ToObject(serverResponse);
+        //        if (data["status"].Equals(true))
+        //        {
+        //            PlayerManager.instance.SetPlayerGameData(updatedData);
+        //            //UpdateAlltext(updatedData);
+        //        }
+        //        else
+        //        {
+        //            //MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
+        //        }
+        //    }
+        //});
     }
 
 
@@ -246,9 +250,9 @@ public class SpinWheelUIManagerTeenPatti : MonoBehaviour
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
-        SpinWheelUIManagerTeenPatti.instance.drawOutput.SetActive(false);
-        SpinWheelUIManagerTeenPatti.instance.drawOutput.transform.GetChild(0).gameObject.SetActive(false);
-        SpinWheelUIManagerTeenPatti.instance.drawOutput.transform.GetChild(1).gameObject.SetActive(false);
+        drawOutput.SetActive(false);
+        drawOutput.transform.GetChild(0).gameObject.SetActive(false);
+        drawOutput.transform.GetChild(1).gameObject.SetActive(false);
 
         switch (eventName)
         {
@@ -309,10 +313,10 @@ public class SpinWheelUIManagerTeenPatti : MonoBehaviour
         playerData.coins -= amount;
         UpdateUserBalance(playerData);
 
-        string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-                              "\"amount\":\"" + amount + "\"," +
-                              "\"deductFrom\":\"" + "coins" + "\"," +
-                               "\"narration\":\"" + "Spin Wheel"+ "\"}";
-        WebServices.instance.SendRequest(RequestType.deductFromWallet, requestData, true, OnServerResponseFound);        
+        //string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+        //                      "\"amount\":\"" + amount + "\"," +
+        //                      "\"deductFrom\":\"" + "coins" + "\"," +
+        //                       "\"narration\":\"" + "Spin Wheel"+ "\"}";
+        //WebServices.instance.SendRequestTP(RequestTypeTP.deductFromWallet, requestData, true, OnServerResponseFound);        
     }
 }
