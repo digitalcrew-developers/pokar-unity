@@ -19,7 +19,7 @@ public class CardsManagerTeenPatti: MonoBehaviour
     private void Start()
     {
         cardSprites = Resources.LoadAll<Sprite>("cards");
-        cardBackSprite = cardSprites[52];
+        //cardBackSprite = cardSprites[52];
     }
 
 

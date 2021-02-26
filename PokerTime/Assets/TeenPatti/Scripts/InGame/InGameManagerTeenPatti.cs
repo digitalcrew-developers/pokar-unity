@@ -1442,6 +1442,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
             //AdjustAllPlayersOnTable(data[0].Count);
             bool isMatchStarted = data[0]["isGameStart"].Equals(true);
             bool isMatchOver = data[0]["isGameOver"].Equals(true);
+            potAmount = float.Parse(data[0]["pot"].ToString());
             GameConstants.maxChaal = float.Parse(data[0]["maxChal"].ToString());
             //bool isMatchStarted = true;
             Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
