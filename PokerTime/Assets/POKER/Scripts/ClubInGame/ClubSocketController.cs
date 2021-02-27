@@ -145,6 +145,7 @@ public class ClubSocketController : MonoBehaviour
         socketManager.Socket.On("comCard1", OnComCards1);
         socketManager.Socket.On("comCard2", OnComCards2);
         socketManager.Socket.On("matchRunItTimes", MatchRunItTimes);
+        socketManager.Socket.On("checkClubCoins", CheckClubCoins);
 
         socketManager.Open();
     }
@@ -191,6 +192,13 @@ public class ClubSocketController : MonoBehaviour
     }
 
     //DEV_CODE 
+
+    private void CheckClubCoins(Socket socket, Packet packet, object[] args)
+    {
+        //ClubInGameManager.instance.DontShowCommunityCardAnimation = true;
+        string responseText = JsonMapper.ToJson(args);
+        Debug.Log("<color=magenta>CheckClubCoins :</color> " + responseText);
+    }
     private void OnAskMultiRunAction(Socket socket, Packet packet, object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
@@ -1325,6 +1333,29 @@ public class ClubSocketController : MonoBehaviour
 
         SocketRequest request = new SocketRequest();
         request.emitEvent = "topUp";
+
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+    }
+
+    public void SendClubTopUpRequest(int coinsToAdd)
+    {
+        string roomId = GlobalGameManager.instance.GetRoomData().roomId;
+
+        string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+     "\"tableId\":\"" + TABLE_ID + "\"," +
+     "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"," +
+     "\"roomId\":\"" + roomId + "\"," +
+     "\"playerType\":\"" + "Real" + "\"," +
+     "\"ptChips\":\"" + coinsToAdd + "\"}";
+
+
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "clubTopUp";
 
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;

@@ -123,7 +123,7 @@ public class PlayerScript : MonoBehaviour
         LoadUI();
 
         ToggleFoldScreen(playerData.isFold);
-
+        Debug.Log("<color=magenta>UpdateDetails </color>" + playerData.userName + " - " + playerData.balance);
         balanceText.text = "" + (int)playerData.balance;
         lastActionImage.SetActive(false);
         lastActionText.text = "";

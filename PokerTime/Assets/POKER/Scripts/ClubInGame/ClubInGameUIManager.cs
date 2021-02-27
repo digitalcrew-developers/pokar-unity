@@ -352,9 +352,10 @@ public class ClubInGameUIManager : MonoBehaviour
 
                     if (player != null)
                     {
+                        Debug.Log("availableCallAmount..." + availableCallAmount + ", " + player.GetPlayerData().balance + ", " + GlobalGameManager.instance.GetRoomData().smallBlind);
                         if (availableCallAmount < GlobalGameManager.instance.GetRoomData().smallBlind)
                             availableCallAmount = GlobalGameManager.instance.GetRoomData().smallBlind;
-                        ToggleRaisePopUp(true, availableCallAmount + 1, player.GetPlayerData().balance, ClubInGameManager.instance.GetPotAmount());
+                        ToggleRaisePopUp(true, availableCallAmount, player.GetPlayerData().balance, ClubInGameManager.instance.GetPotAmount());
                     }
                     else
                     {
@@ -573,17 +574,16 @@ public class ClubInGameUIManager : MonoBehaviour
 
     float sliderVal;
     int calculatedAmount, myTableBalance;
-
     public void OnSliderValueChange()
     {
-        if (slider.value >= slider.maxValue/* || calculatedAmount >= myTableBalance*/)
+        if (slider.value >= slider.maxValue)
         {
             sliderText.text = "All In";
-            //slider.value = 1;
             calculatedAmount = myTableBalance;
         }
         else
         {
+            Debug.Log(calculatedAmount + "  " + GlobalGameManager.instance.CalculateSliderValue(calculatedAmount));
             if (slider.value > sliderVal)
                 calculatedAmount = calculatedAmount + GlobalGameManager.instance.CalculateSliderValue(calculatedAmount);
             else if (slider.value > 0)
@@ -592,7 +592,6 @@ public class ClubInGameUIManager : MonoBehaviour
             sliderText.text = calculatedAmount.ToString();
         }
         selectedRaiseAmount = calculatedAmount;
-        Debug.Log((int)selectedRaiseAmount + "  " + slider.value);
         sliderVal = slider.value;
     }
 
@@ -606,27 +605,15 @@ public class ClubInGameUIManager : MonoBehaviour
             /*slider.minValue = minBet;
             slider.maxValue = maxBet;
             slider.value = minBet;*/
-            /*if(GlobalGameManager.instance.GetDigitOfANumber((int)GlobalGameManager.instance.GetRoomData().smallBlind, 0) == 1)
-            {
-                //slider.minValue = GlobalGameManager.instance.GetRoomData().bigBlind;
-                //slider.maxValue = maxBet * 2;
-                //slider.wholeNumbers = true;
-                sliderText.text = GlobalGameManager.instance.GetRoomData().bigBlind.ToString();
-                calculatedAmount = (int)GlobalGameManager.instance.GetRoomData().bigBlind;
-            }
-            else
-            {
-                sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();                
-                calculatedAmount = (int)GlobalGameManager.instance.GetRoomData().smallBlind;
-            }*/
-            if (minBet > GlobalGameManager.instance.GetRoomData().smallBlind)
+            Debug.Log(minBet + " minBet " + GlobalGameManager.instance.GetRoomData().smallBlind);
+            if (minBet >= GlobalGameManager.instance.GetRoomData().smallBlind)
                 sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
             else
                 sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
             slider.value = 0;
             calculatedAmount = int.Parse(sliderText.text);
             myTableBalance = (int)maxBet;
-
+            Debug.Log(calculatedAmount + "  " + myTableBalance);
             if (potAmount <= 0)
             {
                 useRaisePotWise = false;

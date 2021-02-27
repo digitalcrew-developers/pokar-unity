@@ -120,31 +120,63 @@ public class ClubInGameManager : MonoBehaviour
     public Text TableName;
     public GameObject RabbitButton;
     public GameObject ResumeHand, EVCHOPButton, EVCHOPPanel, passwordScreen;
+    public TMP_InputField[] passFields;//passField1, passField2, passField3, passField4;
 
     public void ShowPasswordScreen(bool showPass)
     {
         passwordScreen.SetActive(true);
         if (!showPass)
         {
-            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetComponent<TMP_InputField>().text = "";
-            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(3).GetComponent<TMP_InputField>().text = "";
-            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(4).GetComponent<TMP_InputField>().text = "";
-            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(5).GetComponent<TMP_InputField>().text = "";
+            for (int i = 0; i < passFields.Length; i++)
+            {
+                passFields[i].text = "";
+            }
         }
         else
         {
-            Debug.Log("Name " + passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetComponent<TMP_InputField>().text + " "+ GlobalGameManager.instance.GetRoomData().passCode.ToString()[3].ToString());
-            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetComponent<TMP_InputField>().text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[0].ToString();
-            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(3).GetComponent<TMP_InputField>().text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[1].ToString();
-            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(4).GetComponent<TMP_InputField>().text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[2].ToString();
-            passwordScreen.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(5).GetComponent<TMP_InputField>().text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[3].ToString();
+            Debug.Log("Name " + passFields[0].text + " "+ GlobalGameManager.instance.GetRoomData().passCode.ToString()[3].ToString());
+            for (int i = 0; i < passFields.Length; i++)
+            {
+                passFields[i].text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[i].ToString();
+            }
         }        
+    }
+
+    public void VerifyPassword()
+    {
+        bool allFiled = true;
+        for (int i = 0; i < passFields.Length; i++)
+        {
+            Debug.Log("DDDD " + passFields[i].text);
+            if (string.IsNullOrEmpty(passFields[i].text))
+            {
+                allFiled = false;
+                break;
+            }
+        }
+
+        if(allFiled)
+        {
+            string requestData = "{\"tableId\":\"" + ClubInGameUIManager.instance.tableId + "\"," +
+                           "\"passCode\":\"" + passFields[0].text + passFields[1].text + passFields[2].text + passFields[3].text + "\"}";
+
+            WebServices.instance.SendRequest(RequestType.verifyTablePassCode, requestData, true, (res, s1, t, s2) =>
+            {
+                Debug.Log(s1);
+                JsonData d = JsonMapper.ToObject(s1);
+                Debug.Log(d["success"].ToString());
+                if(d["success"].ToString().Equals("1"))
+                {
+                    passwordScreen.SetActive(false);
+                }
+            });
+        }
     }
 
     private void Start()
     {
         Debug.Log("Data " + GlobalGameManager.instance.GetRoomData().exclusiveTable + ", " + GlobalGameManager.instance.GetRoomData().passCode + ", " + GlobalGameManager.instance.GetRoomData().assignRole);
-        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && GlobalGameManager.instance.GetRoomData().assignRole.Equals("member"))
+        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && GlobalGameManager.instance.GetRoomData().assignRole.Equals("Member"))
         {
             ShowPasswordScreen(false);
         }
@@ -793,6 +825,7 @@ public class ClubInGameManager : MonoBehaviour
 
     public PlayerScript GetPlayerObject(string userId)
     {
+        Debug.Log("Active users " + onlinePlayersScript.Length);
         if (onlinePlayersScript == null)
         {
             return null;
@@ -2155,7 +2188,7 @@ public class ClubInGameManager : MonoBehaviour
         JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         //Debug.LogWarning("NEXT ROUND SERVER :" + serverResponse);
-        Debug.LogWarning(GameConstants.BUFFER_TIME + ", NEXT ROUND In: " + remainingTime + ", " + availableBalance + ", " + isRematchRequestSent);
+        Debug.LogWarning( remainingTime+ ", NEXT ROUND In: " + GameConstants.BUFFER_TIME + ", " + availableBalance + ", " + isRematchRequestSent);
         if (remainingTime > 1)
         {
             //ClubInGameUIManager.instance.ShowTableMessage("Next Round Will Start In : " + remainingTime);
@@ -2185,14 +2218,14 @@ public class ClubInGameManager : MonoBehaviour
                         //now we are adding balance if userbalance is 0.
                         int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn;
                         float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
-                        Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance);
+                        Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance + ", " + EPSILON);
                         //if (userMainBalance >= balanceToAdd)
                         if (userMainBalance < EPSILON)
                         {
                             Debug.Log("<color=pink>" + "UserMainBalance: " + userMainBalance  + " </color>");
                             ClubSocketController.instance.SendReMatchRequest("Yes", "0");
                             //send topup request with the below api.. for clarification contact Pradeep - Digital Crew
-                            ClubSocketController.instance.SendTopUpRequest(balanceToAdd);
+                            ClubSocketController.instance.SendClubTopUpRequest(balanceToAdd);
 
                             //userMainBalance -= balanceToAdd;
                             PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
@@ -2547,7 +2580,7 @@ public class ClubInGameManager : MonoBehaviour
                         {
                             //Debug.LogError("Player Coins: " + data[0][i]["coins"].ToString());
                             
-                            PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
+                            //PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
                         }
 
                         playerData.playerData = new PlayerData();
@@ -2564,6 +2597,11 @@ public class ClubInGameManager : MonoBehaviour
 
                         playerData.playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
+                        if (PlayerManager.instance.GetPlayerGameData().userName == data[0][i]["userName"].ToString())
+                        {
+                            Debug.Log(PlayerManager.instance.GetPlayerGameData().userName);
+                            PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["totalCoins"].ToString());
+                        }
 
                         playerData.playerType = data[0][i]["playerType"].ToString();
 
@@ -2633,7 +2671,7 @@ public class ClubInGameManager : MonoBehaviour
                     {
                         //Debug.LogError("Player Coins: " + data[0][i]["coins"].ToString());
 
-                        PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
+                        //PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["coins"].ToString());
                     }
 
                     if (playerObject != null)
@@ -2645,6 +2683,11 @@ public class ClubInGameManager : MonoBehaviour
                         playerData.isStart = bool.Parse(data[0][i]["isStart"].ToString());
                         playerData.totalBet = float.Parse(data[0][i]["totalBet"].ToString());
                         playerData.balance = float.Parse(data[0][i]["totalCoins"].ToString());
+                        if (PlayerManager.instance.GetPlayerGameData().userName == data[0][i]["userName"].ToString())
+                        {
+                            Debug.Log(PlayerManager.instance.GetPlayerGameData().userName);
+                            PlayerManager.instance.GetPlayerGameData().coins = float.Parse(data[0][i]["totalCoins"].ToString());
+                        }
 
                         playerData.userVIPCard = data[0][i]["userVIPCard"].ToString();
                         playerData.cardValidity = data[0][i]["cardValidity"].ToString();
@@ -2833,8 +2876,8 @@ public class ClubInGameManager : MonoBehaviour
 
         myPlayerObject = null;
 
-        onlinePlayersScript = null;
-        onlinePlayersScript = new PlayerScript[0];
+        //onlinePlayersScript = null;
+        //onlinePlayersScript = new PlayerScript[0];
 		for (int i = 0; i < animationLayer.childCount; i++)
         {
             Destroy(animationLayer.GetChild(i).gameObject);

@@ -300,7 +300,11 @@ public class ClubDetailsUIManager : MonoBehaviour
             case RequestType.getClubUserDetail:
                 {
                     Debug.Log("Response => getClubUserDetail : " + serverResponse);
-                    
+                }
+                break;
+            case RequestType.verifyTablePassCode:
+                {
+                    Debug.Log("Response => verifyTablePassCode : " + serverResponse);
                 }
                 break;
 

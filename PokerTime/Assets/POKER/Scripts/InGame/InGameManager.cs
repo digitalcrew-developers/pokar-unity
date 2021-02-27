@@ -352,6 +352,7 @@ public class InGameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0f);
         SocketController.instance.SendSwitchTable();
+        InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
         //set new table id
         /*InGameUiManager.instance.ShowScreen(InGameScreens.Loading);
         yield return new WaitForSeconds(2f);
@@ -1972,7 +1973,7 @@ public class InGameManager : MonoBehaviour
                         {
                             //Debug.Log("isBlock " + data[0][i]["isBlocked"]);
                             string playerAction = data[0][i]["userData"]["playerAction"].ToString();
-                            int betAmount = (int)float.Parse(data[0][i]["totalBet"].ToString());
+                            int betAmount = (int)float.Parse(data[0][i]["userData"]["betData"].ToString());
                             int roundNo = (int)float.Parse(data[0][i]["userData"]["roundNo"].ToString());
                             playerObject.UpdateDetails(playerData, playerAction, betAmount, roundNo);
                         }

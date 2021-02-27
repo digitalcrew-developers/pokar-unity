@@ -1227,7 +1227,7 @@ public class SocketController : MonoBehaviour
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
              "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
              "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
-             "\"playerType\":\"Real\"," +
+             "\"playerType\":\"Real\"," + "\"switchFlag\":\"0\"," +
              "\"isPrivate\":\"No\"," + "\"seatNo\":\"" + seatNo + "\"," +
              "\"isFree\":\"No\"}";
 
@@ -1659,7 +1659,7 @@ public class SocketController : MonoBehaviour
             "\"tableId\":\"" + TABLE_ID + "\"," +
              "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
              "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
-             "\"playerType\":\"Real\"," +
+             "\"playerType\":\"Real\"," + "\"switchFlag\":\"1\"," +
              "\"isPrivate\":\"No\"," + "\"seatNo\":\"" + seatNo + "\"," +
              "\"isFree\":\"No\"}";
 
