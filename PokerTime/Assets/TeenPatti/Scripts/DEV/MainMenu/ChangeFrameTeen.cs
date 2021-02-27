@@ -10,7 +10,8 @@ public class ChangeFrameTeen : MonoBehaviour
 
     public void Start()
     {
-        WebServices.instance.SendRequest(RequestType.getFrames, "", true, OnServerResponseFound);
+        string requestData = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
+        WebServices.instance.SendRequest(RequestType.getFrames, requestData, true, OnServerResponseFound);
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)

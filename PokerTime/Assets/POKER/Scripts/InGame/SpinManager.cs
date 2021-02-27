@@ -27,7 +27,7 @@ public class SpinManager : MonoBehaviour
     public void FetchDataSpinWheel()
     {
 
-        string requestData = null;
+        string requestData = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
         WebServices.instance.SendRequest(RequestType.GetSpinWheelItems, requestData, true, OnServerResponseFound);
 
     }
@@ -68,7 +68,7 @@ public class SpinManager : MonoBehaviour
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
 
-    //    Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+        Debug.Log("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
 
         if (errorMessage.Length > 0)
@@ -76,6 +76,7 @@ public class SpinManager : MonoBehaviour
             if (isShowErrorMessage)
             {
                 MainMenuController.instance.ShowMessage(errorMessage);
+                Debug.Log("Error: " + errorMessage);
             }
 
             return;

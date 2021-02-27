@@ -23,10 +23,7 @@ public class ProfileModification : MonoBehaviour
 
     private void Awake()
     {
-        if (null == instance)
-        {
-            instance = this;
-        }
+        instance = this;
     }
 
     public void Start()
@@ -90,7 +87,7 @@ public class ProfileModification : MonoBehaviour
 
         WebServices.instance.SendRequest(RequestType.UpdateUserSettings, requestData, true, OnServerResponseFound);
 
-        StartCoroutine(UploadImage());
+        //StartCoroutine(UploadImage());
     }
     
 

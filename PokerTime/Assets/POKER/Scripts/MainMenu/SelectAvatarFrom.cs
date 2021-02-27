@@ -9,9 +9,14 @@ using UnityEditor;
 
 public class SelectAvatarFrom : MonoBehaviour
 {
+    public Text pathText;
+
+    public Image profileImage;
+    private string profileImagePath;
+
     public void OnCloseSelectFrom()
     {
-        Destroy(gameObject);
+        MainMenuController.instance.DestroyScreen(MainMenuScreens.SelectFrom);
     }
     public void OnClickDefaultbtn()
     {
@@ -35,6 +40,55 @@ public class SelectAvatarFrom : MonoBehaviour
 #endif   
     }
 
+    public void UploadProfileImage()
+    {
+        //pathText.text = "Inside Upload Image Method";
+        StartCoroutine(UploadImage());
+    }
+
+    public IEnumerator UploadImage()
+    {
+        //pathText.text = "Start Coroutine To Upload Image";
+
+        Texture2D newTexture = new Texture2D(profileImage.mainTexture.width, profileImage.mainTexture.height);
+        newTexture.LoadRawTextureData(newTexture.GetRawTextureData());
+        newTexture.Apply();
+
+        byte[] bytes = newTexture.EncodeToJPG();
+        Destroy(newTexture);
+
+        //pathText.text = "Converted to byte data with Path" + profileImagePath + " -- " + PlayerManager.instance.GetPlayerGameData().userId;
+        var form = new WWWForm();
+        form.AddField("userId", PlayerManager.instance.GetPlayerGameData().userId);
+        //form.AddField("userName", PlayerManager.instance.GetPlayerGameData().userName);
+        //form.AddField("language", "hindi");
+        form.AddBinaryData("profileImage", bytes, profileImagePath, "image/jpg");
+        //form.AddField("nickName", PlayerManager.instance.GetPlayerGameData().nickname);
+        //form.AddField("mobile", PlayerManager.instance.GetPlayerGameData().mobile);
+        //form.AddField("emailId", PlayerManager.instance.GetPlayerGameData().emailId);
+
+        UnityWebRequest www = UnityWebRequest.Post(GameConstants.API_URL + "/updateProfile", form);
+
+        //pathText.text = "Uploading!!!";
+        //Debug.Log("Uploading !!!!!!");
+        yield return www.SendWebRequest();
+
+        //pathText.text = "Upload Success....";
+        //Debug.Log("Upload Success...");
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            //pathText.text = www.error.ToString();
+            //Debug.Log(www.error);
+        }
+        else
+        {
+            //pathText.text = www.downloadHandler.text;
+            OnCloseSelectFrom();
+            ////Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
+        }
+    }
+
     #region Image Picking Methods
     void OnEnable()
     {
@@ -56,44 +110,57 @@ public class SelectAvatarFrom : MonoBehaviour
         PickerEventListener.onCancel -= OnCancel;
     }
 
-    void OnImageSelect(string imgPath, ImageAndVideoPicker.ImageOrientation imgOrientation)
+    void OnImageSelect(string imgPath, ImageOrientation imgOrientation)
     {
-        Debug.Log("Image Location 0: " + imgPath);        
+        //Debug.Log("Image Location 0: " + imgPath);        
     }
 
-    void OnImageLoad(string imgPath, Texture2D tex, ImageAndVideoPicker.ImageOrientation imgOrientation)
+    void OnImageLoad(string imgPath, Texture2D tex, ImageOrientation imgOrientation)
     {
-        Debug.Log("Image Location 1: " + imgPath);
+        //Debug.Log("Image Location 1: " + imgPath);
+        //pathText.text = imgPath;
+
         ProfileModification.instance.profileImageRaw.texture = tex;
 
-        if (null == tex)
-        {
-            Debug.Log("tex is null");
-        }
+        //if (null == tex)
+        //{
+        //    Debug.Log("tex is null");
+        //}
+
+        //pathText.text = "Creating Sprite";
+
         Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
 
-        if(null== ProfileModification.instance)
-        {
-            Debug.Log("profile modification is null");
-        }
-        else
-        {
-            ProfileModification.instance.profileImage.sprite = sprite;
-            ProfileModification.instance.profileImagePath = imgPath;
-        }
-        ProfileScreenUiManager.instance.avtar.sprite = sprite;
+        ProfileModification.instance.profileImage.sprite = sprite;
 
-        OnCloseSelectFrom();        
+        profileImage.sprite = sprite;
+        profileImagePath = imgPath;
+
+        //pathText.text = "Going To Upload profile from " + profileImagePath;
+        UploadProfileImage();
+
+        //if(null== ProfileModification.instance)
+        //{
+        //    Debug.Log("profile modification is null");
+        //}
+        //else
+        //{
+        //    ProfileModification.instance.profileImage.sprite = sprite;
+        //    ProfileModification.instance.profileImagePath = imgPath;
+        //}
+        //ProfileScreenUiManager.instance.avtar.sprite = sprite;
+
+        //OnCloseSelectFrom();
     }
 
     void OnError(string errorMsg)
     {
-        Debug.Log("Error : " + errorMsg);
+        //Debug.Log("Error : " + errorMsg);
     }
 
     void OnCancel()
     {
-        Debug.Log("Cancel by user");
+        //Debug.Log("Cancel by user");
     }
     #endregion
 }
