@@ -1561,15 +1561,16 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
                     if (playerObject != null)
                     {
+                        Debug.Log("PlayerObject is :" + playerObject);
                         PlayerDataTeenPatti playerData = new PlayerDataTeenPatti();
                         //Debug.LogError("************************************************************");
-                        playerData.isFold = newData[i]["isBlocked"].Equals(true);
-                        playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
-                        playerData.playerAllBet = float.Parse(newData[i]["totalBet"].ToString());
-                        playerData.balance = float.Parse(newData[i]["totalCoins"].ToString());
-                        playerData.isBlind = newData[i]["isBlind"].Equals(true);
-                        playerData.isShow = newData[i]["isShow"].Equals(true);
-                        playerData.isSideShow = newData[i]["isSideShow"].Equals(true);
+                        playerObject.playerData.isFold = newData[i]["isBlocked"].Equals(true);
+                        playerObject.playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
+                        playerObject.playerData.playerAllBet = float.Parse(newData[i]["totalBet"].ToString());
+                        playerObject.playerData.balance = float.Parse(newData[i]["totalCoins"].ToString());
+                        playerObject.playerData.isBlind = newData[i]["isBlind"].Equals(true);
+                        playerObject.playerData.isShow = newData[i]["isShow"].Equals(true);
+                        playerObject.playerData.isSideShow = newData[i]["isSideShow"].Equals(true);
 
                         if (newData[i]["isTurn"].Equals(true))
                         {

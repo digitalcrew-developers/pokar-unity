@@ -418,23 +418,6 @@ public class PlayerScriptTeenPatti : MonoBehaviour
         }
         switch (textToShow)
         {
-            //case "Call":
-            //    lastActionImage.GetComponent<Image>().sprite = EventSprite[0];
-            //    break;
-            //case "Check":
-            //    lastActionImage.GetComponent<Image>().sprite = EventSprite[1];
-            //    break;
-            //case "Bet":
-            //    lastActionImage.GetComponent<Image>().sprite = EventSprite[2];
-            //    break;
-            //case "Raise":
-            //    lastActionImage.GetComponent<Image>().sprite = EventSprite[3];
-            //    break;
-            //case "AllIn":
-            //    lastActionImage.GetComponent<Image>().sprite = EventSprite[4];
-            //    break;
-
-
             case "Call":
                 if(playerData.isBlind)
                     lastActionImage.GetComponent<Image>().sprite = EventSprite[0];
@@ -445,8 +428,6 @@ public class PlayerScriptTeenPatti : MonoBehaviour
             case "fold":
                 lastActionImage.GetComponent<Image>().sprite = EventSprite[2];
                 break;
-            
-
             default:
                 break;
         }
