@@ -123,6 +123,7 @@ public class MenuScript : MonoBehaviour
                     if (InGameUiManager.instance != null)
                     {
                         StartCoroutine(InGameManager.instance.SwitchTables());
+                        InGameUiManager.instance.ShowScreen(InGameScreens.Loading);
                         //InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
                     }
                 }
