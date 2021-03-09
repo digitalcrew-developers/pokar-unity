@@ -254,7 +254,7 @@ public class InGameShopTeenPatti : MonoBehaviour
                 }
                 else
                 {
-                    MainMenuController.instance.ShowMessage(errorMessage);
+                    MainMenuControllerTeen.instance.ShowMessage(errorMessage);
                 }
             }
             return;
@@ -275,12 +275,20 @@ public class InGameShopTeenPatti : MonoBehaviour
             if (data["status"].Equals(true))
             {
                 Debug.Log("Purchase Successfull !!!");
-                InGameUiManagerTeenPatti.instance.ShowMessage(data["response"].ToString());
+
+                if (InGameUiManagerTeenPatti.instance != null)
+                    InGameUiManagerTeenPatti.instance.ShowMessage(data["response"].ToString());
+                else if (MainMenuControllerTeen.instance != null)
+                    MainMenuControllerTeen.instance.ShowMessage(data["response"].ToString());
             }
             else
             {
                 Debug.Log("You don't have sufficient fund to purchase");
-                InGameUiManagerTeenPatti.instance.ShowMessage(data["response"].ToString());
+
+                if (InGameUiManagerTeenPatti.instance != null)
+                    InGameUiManagerTeenPatti.instance.ShowMessage(data["response"].ToString());
+                else if (MainMenuControllerTeen.instance != null)
+                    MainMenuControllerTeen.instance.ShowMessage(data["response"].ToString());
             }
         }
     }

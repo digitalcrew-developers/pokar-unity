@@ -12,38 +12,41 @@ public class GoogleManager : MonoBehaviour
 {
     public static GoogleManager instance;
 
-    public Text statusTxt;
+    //public Text statusTxt;
 
-    private string webClientId = "960874965249-13tfg83naj3hrieknkk2ic5s96r5g73p.apps.googleusercontent.com";
-    private FirebaseAuth auth;
+    //private string webClientId = "960874965249-13tfg83naj3hrieknkk2ic5s96r5g73p.apps.googleusercontent.com";
+    private string webClientId = "814110012075-h3k1nsq4asvjoflddg6kei95lqetiq33.apps.googleusercontent.com";
+
+    public string userName, userId, email;
+
+    //private FirebaseAuth auth;
     private GoogleSignInConfiguration configuration;
    
     private void Awake()
     {
-        if (instance == null)
-            instance = this;
+        instance = this;
 
         configuration = new GoogleSignInConfiguration { WebClientId = webClientId, RequestEmail = true, RequestIdToken = true };
-        CheckFirebaseDependencies();
+        //CheckFirebaseDependencies();
     }
 
-    private void CheckFirebaseDependencies()
-    {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
-        {
-            if (task.IsCompleted)
-            {
-                if (task.Result == DependencyStatus.Available)
-                    auth = FirebaseAuth.DefaultInstance;
-                else
-                    AddToInformation("Could not resolve all Firebase dependencies: " + task.Result.ToString());
-            }
-            else
-            {
-                AddToInformation("Dependency check was not completed. Error : " + task.Exception.Message);
-            }
-        });
-    }
+    //private void CheckFirebaseDependencies()
+    //{
+    //    FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+    //    {
+    //        if (task.IsCompleted)
+    //        {
+    //            if (task.Result == DependencyStatus.Available)
+    //                auth = FirebaseAuth.DefaultInstance;
+    //            else
+    //                AddToInformation("Could not resolve all Firebase dependencies: " + task.Result.ToString());
+    //        }
+    //        else
+    //        {
+    //            AddToInformation("Dependency check was not completed. Error : " + task.Exception.Message);
+    //        }
+    //    });
+    //}
 
     public void SignInWithGoogle() { OnSignIn(); }
     public void SignOutFromGoogle() { OnSignOut(); }
@@ -54,7 +57,7 @@ public class GoogleManager : MonoBehaviour
         GoogleSignIn.Configuration.UseGameSignIn = false;
         GoogleSignIn.Configuration.RequestIdToken = true;
         AddToInformation("Calling SignIn");
-
+        
         GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
     }
 
@@ -96,19 +99,27 @@ public class GoogleManager : MonoBehaviour
         else
         {
             AddToInformation("Welcome: " + task.Result.DisplayName + "!");
-            AddToInformation("Email = " + task.Result.Email);
-            //AddToInformation("Google ID Token = " + task.Result.IdToken);
             //AddToInformation("Email = " + task.Result.Email);
+            AddToInformation("Google ID Token = " + task.Result.IdToken);
+            AddToInformation("Email = " + task.Result.Email);
+
+            userName = task.Result.DisplayName;
+            userId = task.Result.UserId;
+            email = task.Result.Email;
+
             SignInWithGoogleOnFirebase(task.Result.IdToken);
         }
     }
 
     private void SignInWithGoogleOnFirebase(string idToken)
     {
+        if (MainMenuController.instance != null)
+            MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+
         AddToInformation("Registering With Firebase..");
         Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
-
-        auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
+        AddToInformation("Credential Got With IDToken => " + idToken);
+        FirebaseManager.instance.auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
         {
             AddToInformation("Checking For Exception..");
             AggregateException ex = task.Exception;
@@ -120,7 +131,7 @@ public class GoogleManager : MonoBehaviour
             else
             {
                 AddToInformation("Sign In Successful.");
-                //RegistrationManager.instance.LoginWithSocialID(task.Result.Email, idToken, "Google");
+                RegistrationManager.instance.LoginWithSocialID(task.Result.Email, idToken, "google");
             }
         });
     }
@@ -149,6 +160,10 @@ public class GoogleManager : MonoBehaviour
     private void AddToInformation(string str) 
     { 
         //Debug.Log(str);
-        statusTxt.text += str;
+        //statusTxt.text += str;
+        if(RegistrationManager.instance != null)
+        {
+            RegistrationManager.instance.statusText.text = str;
+        }
     }
 }

@@ -561,7 +561,7 @@ public class ClubCounterTeen : MonoBehaviour
             clubMemberDetails.clubRequestId = data["data"][x]["clubRequestId"].ToString();
             clubMemberDetails.ptChips = data["data"][x]["ptChips"].ToString();
 
-            Debug.Log("For Player: " + clubMemberDetails.userId + " - PT Chips : " + clubMemberDetails.ptChips);
+            //Debug.Log("For Player: " + clubMemberDetails.userId + " - PT Chips : " + clubMemberDetails.ptChips);
 
             //DEV_CODE
             allPTChips += int.Parse(clubMemberDetails.ptChips);
@@ -810,7 +810,8 @@ public class ClubCounterTeen : MonoBehaviour
             selectedSendPlayerCount++;
 
             PlayerSelected.text = "x" + selectedSendPlayerCount;
-            selectedMembers += "{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + "Member" + "\"},";
+            //selectedMembers += "{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + "Member" + "\"},";
+            selectedMembers += "{\"userId\":" + clubMemberDetails.userId + "},";
 
             if (isClaimBack)
             {
@@ -917,8 +918,10 @@ public class ClubCounterTeen : MonoBehaviour
             {
                 if (SendOutListContent.GetChild(i).Find("Toggle").GetComponent<Toggle>().isOn)
                 {
-                    selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text.Substring(5) + "\"," +
-                                       "\"role\":\"" + "Member" + "\"},";
+                    //selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text.Substring(5) + "\"," +
+                    //                   "\"role\":\"" + "Member" + "\"},";
+
+                    selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text.Substring(5) + "\"},";
 
                     if (claimBackAmount == 0)
                         float.TryParse(SendOutListContent.GetChild(i).Find("Image/Coins").GetComponent<TMP_Text>().text, out claimBackAmount);
@@ -940,8 +943,10 @@ public class ClubCounterTeen : MonoBehaviour
             {
                 if (SendOutListContent.GetChild(i).Find("Toggle").GetComponent<Toggle>().isOn)
                 {
-                    selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text + "\"," +
-                                       "\"role\":\"" + "Member" + "\"},";
+                    //selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text + "\"," +
+                    //                   "\"role\":\"" + "Member" + "\"},";
+
+                    selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text + "\"},";
                 }
             }
         }

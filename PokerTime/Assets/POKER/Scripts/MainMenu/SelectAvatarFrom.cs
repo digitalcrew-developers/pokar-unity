@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using ImageAndVideoPicker;
 using UnityEngine.UI;
 using UnityEditor;
+using System.IO;
 
 public class SelectAvatarFrom : MonoBehaviour
 {
@@ -40,50 +41,64 @@ public class SelectAvatarFrom : MonoBehaviour
 #endif   
     }
 
-    public void UploadProfileImage()
+    public void UploadProfileImage(string path)
     {
-        //pathText.text = "Inside Upload Image Method";
-        StartCoroutine(UploadImage());
+        pathText.text = "Inside Upload Image Method";
+        StartCoroutine(UploadImage(path));
     }
 
-    public IEnumerator UploadImage()
+    public IEnumerator UploadImage(string path)
     {
         //pathText.text = "Start Coroutine To Upload Image";
 
-        Texture2D newTexture = new Texture2D(profileImage.mainTexture.width, profileImage.mainTexture.height);
-        newTexture.LoadRawTextureData(newTexture.GetRawTextureData());
-        newTexture.Apply();
+        //Texture2D newTexture = new Texture2D(profileImage.mainTexture.width, profileImage.mainTexture.height);
+        //newTexture.LoadRawTextureData(newTexture.GetRawTextureData());
+        //newTexture.Apply();
 
-        byte[] bytes = newTexture.EncodeToJPG();
-        Destroy(newTexture);
+        //byte[] bytes = newTexture.EncodeToJPG();
+        //Destroy(newTexture);
 
         //pathText.text = "Converted to byte data with Path" + profileImagePath + " -- " + PlayerManager.instance.GetPlayerGameData().userId;
-        var form = new WWWForm();
-        form.AddField("userId", PlayerManager.instance.GetPlayerGameData().userId);
+        //var form = new WWWForm();
+        //form.AddField("userId", PlayerManager.instance.GetPlayerGameData().userId);
         //form.AddField("userName", PlayerManager.instance.GetPlayerGameData().userName);
         //form.AddField("language", "hindi");
-        form.AddBinaryData("profileImage", bytes, profileImagePath, "image/jpg");
+        //form.AddBinaryData("profileImage", bytes, profileImagePath, "image/jpg");
         //form.AddField("nickName", PlayerManager.instance.GetPlayerGameData().nickname);
         //form.AddField("mobile", PlayerManager.instance.GetPlayerGameData().mobile);
         //form.AddField("emailId", PlayerManager.instance.GetPlayerGameData().emailId);
 
-        UnityWebRequest www = UnityWebRequest.Post(GameConstants.API_URL + "/updateProfile", form);
 
-        //pathText.text = "Uploading!!!";
+
+        pathText.text = path;
+
+        byte[] img = File.ReadAllBytes(path);
+
+        List<IMultipartFormSection> requestData = new List<IMultipartFormSection>();
+        requestData.Add(new MultipartFormDataSection("userId", PlayerManager.instance.GetPlayerGameData().userId));
+        requestData.Add(new MultipartFormFileSection("profileImage", img, path, "image/jpg"));
+
+        pathText.text = requestData.ToString();
+
+
+        //UnityWebRequest www = UnityWebRequest.Post(GameConstants.API_URL + "/updateProfile", form);
+        UnityWebRequest www = UnityWebRequest.Post(GameConstants.API_URL + "/updateProfile", requestData);
+        //www.SetRequestHeader("Content-Type", "multipart/form-data");
+        pathText.text = "Uploading!!!";
         //Debug.Log("Uploading !!!!!!");
         yield return www.SendWebRequest();
 
-        //pathText.text = "Upload Success....";
+        pathText.text = "Upload Success....";
         //Debug.Log("Upload Success...");
 
         if (www.isNetworkError || www.isHttpError)
         {
-            //pathText.text = www.error.ToString();
+            pathText.text = www.error.ToString();
             //Debug.Log(www.error);
         }
         else
         {
-            //pathText.text = www.downloadHandler.text;
+            pathText.text = www.downloadHandler.text;
             OnCloseSelectFrom();
             ////Debug.Log("Form upload complete! and Response: " + www.downloadHandler.text);
         }
@@ -120,7 +135,7 @@ public class SelectAvatarFrom : MonoBehaviour
         //Debug.Log("Image Location 1: " + imgPath);
         //pathText.text = imgPath;
 
-        ProfileModification.instance.profileImageRaw.texture = tex;
+        //ProfileModification.instance.profileImageRaw.texture = tex;
 
         //if (null == tex)
         //{
@@ -136,8 +151,8 @@ public class SelectAvatarFrom : MonoBehaviour
         profileImage.sprite = sprite;
         profileImagePath = imgPath;
 
-        //pathText.text = "Going To Upload profile from " + profileImagePath;
-        UploadProfileImage();
+        pathText.text = "Going To Upload profile from " + profileImagePath;
+        UploadProfileImage(imgPath);
 
         //if(null== ProfileModification.instance)
         //{

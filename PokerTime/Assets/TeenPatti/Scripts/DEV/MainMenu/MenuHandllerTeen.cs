@@ -274,7 +274,7 @@ public class MenuHandllerTeen : MonoBehaviour
 				{
 					createClubPopUp.SetActive(false);
 					MainMenuControllerTeen.instance.ShowMessage("Club created successfully");
-					ClubListUiManager.instance.FetchList();
+					ClubListUiManagerTeen.instance.FetchList();
 				}
 				else
 				{

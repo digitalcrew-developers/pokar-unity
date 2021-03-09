@@ -172,6 +172,8 @@ public class PrefsManager: MonoBehaviour
             playerData.password = data["password"].ToString();
             playerData.userName = data["userName"].ToString();
 
+            playerData.registrationType = data["registrationType"].ToString();
+
             if (data.Keys.Contains("coins") && data["coins"].ToString() != null && data["coins"].ToString().Length > 0)
             {
                 float.TryParse(data["coins"].ToString(), out playerData.coins);

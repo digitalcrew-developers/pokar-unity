@@ -89,7 +89,10 @@ public class Utility : MonoBehaviour
             playerData.FrameUrl = data["frameURL"].ToString();
         if (data["countryCode"] != null)
             playerData.countryCode = data["countryCode"].ToString();
-        
+
+        if (data["registrationType"] != null)
+            playerData.registrationType = data["registrationType"].ToString();
+
         if (data["referalCode"] != null && data["referalCode"].ToString().Length > 0)
         {
             playerData.referralCode = data["referalCode"].ToString();
@@ -182,15 +185,19 @@ public class Utility : MonoBehaviour
             playerData.FrameUrl = data["frameURL"].ToString();
         if (data["countryCode"] != null)
             playerData.countryCode = data["countryCode"].ToString();
-            //if (data["profileImage"] != null && data["profileImage"].ToString().Length > 0)
-            //{
-            //}
-            //else
-            //{
-            //    playerData.avatarURL = "";
-            //}
 
-            if (data["referalCode"] != null && data["referalCode"].ToString().Length > 0)
+        if(data["registrationType"] != null)
+            playerData.registrationType = data["registrationType"].ToString();
+
+        //if (data["profileImage"] != null && data["profileImage"].ToString().Length > 0)
+        //{
+        //}
+        //else
+        //{
+        //    playerData.avatarURL = "";
+        //}
+
+        if (data["referalCode"] != null && data["referalCode"].ToString().Length > 0)
             {
                 playerData.referralCode = data["referalCode"].ToString();
             }

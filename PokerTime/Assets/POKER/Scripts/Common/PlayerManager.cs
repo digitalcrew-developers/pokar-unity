@@ -66,4 +66,5 @@ public class PlayerGameDetails
     public bool isSilverCardPurchased;
     public bool isBronzeCardPurchased;
     public bool isPlatinumCardPurchased;
+    public string registrationType;
 }

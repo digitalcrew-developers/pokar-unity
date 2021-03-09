@@ -15,7 +15,9 @@ public class RegistrationManager : MonoBehaviour
     public InputField loginUserName, loginPassword;
     public InputField newPassword;
 
-    public Text popUpText, wrongPasswordText;
+    public Text popUpText, wrongPasswordText, statusText;
+
+    public string registrationType = "";
 
     //DEV_CODE
     public TMP_InputField tmp_registrationUserName, tmp_registrationPassword, tmp_registrationConfirmPassword;
@@ -28,12 +30,30 @@ public class RegistrationManager : MonoBehaviour
     private float timer = 1;
     private string verificationCode = string.Empty;
 
+    private string deviceId = "";
+
     private void Awake()
     {
         if (null== instance)
         {
             instance = this;
         }
+
+        //Getting Android Device ID
+#if UNITY_ANDROID
+        AndroidJavaClass up = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+        AndroidJavaObject currentActivity = up.GetStatic<AndroidJavaObject>("currentActivity");
+        AndroidJavaObject contentResolver = currentActivity.Call<AndroidJavaObject>("getContentResolver");
+        AndroidJavaClass secure = new AndroidJavaClass("android.provider.Settings$Secure");
+        deviceId = secure.CallStatic<string>("getString", contentResolver, "android_id");
+
+        string dId = SystemInfo.deviceUniqueIdentifier;
+
+        statusText.text = "Android ID: " + deviceId + " ******** Device Unique ID: " + dId;
+
+#elif UNITY_IPHONE
+        deviceId = SystemInfo.deviceUniqueIdentifier;
+#endif
     }
 
     private void OnEnable()
@@ -111,6 +131,7 @@ public class RegistrationManager : MonoBehaviour
                     if (loginScreen.activeInHierarchy)
                     {
                         string error;
+                        registrationType = "custom";
 
                         if (!Utility.IsValidUserName(/*tmp_loginUserName*/loginUserName.text, out error))
                         {
@@ -130,10 +151,14 @@ public class RegistrationManager : MonoBehaviour
                         }
                         else
                         {
-                            string requestData = "{\"userName\":\"" + /*tmp_loginUserName.text*/loginUserName.text + "\"," +
-                               "\"userPassword\":\"" + /*tmp_loginPassword*/loginPassword.text + "\"," +
-                               "\"registrationType\":\"Custom\"," +
-                               "\"socialId\":\"\"}";
+                            //string requestData = "{\"userName\":\"" + /*tmp_loginUserName.text*/loginUserName.text + "\"," +
+                            //   "\"userPassword\":\"" + /*tmp_loginPassword*/loginPassword.text + "\"," +
+                            //   "\"registrationType\":\"" + registrationType + "\"," +
+                            //   "\"socialId\":\"\"}";
+
+                            string requestData = "{\"userName\":\"" + /*tmp_loginUserName.text*/loginUserName.text/*"pradeep"*/ + "\"," +
+                               "\"userPassword\":\"" + /*tmp_loginPassword*/loginPassword.text/*"123456"*/ + "\"," +
+                               "\"registrationType\":\"" + registrationType + "\"}";
 
                             MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
                             WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
@@ -142,6 +167,7 @@ public class RegistrationManager : MonoBehaviour
                     else if (registrationScreen.activeInHierarchy)
                     {
                         string error;
+                        registrationType = "custom";
 
                         if (!Utility.IsValidUserName(/*tmp_registrationUserName*/registrationUserName.text, out error))
                         {
@@ -169,8 +195,9 @@ public class RegistrationManager : MonoBehaviour
                         {
                            string requestData = "{\"userName\":\"" + /*tmp_registrationUserName*/registrationUserName.text + "\"," +
                            "\"userPassword\":\"" + /*tmp_registrationPassword*/registrationPassword.text + "\"," +
-                           "\"registrationType\":\"Custom\"," +
-                           "\"socialId\":\"\"}";
+                           "\"registrationType\":\"" + registrationType + "\"," +
+                           "\"socialId\":\"\"," +
+                            "\"deviceId\":\"" + deviceId + "\"}";
 
                             MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
                             WebServices.instance.SendRequest(RequestType.Registration, requestData, true, OnServerResponseFound);
@@ -291,39 +318,46 @@ public class RegistrationManager : MonoBehaviour
 
     public void LoginAsGuest()
     {
-#if UNITY_ANDROID
-        AndroidJavaClass up = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-        AndroidJavaObject currentActivity = up.GetStatic<AndroidJavaObject>("currentActivity");
-        AndroidJavaObject contentResolver = currentActivity.Call<AndroidJavaObject>("getContentResolver");
-        AndroidJavaClass secure = new AndroidJavaClass("android.provider.Settings$Secure");
-        string android_id = secure.CallStatic<string>("getString", contentResolver, "android_id");
-#endif
-
-        GoogleManager.instance.statusTxt.text = android_id;
-
-        if(android_id.Length > 0)
+        if(deviceId.Length > 0)
         {
-            string requestData = "{\"registrationType\":\"Custom\"," +
-                           "\"socialId\":\"" + android_id + "\"}";
+            string requestData = "{\"deviceId\":\""+ deviceId  + "\"," +
+                                 "\"registrationType\":\"guest\"}";
+
+            statusText.text = requestData;
 
             MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
             WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
         }
     }
 
-    public void LoginWithSocialID(string userName, string socialId, string registrationType)
+    public void LoginWithSocialID(string email, string authId, string registrationType)
     {
-        Debug.Log("UserName: " + userName);
-        Debug.Log("SocialID: " + socialId);
-        Debug.Log("Registration Type: " + registrationType);
-
+        this.registrationType = registrationType;
         //string requestData = "{\"userName\":\"" + userName + "\"," +
         //                   "\"userPassword\":\"" + "" + "\"," +
         //                   "\"registrationType\":\"" + registrationType + "\"," +
         //                   "\"socialId\":\"" + socialId + "\"}";
 
-        //MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-        //WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
+        string requestData = "{\"deviceId\":\"" + deviceId + "\"," +
+                           "\"registrationType\":\"" + registrationType + "\"," +
+                           "\"emailId\":\"" + email + "\"," +
+                           "\"authId\":\"" + authId + "\"}";
+
+        statusText.text = requestData;
+
+        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+        WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
+    }
+
+    public void LoginWithGoogle()
+    {
+        GoogleManager.instance.SignInWithGoogle();
+    }
+
+    public void LoginWithFacebook()
+    {
+        //FacebookLogin.instance.FBlogin();
+        FacebookManager.instance.SignInWithFB();
     }
 
     public void GetVerificationCodeOnEmail()
@@ -460,64 +494,57 @@ public class RegistrationManager : MonoBehaviour
 
             Debug.Log("Response => Registration: " + JsonMapper.ToJson(data));
 
-            //Debug.Log("User Success Status:" + data.Count);
-
             if (data["success"].ToString() == "1")
             {
-                //MainMenuController.instance.ShowMessage(data["message"].ToString());
-
                 //JsonData parsedObject = JsonMapper.ToObject(data["result"].ToString().Replace(@"\",""));
 
-                PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
-                if (null == playerData) { playerData = new PlayerGameDetails(); }
-                /*playerData.userId = parsedObject["userId"].ToString();*/
-                playerData.userId = data["result"]["userId"].ToString();
-                playerData.userName = /*tmp_registrationUserName*/registrationUserName.text;
-                playerData.password = /*tmp_registrationPassword*/registrationPassword.text;
+                //PlayerGameDetails playerData = PlayerManager.instance.GetPlayerGameData();
+                //if (null == playerData) { playerData = new PlayerGameDetails(); }
+                ///*playerData.userId = parsedObject["userId"].ToString();*/
+                //playerData.userId = data["result"]["userId"].ToString();
+                //playerData.userName = /*tmp_registrationUserName*/registrationUserName.text;
+                //playerData.password = /*tmp_registrationPassword*/registrationPassword.text;
+                //playerData.registrationType = data["result"]["registrationType"].ToString();
 
+                string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
+                         "\"userPassword\":\"" + registrationPassword.text + "\"," +
+                         "\"registrationType\":\"custom\"}";
 
-                //MainMenuController.instance.ShowMessage(data["message"].ToString());
+                MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+                WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);
+
 
                 ResetLoginScreen();
                 ResetRegistrationScreen();
 
                 StartCoroutine(MsgForVideo("Registered Successfully", 1.5f));
 
-                loginScreen.SetActive(true);
-                registrationScreen.SetActive(false);
-
-                /*string requestData = "{\"userName\":\"" + registrationUserName.text + "\"," +
-                         "\"userPassword\":\"" + registrationPassword.text + "\"," +
-                         "\"registrationType\":\"Custom\"," +
-                         "\"socialId\":\"\"}";
-
-
-                 MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
-                 WebServices.instance.SendRequest(RequestType.Login, requestData, true, OnServerResponseFound);*/
+                loginScreen.SetActive(false);
+                registrationScreen.SetActive(false);                
             }
             else
             {
                 //Debug.Log("Uesr already exist");
                 //MainMenuController.instance.ShowMessage(data["message"].ToString());
+                StartCoroutine(MsgForVideo("User already exist", 1.5f));
                 loginScreen.SetActive(true);
                 registrationScreen.SetActive(false);
             }
         }
         else if (requestType == RequestType.Login)
         {
-            //Debug.Log("Response => Login: " + serverResponse);
+            Debug.Log("Response => Login: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
-            Debug.Log("Response => Login: " + JsonMapper.ToJson(data));
 
             if (data["success"].ToString() == "1")
             {
                 PlayerGameDetails playerData = Utility.ParsePlayerGameData(data);
 
-                playerData.userName = /*tmp_loginUserName*/loginUserName.text;
-                playerData.password = /*tmp_loginPassword*/loginPassword.text;
+                //playerData.userName = /*tmp_loginUserName*/loginUserName.text;
+                //playerData.password = /*tmp_loginPassword*/loginPassword.text;
 
                 PlayerManager.instance.SetPlayerGameData(playerData);
-
+                MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
                 MainMenuController.instance.SwitchToMainMenu();
             }
             else

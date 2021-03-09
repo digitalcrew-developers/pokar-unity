@@ -1474,7 +1474,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8990868621653428488
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2550,8 +2550,6 @@ GameObject:
   - component: {fileID: 1416099914288367426}
   - component: {fileID: 1416099914288367427}
   - component: {fileID: 990730356392112126}
-  - component: {fileID: 2699300469903072963}
-  - component: {fileID: 4554349045538979738}
   m_Layer: 5
   m_Name: RegistrationManager
   m_TagString: Untagged
@@ -2648,6 +2646,8 @@ MonoBehaviour:
   newPassword: {fileID: 1658596198474607277}
   popUpText: {fileID: 6644724783272999941}
   wrongPasswordText: {fileID: 1931373814733576088}
+  statusText: {fileID: 519458456162788650}
+  registrationType: 
   tmp_registrationUserName: {fileID: 1583871891073931049}
   tmp_registrationPassword: {fileID: 3527445331942417330}
   tmp_registrationConfirmPassword: {fileID: 9006334503965844195}
@@ -2660,40 +2660,6 @@ MonoBehaviour:
   RegisterPasswordEye: {fileID: 1886230178590809384}
   LoginPasswordEye: {fileID: 9221148196651794108}
   NewPasswordEye: {fileID: 8333828823489207744}
---- !u!114 &2699300469903072963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1416099914288367429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46eecca7800d8d147b4e40968100f352, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  perms:
-  - public_profile
-  - email
-  - user_friends
-  fbLoginBtn: {fileID: 2374466100983409553}
-  fbLogoutBtn: {fileID: 6363612288319466546}
-  playerProfilePic: {fileID: 5989330357542335896}
-  player_Profile_Name: {fileID: 7936492326154406190}
-  STATUStEXT: {fileID: 519458456162788650}
---- !u!114 &4554349045538979738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1416099914288367429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d37aed0ec78418408d32b2ec694a8ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  statusTxt: {fileID: 519458456162788650}
 --- !u!1 &1416099914414995171
 GameObject:
   m_ObjectHideFlags: 0
@@ -5953,9 +5919,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4554349045538979738}
-        m_TargetAssemblyTypeName: GoogleManager, Assembly-CSharp
-        m_MethodName: SignInWithGoogle
+      - m_Target: {fileID: 990730356392112126}
+        m_TargetAssemblyTypeName: RegistrationManager, Assembly-CSharp
+        m_MethodName: LoginWithGoogle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9435,7 +9401,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2699300469903072963}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FacebookLogin, Assembly-CSharp
         m_MethodName: logout
         m_Mode: 1
@@ -12377,7 +12343,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 0.7
-  m_Text: 
+  m_Text: asdfasfsadf
 --- !u!1 &7058506918636704564
 GameObject:
   m_ObjectHideFlags: 0
@@ -13730,9 +13696,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2699300469903072963}
-        m_TargetAssemblyTypeName: FacebookLogin, Assembly-CSharp
-        m_MethodName: FBlogin
+      - m_Target: {fileID: 990730356392112126}
+        m_TargetAssemblyTypeName: RegistrationManager, Assembly-CSharp
+        m_MethodName: LoginWithFacebook
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

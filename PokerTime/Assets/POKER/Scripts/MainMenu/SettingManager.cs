@@ -56,11 +56,23 @@ public class SettingManager : MonoBehaviour
 
     public void OnClickLogOutBTN()
     {
-        Debug.Log("*********You CLICK ON LOG OUT");
-        if(null!= ClubListUiManager.instance)
+        //Debug.Log("*********You CLICK ON LOG OUT");
+        if (null != ClubListUiManager.instance)
         {
             ClubListUiManager.instance.CleaClubList();
         }
+
+        //Code to logout from social accounts if logged in with social account.
+        if (PlayerManager.instance.GetPlayerGameData().registrationType.Equals("google") || PlayerManager.instance.GetPlayerGameData().registrationType.Equals("Google"))
+        {
+            GoogleManager.instance.SignOutFromGoogle();
+        }
+        else if(PlayerManager.instance.GetPlayerGameData().registrationType.Equals("facebook") || PlayerManager.instance.GetPlayerGameData().registrationType.Equals("Facebook"))
+        {
+            //FacebookLogin.instance.logout();
+            FacebookManager.instance.SignOutFromFB();
+        }
+
         SoundManager.instance.PlaySound(SoundType.Click);
         PlayerPrefs.DeleteAll();
         PlayerManager.instance.DeletePlayerGameData();
