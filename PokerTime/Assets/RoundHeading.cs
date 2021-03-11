@@ -176,4 +176,30 @@ public class RoundHeading : MonoBehaviour
                 break;
         }
     }
+
+    public void ShowComCards(List<comCard> cards, int runit)
+    {
+
+        if (runit == 0)
+            RoundName.text = "2nd Time";
+        else if (runit == 1)
+            RoundName.text = "3nd Time";
+        roundAmount.text = "";
+
+        image0.gameObject.SetActive(true);
+        image1.gameObject.SetActive(true);
+        image2.gameObject.SetActive(true);
+        image3.gameObject.SetActive(true);
+        image4.gameObject.SetActive(true);
+        CardData cardData1_3 = CardsManager.instance.GetCardData(cards[runit].c0);
+        image0.sprite = cardData1_3.cardsSprite;
+        CardData cardData2_3 = CardsManager.instance.GetCardData(cards[runit].c1);
+        image1.sprite = cardData2_3.cardsSprite;
+        CardData cardData3_3 = CardsManager.instance.GetCardData(cards[runit].c2);
+        image2.sprite = cardData3_3.cardsSprite;
+        CardData cardData4_3 = CardsManager.instance.GetCardData(cards[runit].c3);
+        image3.sprite = cardData4_3.cardsSprite;
+        CardData cardData5_3 = CardsManager.instance.GetCardData(cards[runit].c4);
+        image4.sprite = cardData5_3.cardsSprite;
+    }
 }
