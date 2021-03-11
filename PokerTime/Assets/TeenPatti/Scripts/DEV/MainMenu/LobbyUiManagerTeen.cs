@@ -237,8 +237,8 @@ public void ShowMissonScreen()
 
             GameObject gm = Instantiate(roomPrefab, container) as GameObject;
 
-            loadRoomImage(data.roomIconUrl, gm);
-            LoadRoomBG(data.roomBG, gm);
+            //loadRoomImage(data.roomIconUrl, gm);
+            //LoadRoomBG(data.roomBG, gm);
 
             gm.transform.Find("Name").GetComponent<Text>().text = data.title;
             gm.transform.Find("Blinds").GetComponent<Text>().text = "" + Utility.GetTrimmedAmount("" + data.smallBlind) + "/" + Utility.GetTrimmedAmount("" + data.bigBlind);

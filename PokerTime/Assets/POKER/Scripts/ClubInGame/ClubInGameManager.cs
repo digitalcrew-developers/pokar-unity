@@ -1403,7 +1403,7 @@ public class ClubInGameManager : MonoBehaviour
 
                     yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
 
-                    yield return new WaitForSeconds(0.5f);
+                    //yield return new WaitForSeconds(0.5f);
 
                     //GameObject gmAllCard = Instantiate(runItMultiAllCards, animationLayer) as GameObject;
                     //GameObject gmTwoCard = Instantiate(runItMultiTwoCards, animationLayer) as GameObject;

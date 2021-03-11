@@ -178,13 +178,15 @@ public class InGameManagerTeenPatti : MonoBehaviour
     {
         if (!GlobalGameManager.IsJoiningPreviousGame)
         {
+            GlobalGameManager.IsJoiningPreviousGame = isGameStart;
             List<GameObject> animatedCards = new List<GameObject>();
+            Debug.Log("Players : " + players.Length);
             for (int i = 0; i < players.Length; i++)
             {
                 Image[] playerCards = players[i].GetCardsImage();
 
-/*                Debug.Log("Player Cards: " + playerCards[i].name);*/
-                
+                Debug.Log("Player Cards: " + playerCards.Length);
+
                 for (int j = 0; j < playerCards.Length; j++)
                 {
                     GameObject gm = Instantiate(cardAnimationPrefab, animationLayer) as GameObject;
@@ -201,24 +203,29 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
                 yield return new WaitForSeconds(0.1f);
             }
-
+            Debug.Log("Total Cards = " + animatedCards.Count);
             yield return new WaitForSeconds(GameConstants.CARD_ANIMATION_DURATION);
 
             for (int i = 0; i < animatedCards.Count; i++)
             {
                 Destroy(animatedCards[i]);
             }
-
             animatedCards.Clear();
+            for (int i = 0; i < players.Length; i++)
+                players[i].ToggleCards(true, players[i].IsMe());
         }
 
-
+        //yield return new WaitForSeconds(2.5f);
         for (int i = 0; i < players.Length; i++)
         {
-            players[i].ToggleCards(true, players[i].IsMe());
+            /*Debug.Log(players[i].playerData.userName + " Name " + players[i].IsMe() + ", " + players[i].playerData.isStart);
+            if (!players[i].playerData.isStart)
+                players[i].ToggleCards(false, players[i].IsMe());
+            else*/
+                //players[i].ToggleCards(true, players[i].IsMe());
         }
-
-        SocketControllerTeenPatti.instance.SetSocketState(SocketStateTeenPatti.Game_Running);
+        if (isGameStart)
+            SocketControllerTeenPatti.instance.SetSocketState(SocketStateTeenPatti.Game_Running);
         SwitchTurn(playerScriptWhosTurn,false);
     }
 
@@ -436,7 +443,8 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 playerDataObject.userName = data[i]["userName"].ToString();
                 playerDataObject.tableId = data[i]["tableId"].ToString();
                 playerDataObject.balance = float.Parse(data[i]["totalCoins"].ToString());
-               // playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
+                playerDataObject.isStart = bool.Parse(data[i]["isStart"].ToString());
+                // playerDataObject.avatarurl = data[0][i]["profileImage"].ToString();
                 //Debug.LogError("URL     new 2222222 " + playerDataObject.avatarurl);
                 if (isMatchStarted)
                 {
@@ -605,18 +613,25 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScriptTeenPatti playerScript, string betAmount)
     {
-        Debug.Log("Last All in Bet: " + playerScript.GetLocalBetAmount()/*betAmount*/);
-        GameObject gm = Instantiate(betAnimationPrefab,animationLayer) as GameObject;
-        gm.transform.GetChild(0).GetComponent<Text>().text = playerScript.GetLocalBetAmount().ToString()/*betAmount*/;
-        gm.transform.position = playerScript.transform.position;
-        Vector3 initialScale = gm.transform.localScale;
-        gm.transform.localScale = Vector3.zero;
+        Debug.Log(playerScript.localBg().activeSelf + " Bet: " + betAmount + " + " + playerScript.GetLocaPot().text);
+        if (!playerScript.localBg().activeSelf)
+        {
+            GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
+            gm.transform.GetChild(0).GetComponent<Text>().text = betAmount;
+            gm.transform.position = playerScript.transform.position;
+            Vector3 initialScale = gm.transform.localScale;
+            gm.transform.localScale = Vector3.zero;
 
-        gm.transform.DOMove(playerScript.localBg().transform.position,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        gm.transform.DOScale(initialScale,GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
-        SoundManager.instance.PlaySound(SoundType.Bet);
-        yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
-        Destroy(gm);
+            gm.transform.DOMove(playerScript.localBg().transform.position, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack);
+            gm.transform.DOScale(initialScale, GameConstants.BET_PLACE_ANIMATION_DURATION).SetEase(Ease.OutBack).OnComplete(() => { playerScript.GetLocaPot().text = betAmount; playerScript.localBg().SetActive(true); });
+            SoundManager.instance.PlaySound(SoundType.Bet);
+            yield return new WaitForSeconds(GameConstants.BET_PLACE_ANIMATION_DURATION);
+            Destroy(gm);
+        }
+        else
+        {
+            playerScript.GetLocaPot().text = (int.Parse(playerScript.GetLocaPot().text) + int.Parse(betAmount)).ToString();
+        }
     }
 
 
@@ -624,7 +639,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
     {
         //Debug.Log("Last All in Bet: " + playerScript.GetLocalBetAmount()/*betAmount*/);
         GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
-        gm.transform.GetChild(0).GetComponent<Text>().text = betAmount/*betAmount*/;
+        gm.transform.GetChild(0).GetComponent<Text>().text = betAmount;
         gm.transform.position = playerScript.transform.position;
         Vector3 initialScale = gm.transform.localScale;
         gm.transform.localScale = Vector3.zero;
@@ -679,6 +694,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     public void UpdatePot(string textToShow)
     {
+        Debug.Log("<color=yellow>Pot " + textToShow + "</color>");
         potText.text = textToShow;
     }
 
@@ -1015,8 +1031,8 @@ public class InGameManagerTeenPatti : MonoBehaviour
             return;
         }
 
-       // Debug.LogError("OnResultSuccessFound :" + serverResponse);
-
+        // Debug.LogError("OnResultSuccessFound :" + serverResponse);
+        GlobalGameManager.IsJoiningPreviousGame = false;
         MATCH_ROUND = 10; // ToShow all cards
         ShowCommunityCardsAnimation();
         InGameUiManagerTeenPatti.instance.ToggleActionButton(false, null, false, 0);
@@ -1056,7 +1072,8 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 PlayerScriptTeenPatti winnerPlayer = GetPlayerObject(data[0][0][0]["userId"].ToString());
                 // show Winner notification
                 //Debug.LogError("user Id :" + data[0][0][0]["userId"].ToString());
-                matchWinner.text = winnerPlayer.playerData.userName + " wins the game.";
+                if (winnerPlayer != null)
+                    matchWinner.text = winnerPlayer.playerData.userName + " wins the game.";
                 notifyUser.SetActive(true);
 
                 if (winnerPlayer != null)
@@ -1072,6 +1089,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                     gm.transform.position = winnerPlayer.gameObject.transform.position;
                     gm.transform.SetParent(winnerPlayer.gameObject.transform.GetChild(0).transform);
                     gm.transform.SetSiblingIndex(0);
+                    gm.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 8f);
                     Vector3 inititalScale = gm.transform.localScale;
                     gm.transform.localScale = Vector3.zero;
                     StartCoroutine(WaitAndShowWinnersAnimation(winnerPlayer, data[0][0][0]["winAmount"].ToString(), gm));
@@ -1203,6 +1221,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
     public void OnTurnCountDownFound(string serverResponse)
     {
+        Debug.Log("%%%%%%%%%%%%%%%%%%%%%%  serverResponse " + serverResponse);
         if (SocketControllerTeenPatti.instance.GetSocketState() == SocketStateTeenPatti.Game_Running)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
@@ -1214,7 +1233,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
                
 
-                // Debug.Log("%%%%%%%%%%%%%%%%%%%%%%  remainingTime " + remainingTime);
+                //Debug.Log("%%%%%%%%%%%%%%%%%%%%%%  remainingTime " + remainingTime);
                 if (remainingTime == -9)
                 {
                     PlayerTimerReset();
@@ -1255,7 +1274,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
         LAST_BET_AMOUNT = (int)float.Parse(data[0]["lastBet"].ToString());
         string userId = data[0]["userId"].ToString();
         potAmount = float.Parse(data[0]["pot"].ToString());
-
+        Debug.Log("<color=yellow>Pot " + potAmount + "</color>");
 
         if (SocketControllerTeenPatti.instance.GetSocketState() == SocketStateTeenPatti.Game_Running)
         {
@@ -1279,7 +1298,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 UpdatePot("" + (int)potAmount);
                 Pot.SetActive(true);
                 Debug.Log("Current Bet Amount : " + betAmount);
-                //StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.GetLocalBetAmount()));
+                StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));
                 StartCoroutine(WaitAndShowBetAnimationPot(Pot, "" + playerObject.GetLocalBetAmount()));
                 ///StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + playerObject.t));
                 /*StartCoroutine(WaitAndShowBetAnimation(playerObject, "" + betAmount));*/
@@ -1377,8 +1396,8 @@ public class InGameManagerTeenPatti : MonoBehaviour
         int remainingTime = (int)float.Parse(data[0].ToString());
         Debug.Log("Game Start serverResponse => " + serverResponse);
         Debug.Log("Game Start in => " + remainingTime);
-        if(remainingTime == 0)
-        PlayerScriptTeenPatti.instance.cardSeenButton.SetActive(true);
+        if (remainingTime == 0)
+            PlayerScriptTeenPatti.instance.cardSeenButton.SetActive(true);
      /*   if (remainingTime < 30)
         {*/
             if (remainingTime <= 1)
@@ -1441,6 +1460,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
             JsonData newData = data[0]["players"];
             //AdjustAllPlayersOnTable(data[0].Count);
             bool isMatchStarted = data[0]["isGameStart"].Equals(true);
+            isGameStart = isMatchStarted;
             bool isMatchOver = data[0]["isGameOver"].Equals(true);
             potAmount = float.Parse(data[0]["pot"].ToString());
             GameConstants.maxChaal = float.Parse(data[0]["maxChal"].ToString());
@@ -1499,6 +1519,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                         playerData.playerData.tableId = newData[i]["tableId"].ToString();
                         InGameUiManagerTeenPatti.instance.tableId = newData[i]["tableId"].ToString();
                         playerData.playerData.isFold = newData[i]["isBlocked"].Equals(true);
+                        playerData.playerData.isStart = bool.Parse(newData[i]["isStart"].ToString());
 
                         playerData.playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
                         //Debug.LogError("Check User balance is :" + newData[i]["minBet"].ToString());
@@ -1565,6 +1586,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
                         PlayerDataTeenPatti playerData = new PlayerDataTeenPatti();
                         //Debug.LogError("************************************************************");
                         playerObject.playerData.isFold = newData[i]["isBlocked"].Equals(true);
+                        playerData.isStart = bool.Parse(newData[i]["isStart"].ToString());
                         playerObject.playerData.totalBet = float.Parse(newData[i]["minBet"].ToString());
                         playerObject.playerData.playerAllBet = float.Parse(newData[i]["totalBet"].ToString());
                         playerObject.playerData.balance = float.Parse(newData[i]["totalCoins"].ToString());
@@ -1654,6 +1676,10 @@ public class InGameManagerTeenPatti : MonoBehaviour
 
         onlinePlayersScript = null;
         onlinePlayersScript = new PlayerScriptTeenPatti[0];
+        for (int i = 0; i < animationLayer.childCount; i++)
+        {
+            Destroy(animationLayer.GetChild(i).gameObject);
+        }
     }
 
 

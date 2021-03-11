@@ -681,7 +681,7 @@ public class PlayerScript : MonoBehaviour
             //cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
             cardsImage[i].gameObject.SetActive(isShow);
         }
-        
+        Debug.Log(isShow + " - " + isShowOriginalCards + " - " + cardsImage.Length);
         if (isShow)
         {
             if (isShowOriginalCards)
@@ -692,69 +692,50 @@ public class PlayerScript : MonoBehaviour
                     {
                         cardsImage[i].sprite = playerData.cards[i].cardsSprite;
 
-                        //DEV_CODE
-                        //InGameManager.instance.cardValue = InGameManager.instance.cardValue + GetPlayerData().cards[i].cardNumber + GetPlayerData().cards[i].cardIcon.ToString();
-
-                        /*Debug.Log("Current Player Card Data is--->>> : " + InGameManager.instance.cardValue);*/
-
-                        /*Debug.Log("Card Number" + ":  " + i + " is ->>>>>>>>>>  " + GetPlayerData().cards[i].cardNumber);
-                        Debug.Log("Card Icon" + ":  " + i + " is ->>>>>>>>>>  " + GetPlayerData().cards[i].cardIcon.ToString());*/
-
-
-                        /*
-                        Sprite[] cardSprites = Resources.LoadAll<Sprite>("cards");
-
-                        CardData data = new CardData();
-                        data.cardNumber = playerData.cards[i].cardNumber;
-                        data.cardIcon = playerData.cards[i].cardIcon;
-
-                        int totalCardNumbers = Enum.GetNames(typeof(CardNumber)).Length - 1;
-                        int totalCardIcons = Enum.GetNames(typeof(CardIcon)).Length - 1;
-
-
-                        int cardNumber = totalCardNumbers - (int)data.cardNumber; // reverse order
-                        int cardIcon = totalCardIcons - (int)data.cardIcon; // reverse order
-
-                        data.cardsSprite = cardSprites[(cardIcon * 13) + cardNumber];*/
-
-                        /*Sprite cardSprite = GetPlayerData().cards[i].cardsSprite;*/
-                        /*Texture2D cardTex = data.cardsSprite.texture;
-                        var bytes = cardTex.EncodeToPNG();
-                        //byte[] cardByte = cardTex.EncodeToPNG();
-                        File.WriteAllBytes(Application.persistentDataPath + "/Card" + i + ".png", bytes);*/
-
-                        //Debug.Log("Cards positions....." + isItMe);
+                        Debug.Log("Cards positions....." + isItMe);
                         if (!isItMe)
                         {
                             Debug.Log("Cards positions2222....." + isItMe+", "+gameObject.name);
                             if (gameObject.name == "0")
                             {
+                                cardsImage[i].transform.localScale = new Vector3(2f, 2f);
+                                cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                                 if (i == 0)
                                 {
                                     cardsImage[i].transform.localPosition = new Vector3(-85, 0);
-                                    cardsImage[i].transform.localScale = new Vector3(2f, 2f);
-                                    cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                                 }
                                 if (i == 1)
                                 {
                                     cardsImage[i].transform.localPosition = new Vector3(-70, 0);
-                                    cardsImage[i].transform.localScale = new Vector3(2f, 2f);
-                                    cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
+                                }
+                                if (i == 2)
+                                {
+                                    cardsImage[i].transform.localPosition = new Vector3(-55, 0);
+                                }
+                                if (i == 3)
+                                {
+                                    cardsImage[i].transform.localPosition = new Vector3(-40, 0);
                                 }
                             }
                             else
                             {
+                                cardsImage[i].transform.localScale = new Vector3(2f, 2f);
+                                cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                                 if (i == 0)
                                 {
                                     cardsImage[i].transform.localPosition = new Vector3(-40, -5);
-                                    cardsImage[i].transform.localScale = new Vector3(2f, 2f);
-                                    cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                                 }
                                 if (i == 1)
                                 {
                                     cardsImage[i].transform.localPosition = new Vector3(-25, -5);
-                                    cardsImage[i].transform.localScale = new Vector3(2f, 2f);
-                                    cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
+                                }
+                                if (i == 2)
+                                {
+                                    cardsImage[i].transform.localPosition = new Vector3(-10, -5);
+                                }
+                                if (i == 3)
+                                {
+                                    cardsImage[i].transform.localPosition = new Vector3(5, -5);
                                 }
                             }
 
@@ -792,18 +773,17 @@ public class PlayerScript : MonoBehaviour
                         }
                         else
                         {
-                            //Debug.Log("Cards 3333....." + isItMe + ", " + gameObject.name);
+                            Debug.Log("Cards 3333....." + isItMe + ", " + gameObject.name);
                             cardsImage[i].GetComponent<RectTransform>().sizeDelta = new Vector3(58f, 83f);
-                            
+                            cardsImage[i].transform.localScale = new Vector3(0.87f, 0.87f);
+                            cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
+
                             if (i == 0)
                             {
                                 if (InGameManager.instance != null)
                                     cardsImage[i].transform.localPosition = new Vector3(-11, 0);
                                 else if (ClubInGameManager.instance != null)
                                     cardsImage[i].transform.localPosition = new Vector3(-22, 0);
-
-                                cardsImage[i].transform.localScale = new Vector3(0.87f, 0.87f);
-                                cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
                             }
                             if (i == 1)
                             {
@@ -811,9 +791,16 @@ public class PlayerScript : MonoBehaviour
                                     cardsImage[i].transform.localPosition = new Vector3(11, 0);
                                 else if (ClubInGameManager.instance != null)
                                     cardsImage[i].transform.localPosition = new Vector3(0, 0);
-                                
-                                cardsImage[i].transform.localScale = new Vector3(0.87f, 0.87f);
-                                cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
+                            }
+                            if (i == 2)
+                            {
+                                if (InGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(33, 0);
+                            }
+                            if (i == 3)
+                            {
+                                if (InGameManager.instance != null)
+                                    cardsImage[i].transform.localPosition = new Vector3(55, 0);
                             }
                         }
                     }
@@ -821,7 +808,7 @@ public class PlayerScript : MonoBehaviour
             }
             else
             {
-                //Debug.Log(GetPlayerData().userName + " " + isShow + " " + isItMe);
+                Debug.Log(GetPlayerData().userName + " " + isShow + " " + isItMe);
                 for (int i = 0; i < cardsImage.Length; i++)
                 {
                     if (!isItMe)
@@ -841,21 +828,43 @@ public class PlayerScript : MonoBehaviour
                                 if (cardsImage[i].transform.localRotation.z == 0)
                                     cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -4f);
                             }
+                            if (i == 2)
+                            {
+                                cardsImage[i].transform.localPosition = new Vector3(-35, 4);
+                                if (cardsImage[i].transform.localRotation.z == 0)
+                                    cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -8f);
+                            }
+                            if (i == 3)
+                            {
+                                cardsImage[i].transform.localPosition = new Vector3(-30, 4);
+                                if (cardsImage[i].transform.localRotation.z == 0)
+                                    cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -12f);
+                            }
                         }
                         else
                         {
+                            cardsImage[i].transform.localScale = new Vector3(1f, 1f);
                             if (i == 0)
                             {
                                 cardsImage[i].transform.localPosition = new Vector3(0, 0);
-                                cardsImage[i].transform.localScale = new Vector3(1f, 1f);
                             }
                             if (i == 1)
                             {
                                 cardsImage[i].transform.localPosition = new Vector3(5, 0);
-                                cardsImage[i].transform.localScale = new Vector3(1f, 1f);
-
                                 if (cardsImage[i].transform.localRotation.z == 0)
                                     cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -4f);
+                            }
+                            if (i == 2)
+                            {
+                                cardsImage[i].transform.localPosition = new Vector3(10, 0);
+                                if (cardsImage[i].transform.localRotation.z == 0)
+                                    cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -8f);
+                            }
+                            if (i == 3)
+                            {
+                                cardsImage[i].transform.localPosition = new Vector3(15, 0);
+                                if (cardsImage[i].transform.localRotation.z == 0)
+                                    cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, -12f);
                             }
                         }
                     }

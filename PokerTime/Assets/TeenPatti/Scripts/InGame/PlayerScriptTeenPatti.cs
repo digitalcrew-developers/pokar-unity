@@ -486,7 +486,7 @@ public class PlayerScriptTeenPatti : MonoBehaviour
 
         if (lastActionRoundNo >= 0) // All details found
         {
-            UpdateLocalPot(totalBetInThisRound, lastActionRoundNo);
+            //UpdateLocalPot(totalBetInThisRound, lastActionRoundNo);
 
             if (lastActionRoundNo == InGameManagerTeenPatti.instance.GetMatchRound())
             {
@@ -511,7 +511,7 @@ public class PlayerScriptTeenPatti : MonoBehaviour
         {
             cardsImage[i].gameObject.SetActive(isShow);
         }
-
+        //Debug.Log(isShow + " - " + isShowOriginalCards + " - " + cardsImage.Length);
         if (isShow)
         {
             if (isShowOriginalCards)
@@ -687,7 +687,7 @@ public class PlayerDataTeenPatti
     public string userId;
     public string userName;
     public string tableId;
-    public bool isDealer, isSmallBlind, isBigBlind, isFold, isTurn, isCheckAvailable;
+    public bool isDealer, isSmallBlind, isBigBlind, isFold, isTurn, isCheckAvailable, isStart;
     public float balance, totalBet, playerAllBet;
     public CardData[] cards;
     public string avatarurl;

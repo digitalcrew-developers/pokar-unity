@@ -158,7 +158,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
             SocketResponseTeenPatti responseObject = socketResponse[0];
             socketResponse.RemoveAt(0);
 
-            //Debug.LogError("Response is :" + responseObject.eventType);
+            Debug.LogError("<color=magenta>Response is :</color>" + responseObject.eventType);
 
 #if DEBUG
 
@@ -1494,7 +1494,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
         //requestData.userData.playerAction = userAction;
         //requestData.userData.roundNo = roundNo;
 
-        //requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+        requestData.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
         requestData.tableId = TABLE_ID;
         requestData.requesterUserId = GameConstants.sideShowRequesterId;
 

@@ -10,7 +10,7 @@ public class HandHistoryManager : MonoBehaviour
     public GameObject LoadingText, logText;
     public GameObject DetailsPanel, SummaryPanel;
     public GameObject DetailsButtonImage, SummaryButtonImage;
-    public GameObject HandDetailRoundPrefab, PlayerDetailsPrefab, PotDetailsPrefab, HandSummaryItemPrefab;
+    public GameObject HandDetailRoundPrefab, PlayerDetailsPrefab, PotDetailsPrefab, evChopPrefab, HandSummaryItemPrefab;
     public Transform HandDetailsContent, HandSummaryContent;
 
     private int pageNo = 0;
@@ -235,7 +235,29 @@ public class HandHistoryManager : MonoBehaviour
                     details1.SetActive(true);
                     details1.GetComponent<PlayerDeatilsControl>().Init("preflop", histories.histories[pageNo].handDetails,
                         h);
-                }
+
+                    if (histories.histories[pageNo].handDetails.PREFLOP[h].betType == "evChop")
+                    {
+                        for (int p = 0; p < histories.histories[pageNo].handDetails.PREFLOP[h].evChop.Count; p++)
+                        {
+                            Debug.Log("PREFLOP - " + histories.histories[pageNo].handDetails.PREFLOP[h].evChop[p].amount);
+                            GameObject evChopdetails = Instantiate(evChopPrefab, HandDetailsContent) as GameObject;
+                            evChopdetails.SetActive(true);
+                            evChopdetails.transform.GetChild(0).GetComponent<Text>().text = histories.histories[pageNo].handDetails.PREFLOP[h].userName +
+                                " EV Chop " + histories.histories[pageNo].handDetails.PREFLOP[h].evChop[p].amount;
+                            evChopdetails.transform.GetChild(1).GetComponent<Text>().text = "Pot: " + histories.histories[pageNo].handDetails.PREFLOP[h].evChop[p].potAmount +
+                                ", Equity:  " + histories.histories[pageNo].handDetails.PREFLOP[h].evChop[p].winPercent;
+                        }
+                        Debug.Log("Run It - " + histories.histories[pageNo].handDetails.PREFLOP[h].comCards.Count);
+                        for (int k = 0; k < histories.histories[pageNo].handDetails.PREFLOP[h].comCards.Count; k++)
+                        {
+                            Debug.Log("comCard - " + histories.histories[pageNo].handDetails.PREFLOP[h].comCards[k].c0);
+                            GameObject gm2 = Instantiate(HandDetailRoundPrefab, HandDetailsContent) as GameObject;
+                            gm2.SetActive(true);
+                            gm2.GetComponent<RoundHeading>().ShowComCards(histories.histories[pageNo].handDetails.PREFLOP[h].comCards, k);
+                        }
+                    }
+                }                
             }
             //postflop
             if (histories.histories[pageNo].handDetails.POSTFLOP.Count > 0)
@@ -270,6 +292,17 @@ public class HandHistoryManager : MonoBehaviour
                     details2.SetActive(true);
                     details2.GetComponent<PlayerDeatilsControl>().Init("postflop", histories.histories[pageNo].handDetails,
                         h);
+
+                    for (int p = 0; p < histories.histories[pageNo].handDetails.POSTFLOP[h].evChop.Count; p++)
+                    {
+                        Debug.Log("PREFLOP - " + histories.histories[pageNo].handDetails.POSTFLOP[h].evChop[p].amount);
+                        GameObject evChopdetails = Instantiate(evChopPrefab, HandDetailsContent) as GameObject;
+                        evChopdetails.SetActive(true);
+                        evChopdetails.transform.GetChild(0).GetComponent<Text>().text = histories.histories[pageNo].handDetails.POSTFLOP[h].userName +
+                            " EV Chop " + histories.histories[pageNo].handDetails.POSTFLOP[h].evChop[p].amount;
+                        evChopdetails.transform.GetChild(1).GetComponent<Text>().text = "Pot: " + histories.histories[pageNo].handDetails.POSTFLOP[h].evChop[p].potAmount +
+                            ", Equity:  " + histories.histories[pageNo].handDetails.POSTFLOP[h].evChop[p].winPercent;
+                    }
                 }
             }
             //turn
@@ -285,6 +318,17 @@ public class HandHistoryManager : MonoBehaviour
                     details2.SetActive(true);
                     details2.GetComponent<PlayerDeatilsControl>().Init("turn", histories.histories[pageNo].handDetails,
                         h);
+
+                    for (int p = 0; p < histories.histories[pageNo].handDetails.POSTTURN[h].evChop.Count; p++)
+                    {
+                        Debug.Log("PREFLOP - " + histories.histories[pageNo].handDetails.POSTTURN[h].evChop[p].amount);
+                        GameObject evChopdetails = Instantiate(evChopPrefab, HandDetailsContent) as GameObject;
+                        evChopdetails.SetActive(true);
+                        evChopdetails.transform.GetChild(0).GetComponent<Text>().text = histories.histories[pageNo].handDetails.POSTTURN[h].userName +
+                            " EV Chop " + histories.histories[pageNo].handDetails.POSTTURN[h].evChop[p].amount;
+                        evChopdetails.transform.GetChild(1).GetComponent<Text>().text = "Pot: " + histories.histories[pageNo].handDetails.POSTTURN[h].evChop[p].potAmount +
+                            ", Equity:  " + histories.histories[pageNo].handDetails.POSTTURN[h].evChop[p].winPercent;
+                    }
                 }
             }
             //river
@@ -300,6 +344,17 @@ public class HandHistoryManager : MonoBehaviour
                     details2.SetActive(true);
                     details2.GetComponent<PlayerDeatilsControl>().Init("river", histories.histories[pageNo].handDetails,
                         h);
+
+                    for (int p = 0; p < histories.histories[pageNo].handDetails.POSTRIVER[h].evChop.Count; p++)
+                    {
+                        Debug.Log("PREFLOP - " + histories.histories[pageNo].handDetails.POSTRIVER[h].evChop[p].amount);
+                        GameObject evChopdetails = Instantiate(evChopPrefab, HandDetailsContent) as GameObject;
+                        evChopdetails.SetActive(true);
+                        evChopdetails.transform.GetChild(0).GetComponent<Text>().text = histories.histories[pageNo].handDetails.POSTRIVER[h].userName +
+                            " EV Chop " + histories.histories[pageNo].handDetails.POSTRIVER[h].evChop[p].amount;
+                        evChopdetails.transform.GetChild(1).GetComponent<Text>().text = "Pot: " + histories.histories[pageNo].handDetails.POSTRIVER[h].evChop[p].potAmount +
+                            ", Equity:  " + histories.histories[pageNo].handDetails.POSTRIVER[h].evChop[p].winPercent;
+                    }
                 }
             }
             //showdown
@@ -358,6 +413,10 @@ public class PreFlop
     public List<string> openCards = new List<string>();
     public double currentPot;
     public string seatName;
+    public List<evChop> evChop = new List<evChop>();
+    public bool runItMultipleTimes;
+    public List<comCard> comCards = new List<comCard>();
+    public int runIt;
 }
 
 [Serializable]
@@ -374,6 +433,10 @@ public class PostFlop {
     public List<Pot> sidePot = new List<Pot>();
     public double currentPot;
     public string seatName;
+    public List<evChop> evChop = new List<evChop>();
+    public bool runItMultipleTimes;
+    public List<comCard> comCards = new List<comCard>();
+    public int runIt;
 }
 
 [Serializable]
@@ -390,6 +453,10 @@ public class PostTurn
     public List<string> openCards = new List<string>();
     public double currentPot;
     public string seatName;
+    public List<evChop> evChop = new List<evChop>();
+    public bool runItMultipleTimes;
+    public List<comCard> comCards = new List<comCard>();
+    public int runIt;
 }
 
 [Serializable]
@@ -406,6 +473,10 @@ public class PostRiver
     public List<string> openCards = new List<string>();
     public double currentPot;
     public string seatName;
+    public List<evChop> evChop = new List<evChop>();
+    public bool runItMultipleTimes;
+    public List<comCard> comCards = new List<comCard>();
+    public int runIt;
 }
 
 [Serializable]
@@ -422,6 +493,10 @@ public class ShowDown
     public List<string> openCards = new List<string>();
     public double currentPot;
     public string seatName;
+    public List<evChop> evChop = new List<evChop>();
+    public bool runItMultipleTimes;
+    public List<comCard> comCards = new List<comCard>();
+    public int runIt;
 }
 
 [Serializable]
@@ -435,6 +510,25 @@ public class Details
     public List<string> playerCards = new List<string>();
     public List<string> openCards = new List<string>();
     public double currentPot;
+}
+
+[Serializable]
+public class evChop
+{
+    public string action;
+    public string amount;
+    public string winPercent;
+    public string potAmount;
+}
+
+[Serializable]
+public class comCard
+{
+    public string c0;
+    public string c1;
+    public string c2;
+    public string c3;
+    public string c4;
 }
 
 

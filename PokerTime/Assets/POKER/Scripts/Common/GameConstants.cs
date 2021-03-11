@@ -82,7 +82,8 @@ public class GameConstants : MonoBehaviour
     public static string[] GAME_URLS =
     {
         API_URL +"/userSignUp",
-        API_URL +"/userLogin",
+        //API_URL +"/userLogin",
+        API_URL +"/newUserLogin",
         API_URL +"/createClub",
         API_URL +"/joinClubRequest",
         API_URL +"/getClubListByUserId",

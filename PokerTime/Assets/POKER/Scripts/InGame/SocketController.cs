@@ -132,6 +132,7 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("evChopData", EVChopDataReceived);
         socketManager.Socket.On("playerExit", PlayerExit);
         socketManager.Socket.On("lineNo", LineNumber);
+        socketManager.Socket.On("switchTable", SwitchTableDone);
         socketManager.Open();
     }
 
@@ -139,6 +140,13 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.LogError("Response => LineNumber: " + responseText);
+    }
+
+    private void SwitchTableDone(Socket socket, Packet packet, object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        Debug.LogError("Response => SwitchTableDone: " + responseText);
+        InGameUiManager.instance.DestroyScreen(InGameScreens.Loading);
     }
 
     bool isPaused = false;

@@ -1421,8 +1421,8 @@ public class InGameManager : MonoBehaviour
 
         for (int i = 0; i < onlinePlayersScript.Length; i++)
         {
-            Debug.Log(onlinePlayersScript[i].playerData.userName + " " + onlinePlayersScript[i].playerData.isFold);
-            if (onlinePlayersScript[i].playerData.isStart)
+            Debug.Log(onlinePlayersScript[i].playerData.userName + " " + onlinePlayersScript[i].playerData.isFold + ", " + onlinePlayersScript.Length);
+            if (onlinePlayersScript[i].playerData.isStart && onlinePlayersScript.Length > 1)
                 onlinePlayersScript[i].ToggleCards(!onlinePlayersScript[i].playerData.isFold, true);
             onlinePlayersScript[i].DisablePot();
         }   

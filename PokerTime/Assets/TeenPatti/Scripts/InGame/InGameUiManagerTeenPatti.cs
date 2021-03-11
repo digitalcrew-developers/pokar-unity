@@ -780,6 +780,8 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     public void ToggleActionButton(bool isShow, PlayerScriptTeenPatti playerObject = null,
         bool isCheckAvailable = false, int lastBetAmount = 0)
     {
+        if (acceptSideShowButton.activeInHierarchy)
+            return;
         actionButtonParent.SetActive(isShow);
 
         if (isShow)
@@ -1409,6 +1411,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
 
     }
 
+    //Accepting the side show
     public void OnClickSideShowWinner(GameObject btn)
     {
         btn.SetActive(false);
