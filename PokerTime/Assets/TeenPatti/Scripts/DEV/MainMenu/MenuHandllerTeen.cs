@@ -289,18 +289,18 @@ public class MenuHandllerTeen : MonoBehaviour
 			case RequestTypeTP.SendClubJoinRequest:
 				{
 					Debug.Log("Response => JoinClubRequest TP: " + serverResponse);
-					//JsonData data = JsonMapper.ToObject(serverResponse);
+                    JsonData data = JsonMapper.ToObject(serverResponse);
 
-					//if (data["success"].ToString() == "1")
-					//{
-					//	joinClubPopUp.SetActive(false);
-					//	MainMenuControllerTeen.instance.ShowMessage("Club join request sent");
-					//}
-					//else
-					//{
-					//	MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
-					//}
-				}
+                    if (data["success"].ToString() == "1")
+                    {
+                        joinClubPopUp.SetActive(false);
+                        MainMenuControllerTeen.instance.ShowMessage("Club join request sent");
+                    }
+                    else
+                    {
+                        MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
+                    }
+                }
 				break;
 
 

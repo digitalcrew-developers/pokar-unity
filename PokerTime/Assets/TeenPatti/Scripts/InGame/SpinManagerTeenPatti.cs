@@ -27,8 +27,8 @@ public class SpinManagerTeenPatti : MonoBehaviour
     public void FetchDataSpinWheel()
     {
 
-        string requestData = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
-        WebServices.instance.SendRequest(RequestType.GetSpinWheelItems, requestData, true, OnServerResponseFound);
+        //string requestData = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
+        WebServices.instance.SendRequest(RequestType.GetSpinWheelItems, /*requestData*/"{}", true, OnServerResponseFound);
 
     }
 

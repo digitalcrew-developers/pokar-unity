@@ -31,9 +31,9 @@ public class SelectContryRegion : MonoBehaviour
 
     public void Start()
     {
-        string request = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
+        //string request = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
                               
-        WebServices.instance.SendRequest(RequestType.GetCountryList, request, true, OnServerResponseFound);
+        WebServices.instance.SendRequest(RequestType.GetCountryList, /*request*/"{}", true, OnServerResponseFound);
 
         countryNameInputField.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
     }

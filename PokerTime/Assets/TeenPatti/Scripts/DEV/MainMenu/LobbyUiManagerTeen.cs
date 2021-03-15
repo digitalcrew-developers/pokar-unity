@@ -77,7 +77,8 @@ public class LobbyUiManagerTeen : MonoBehaviour
         MainMenuControllerTeen.instance.ShowScreen(MainMenuScreensTeen.Loading);
         //GenerateRequest("http://3.17.201.78:6000/tp_getRooms");
         //string req = "{\"Content-Type\":\"" + "application/Json" + "\"}";
-        WebServices.instance.SendRequest(RequestType.LobbyRoomsTeenPatti, "{}", true, OnServerResponseFound);
+        //WebServices.instance.SendRequest(RequestType.LobbyRoomsTeenPatti, "{}", true, OnServerResponseFound);
+        WebServices.instance.SendRequestTP(RequestTypeTP.GetRooms, "{}", true, OnServerResponseFound);
     }
 
     
@@ -237,8 +238,8 @@ public void ShowMissonScreen()
 
             GameObject gm = Instantiate(roomPrefab, container) as GameObject;
 
-            //loadRoomImage(data.roomIconUrl, gm);
-            //LoadRoomBG(data.roomBG, gm);
+            loadRoomImage(data.roomIconUrl, gm);
+            LoadRoomBG(data.roomBG, gm);
 
             gm.transform.Find("Name").GetComponent<Text>().text = data.title;
             gm.transform.Find("Blinds").GetComponent<Text>().text = "" + Utility.GetTrimmedAmount("" + data.smallBlind) + "/" + Utility.GetTrimmedAmount("" + data.bigBlind);
@@ -376,8 +377,8 @@ public void ShowMissonScreen()
             roomData.maxBuyIn = float.Parse(data["data"][i]["maxBet"].ToString());
 
             //DEV_CODE
-            //roomData.roomBG = data["data"][i]["backgroundImg"].ToString();
-            //roomData.roomIconUrl = data["data"][i]["iconBaseUrl"].ToString();
+            roomData.roomBG = data["data"][i]["backgroundImg"].ToString();
+            roomData.roomIconUrl = data["data"][i]["iconBaseUrl"].ToString();
             roomData.totalActivePlayers = int.Parse(data["data"][i]["totalActivePlayer"].ToString());            
 
             switch (data["data"][i]["gameType"].ToString())
@@ -403,11 +404,11 @@ public void ShowMissonScreen()
         ShowScreen(GameMode.NLH);
     }
     
-    public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
+    public void OnServerResponseFound(RequestTypeTP requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Loading);
-        Debug.LogError("Response Get Room :" + requestType);
-        Debug.LogError("Response => GetLobbyRooms: " + serverResponse);
+        //Debug.LogError("Response Get Room :" + requestType);
+        //Debug.LogError("Response => GetLobbyRooms: " + serverResponse);
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)
@@ -420,9 +421,10 @@ public void ShowMissonScreen()
 
 
 
-        if (requestType == RequestType.LobbyRoomsTeenPatti)
+        //if (requestType == RequestType.LobbyRoomsTeenPatti)
+        if (requestType == RequestTypeTP.GetRooms)
         {
-            Debug.LogError("Response => GetLobbyRooms: " + serverResponse);
+            Debug.Log("Response => GetLobbyRooms: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["status"].Equals(true))

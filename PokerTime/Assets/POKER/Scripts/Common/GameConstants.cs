@@ -48,7 +48,7 @@ public class GameConstants : MonoBehaviour
     //public const string BASE_URL = "http://3.137.10.123";// "http://192.168.0.151";////"http://3.137.10.123";//// // //"http://18.191.15.121"; // "http://3.6.137.204";
     public const string BASE_URL = "http://3.17.201.78";//"http://3.137.10.123";//// //"http://192.168.0.151";////"http://3.137.10.123";//// // //"http://18.191.15.121"; // "http://3.6.137.204";
     //public static string lobbyTeenUrl = "http://3.17.201.78:3000";
-    public static string lobbyTeenUrl = BASE_URL + ":3000";
+    //public static string lobbyTeenUrl = BASE_URL + ":3000";
 
 
     //Testing
@@ -169,7 +169,7 @@ public class GameConstants : MonoBehaviour
         SOCKET_URL+"/getGameHistroy",
         API_URL+"/beforPayment",
         API_URL+"/afterPayment",
-        lobbyTeenUrl+"/tp_getRooms",
+        //lobbyTeenUrl+"/tp_getRooms",
         API_URL+"/getClubDataAnalytics",
         API_URL+"/getClubTableDataAnalytics",
         API_URL+"/getClubUserDetail",
@@ -205,7 +205,14 @@ public class GameConstants : MonoBehaviour
         API_URL_TP +"/tp_rateClub",
         API_URL_TP +"/tp_sendOut",
         API_URL_TP +"/tp_claimBack",
-        API_URL_TP +"/tp_getTradeHistory"
+        API_URL_TP +"/tp_getTradeHistory",
+        API_URL_TP +"/tp_sendSupportMessage",
+        API_URL_TP +"/tp_getRooms",
+        API_URL_TP +"/tp_readNotification",
+        API_URL_TP +"/tp_updateAutoStraddle",
+        API_URL_TP +"/tp_tagMember",
+        API_URL_TP +"/tp_editMemberDetails",
+        API_URL_TP +"/tp_getAgentDetails"
     };
 
     
@@ -302,7 +309,7 @@ public enum RequestType
     GetGameHistory,
     BeforePayment,
     AfterPayment,
-    LobbyRoomsTeenPatti,
+    //LobbyRoomsTeenPatti,
     GetClubDataAnalytics,
     GetClubTableDataAnalytics,
     getClubUserDetail,
@@ -330,5 +337,12 @@ public enum RequestTypeTP
     RateClub,
     SendChipsOut,
     ClaimBackChips,
-    GetTradeHistory
+    GetTradeHistory,
+    SendSupportMessage,
+    GetRooms,
+    ReadNotification,
+    UpdateAutoStraddle,
+    TagMember,
+    EditClubMemberDetails,
+    GetAgentDetails,
 }

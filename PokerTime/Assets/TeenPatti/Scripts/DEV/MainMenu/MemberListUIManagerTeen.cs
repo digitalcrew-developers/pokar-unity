@@ -281,8 +281,8 @@ public class MemberListUIManagerTeen : MonoBehaviour
     private void OpenMemberDetailsPanel(int i, GameObject gm)
     {
         MemberDetailsPanel.SetActive(true);
-        Debug.Log(oldMembersList.Count);
-        Debug.Log("i is"  + i);
+        //Debug.Log(oldMembersList.Count);
+        //Debug.Log("i is"  + i);
         MemberDetailsTeen.instance.Initialise(oldMembersList[i], gm);
     }
 
@@ -353,7 +353,7 @@ public class MemberListUIManagerTeen : MonoBehaviour
                     return;
                 }
 
-                Debug.Log("Response => UserRoleChange: " + serverResponse);
+                Debug.Log("Response => UserRoleChangeTeen: " + serverResponse);
 
                 JsonData data = JsonMapper.ToObject(serverResponse);
 
@@ -498,7 +498,7 @@ public class MemberListUIManagerTeen : MonoBehaviour
 
         if(requestType == RequestTypeTP.GetPendingClubJoinRequest)
         {
-            Debug.Log("Response => GetPendingClubJoinRequest: " + serverResponse);
+            Debug.Log("Response => GetPendingClubJoinRequestTeen: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
             if (data["status"].Equals(true))
             {
@@ -514,7 +514,7 @@ public class MemberListUIManagerTeen : MonoBehaviour
         else if (requestType == RequestTypeTP.GetClubMemberList)
         {
             //Debug.Log("Response GetClubDetailsByUserId: " + serverResponse);
-            Debug.Log("Response => GetClubMemberListByClubId: " + serverResponse);
+            Debug.Log("Response => GetClubMemberListByClubIdTeen: " + serverResponse);
             JsonData data = JsonMapper.ToObject(serverResponse);
 
             if (data["status"].Equals(true))

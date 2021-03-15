@@ -17,8 +17,8 @@ public class ChangeProfileIconTeen : MonoBehaviour
     public int SelectedAvatarId;
     public void Start()
     {
-        string requestData = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
-        WebServices.instance.SendRequest(RequestType.GetAvatars, requestData, true, OnServerResponseFound);
+        //string requestData = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
+        WebServices.instance.SendRequest(RequestType.GetAvatars, /*requestData*/"{}", true, OnServerResponseFound);
     }
 
     public void OncloseChangeProfileIcon()

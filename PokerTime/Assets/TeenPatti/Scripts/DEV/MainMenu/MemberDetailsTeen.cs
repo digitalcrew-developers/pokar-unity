@@ -510,74 +510,74 @@ public class MemberDetailsTeen : MonoBehaviour
             return;
         }
 
-        //if (requestType == RequestType.EditClubMemberDetails)
-        //{
-        //    Debug.Log("Response => EditClubMemberDetails: " + serverResponse);
+        if (requestType == RequestTypeTP.EditClubMemberDetails)
+        {
+            Debug.Log("Response => EditClubMemberDetailsTeen: " + serverResponse);
 
-        //    JsonData data = JsonMapper.ToObject(serverResponse);
+            JsonData data = JsonMapper.ToObject(serverResponse);
 
-        //    if (data["success"].ToString() == "1")
-        //    {
-        //        UserAliasName.text = editMemberAlias.text;
+            if (data["success"].ToString() == "1")
+            {
+                UserAliasName.text = editMemberAlias.text;
 
-        //        //Removing OLD data from list
-        //        for (int i = 0; i < MemberListUIManagerTeen.instance.oldMembersList.Count; i++)
-        //        {
-        //            MemberListUIManagerTeen.instance.oldMembersList.RemoveAt(i);
-        //        }
-        //        for (int i = 0; i < MemberListUIManagerTeen.instance.newMembersList.Count; i++)
-        //        {
-        //            MemberListUIManagerTeen.instance.newMembersList.RemoveAt(i);
-        //        }
+                //Removing OLD data from list
+                for (int i = 0; i < MemberListUIManagerTeen.instance.oldMembersList.Count; i++)
+                {
+                    MemberListUIManagerTeen.instance.oldMembersList.RemoveAt(i);
+                }
+                for (int i = 0; i < MemberListUIManagerTeen.instance.newMembersList.Count; i++)
+                {
+                    MemberListUIManagerTeen.instance.newMembersList.RemoveAt(i);
+                }
 
-        //        for (int i = 0; i < MemberListUIManagerTeen.instance.oldMembersList.Count; i++)
-        //        {
-        //            MemberListUIManagerTeen.instance.oldMembersList.RemoveAt(i);
-        //        }
+                for (int i = 0; i < MemberListUIManagerTeen.instance.oldMembersList.Count; i++)
+                {
+                    MemberListUIManagerTeen.instance.oldMembersList.RemoveAt(i);
+                }
 
 
-        //        MemberListUIManagerTeen.instance.FetchMembersList();
-                
-        //        if(clubMemberDetails.memberRole == ClubMemberRole.Agent)
-        //            GetAgentDetails();
+                MemberListUIManagerTeen.instance.FetchMembersList();
 
-        //        transform.Find("EditMemberDetails").gameObject.SetActive(false);                                
-        //    }
-        //    else
-        //    {
-        //        MainMenuController.instance.ShowMessage(data["message"].ToString());
-        //    }
-        //}
-        //else if (requestType == RequestType.GetAgentDetails)
-        //{
-        //    Debug.Log("Response => GetAgentDetails: " + serverResponse);
+                if (clubMemberDetails.memberRole == ClubMemberRole.Agent)
+                    GetAgentDetails();
 
-        //    JsonData data = JsonMapper.ToObject(serverResponse);
+                transform.Find("EditMemberDetails").gameObject.SetActive(false);
+            }
+            else
+            {
+                MainMenuController.instance.ShowMessage(data["message"].ToString());
+            }
+        }
+        else if (requestType == RequestTypeTP.GetAgentDetails)
+        {
+            Debug.Log("Response => GetAgentDetails: " + serverResponse);
 
-        //    if (data["success"].ToString() == "1")
-        //    {
-        //        //Assign tab listeners
-        //        AgentPanelTabButtons[0].onClick.RemoveAllListeners();
-        //        AgentPanelTabButtons[1].onClick.RemoveAllListeners();
-        //        AgentPanelTabButtons[2].onClick.RemoveAllListeners();
+            JsonData data = JsonMapper.ToObject(serverResponse);
 
-        //        AgentPanelTabButtons[0].onClick.AddListener(() => EnableTab("selectDownline"));
-        //        AgentPanelTabButtons[1].onClick.AddListener(() => EnableTab("grantCredit"));
-        //        AgentPanelTabButtons[2].onClick.AddListener(() => EnableTab("currentDownline"));
+            if (data["success"].ToString() == "1")
+            {
+                //Assign tab listeners
+                AgentPanelTabButtons[0].onClick.RemoveAllListeners();
+                AgentPanelTabButtons[1].onClick.RemoveAllListeners();
+                AgentPanelTabButtons[2].onClick.RemoveAllListeners();
 
-        //        EnableTab("selectDownline");
+                AgentPanelTabButtons[0].onClick.AddListener(() => EnableTab("selectDownline"));
+                AgentPanelTabButtons[1].onClick.AddListener(() => EnableTab("grantCredit"));
+                AgentPanelTabButtons[2].onClick.AddListener(() => EnableTab("currentDownline"));
 
-        //        LoadAgentDetails(data);
+                EnableTab("selectDownline");
 
-        //        RequestAllDownlinerList();
-        //        RequestCurrentDownlinerList();
-        //        GetTradeRecordList();
-        //    }
-        //    else
-        //    {
-        //        MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
-        //    }
-        //}
+                LoadAgentDetails(data);
+
+                RequestAllDownlinerList();
+                RequestCurrentDownlinerList();
+                GetTradeRecordList();
+            }
+            else
+            {
+                MainMenuControllerTeen.instance.ShowMessage(data["message"].ToString());
+            }
+        }
         //else if (requestType == RequestType.AddDownliners)
         //{
         //    Debug.Log("Response => AddDownliners: " + serverResponse);
@@ -739,7 +739,7 @@ public class MemberDetailsTeen : MonoBehaviour
         string requestData = "{\"clubId\":\"" + ClubDetailsUIManagerTeen.instance.GetClubId() + "\"," +
                                      "\"userId\":\"" + clubMemberDetails.userId + "\"}";
 
-        //WebServices.instance.SendRequest(RequestType.GetAgentDetails, requestData, true, OnServerResponseFound);
+        WebServices.instance.SendRequestTP(RequestTypeTP.GetAgentDetails, requestData, true, OnServerResponseFound);
     }
 
     public void OpenSendOutPanel()
@@ -843,7 +843,7 @@ public class MemberDetailsTeen : MonoBehaviour
                     "\"userAlias\":\"" + editMemberAlias.text + "\"," +
                     "\"note\":\"" + editMemberNote.text + "\"}";
 
-        //WebServices.instance.SendRequest(RequestType.EditClubMemberDetails, requestData, true, OnServerResponseFound);
+        WebServices.instance.SendRequestTP(RequestTypeTP.EditClubMemberDetails, requestData, true, OnServerResponseFound);
     }
 
     public void AddDownliners()

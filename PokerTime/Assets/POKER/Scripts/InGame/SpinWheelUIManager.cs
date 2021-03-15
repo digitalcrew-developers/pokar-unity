@@ -55,8 +55,8 @@ public class SpinWheelUIManager : MonoBehaviour
     public void FetchDataGetSpinWinnerList()
     {
 
-        string requestData = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
-        WebServices.instance.SendRequest(RequestType.getSpinWinnerList, requestData, true, OnServerResponseFound);
+        //string requestData = "{\"PRADEEP\":\"" + "VIVEK" + "\"}";
+        WebServices.instance.SendRequest(RequestType.getSpinWinnerList, /*requestData*/"{}", true, OnServerResponseFound);
 
     }
 
