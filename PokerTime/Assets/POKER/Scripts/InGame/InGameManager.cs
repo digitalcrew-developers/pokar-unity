@@ -797,7 +797,7 @@ public class InGameManager : MonoBehaviour
 
     private IEnumerator WaitAndShowBetAnimation(PlayerScript playerScript, string betAmount)
     {
-        //Debug.Log("Last All in Bet: " + /*playerScript.GetLocalBetAmount()*/betAmount);
+        Debug.Log("Last All in Bet: " + /*playerScript.GetLocalBetAmount()*/betAmount);
         if (!playerScript.localBg().activeSelf)
         {
             GameObject gm = Instantiate(betAnimationPrefab, animationLayer) as GameObject;
@@ -815,7 +815,7 @@ public class InGameManager : MonoBehaviour
         else
         {
             //Debug.Log("Last All in Bet: " + /*playerScript.GetLocalBetAmount()*/GlobalGameManager.instance.ScoreShow(int.Parse(betAmount)));
-            playerScript.GetLocaPot().text = GlobalGameManager.instance.ScoreShow(int.Parse(betAmount));
+            playerScript.GetLocaPot().text = GlobalGameManager.instance.ScoreShow(int.Parse(betAmount) + int.Parse(playerScript.GetLocaPot().text));
         }
     }
 
@@ -1666,7 +1666,7 @@ public class InGameManager : MonoBehaviour
             isCardValueSet = true;
 
             int betAmount = (int)float.Parse(data[0]["bet"].ToString());
-            Debug.Log(userId + " " + PlayerManager.instance.GetPlayerGameData().userId + "" + betAmount);
+            Debug.Log(userId + " " + PlayerManager.instance.GetPlayerGameData().userId + " " + betAmount);
             if (betAmount > 0 /*&& userId != PlayerManager.instance.GetPlayerGameData().userId*/)
             {
                 PlayerScript playerObject = GetPlayerObject(userId);

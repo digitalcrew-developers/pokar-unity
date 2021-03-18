@@ -375,7 +375,7 @@ public class PlayerScript : MonoBehaviour
         if (amount > 0)
         {
             //ToggleLocalPot(true);
-            localBetPot.text = "" + GlobalGameManager.instance.ScoreShow(amount);
+            //localBetPot.text = "" + GlobalGameManager.instance.ScoreShow(amount);
         }
         else
         {

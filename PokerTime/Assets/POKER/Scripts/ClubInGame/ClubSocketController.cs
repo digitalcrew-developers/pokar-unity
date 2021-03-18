@@ -375,7 +375,8 @@ public class ClubSocketController : MonoBehaviour
                                 }
                                 else
                                 {
-                                    SendClubGameJoinRequest();
+                                    if (!GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On"))
+                                        SendClubGameJoinRequest();
                                     //SendGameJoinRequest();
                                 }
                                 break;

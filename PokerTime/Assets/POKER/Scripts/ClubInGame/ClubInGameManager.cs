@@ -121,6 +121,7 @@ public class ClubInGameManager : MonoBehaviour
     public GameObject RabbitButton;
     public GameObject ResumeHand, EVCHOPButton, EVCHOPPanel, passwordScreen;
     public TMP_InputField[] passFields;//passField1, passField2, passField3, passField4;
+    public GameObject popUpText;
 
     public void ShowPasswordScreen(bool showPass)
     {
@@ -157,7 +158,7 @@ public class ClubInGameManager : MonoBehaviour
 
         if(allFiled)
         {
-            string requestData = "{\"tableId\":\"" + ClubInGameUIManager.instance.tableId + "\"," +
+            string requestData = "{\"tableId\":\"" + PlayerPrefs.GetString("ClubTableId") + "\"," +
                            "\"passCode\":\"" + passFields[0].text + passFields[1].text + passFields[2].text + passFields[3].text + "\"}";
 
             WebServices.instance.SendRequest(RequestType.verifyTablePassCode, requestData, true, (res, s1, t, s2) =>
@@ -167,10 +168,21 @@ public class ClubInGameManager : MonoBehaviour
                 Debug.Log(d["success"].ToString());
                 if(d["success"].ToString().Equals("1"))
                 {
+                    ClubSocketController.instance.SendClubGameJoinRequest();
                     passwordScreen.SetActive(false);
+                }
+                else
+                {
+                    popUpText.SetActive(true);
+                    Invoke("HidePopUpText", 1f);
                 }
             });
         }
+    }
+
+    void HidePopUpText()
+    {
+        popUpText.SetActive(false);
     }
 
     private void Start()

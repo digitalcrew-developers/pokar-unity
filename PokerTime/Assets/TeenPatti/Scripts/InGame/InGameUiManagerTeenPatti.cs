@@ -777,8 +777,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
     }
 
     int i = 0;
-    public void ToggleActionButton(bool isShow, PlayerScriptTeenPatti playerObject = null,
-        bool isCheckAvailable = false, int lastBetAmount = 0)
+    public void ToggleActionButton(bool isShow, PlayerScriptTeenPatti playerObject = null, bool isCheckAvailable = false, int lastBetAmount = 0)
     {
         if (acceptSideShowButton.activeInHierarchy)
             return;
@@ -813,9 +812,9 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
             {
                 isCheckAvailable = false;
             }
-            
 
-           
+
+            Debug.Log("callAmount " + callAmount);
 
             // useRaisePotWise = isCheckAvailable;
 
@@ -895,7 +894,7 @@ public class InGameUiManagerTeenPatti : MonoBehaviour
                     }
                 }
 
-               
+                Debug.Log("Balance " + playerObject.GetPlayerData().balance);
 
             }
 

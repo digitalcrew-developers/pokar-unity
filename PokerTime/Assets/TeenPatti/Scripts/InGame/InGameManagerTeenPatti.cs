@@ -1073,8 +1073,10 @@ public class InGameManagerTeenPatti : MonoBehaviour
                 // show Winner notification
                 //Debug.LogError("user Id :" + data[0][0][0]["userId"].ToString());
                 if (winnerPlayer != null)
+                {
                     matchWinner.text = winnerPlayer.playerData.userName + " wins the game.";
-                notifyUser.SetActive(true);
+                    notifyUser.SetActive(true);
+                }
 
                 if (winnerPlayer != null)
                 {
@@ -1386,7 +1388,13 @@ public class InGameManagerTeenPatti : MonoBehaviour
     }
 
 
-
+    internal void OnGameOverCountDownFound(string data)
+    {
+        string t = data.Substring(1, data.Length - 2);
+        Debug.LogError("Game Over - " + t);
+        if (float.Parse(t) < 1)
+            ResetMatchData();
+    }
 
 
     public void OnGameStartTimeFound(string serverResponse)
@@ -1475,7 +1483,7 @@ public class InGameManagerTeenPatti : MonoBehaviour
             {
                 Debug.LogWarning("ONE PLAYER- userData exists");
                 ResetMatchData();
-                InGameManagerTeenPatti.instance.Pot.SetActive(false);
+                Pot.SetActive(false);
                 ResetAllDataForPlayers();
                 matchWinner.text = "";
                 notifyUser.SetActive(false);
@@ -1680,6 +1688,8 @@ public class InGameManagerTeenPatti : MonoBehaviour
         {
             Destroy(animationLayer.GetChild(i).gameObject);
         }
+        matchWinner.text = "";
+        notifyUser.SetActive(false);
     }
 
 

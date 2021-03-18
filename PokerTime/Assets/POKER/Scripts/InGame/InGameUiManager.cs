@@ -570,7 +570,7 @@ public class InGameUiManager : MonoBehaviour
     int calculatedAmount, myTableBalance;
     public void OnSliderValueChange()
     {
-        if (slider.value >= slider.maxValue)
+        /*if (slider.value >= slider.maxValue)
         {
             sliderText.text = "All In";
             calculatedAmount = myTableBalance;
@@ -586,7 +586,18 @@ public class InGameUiManager : MonoBehaviour
         }        
         selectedRaiseAmount = calculatedAmount;
         Debug.Log((int)selectedRaiseAmount + "  " + slider.value);
-        sliderVal = slider.value;
+        sliderVal = slider.value;*/
+
+        if (slider.value >= slider.maxValue)
+        {
+            sliderText.text = "All In";
+        }
+        else
+        {
+            sliderText.text = "" + (int)slider.value;
+        }
+
+        selectedRaiseAmount = slider.value;
     }
 
 
@@ -596,16 +607,16 @@ public class InGameUiManager : MonoBehaviour
 
         if (isShow)
         {
-            /*slider.minValue = GlobalGameManager.instance.GetRoomData().smallBlind; //minBet;
+            slider.minValue = GlobalGameManager.instance.GetRoomData().smallBlind; //minBet;
             slider.maxValue = maxBet;
-            slider.value = minBet;*/
-            if (minBet > GlobalGameManager.instance.GetRoomData().smallBlind)
+            slider.value = minBet;
+            /*if (minBet > GlobalGameManager.instance.GetRoomData().smallBlind)
                 sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
             else
                 sliderText.text = GlobalGameManager.instance.GetRoomData().smallBlind.ToString();
             slider.value = 0;
             calculatedAmount = int.Parse(sliderText.text);
-            myTableBalance = (int)maxBet;
+            myTableBalance = (int)maxBet;*/
             Debug.Log("Total Bal " + maxBet);
             if (potAmount <= 0)
             {

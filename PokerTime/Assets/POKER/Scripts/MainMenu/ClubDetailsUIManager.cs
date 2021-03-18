@@ -614,7 +614,7 @@ public class ClubDetailsUIManager : MonoBehaviour
     {
         SoundManager.instance.PlaySound(SoundType.Click);
         //GetClubUserDetail();
-		//DEV_CODE Commented this code to re enter into the table 
+        //DEV_CODE Commented this code to re enter into the table 
         //if (PlayerManager.instance.GetPlayerGameData().coins < data.minBuyIn)
         //{
 
@@ -622,13 +622,13 @@ public class ClubDetailsUIManager : MonoBehaviour
         //}
 
         //data.isLobbyRoom = false;
-		
-		//GlobalGameManager.instance.SetRoomData(data);
+
+        //GlobalGameManager.instance.SetRoomData(data);
         //GameConstants.TURN_TIME = data.callTimer;
         //Debug.LogError("Call Timer On Click: " + GameConstants.TURN_TIME);
         //SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
-        Debug.LogError("Call Timer On Click: " + PlayerManager.instance.GetPlayerGameData().coins + " " + data.minBuyIn);
-
+        Debug.LogError("Call Timer On Click: " + PlayerManager.instance.GetPlayerGameData().coins + " " + data.minBuyIn + " " + data.roomId);
+        PlayerPrefs.SetString("ClubTableId", data.roomId);
         string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
                            "\"clubId\":\"" + ClubDetailsUIManager.instance.GetClubId() + "\"}";
 

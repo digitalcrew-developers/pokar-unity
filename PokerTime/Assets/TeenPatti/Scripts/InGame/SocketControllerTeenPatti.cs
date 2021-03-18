@@ -253,7 +253,7 @@ public class SocketControllerTeenPatti : MonoBehaviour
 
                 case SocketEvetnsTeenPatti.ON_GAME_OVER_TIMER_FOUND:
                     //Debug.LogError("Game Over - " + responseObject.data);
-                    //InGameManager.instance.OnGameOverCountDownFound(responseObject.data);
+                    InGameManagerTeenPatti.instance.OnGameOverCountDownFound(responseObject.data);
                     break;
 
                 case SocketEvetnsTeenPatti.ON_CALL_TIMER_FOUND:
