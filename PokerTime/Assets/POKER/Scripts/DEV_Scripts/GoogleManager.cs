@@ -107,34 +107,36 @@ public class GoogleManager : MonoBehaviour
             userId = task.Result.UserId;
             email = task.Result.Email;
 
-            SignInWithGoogleOnFirebase(task.Result.IdToken);
+            RegistrationManager.instance.LoginWithSocialID(task.Result.Email, task.Result.IdToken, "google");
+
+            //SignInWithGoogleOnFirebase(task.Result.IdToken);
         }
     }
 
-    private void SignInWithGoogleOnFirebase(string idToken)
-    {
-        if (MainMenuController.instance != null)
-            MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+    //private void SignInWithGoogleOnFirebase(string idToken)
+    //{
+    //    if (MainMenuController.instance != null)
+    //        MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
 
-        AddToInformation("Registering With Firebase..");
-        Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
-        AddToInformation("Credential Got With IDToken => " + idToken);
-        FirebaseManager.instance.auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
-        {
-            AddToInformation("Checking For Exception..");
-            AggregateException ex = task.Exception;
-            if (ex != null)
-            {
-                if (ex.InnerExceptions[0] is FirebaseException inner && (inner.ErrorCode != 0))
-                    AddToInformation("\nError code = " + inner.ErrorCode + " Message = " + inner.Message);
-            }
-            else
-            {
-                AddToInformation("Sign In Successful.");
-                RegistrationManager.instance.LoginWithSocialID(task.Result.Email, idToken, "google");
-            }
-        });
-    }
+    //    AddToInformation("Registering With Firebase..");
+    //    Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
+    //    AddToInformation("Credential Got With IDToken => " + idToken);
+    //    FirebaseManager.instance.auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
+    //    {
+    //        AddToInformation("Checking For Exception..");
+    //        AggregateException ex = task.Exception;
+    //        if (ex != null)
+    //        {
+    //            if (ex.InnerExceptions[0] is FirebaseException inner && (inner.ErrorCode != 0))
+    //                AddToInformation("\nError code = " + inner.ErrorCode + " Message = " + inner.Message);
+    //        }
+    //        else
+    //        {
+    //            AddToInformation("Sign In Successful.");
+    //            RegistrationManager.instance.LoginWithSocialID(task.Result.Email, idToken, "google");
+    //        }
+    //    });
+    //}
 
     public void OnSignInSilently()
     {
