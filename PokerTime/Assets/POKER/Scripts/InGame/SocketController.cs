@@ -241,6 +241,7 @@ public class SocketController : MonoBehaviour
     {
         string responseText = JsonMapper.ToJson(args);
         Debug.LogError("Response => Seat of Player: " + responseText);
+        SetSocketState(SocketState.WaitingForOpponent);
         //InGameManager.instance.gameExitCalled = true;
         //ResetConnection();
     }
@@ -273,7 +274,7 @@ public class SocketController : MonoBehaviour
 #endif
 
 #endif
-            Debug.Log(" <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
+            Debug.Log(gameObject.transform.parent.name + " <color=yellow> " + responseObject.eventType + ",</color> " + responseObject.data);
             switch (responseObject.eventType)
             {
                 case SocketEvetns.CONNECT:
@@ -282,7 +283,7 @@ public class SocketController : MonoBehaviour
                         {
                             case SocketState.Connecting:
                                 SetSocketState(SocketState.WaitingForOpponent);
-                                Debug.Log("<color=yellow>IsJoiningPreviousGame " + GlobalGameManager.IsJoiningPreviousGame + "</color>");
+                                Debug.Log(gameObject.transform.parent.name + "<color=yellow>IsJoiningPreviousGame " + GlobalGameManager.IsJoiningPreviousGame + "</color>");
                                 if (GlobalGameManager.IsJoiningPreviousGame)
                                 {
                                     RequestForMatchStatus();
@@ -1230,7 +1231,7 @@ public class SocketController : MonoBehaviour
         socketRequest.Add(request);
     }
 
-    public void SendGameJoinRequest(string seatNo = null)
+    public void SendGameJoinRequest(int seatNo = 0)
     {
         string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
              "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
@@ -1244,7 +1245,7 @@ public class SocketController : MonoBehaviour
         SocketRequest request = new SocketRequest();
         request.emitEvent = "joinRoom";
 
-        Debug.LogError("joinRoom: " + requestStringData);
+        Debug.LogError(/*gameObject.transform.parent.name + */"joinRoom: " + requestStringData);
 
         request.plainDataToBeSend = null;
         request.jsonDataToBeSend = requestObjectData;

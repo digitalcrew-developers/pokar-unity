@@ -95,7 +95,7 @@ public class InGameManager : MonoBehaviour
 
     public Image thunderPointBar;
     [HideInInspector]
-    public bool userWinner = false;
+    public bool userWinner = false, isSeatRotation = false;
 
     private void Awake()
     {
@@ -108,6 +108,7 @@ public class InGameManager : MonoBehaviour
 
     private void Start()
     {
+        isSeatRotation = false;
         //DEV_CODE
         highlightCardString = new string[5];
         highlightCards = new CardData[5];
@@ -237,7 +238,8 @@ public class InGameManager : MonoBehaviour
     {
         Debug.Log("Total Users " + matchMakingPlayerData.Count);
         isRematchRequestSent = false;
-        List<MatchMakingPlayerData> newMatchMakingPlayerData = new List<MatchMakingPlayerData>();
+        SeatRotation(matchMakingPlayerData);
+        /*List<MatchMakingPlayerData> newMatchMakingPlayerData = new List<MatchMakingPlayerData>();
         if (matchMakingPlayerData.Count > 1)
             newMatchMakingPlayerData = ReArrangePlayersList(matchMakingPlayerData);
         else
@@ -271,13 +273,117 @@ public class InGameManager : MonoBehaviour
         if (playerScriptWhosTurn != null)
         {
             StartCoroutine(WaitAndShowCardAnimation(onlinePlayersScript, playerScriptWhosTurn));
-        }
+        }*/
         /*else
         {
 #if ERROR_LOG
             Debug.LogError("Null Reference exception found playerId whos turn is not found");
 #endif
         }*/
+    }
+
+    void SeatRotation(List<MatchMakingPlayerData> newMatchMakingPlayerData)
+    {
+        //newMatchMakingPlayerData = matchMakingPlayerData;
+        onlinePlayersScript = new PlayerScript[newMatchMakingPlayerData.Count];
+        PlayerScript playerScriptWhosTurn = null;
+
+        for (int i = 0; i < allPlayersObject.Length; i++)
+        {
+            allPlayersObject[i].ResetAllData();
+            allPlayersObject[i].TogglePlayerUI(false);
+        }
+
+        for (int i = 0; i < newMatchMakingPlayerData.Count; i++)
+        {
+            Debug.Log("Seat " + newMatchMakingPlayerData[i].playerData.seatNo);
+            int seat = int.Parse(newMatchMakingPlayerData[i].playerData.seatNo) - 1;
+            if (seat < 0)
+                seat = 0;
+            allPlayersObject[seat].ResetAllData();
+            //if (i == int.Parse(newMatchMakingPlayerData[i].playerData.seatNo) - 1)
+            {
+                Debug.Log(newMatchMakingPlayerData[i].playerData.userName + " " + newMatchMakingPlayerData[i].isTurn + " " + newMatchMakingPlayerData[i].playerData.seatNo);
+                //Debug.Log("Url " + newMatchMakingPlayerData[i].playerData.avatarurl);
+                allPlayersObject[seat].seat = newMatchMakingPlayerData[i].playerData.seatNo;
+                allPlayersObject[seat].TogglePlayerUI(true, newMatchMakingPlayerData[i].playerData.avatarurl, newMatchMakingPlayerData[i].playerData.flagurl);
+                onlinePlayersScript[i] = allPlayersObject[seat];
+                onlinePlayersScript[i].Init(newMatchMakingPlayerData[i]);
+
+                if (newMatchMakingPlayerData[i].isTurn)
+                {
+                    playerScriptWhosTurn = onlinePlayersScript[i];
+                }
+            }
+            /*else
+            {
+                allPlayersObject[i].TogglePlayerUI(false);
+            }*/
+        }
+
+        int mySeatIndex = 0;
+        for (int i = 0; i < newMatchMakingPlayerData.Count; i++)
+        {
+            int seat = int.Parse(newMatchMakingPlayerData[i].playerData.seatNo);
+            if (newMatchMakingPlayerData[i].playerData.userId == PlayerManager.instance.GetPlayerGameData().userId)
+            {
+                mySeatIndex = seat;
+                break;
+            }
+        }
+        Debug.Log(isSeatRotation + " mySeatIndex " + mySeatIndex);
+        if (!isSeatRotation && mySeatIndex > 1)
+        {
+            isSeatRotation = true;
+            int seatPos = 5;
+            allPlayersObject[mySeatIndex - 1].transform.DOMove(allPlayerPos[0].transform.position, 0.5f);
+            allPlayersObject[mySeatIndex - 1].GetComponent<PlayerScript>().currentSeat = (0 + 1).ToString();
+            allPlayerPos[0].transform.GetChild(0).GetComponent<PlayerSeat>().seatNo = mySeatIndex.ToString();
+            //seatPos--;
+            for (int i = mySeatIndex - 2; i >= 0; i--)
+            {
+                Debug.Log("i " + i + ", seatPos " + seatPos);
+                allPlayersObject[i].transform.DOMove(allPlayerPos[seatPos].transform.position, 0.5f);
+                allPlayersObject[i].GetComponent<PlayerScript>().currentSeat = (seatPos + 1).ToString();
+                allPlayerPos[seatPos].transform.GetChild(0).GetComponent<PlayerSeat>().seatNo = allPlayersObject[i].GetComponent<PlayerScript>().seat;
+                seatPos--;
+            }
+            Debug.Log("seatPos " + seatPos);
+            for (int i = 5; i >= mySeatIndex; i--)
+            {
+                Debug.Log("i " + i + ", seatPos " + seatPos);
+                allPlayersObject[i].transform.DOMove(allPlayerPos[seatPos].transform.position, 0.5f);
+                allPlayersObject[i].GetComponent<PlayerScript>().currentSeat = (seatPos + 1).ToString();
+                allPlayerPos[seatPos].transform.GetChild(0).GetComponent<PlayerSeat>().seatNo = allPlayersObject[i].GetComponent<PlayerScript>().seat;
+                seatPos--;
+            }
+            //int seatIndex = 1;
+            /*seatPos = 6 - mySeatIndex + 1;
+            for (int k = 0; k < mySeatIndex; k++)
+            {
+                Debug.Log("k " + k + ", seatPos " + seatPos);
+                allPlayersObject[k].transform.DOMove(allPlayerPos[seatPos].transform.position, 0.5f);
+                allPlayerPos[seatPos].transform.GetChild(0).GetComponent<PlayerSeat>().seatNo = allPlayersObject[k].GetComponent<PlayerScript>().seat; //(seatIndex).ToString();
+
+                //if (seatPos == 0)
+                //  seatPos = 6;
+                seatPos--;
+                //seatIndex++;
+            }
+            for (int i = mySeatIndex; i < 6; i++)
+            {
+                Debug.Log("i " + i + ", seatPos " + seatPos);
+                allPlayersObject[i].transform.DOMove(allPlayerPos[seatPos].transform.position, 0.5f);
+                allPlayerPos[i].transform.GetChild(0).GetComponent<PlayerSeat>().seatNo = allPlayersObject[i].GetComponent<PlayerScript>().seat;                
+                seatPos--;
+                //seatIndex++;
+            }*/
+        }
+
+        if (playerScriptWhosTurn != null)
+        {
+            StartCoroutine(WaitAndShowCardAnimation(onlinePlayersScript, playerScriptWhosTurn));
+        }
     }
 
     private IEnumerator WaitAndShowCardAnimation(PlayerScript[] players, PlayerScript playerScriptWhosTurn)
@@ -1208,6 +1314,7 @@ public class InGameManager : MonoBehaviour
 
     public void OnClickStandupBtn()
     {
+        isSeatRotation = false;
         AmISpectator = true;
         SocketController.instance.SendStandUpdata();
     }

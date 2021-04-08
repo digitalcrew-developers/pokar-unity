@@ -74,11 +74,12 @@ public class PlayerSeat : MonoBehaviour
         //{
         //    SocketController.instance.SendGameJoinRequest(seatNo);
         //}
+        InGameManager.instance.isSeatRotation = false;
         if (InGameManager.instance != null)
         {
             if (InGameManager.instance.AmISpectator)
             {
-                SocketController.instance.SendGameJoinRequest();
+                SocketController.instance.SendGameJoinRequest(int.Parse(seatNo));
             }
         }
         else

@@ -70,7 +70,7 @@ public class GameConstants : MonoBehaviour
 
     public const string API_URL = BASE_URL + ":3000"; /*":3001";*/// ":3009";
     public const string SOCKET_URL = BASE_URL + ":3333";/*":3334";*/// ":3008";
-
+    public const string CLUB_SOCKET_URL = BASE_URL + ":3335";
 
 
 

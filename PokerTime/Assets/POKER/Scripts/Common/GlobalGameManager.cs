@@ -66,6 +66,8 @@ public class GlobalGameManager : MonoBehaviour
         }
 
         previousScene = Instantiate(gameScens[(int)gameScene], Vector3.zero, Quaternion.identity) as GameObject;
+        //previousScene.name = "First";
+        
         if (MenuHandller.instance != null)
         {
             MenuHandller.instance.UpdateAllText();
@@ -76,7 +78,7 @@ public class GlobalGameManager : MonoBehaviour
     private IEnumerator WaitAndDestroyOldScreen(GameObject gm)
     {
         yield return new WaitForSeconds(1);
-
+        
         if (gm != null)
         {
             Destroy(gm);
@@ -91,6 +93,10 @@ public class GlobalGameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.2f);
         System.GC.Collect();
+
+        /*yield return new WaitForSeconds(20);
+        GameObject g = Instantiate(gameScens[(int)Scenes.InGame], Vector3.zero, Quaternion.identity) as GameObject;
+        g.name = "Second";*/
     }
 
     private void OnApplicationQuit()

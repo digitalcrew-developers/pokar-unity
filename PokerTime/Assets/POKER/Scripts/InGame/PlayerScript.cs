@@ -29,7 +29,7 @@ public class PlayerScript : MonoBehaviour
     private GameObject foldScreen, parentObject, emptyObject, RealTimeResult, localbetBG;
     private bool isItMe;
     public string otheruserId;
-    public string seat;
+    public string seat, currentSeat;
     public GameObject winPercentage;
    
     private int localBetAmount = 0;
@@ -212,6 +212,7 @@ public class PlayerScript : MonoBehaviour
 
     public void TogglePlayerUI(bool isShow, string avatarUrl = null, string flagUrl = null)
     {
+        Debug.Log(transform.parent.parent.parent.parent.parent.name);
         LoadUI();
         parentObject.SetActive(isShow);
         if (avatarUrl != null && flagUrl != null)
@@ -681,9 +682,10 @@ public class PlayerScript : MonoBehaviour
             //cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
             cardsImage[i].gameObject.SetActive(isShow);
         }
-        Debug.Log(isShow + " - " + isShowOriginalCards + " - " + cardsImage.Length);
+        //Debug.Log(isShow + " - " + isShowOriginalCards + " - " + cardsImage.Length);
         if (isShow)
         {
+            Debug.Log(gameObject.name + "<color=magenta> Current Seat </color>" + currentSeat);
             if (isShowOriginalCards)
             {
                 if (GetPlayerData().cards != null && GetPlayerData().cards.Length > 0)
@@ -695,7 +697,7 @@ public class PlayerScript : MonoBehaviour
                         Debug.Log("Cards positions....." + isItMe);
                         if (!isItMe)
                         {
-                            Debug.Log("Cards positions2222....." + isItMe+", "+gameObject.name);
+                            Debug.Log("Cards positions2222....." + isItMe + ", " + gameObject.name);
                             if (gameObject.name == "0")
                             {
                                 cardsImage[i].transform.localScale = new Vector3(2f, 2f);
@@ -872,10 +874,46 @@ public class PlayerScript : MonoBehaviour
                 }
 
             }
+
+            switch (currentSeat)
+            {
+                case "1":
+                    transform.Find("Bg/2_Cards").localPosition = new Vector3(78, 1);
+                    transform.Find("Bg/2_Cards").GetComponent<RectTransform>().sizeDelta = new Vector3(72, 72);
+                    localbetBG.transform.localPosition = new Vector2(1f, 75.5f);
+                    for (int i = 0; i < cardsImage.Length; i++)
+                    {
+                        cardsImage[i].sprite = playerData.cards[i].cardsSprite;
+                        cardsImage[i].transform.localScale = new Vector3(0.8664759f, 0.8664759f);
+                        cardsImage[i].transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        if (i == 0)
+                        {
+                            cardsImage[i].transform.localPosition = new Vector3(-11, 0);
+                        }
+                        if (i == 1)
+                        {
+                            cardsImage[i].transform.localPosition = new Vector3(11, 0);
+                        }
+                    }
+                    break;
+                case "2":
+                    localbetBG.transform.localPosition = new Vector2(95f, -64f);
+                    break;
+                case "3":
+                    localbetBG.transform.localPosition = new Vector2(95f, -76f);
+                    break;
+                case "4":
+                    localbetBG.transform.localPosition = new Vector2(97f, -3f);
+                    break;
+                case "5":
+                    localbetBG.transform.localPosition = new Vector2(-100f, -4f);
+                    break;
+                case "6":
+                    localbetBG.transform.localPosition = new Vector2(-94f, -76f);
+                    break;
+            }
         }
 
-
-       
     }
 
 

@@ -88,7 +88,7 @@ public class ClubSocketController : MonoBehaviour
         socketOptions.AutoConnect = false;
         socketOptions.ReconnectionDelayMax = new TimeSpan(0, 0, 4);
 
-        socketManager = new SocketManager(new Uri(GameConstants.SOCKET_URL + "/socket.io/"), socketOptions);
+        socketManager = new SocketManager(new Uri(GameConstants.CLUB_SOCKET_URL + "/socket.io/"), socketOptions);
         //        Debug.LogError("URL IS " + GameConstants.SOCKET_URL + "/socket.io/");
         socketManager.Socket.On(SocketIOEventTypes.Connect, OnServerConnect);
         socketManager.Socket.On(SocketIOEventTypes.Disconnect, OnServerDisconnect);
