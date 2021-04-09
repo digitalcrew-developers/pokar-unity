@@ -1,5 +1,7 @@
+#if !UNITY_WEBGL
 using Firebase;
 using Firebase.Auth;
+#endif
 using Google;
 using System;
 using System.Collections;

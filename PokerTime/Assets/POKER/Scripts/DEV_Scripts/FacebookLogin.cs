@@ -5,8 +5,10 @@ using Facebook.Unity;
 using UnityEngine.UI;
 using System;
 using System.IO;
+#if !UNITY_WEBGL
 using Firebase.Auth;
 using Firebase;
+#endif
 
 public static class SaveSystem
 {
@@ -213,6 +215,7 @@ public class FacebookLogin : MonoBehaviour
 	//}
 	private void CheckFirebaseDependencies()
 	{
+#if !UNITY_WEBGL
 		//STATUStEXT.text = "Inside Firebase Dependencies";
 		FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
 		{
@@ -233,8 +236,9 @@ public class FacebookLogin : MonoBehaviour
 				//STATUStEXT.text = ("Dependency check was not completed. Error : " + task.Exception.Message);
 			}
 		});
-	}
-	public void logout()
+#endif
+    }
+    public void logout()
 	{
 		//STATUStEXT.text = "Clicked Logout..";
 		//playerProfilePic.GetComponent<Image>().sprite = null;
@@ -244,14 +248,15 @@ public class FacebookLogin : MonoBehaviour
   //      PlayerPrefs.SetInt("fblogin", 0);
 		//PlayerPrefs.SetInt("FBImage", PlayerPrefs.GetInt("FBImage") + 1);
 	}
-	
-	void firebasedFbLogin(string atoken)
-	{
-		//if (MainMenuController.instance != null)
-		//	MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
 
-		//	auth = FirebaseAuth.DefaultInstance;
-		AddToInformation("Registering Facebook with Firebase..");
+    void firebasedFbLogin(string atoken)
+    {
+        //if (MainMenuController.instance != null)
+        //	MainMenuController.instance.ShowScreen(MainMenuScreens.Loading);
+
+        //	auth = FirebaseAuth.DefaultInstance;
+        AddToInformation("Registering Facebook with Firebase..");
+#if !UNITY_WEBGL
         Credential credential = FacebookAuthProvider.GetCredential(atoken);
         AddToInformation("Credential Got with ==> " + atoken);
         FirebaseManager.instance.auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
@@ -285,7 +290,8 @@ public class FacebookLogin : MonoBehaviour
 
 			RegistrationManager.instance.LoginWithSocialID(email, atoken, "facebook");
 		});
-	}
+#endif
+    }
 
 	private void AddToInformation(string str)
 	{
