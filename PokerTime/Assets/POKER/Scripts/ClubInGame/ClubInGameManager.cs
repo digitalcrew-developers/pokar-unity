@@ -2469,8 +2469,9 @@ public class ClubInGameManager : MonoBehaviour
 
     public void OnGameStartTimeFound(string serverResponse)
     {
-        JsonData data = JsonMapper.ToObject(serverResponse);
+        Debug.Log("Game Start in => " + serverResponse);
 
+        JsonData data = JsonMapper.ToObject(serverResponse);
         int remainingTime = (int)float.Parse(data[0].ToString());
         Debug.Log("Game Start in => " + remainingTime);
         /*   if (remainingTime < 30)
@@ -2540,6 +2541,8 @@ public class ClubInGameManager : MonoBehaviour
         }
 
         JsonData data = JsonMapper.ToObject(serverResponse);
+        Debug.LogError("data: " + data[0]["data"].ToString() + " = " + data[0]["data"].ToJson());
+        data = JsonMapper.ToObject(data[0]["data"].ToJson());
 
         AmISpectator = true;
 

@@ -323,7 +323,9 @@ public class ClubSocketController : MonoBehaviour
     private void SeatObjectsReceived(Socket socket, Packet packet, object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
+        JsonData data = JsonMapper.ToObject(responseText);
         Debug.LogError(responseText);
+        //Debug.LogError(data["data"]);
         //InGameManager.instance.gameExitCalled = true;
         //ResetConnection();
     }
@@ -358,6 +360,7 @@ public class ClubSocketController : MonoBehaviour
 
 #endif
             Debug.LogWarning(ClubInGameManager.instance.userWinner + " <color=yellow>Event " + responseObject.eventType + ",</color> " + responseObject.data);
+            
             switch (responseObject.eventType)
             {
                 case SocketEvetns.CONNECT:
@@ -413,7 +416,7 @@ public class ClubSocketController : MonoBehaviour
                         {
                             SetSocketState(SocketState.Game_Running);
                         }
-
+                        Debug.LogError("responseObject.data: " + responseObject.data);
                         ClubInGameManager.instance.OnPlayerObjectFound(responseObject.data);
                         ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Reconnecting);
                         ClubInGameUIManager.instance.ShowTableMessage("");
@@ -423,15 +426,17 @@ public class ClubSocketController : MonoBehaviour
                         Debug.LogError("Null reference exception found ClubInGameManager is null... ");
                     }
                     break;
-
                 case SocketEvetns.ON_OPEN_CARD_DATA_FOUND:
-                    ClubInGameManager.instance.OnOpenCardsDataFound(responseObject.data);
+                    JsonData oc = JsonMapper.ToObject(responseObject.data);
+                    ClubInGameManager.instance.OnOpenCardsDataFound(oc[0]["data"].ToJson());
                     break;
                 case SocketEvetns.RABBIT_CARDS:
-                    ClubInGameManager.instance.OnRabbitDataFound(responseObject.data);
+                    JsonData rc = JsonMapper.ToObject(responseObject.data);
+                    ClubInGameManager.instance.OnRabbitDataFound(rc[0]["data"].ToJson());
                     break;
                 case SocketEvetns.EVCHOP:
-                    ClubInGameManager.instance.OnEVChopDataFound(responseObject.data);
+                    JsonData e = JsonMapper.ToObject(responseObject.data);
+                    ClubInGameManager.instance.OnEVChopDataFound(e[0]["data"].ToJson());
                     break;
 
                 //case SocketEvetns.ON_OPEN_CARD_TIMER_FOUND:
@@ -439,26 +444,31 @@ public class ClubSocketController : MonoBehaviour
                 //break;
 
                 case SocketEvetns.ON_NEXT_ROUND_TIMER_FOUND:
-                    ClubInGameManager.instance.OnNextMatchCountDownFound(responseObject.data);
+                    JsonData n = JsonMapper.ToObject(responseObject.data);
+                    ClubInGameManager.instance.OnNextMatchCountDownFound(n[0]["data"].ToJson());
                     break;
 
                 case SocketEvetns.ON_GAME_OVER_TIMER_FOUND:
                     Debug.LogError("Game Over - " + responseObject.data);
-                    ClubInGameManager.instance.OnGameOverCountDownFound(responseObject.data);
+                    JsonData o = JsonMapper.ToObject(responseObject.data);
+                    ClubInGameManager.instance.OnGameOverCountDownFound(o[0]["data"].ToJson());
                     break;
 
                 case SocketEvetns.ON_CALL_TIMER_FOUND:
-                    ClubInGameManager.instance.OnTurnCountDownFound(responseObject.data);
+                    JsonData c = JsonMapper.ToObject(responseObject.data);
+                    ClubInGameManager.instance.OnTurnCountDownFound(c[0]["data"].ToJson());
                     break;
 
 
                 case SocketEvetns.ON_GAME_START_TIMER_FOUND:
-                    ClubInGameManager.instance.OnGameStartTimeFound(responseObject.data);
+                    JsonData s = JsonMapper.ToObject(responseObject.data);
+                    ClubInGameManager.instance.OnGameStartTimeFound(s[0]["data"].ToJson());
                     break;
 
                 case SocketEvetns.ON_ROUND_NO_FOUND:
                     // ClubInGameUIManager.instance.LoadingImage.SetActive(false);
-                    ClubInGameManager.instance.OnRoundDataFound(responseObject.data);
+                    JsonData d = JsonMapper.ToObject(responseObject.data);
+                    ClubInGameManager.instance.OnRoundDataFound(d[0]["data"].ToJson());
                     break;
 
                 //case SocketEvetns.ON_POT_DATA_FOUND:
@@ -466,6 +476,9 @@ public class ClubSocketController : MonoBehaviour
                 //break;
 
                 case SocketEvetns.ON_RESULT_FOUND:
+                    Debug.LogError("Result - " + responseObject.data);
+                    //JsonData r = JsonMapper.ToObject(responseObject.data);
+                    //ClubInGameManager.instance.OnResultResponseFound(r[0]["data"].ToJson());
                     ClubInGameManager.instance.OnResultResponseFound(responseObject.data);
                     break;
 
@@ -474,7 +487,8 @@ public class ClubSocketController : MonoBehaviour
 
                 case SocketEvetns.ON_BET_DATA_FOUND:
                     ClubInGameManager.instance.PlayerTimerReset();
-                    ClubInGameManager.instance.OnBetDataFound(responseObject.data);
+                    JsonData b = JsonMapper.ToObject(responseObject.data);
+                    ClubInGameManager.instance.OnBetDataFound(b[0]["data"].ToJson());
                     break;
 
                 //case SocketEvetns.ON_CARD_DISTRIBUTE_TIMER_FOUND:
@@ -1880,6 +1894,38 @@ public class ClubSocketController : MonoBehaviour
 
     #endregion
 
+    #region Creating multiple table
 
+    public void CreateNewTable()
+    {
+        SendClubGameJoinRequest();
+        SendSwitchTable();
+    }
+
+    public void SendSwitchTable(string seatNo = null)
+    {
+        string requestStringData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+            "\"tableId\":\"" + TABLE_ID + "\"," +
+             "\"players\":\"" + GlobalGameManager.instance.GetRoomData().players + "\"," +
+             "\"roomId\":\"" + GlobalGameManager.instance.GetRoomData().roomId + "\"," +
+             "\"playerType\":\"Real\"," + "\"switchFlag\":\"1\"," +
+             "\"isPrivate\":\"No\"," + "\"seatNo\":\"" + seatNo + "\"," +
+             "\"isFree\":\"No\"}";
+
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "switchTable";
+
+        Debug.LogError("switchTable: " + requestStringData);
+
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        //socketRequest.Add(request);
+        socketManager.Socket.Emit(request.emitEvent, request.jsonDataToBeSend);
+    }
+
+    #endregion
 }
 
