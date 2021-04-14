@@ -60,14 +60,29 @@ public class GlobalGameManager : MonoBehaviour
 
     public void LoadScene(Scenes gameScene)
     {
-        if (previousScene != null)
-        {
-            StartCoroutine(WaitAndDestroyOldScreen(previousScene));
-        }
-
-        previousScene = Instantiate(gameScens[(int)gameScene], Vector3.zero, Quaternion.identity) as GameObject;
-        //previousScene.name = "First";
         
+
+        Debug.Log("************SCENE******************" + (GameObject.Find("MainMenuScene(Clone)")?"Find Success ==> " + gameScene.ToString() :"No Scene Available" + gameScene.ToString()));
+
+        //if (gameScene.ToString().Equals("MainMenu") && GameObject.Find("MainMenuScene(Clone)"))
+        //{
+        //    GameObject.Find("MainMenuScene(Clone)").SetActive(true);
+        //}
+        //else if (gameScene.ToString().Equals("InGame") && GameObject.Find("InGame(Clone)"))
+        //{
+        //    GameObject.Find("InGame(Clone)").SetActive(true);
+        //}
+        //else
+        //{
+            if (previousScene != null)
+            {
+                StartCoroutine(WaitAndDestroyOldScreen(previousScene));
+            }
+
+            previousScene = Instantiate(gameScens[(int)gameScene], Vector3.zero, Quaternion.identity) as GameObject;
+            //previousScene.name = "First";
+        //}
+
         if (MenuHandller.instance != null)
         {
             MenuHandller.instance.UpdateAllText();
@@ -81,7 +96,8 @@ public class GlobalGameManager : MonoBehaviour
         
         if (gm != null)
         {
-            Destroy(gm);
+            //Destroy(gm);          //DEV_CODE This line is commented
+            gm.SetActive(false);    //DEV_CODE This line is added
         }
         else
         {
@@ -205,7 +221,8 @@ public enum Scenes
     MainMenu,
     InGame,
     MainMenuTeenPatti,
-    InGameTeenPatti
+    InGameTeenPatti,
+    ClubInGame  //DEV_CODE Added for referencing Club Prefab
 }
 
 public enum GameMode

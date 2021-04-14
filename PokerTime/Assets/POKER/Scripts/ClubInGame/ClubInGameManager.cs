@@ -807,10 +807,16 @@ public class ClubInGameManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         ClubSocketController.instance.SendLeaveMatchRequest();
         yield return new WaitForSeconds(7f);
+
         //yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
         //ClubSocketController.instance.ResetConnection();
-        ClubInGameUIManager.instance.ClubMainMenu.SetActive(true);
-        SceneManager.UnloadSceneAsync("ClubGame");
+
+        //DEV_CODE These two lines are commented by me
+        //ClubInGameUIManager.instance.ClubMainMenu.SetActive(true);
+        //SceneManager.UnloadSceneAsync("ClubGame");
+
+        //DEV_CODE This line is added by me
+        GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
     }
 
     public IEnumerator SwitchToAnotherTableReset()

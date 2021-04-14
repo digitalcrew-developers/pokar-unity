@@ -646,8 +646,9 @@ public class ClubDetailsUIManager : MonoBehaviour
                 GlobalGameManager.instance.SetRoomData(data);
                 GameConstants.TURN_TIME = data.callTimer;
                 assignRole = d["response"]["assignRole"].ToString();
-                SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
-            }
+				//SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
+				GlobalGameManager.instance.LoadScene(Scenes.ClubInGame);
+			}
         });
     }
 
