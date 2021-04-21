@@ -173,7 +173,8 @@ public class GameConstants : MonoBehaviour
         API_URL+"/getClubDataAnalytics",
         API_URL+"/getClubTableDataAnalytics",
         API_URL+"/getClubUserDetail",
-        API_URL+"/verifyTablePassCode"
+        API_URL+"/verifyTablePassCode",
+        API_URL+"/careerData"
 };
     #endregion
 
@@ -313,7 +314,8 @@ public enum RequestType
     GetClubDataAnalytics,
     GetClubTableDataAnalytics,
     getClubUserDetail,
-    verifyTablePassCode
+    verifyTablePassCode,
+    CareerData
 }
 
 [System.Serializable]

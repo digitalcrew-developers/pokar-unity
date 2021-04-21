@@ -16,6 +16,7 @@ public class GraphManager : MonoBehaviour
     private List<GameObject> gameObjectsList;
 
     public List<int> valueList;
+    public List<float> xPosValueList;
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class GraphManager : MonoBehaviour
         gameObjectsList = new List<GameObject>();
 
         valueList = new List<int>();
+        xPosValueList = new List<float>();
 
         //List<int> valueList = new List<int>() { 5, 98, 56, 45, 33, 18, 15, 40, 36, 33, -15, -18, -44 };
         //ShowGraph(valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
@@ -57,7 +59,7 @@ public class GraphManager : MonoBehaviour
         return gameObject;
     }
 
-    public void ShowGraph(List<int> valueList, /*Func<int, string> getAxisLabelX = null,*/ Func<float, string> getAxisLabelY = null)
+    public void ShowGraph(List<int> valueList, List<float> xPosValueList, /*Func<int, string> getAxisLabelX = null,*/ Func<float, string> getAxisLabelY = null, bool isDay = false, bool isMonth = false, bool isYear = false)
     {
         //if (getAxisLabelX == null)
         //{
@@ -82,6 +84,8 @@ public class GraphManager : MonoBehaviour
         gameObjectsList.Clear();
 
         float graphHeight = graphContainer.sizeDelta.y;
+
+        float graphWidth = graphContainer.sizeDelta.x;
         
         float yMaximum = valueList[0];
         float yMinimum = valueList[0];
@@ -95,22 +99,47 @@ public class GraphManager : MonoBehaviour
                 yMinimum = value;
         }
 
-        yMaximum = yMaximum + ((yMaximum - yMinimum) * 0.2f);
-        yMinimum = yMinimum - ((yMaximum - yMinimum) * 0.2f);
+        yMaximum = yMaximum + ((yMaximum - yMinimum) * 0.25f);
+        yMinimum = yMinimum - ((yMaximum - yMinimum) * 0.25f);
 
-        float xSize = 50f;
+
+        //Calculating xMinimum and xMaximum values
+        float xMaximum = xPosValueList[0];
+        float xMinimum = xPosValueList[0];
+
+        foreach (int value in xPosValueList)
+        {
+            if (value > xMaximum)
+                xMaximum = value;
+
+            if (value < xMinimum)
+                xMinimum = value;
+        }
 
         GameObject lastCircleGameObject = null;
+
+        xPosValueList.Sort();
+
         for (int i = 0; i < valueList.Count; i++)
         {
-            float xPosition = xSize + i * xSize;
-            float yPosition = ((valueList[i] - yMinimum) / (yMaximum - yMinimum)) * graphHeight;
+            float xPosition = xPosValueList[i] + 14.5f;
+            float yPosition = ((valueList[i] - yMinimum) / (yMaximum - yMinimum)) * graphHeight * 1.01f;
             GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition));
             gameObjectsList.Add(circleGameObject);
-            if(lastCircleGameObject != null)
+
+            if(lastCircleGameObject/*circleGameObject*/ != null)
             {
+                //Debug.Log("Creating Line with dots");
                 GameObject dotConnectionGameObject =  CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition);
                 gameObjectsList.Add(dotConnectionGameObject);
+            }
+            //Enable follow code if you want to show dot when there is single data
+            else if (lastCircleGameObject == null && valueList.Count == 1)
+            {
+                Debug.Log("Only One Data is there so do only dot no line is there..." + xPosition + " AND Y POsition: " + yPosition);
+                gameObjectsList.Clear();
+                GameObject dotObject = CreateCircle(new Vector2(xPosition, yMinimum * graphHeight * 1.01f));
+                gameObjectsList.Add(dotObject);
             }
             lastCircleGameObject = circleGameObject;
 
@@ -123,6 +152,27 @@ public class GraphManager : MonoBehaviour
             //gameObjectsList.Add(labelX.gameObject);
         }
 
+
+        //float seperatorCount = -1f;
+        //for (int i = 0; i < 5; i++)
+        //{
+        //    RectTransform labelY = Instantiate(labelTemplateY);
+        //    labelY.SetParent(graphContainer);
+        //    labelY.gameObject.SetActive(true);
+        //    labelY.localScale = new Vector3(1, 1, 1);
+        //    float normalizedValue = i * 1f / seperatorCount;
+        //    seperatorCount += 0.5f;
+        //    labelY.anchoredPosition = new Vector2(-23f, (i * 1.05f / 5) * graphHeight);
+        //    if (yMaximum == yMinimum)
+        //        labelY.GetComponent<Text>().text = Utility.GetTrimmedAmount(getAxisLabelY(yMinimum + (normalizedValue * yMinimum)));
+        //    else
+        //        labelY.GetComponent<Text>().text = Utility.GetTrimmedAmount(getAxisLabelY(yMinimum + (normalizedValue * (yMaximum - yMinimum))));
+        //    gameObjectsList.Add(labelY.gameObject);
+        //}
+
+
+
+        //ORIGINAL Logic
         int seperatorCount = 5;
         for (int i = 0; i < seperatorCount; i++)
         {
@@ -130,9 +180,14 @@ public class GraphManager : MonoBehaviour
             labelY.SetParent(graphContainer);
             labelY.gameObject.SetActive(true);
             labelY.localScale = new Vector3(1, 1, 1);
-            float normalizedValue = i * 1f / seperatorCount;
+            float normalizedValue = i * 1.05f / seperatorCount;
             labelY.anchoredPosition = new Vector2(-23f, normalizedValue * graphHeight);
-            labelY.GetComponent<Text>().text = getAxisLabelY(yMinimum + (normalizedValue * (yMaximum - yMinimum)));
+
+            if (yMaximum == yMinimum)
+                labelY.GetComponent<Text>().text = Utility.GetTrimmedAmount(getAxisLabelY(yMinimum + (normalizedValue * yMinimum)));
+            else
+                labelY.GetComponent<Text>().text = Utility.GetTrimmedAmount(getAxisLabelY(yMinimum + (normalizedValue * (yMaximum - yMinimum))));
+
             gameObjectsList.Add(labelY.gameObject);
         }
     }
@@ -151,5 +206,26 @@ public class GraphManager : MonoBehaviour
         rectTransform.anchoredPosition = dotPositionA + dir * distance * .5f; 
         rectTransform.localEulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(dir));
         return gameObject;
+    }
+
+    public void ShowDefaultGraph(List<int> valueList, /*Func<int, string> getAxisLabelX = null,*/ Func<float, string> getAxisLabelY = null)
+    {
+        float graphHeight = graphContainer.sizeDelta.y;
+
+        float yMinimum = valueList[0];
+
+        float seperatorCount = -1f;
+        for (int i = 0; i < 5; i++)
+        {
+            RectTransform labelY = Instantiate(labelTemplateY);
+            labelY.SetParent(graphContainer);
+            labelY.gameObject.SetActive(true);
+            labelY.localScale = new Vector3(1, 1, 1);
+            float normalizedValue = /*i * 1f /*/ seperatorCount;
+            seperatorCount += 0.5f;
+            labelY.anchoredPosition = new Vector2(-23f, (i* 1.05f/5) * graphHeight);
+            labelY.GetComponent<Text>().text = ((normalizedValue * yMinimum > 0)?"+":"") + getAxisLabelY(/*yMinimum + */(normalizedValue * /*(yMaximum - yMinimum)*/ yMinimum));
+            gameObjectsList.Add(labelY.gameObject);
+        }
     }
 }

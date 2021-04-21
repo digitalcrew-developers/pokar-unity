@@ -287,6 +287,18 @@ public class Utility : MonoBehaviour
         {
             updatedAmount = "" + (currentValue / 1000).ToString("0.00") + "K";
         }
+        else if(currentValue <1000)
+        {
+            updatedAmount = "" + (currentValue / 1000).ToString("0.00") + "K";
+        }
+        else if(currentValue < 1000000) // One Million
+        {
+            updatedAmount = "" + (currentValue / 1000000).ToString("0.00") + "M";
+        }
+        else if (currentValue < 1000000000) // One Billion
+        {
+            updatedAmount = "" + (currentValue / 1000000000).ToString("0.00") + "B";
+        }
         else
         {
             updatedAmount = currentValueInString;

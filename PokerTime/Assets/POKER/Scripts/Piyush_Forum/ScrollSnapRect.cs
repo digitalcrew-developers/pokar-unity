@@ -14,8 +14,8 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     public static ScrollSnapRect instance;
 
     public Text changeIndexTxt;
-    public Text dayWiseWinOrLoseText;
     public Text allTimeText;
+    public Text currentWiseWinOrLoseText;
     public Text last7DaysText;
 
     public string containerScroll_Name;
@@ -75,6 +75,9 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     [Space(10)]
     public Transform dayContainer, monthContainer, yearContainer;
 
+    [Space(10)]
+    public GameObject noContentPanel;
+
     private Transform graphData;
 
     public void Awake()
@@ -120,40 +123,74 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
 
     public void ChangeTxtVal() 
     {
+        string startDate = "", endDate = "";
         switch (this.gameObject.name)
         {
             case "YearScroll":
-                //changeIndexTxt.text = "202" + _currentPage ;
-                changeIndexTxt.text = CareerManager.instance.currentYear.ToString();
-                yearContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
+                {
+                    changeIndexTxt.text = CareerManager.instance.currentYear.ToString();
+                    yearContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
+                    startDate = CareerManager.instance.currentYear.ToString() + "-01-01";
+
+                    if (CareerManager.instance.currentYear == DateTime.Now.Year)
+                    {
+                        endDate = CareerManager.instance.currentYear.ToString() + "-" +
+                                    ((DateTime.Now.Month.ToString().Length == 1) ? "0" + DateTime.Now.Month.ToString() : DateTime.Now.Month.ToString()) + "-" +
+                                    ((DateTime.Now.Day.ToString().Length == 1) ? "0" + DateTime.Now.Day.ToString() : DateTime.Now.Day.ToString());
+                    }
+                    else
+                    {
+                        endDate = CareerManager.instance.currentYear.ToString() + "-12-31";
+                    }
+                }
                 break;
             case "MonthScroll":
-                //changeIndexTxt.text = "2020 - "+_currentPage + 1 ;
-                changeIndexTxt.text = CareerManager.instance.currentYear + "-" + ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString());
-                monthContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
+                {
+                    changeIndexTxt.text = CareerManager.instance.currentYear + "-" + ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString());
+                    monthContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
+
+                    monthContainer.GetChild(_currentPage).Find("xAxis/M7").GetComponent<Text>().text = DateTime.DaysInMonth(CareerManager.instance.currentYear, CareerManager.instance.currentMonth).ToString();
+
+                    startDate = CareerManager.instance.currentYear.ToString() + "-" +
+                                ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) 
+                                + "-01";
+                    if (CareerManager.instance.currentMonth == DateTime.Now.Month)
+                    {
+                        endDate = CareerManager.instance.currentYear.ToString() + "-" +
+                                    ((DateTime.Now.Month.ToString().Length == 1) ? "0" + DateTime.Now.Month.ToString() : DateTime.Now.Month.ToString()) + "-" +
+                                    ((DateTime.Now.Day.ToString().Length == 1) ? "0" + DateTime.Now.Day.ToString() : DateTime.Now.Day.ToString());
+                    }
+                    else
+                    {
+                        int daysInMonth = DateTime.DaysInMonth(CareerManager.instance.currentYear, CareerManager.instance.currentMonth);
+                        endDate = CareerManager.instance.currentYear.ToString() + "-" + 
+                                  ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) + "-" + 
+                                  daysInMonth;
+                    }
+                }
                 break;
             case "DayScroll":
-                //changeIndexTxt.text = _currentPage + 1 + "/25";
-                //Debug.Log("Setting New Date..");
-                changeIndexTxt.text = ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) + "/" +
-                                      ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
-                //Debug.Log("Current Page " + _currentPage);
-                dayContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
-                break;
-        }
-        //GameObject g = GameObject.Find("Date");//Add By Gp
-        //Destroy(g);//Add By GP
-        string date = CareerManager.instance.currentYear + "-" +
+                {
+                    changeIndexTxt.text = ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) + "/" +
+                                          ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
+                    dayContainer.GetChild(_currentPage).Find("Window_Graph").gameObject.SetActive(true);
+
+                    startDate = endDate = CareerManager.instance.currentYear + "-" +
                       ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) + "-" +
                       ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
+                }
+                break;
+        }
+        //string date = CareerManager.instance.currentYear + "-" +
+        //              ((CareerManager.instance.currentMonth.ToString().Length == 1) ? "0" + CareerManager.instance.currentMonth.ToString() : CareerManager.instance.currentMonth.ToString()) + "-" +
+        //              ((CareerManager.instance.currentDate.ToString().Length == 1) ? "0" + CareerManager.instance.currentDate.ToString() : CareerManager.instance.currentDate.ToString());
 
 
         string requestData = "{\"userId\":" + int.Parse(PlayerManager.instance.GetPlayerGameData().userId) + "," +
-                               "\"date\":\"" + date + "\"," +
-                               "\"endDate\":\"" + date + "\"}";
+                               "\"startDate\":\"" + startDate/*date*//*"2021-03-13"*/ + "\"," +
+                               "\"endDate\":\"" + endDate/*date*//*"2021-03-13"*/ + "\"}";
 
-        WebServices.instance.SendRequest(RequestType.GetGameHistory, requestData, true, OnServerResponseFound);
-        //Debug.LogError("FD1");
+        WebServices.instance.SendRequest(RequestType.CareerData, requestData, true, OnServerResponseFound);
     }
 
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -168,84 +205,278 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             return;
         }
         
-        if (requestType == RequestType.GetGameHistory)
+        if (requestType == RequestType.CareerData)
         {
-            Debug.Log("Response => GetGameHistory : " + serverResponse);
+            //Debug.Log("Response => CareerData : " + serverResponse + "   Total Data: " );
             
             JsonData data = JsonMapper.ToObject(serverResponse);
+            Debug.Log("Response => CareerData : " + data.ToJson().ToString() + "   Total Data: " + data["data"].Count);
+
+            float totalWinOrLose = 0.0f;
 
             if (containerScroll_Name.Equals("DayScroll"))
             {
-                //if (data["status"].Equals(true))
-                //{
-                for (int i = 0; i < careerDayListContainer.transform.childCount; i++)
+                if (data["message"].Equals("Success"))
                 {
-                    Destroy(careerDayListContainer.transform.GetChild(i).gameObject);
+                    for (int i = 0; i < careerDayListContainer.transform.childCount; i++)
+                    {
+                        Destroy(careerDayListContainer.transform.GetChild(i).gameObject);
+                    }
+
+                    if (data["data"].Count > 0)
+                    {
+                        //Clear old graph data
+                        dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+                        dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList.Clear();
+                        noContentPanel.SetActive(false);
+
+                        for (int i = 0; i < data["data"].Count; i++)
+                        {
+                            listObj = Instantiate(careerListPrefab, careerDayListContainer.transform);
+
+                            listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = data["data"][i]["date"].ToString().Substring(5, 2) + "/" + data["data"][i]["date"].ToString().Substring(8, 2);
+
+                            if (data["data"][i]["isClub"].Equals(false))
+                            {
+                                //Debug.Log("This is not club data...");
+                                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Hand: " + data["data"][i]["total"].ToString();
+                            }
+                            else
+                            {
+                                //Debug.Log("This is club data...");
+                                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Game: " + data["data"][i]["table"].ToString() + "\n" + "Hand: " + data["data"][i]["total"].ToString();
+                            }
+
+                            totalWinOrLose += float.Parse(data["data"][i]["profit"].ToString());
+
+                            if (float.Parse(data["data"][i]["profit"].ToString()) > 0)
+                            {
+                                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().color = Color.green;
+                            }
+                            else
+                            {
+                                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().color = Color.red;
+                            }
+
+                            listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = data["data"][i]["profit"].ToString();
+
+                            //Adding profit data to the value list
+                            dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"][i]["profit"].ToString()));
+                            //dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"][i]["betAmount"].ToString()));
+
+                            //Adding dates from response to the xPosList
+                            dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList.Add(0);
+
+                            //Calling Show Graph Method to generate graph
+                            dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList,
+                                                                                                                            dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList,
+                                                                                                                            /*(int _i) => "" + i,*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f),true);
+                        }
+                        if(totalWinOrLose >0)
+                        {
+                            allTimeText.color = currentWiseWinOrLoseText.color = last7DaysText.color = Color.green;
+                            allTimeText.text = currentWiseWinOrLoseText.text = last7DaysText.text = totalWinOrLose.ToString();
+                        }
+                        else
+                        {
+                            allTimeText.color = currentWiseWinOrLoseText.color = last7DaysText.color = Color.red;
+                            allTimeText.text = currentWiseWinOrLoseText.text = last7DaysText.text = totalWinOrLose.ToString();
+                        }
+                    }
+                    else
+                    {
+                        noContentPanel.SetActive(true);
+                        allTimeText.color = currentWiseWinOrLoseText.color = last7DaysText.color = Color.gray;
+                        allTimeText.text = currentWiseWinOrLoseText.text = last7DaysText.text = "0";
+
+                        //Generating YAxis on Graph
+                        dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+                        dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(10);
+                        dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowDefaultGraph(dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
+                    }
                 }
-
-                listObj = Instantiate(careerListPrefab, careerDayListContainer.transform);
-                listObj.name = "Date";
-                listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
-                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
-                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
-
-                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
-
-                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
-                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
-
-                dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(dayContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
-
-                //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
-                //}
-                //else
-                //{
-                //    MainMenuController.instance.ShowMessage("Unable to update request..");
-                //}
+                else
+                {
+                    MainMenuController.instance.ShowMessage("Unable to update request..");
+                }
             }
-            else if(containerScroll_Name.Equals("MonthScroll"))
+            else if (containerScroll_Name.Equals("MonthScroll"))
             {
-                for (int i = 0; i < careerMonthListContainer.transform.childCount; i++)
+                if (data["message"].Equals("Success"))
                 {
-                    Destroy(careerMonthListContainer.transform.GetChild(i).gameObject);
+                    for (int i = 0; i < careerMonthListContainer.transform.childCount; i++)
+                    {
+                        Destroy(careerMonthListContainer.transform.GetChild(i).gameObject);
+                    }
+
+                    if (data["data"].Count > 0)
+                    {
+                        //Clear old graph data
+                        monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+                        monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList.Clear();
+                        noContentPanel.SetActive(false);
+
+                        for (int i = 0; i < data["data"].Count; i++)
+                        {
+                            listObj = Instantiate(careerListPrefab, careerMonthListContainer.transform);
+
+                            listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = data["data"][i]["date"].ToString().Substring(5,2) + "/" + data["data"][i]["date"].ToString().Substring(8, 2);
+
+                            if (data["data"][i]["isClub"].Equals(false))
+                            {
+                                //Debug.Log("This is not club data...");
+                                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Hand: " + data["data"][i]["total"].ToString();
+                            }
+                            else
+                            {
+                                //Debug.Log("This is club data...");
+                                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Game: " + data["data"][i]["table"].ToString() + "\n" + "Hand: " + data["data"][i]["total"].ToString();
+                            }
+
+                            totalWinOrLose += float.Parse(data["data"][i]["profit"].ToString());
+
+                            if (float.Parse(data["data"][i]["profit"].ToString()) > 0)
+                            {
+                                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().color = Color.green;
+                            }
+                            else
+                            {
+                                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().color = Color.red;
+                            }
+
+                            listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = data["data"][i]["profit"].ToString();
+
+                            //Adding profit data to the value list
+                            monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"][i]["profit"].ToString()));
+                            //monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"][i]["betAmount"].ToString()));
+
+                            //Adding dates from response to the xPosList
+                            float pos = monthContainer.GetChild(_currentPage).Find("xAxis/M1").GetComponent<RectTransform>().anchoredPosition.x + ((int.Parse(data["data"][i]["date"].ToString().Substring(8, 2))%30) * 14.5f);
+
+                            monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList.Add(pos);
+                            
+                            //Calling Show Graph Method to generate graph
+                            monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList,
+                                                                                                                              monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList,
+                                                                                                                              /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f),false,true);
+                        }
+                        if (totalWinOrLose > 0)
+                        {
+                            allTimeText.color = currentWiseWinOrLoseText.color = last7DaysText.color = Color.green;
+                            allTimeText.text = currentWiseWinOrLoseText.text = last7DaysText.text = totalWinOrLose.ToString();
+                        }
+                        else
+                        {
+                            allTimeText.color = currentWiseWinOrLoseText.color = last7DaysText.color = Color.red;
+                            allTimeText.text = currentWiseWinOrLoseText.text = last7DaysText.text = totalWinOrLose.ToString();
+                        }
+                    }
+                    else
+                    {
+                        noContentPanel.SetActive(true);
+                        allTimeText.color = currentWiseWinOrLoseText.color = last7DaysText.color = Color.gray;
+                        allTimeText.text = currentWiseWinOrLoseText.text = last7DaysText.text = "0";
+
+                        //Generating YAxis on Graph
+                        monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+                        monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(10);
+                        monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowDefaultGraph(monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
+                    }
                 }
-
-                listObj = Instantiate(careerListPrefab, careerMonthListContainer.transform);
-                //datelist.name = "Date";
-                listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
-                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
-                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
-
-                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
-
-                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
-                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
-
-                monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(monthContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
-
-                //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+                else
+                {
+                    MainMenuController.instance.ShowMessage("Unable to update request..");
+                }
             }
             else if (containerScroll_Name.Equals("YearScroll"))
             {
-                for (int i = 0; i < careerYearListContainer.transform.childCount; i++)
+                if (data["message"].Equals("Success"))
                 {
-                    Destroy(careerYearListContainer.transform.GetChild(i).gameObject);
+                    for (int i = 0; i < careerYearListContainer.transform.childCount; i++)
+                    {
+                        Destroy(careerYearListContainer.transform.GetChild(i).gameObject);
+                    }
+
+                    if (data["data"].Count > 0)
+                    {
+                        //Clear old graph data
+                        yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+                        yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList.Clear();
+                        noContentPanel.SetActive(false);
+
+                        for (int i = 0; i < data["data"].Count; i++)
+                        {
+                            listObj = Instantiate(careerListPrefab, careerYearListContainer.transform);
+
+                            listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = data["data"][i]["date"].ToString().Substring(5, 2) + "/" + data["data"][i]["date"].ToString().Substring(8, 2);
+
+                            if (data["data"][i]["isClub"].Equals(false))
+                            {
+                                //Debug.Log("This is not club data...");
+                                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Hand: " + data["data"][i]["total"].ToString();
+                            }
+                            else
+                            {
+                                //Debug.Log("This is club data...");
+                                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Game: " + data["data"][i]["table"].ToString() + "\n" + "Hand: " + data["data"][i]["total"].ToString();
+                            }
+
+
+                            totalWinOrLose += float.Parse(data["data"][i]["profit"].ToString());
+
+                            if (float.Parse(data["data"][i]["profit"].ToString()) > 0)
+                            {
+                                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().color = Color.green;
+                            }
+                            else
+                            {
+                                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().color = Color.red;
+                            }
+
+                            listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = data["data"][i]["profit"].ToString();
+
+                            //Adding profit data to the value list
+                            yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"][i]["profit"].ToString()));
+                            //yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"][i]["betAmount"].ToString()));
+
+                            //Adding months from response to the xPosList
+                            float pos = yearContainer.GetChild(_currentPage).Find("xAxis/Y1").GetComponent<RectTransform>().anchoredPosition.x + ((int.Parse(data["data"][i]["date"].ToString().Substring(5, 2)) % 12) * 14.5f);
+                            //yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList.Add(int.Parse(data["data"][i]["date"].ToString().Substring(5, 2)));
+                            yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList.Add(pos);
+
+                            //Calling Show Graph Method to generate graph
+                            yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList,
+                                                                                                                             yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().xPosValueList,
+                                                                                                                             /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f),false,false,true);
+                        }
+                        if (totalWinOrLose > 0)
+                        {
+                            allTimeText.color = currentWiseWinOrLoseText.color = last7DaysText.color = Color.green;
+                            allTimeText.text = currentWiseWinOrLoseText.text = last7DaysText.text = totalWinOrLose.ToString();
+                        }
+                        else
+                        {
+                            allTimeText.color = currentWiseWinOrLoseText.color = last7DaysText.color = Color.red;
+                            allTimeText.text = currentWiseWinOrLoseText.text = last7DaysText.text = totalWinOrLose.ToString();
+                        }
+                    }
+                    else
+                    {
+                        noContentPanel.SetActive(true);
+
+                        allTimeText.color = currentWiseWinOrLoseText.color = last7DaysText.color = Color.gray;
+                        allTimeText.text = currentWiseWinOrLoseText.text = last7DaysText.text = "0";
+
+                        //Generating YAxis on Graph
+                        yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
+                        yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(10);
+                        yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowDefaultGraph(yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
+                    }
                 }
-
-                listObj = Instantiate(careerListPrefab, careerYearListContainer.transform);
-                //datelist.name = "Date";
-                listObj.transform.Find("bg Image/hand text").GetComponent<Text>().text = "Hand: " + data["data"]["totalHand"].ToString();
-                listObj.transform.Find("bg Image/win text").GetComponent<Text>().text = "Win: " + data["data"]["totalWin"].ToString();
-                listObj.transform.Find("bg Image/loss text").GetComponent<Text>().text = "Loss: " + data["data"]["totalLoss"].ToString();
-
-                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Clear();
-
-                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalWin"].ToString()));
-                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList.Add(int.Parse(data["data"]["totalLoss"].ToString()));
-
-                yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().ShowGraph(yearContainer.GetChild(_currentPage).Find("Window_Graph").GetComponent<GraphManager>().valueList, /*(int _i) => "Day " + (+_i+1),*/ (float _f) => /*"$"*/ "" + Mathf.RoundToInt(_f));
-
-                //Debug.Log("data   ==>>>>" + data["data"]["totalHand"].ToString());
+                else
+                {
+                    MainMenuController.instance.ShowMessage("Unable to update request..");
+                }
             }
         }
         else
