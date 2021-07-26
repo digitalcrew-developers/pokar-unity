@@ -644,12 +644,132 @@ public class ClubDetailsUIManager : MonoBehaviour
                 data.isLobbyRoom = false;
                 data.assignRole = d["response"]["assignRole"].ToString();
                 GlobalGameManager.instance.SetRoomData(data);
+                Debug.Log(data.gameMode + " - " + GlobalGameManager.instance.GetRoomData().roomId + " - " + GlobalGameManager.instance.creatingNewTable + " - " + GlobalGameManager.instance.GetRoomData().exclusiveTable);
                 GameConstants.TURN_TIME = data.callTimer;
                 assignRole = d["response"]["assignRole"].ToString();
-				//SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
-				GlobalGameManager.instance.LoadScene(Scenes.ClubInGame);
-			}
+                //SceneManager.LoadScene("ClubGame", LoadSceneMode.Additive);
+                if (!GlobalGameManager.instance.creatingNewTable)
+                {
+                    GlobalGameManager.instance.LoadScene(Scenes.ClubInGame);
+                    SetGameMode((int)data.gameMode, ClubSocketController.instance.tableButton[0].transform.GetChild(1).GetComponent<Text>());
+
+                    GameObject g = Instantiate(GlobalGameManager.instance.newClubTable, Vector3.zero, Quaternion.identity);
+                    ClubSocketController.instance.SendClubGameJoinRequest();
+                    g.name = GlobalGameManager.instance.GetRoomData().roomId;
+                    GlobalGameManager.instance.table.Add(g);
+                    GlobalGameManager.instance.AllTables.Add(GlobalGameManager.instance.GetRoomData().roomId, g);
+                    ClubSocketController.instance.tableButton[0].name = GlobalGameManager.instance.GetRoomData().roomId;
+                    GlobalGameManager.currentTableInd = 0;
+                }
+                else
+                {
+                    if (!GlobalGameManager.instance.AllTables.ContainsKey(GlobalGameManager.instance.GetRoomData().roomId))
+                    {
+                        GameObject g = Instantiate(GlobalGameManager.instance.newClubTable, Vector3.zero, Quaternion.identity);
+                        ClubSocketController.instance.SendClubGameJoinRequest();
+                        g.name = GlobalGameManager.instance.GetRoomData().roomId;
+                        GlobalGameManager.instance.table.Add(g);
+                        GlobalGameManager.instance.AllTables.Add(GlobalGameManager.instance.GetRoomData().roomId, g);
+                    }
+
+                    GlobalGameManager.instance.AllTables[GlobalGameManager.instance.GetRoomData().roomId].transform.GetChild(0).GetChild(0).localPosition = new Vector2(0f, 0f);
+                    int index = 0;
+                    foreach (var kvp in GlobalGameManager.instance.AllTables)
+                    {
+                        Debug.Log(kvp.Key + " - " + GlobalGameManager.instance.GetRoomData().roomId);
+                        if (kvp.Key == GlobalGameManager.instance.GetRoomData().roomId)
+                        {
+                            break;  // According to question, you are after the key 
+                        }
+                        index++;
+                    }
+                    Debug.Log(index + " - " + GlobalGameManager.instance.AllTables.Count);
+                    switch (GlobalGameManager.instance.AllTables.Count)
+                    {
+                        case 1:
+                            ClubSocketController.instance.tableButton[0].name = GlobalGameManager.instance.GetRoomData().roomId;
+                            if (GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && GlobalGameManager.instance.GetRoomData().assignRole.Equals("Member"))
+                            {
+                                GlobalGameManager.instance.table[0].transform.GetChild(1).GetComponent<ClubInGameManager>().
+                                ShowPasswordScreen(false);
+                            }
+                            break;
+                        case 2:
+                            SetGameMode((int)data.gameMode, ClubSocketController.instance.tableButton[1].transform.GetChild(1).GetComponent<Text>());
+                            ClubSocketController.instance.tableButton[1].name = GlobalGameManager.instance.GetRoomData().roomId;
+                            ClubSocketController.instance.tableButton[1].SetActive(true);
+                            ClubSocketController.instance.tableButton[0].transform.GetChild(0).GetComponent<Image>().sprite = ClubSocketController.instance.tableButtonSprite[1];
+                            ClubSocketController.instance.tableButton[1].transform.GetChild(0).GetComponent<Image>().sprite = ClubSocketController.instance.tableButtonSprite[0];
+                            if (index == 0)
+                            {
+                                GlobalGameManager.instance.table[1].transform.GetChild(0).GetChild(0).localPosition = new Vector2(1000f, 0f);
+                            }
+                            else
+                            {
+                                GlobalGameManager.instance.table[0].transform.GetChild(0).GetChild(0).localPosition = new Vector2(-1000f, 0f);
+                            }
+                            if (GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && GlobalGameManager.instance.GetRoomData().assignRole.Equals("Member"))
+                            {
+                                GlobalGameManager.instance.table[1].transform.GetChild(1).GetComponent<ClubInGameManager>().
+                                ShowPasswordScreen(false);
+                            }
+                            GlobalGameManager.currentTableInd = 1;
+                            break;
+                        case 3:
+                            SetGameMode((int)data.gameMode, ClubSocketController.instance.tableButton[2].transform.GetChild(1).GetComponent<Text>());
+                            GlobalGameManager.instance.table[1].transform.GetChild(0).GetComponent<Canvas>().sortingOrder = 0;
+                            ClubSocketController.instance.tableButton[2].name = GlobalGameManager.instance.GetRoomData().roomId;
+                            ClubSocketController.instance.tableButton[2].SetActive(true);
+                            ClubSocketController.instance.tableButton[3].SetActive(false);
+                            ClubSocketController.instance.tableButton[0].transform.GetChild(0).GetComponent<Image>().sprite = ClubSocketController.instance.tableButtonSprite[1];
+                            ClubSocketController.instance.tableButton[1].transform.GetChild(0).GetComponent<Image>().sprite = ClubSocketController.instance.tableButtonSprite[1];
+                            ClubSocketController.instance.tableButton[2].transform.GetChild(0).GetComponent<Image>().sprite = ClubSocketController.instance.tableButtonSprite[0];
+                            if (index == 0)
+                            {
+                                GlobalGameManager.instance.table[1].transform.GetChild(0).GetChild(0).localPosition = new Vector2(1000f, 0f);
+                                GlobalGameManager.instance.table[2].transform.GetChild(0).GetChild(0).localPosition = new Vector2(2000f, 0f);
+                            }
+                            else if (index == 1)
+                            {
+                                GlobalGameManager.instance.table[0].transform.GetChild(0).GetChild(0).localPosition = new Vector2(-1000f, 0f);
+                                GlobalGameManager.instance.table[2].transform.GetChild(0).GetChild(0).localPosition = new Vector2(1000f, 0f);
+                            }
+                            else
+                            {
+                                GlobalGameManager.instance.table[0].transform.GetChild(0).GetChild(0).localPosition = new Vector2(-2000f, 0f);
+                                GlobalGameManager.instance.table[1].transform.GetChild(0).GetChild(0).localPosition = new Vector2(-1000f, 0f);
+                            }
+                            if (GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && GlobalGameManager.instance.GetRoomData().assignRole.Equals("Member"))
+                            {
+                                GlobalGameManager.instance.table[2].transform.GetChild(1).GetComponent<ClubInGameManager>().
+                                ShowPasswordScreen(false);
+                            }
+                            GlobalGameManager.currentTableInd = 2;
+                            break;
+                    }
+
+                    ClubSocketController.instance.DestroyClubDetailMenu();
+                    ClubSocketController.instance.buttonCanvas.SetActive(true);
+                }
+            }
         });
+    }
+
+    void SetGameMode(int modeNum, Text setText)
+    {
+        Debug.Log("Mode " + modeNum);
+        switch(modeNum)
+        {
+            case 0:
+                setText.text = "NLH";
+                break;
+            case 1:
+                setText.text = "PLO";
+                break;
+            case 2:
+                setText.text = "OFC";
+                break;
+        }
     }
 
     public void OnClickOnButton(string eventName)
@@ -659,21 +779,26 @@ public class ClubDetailsUIManager : MonoBehaviour
 		switch (eventName)
 		{
 			case "back":
-			{
-				//Activate Bottom Panel
-				if (!MainMenuController.instance.bottomPanel.activeSelf/* && GameConstants.poker*/)
-				{
-					MainMenuController.instance.bottomPanel.SetActive(true);
-					//MainMenuController.instance.bottomPanelTeen.SetActive(false);
-				}
-				//else if (!MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
-				//{
-				//	MainMenuController.instance.bottomPanelTeen.SetActive(true);
-				//	MainMenuController.instance.bottomPanel.SetActive(false);
-				//}
-				MainMenuController.instance.SwitchToMainMenu(true);
-            }
-			break;
+                {
+                    if (GlobalGameManager.instance.AllTables.Count > 0)
+                    {
+                        ClubSocketController.instance.DestroyClubDetailMenu();
+                        return;
+                    }
+                    //Activate Bottom Panel
+                    if (!MainMenuController.instance.bottomPanel.activeSelf/* && GameConstants.poker*/)
+                    {
+                        MainMenuController.instance.bottomPanel.SetActive(true);
+                        //MainMenuController.instance.bottomPanelTeen.SetActive(false);
+                    }
+                    //else if (!MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
+                    //{
+                    //	MainMenuController.instance.bottomPanelTeen.SetActive(true);
+                    //	MainMenuController.instance.bottomPanel.SetActive(false);
+                    //}
+                    MainMenuController.instance.SwitchToMainMenu(true);
+                }
+                break;
 
 			//case "members":
 			//{

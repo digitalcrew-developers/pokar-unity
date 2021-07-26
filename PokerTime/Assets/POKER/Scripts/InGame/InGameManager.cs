@@ -100,6 +100,10 @@ public class InGameManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        ClubInGameManager.instance = null;
+        ClubInGameUIManager.instance = null;
+        //if (Application.isEditor)
+            //Application.runInBackground = false;
         //Debug.Log("Time: " + System.DateTime.Now.Hour + System.DateTime.Now.Minute);
     }
 
@@ -1598,7 +1602,7 @@ public class InGameManager : MonoBehaviour
                         //now we are adding balance if userbalance is 0.
                         int balanceToAdd = (int)GlobalGameManager.instance.GetRoomData().minBuyIn;
                         float userMainBalance = PlayerManager.instance.GetPlayerGameData().coins;
-                        Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance+", "+ EPSILON);
+                        Debug.LogWarning("USER MAIN BALANCE IS : " + userMainBalance + ", " + EPSILON + ", " + availableBalance);
                         //if (userMainBalance >= balanceToAdd)
                         if (userMainBalance < EPSILON)
                         {

@@ -12,6 +12,11 @@ public class MessageScript : MonoBehaviour
     private Action defaultCallBackMethod;
     private Action okButtonCallBackMethod, noButtonCallBackMethod, yesButtonCallBackMethod;
 
+    private void OnEnable()
+    {
+        Debug.Log("Messege");
+    }
+
     private void Start()
     {
         okButton.GetComponent<Button>().onClick.AddListener(ClosePopup);

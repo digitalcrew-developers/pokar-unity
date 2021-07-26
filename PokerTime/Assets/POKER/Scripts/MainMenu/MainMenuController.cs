@@ -56,6 +56,18 @@ public class MainMenuController : MonoBehaviour
             bottomPanel.GetComponent<PaginationManager>().PageToggleClickEvent += MainMenuController_PageToggleClickEvent;
         //else if(!GameConstants.poker)
         //    bottomPanelTeen.GetComponent<PaginationManager>().PageToggleClickEvent += MainMenuController_PageToggleClickEvent;
+        Debug.Log(gameObject.transform.parent.name + " - " + PlayerPrefs.HasKey("Exit"));
+        if(PlayerPrefs.HasKey("Exit"))
+        {
+            PlayerPrefs.DeleteKey("Exit");
+            ShowScreen(MainMenuScreens.Loading);
+            Invoke("HideMenuLoader", 12f);
+        }
+    }
+
+    void HideMenuLoader()
+    {
+        DestroyScreen(MainMenuScreens.Loading);
     }
 
     public void OnClickPlayFlash()
@@ -712,6 +724,11 @@ public class MainMenuController : MonoBehaviour
             }
         }
         DestroyScreen(MainMenuScreens.Loading);
+    }
+
+    public void LoadTournament()
+    {
+        GlobalGameManager.instance.LoadScene(Scenes.TournamentInGame);
     }
 }
 

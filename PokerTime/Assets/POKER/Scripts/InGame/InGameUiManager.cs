@@ -1248,7 +1248,8 @@ public enum InGameScreens
     Counter,
     EVChopRules,
     HostPrivilege,
-    CounterClub
+    CounterClub,
+    TournamentLobby
 }
 
 public enum PlayerAction

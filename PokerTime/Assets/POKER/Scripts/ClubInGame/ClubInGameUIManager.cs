@@ -77,11 +77,12 @@ public class ClubInGameUIManager : MonoBehaviour
 
     public List<GameObject> TableImages = new List<GameObject>();
     public Animator actionPanelAnimator;
+    public ClubInGameManager clubInGameManager;
 
     private void Awake()
     {
         instance = this;
-        cameraObj.gameObject.SetActive(false);
+        //cameraObj.gameObject.SetActive(false);
         //DEV_CODE
         inGamePopUp.SetActive(false);
         //cameraObj = GameObject.Find("VideoRecordingCamera").GetComponent<Camera>();
@@ -109,7 +110,7 @@ public class ClubInGameUIManager : MonoBehaviour
         }
 
         //To disable main menu scene on club scene load
-        if (!GlobalGameManager.instance.GetRoomData().isLobbyRoom)
+        if (!GlobalGameManager.instance.creatingNewTable && !GlobalGameManager.instance.GetRoomData().isLobbyRoom)
         {
             ClubMainMenu = GameObject.Find("MainMenuScene(Clone)");
             ClubMainMenu.SetActive(false);
@@ -283,8 +284,10 @@ public class ClubInGameUIManager : MonoBehaviour
         {
             case "rabbit":
                 {
-                    ClubInGameManager.instance.RabbitButton.SetActive(false);
-                    StartCoroutine(ClubInGameManager.instance.WaitAndShowRabbit());
+                    //ClubInGameManager.instance.RabbitButton.SetActive(false);
+                    clubInGameManager.RabbitButton.SetActive(false);
+                    //StartCoroutine(ClubInGameManager.instance.WaitAndShowRabbit());
+                    StartCoroutine(clubInGameManager.WaitAndShowRabbit());
                 }
                 break;
             case "store":
@@ -309,53 +312,58 @@ public class ClubInGameUIManager : MonoBehaviour
                 break;
             case "emojiScreen":
                 {
-                    if (ClubInGameManager.instance.AmISpectator)
+                    //if (ClubInGameManager.instance.AmISpectator)
+                    if (clubInGameManager.AmISpectator)
                         return;
                     ShowScreen(InGameScreens.EmojiScreen);
                 }
                 break;
             case "fold":
                 {
-                    PlayerScript player = ClubInGameManager.instance.GetMyPlayerObject();
+                    //PlayerScript player = ClubInGameManager.instance.GetMyPlayerObject();
+                    PlayerScript player = clubInGameManager.GetMyPlayerObject();
                     player.ResetTurn();
-                    ClubInGameManager.instance.OnPlayerActionCompleted(PlayerAction.Fold, 0, "Fold");
+                    //ClubInGameManager.instance.OnPlayerActionCompleted(PlayerAction.Fold, 0, "Fold");
+                    clubInGameManager.OnPlayerActionCompleted(PlayerAction.Fold, 0, "Fold");
                 }
                 break;
 
             case "call":
                 {
-                    PlayerScript player = ClubInGameManager.instance.GetMyPlayerObject();
+                    //PlayerScript player = ClubInGameManager.instance.GetMyPlayerObject();
+                    PlayerScript player = clubInGameManager.GetMyPlayerObject();
                     player.ResetTurn();
-                    ClubInGameManager.instance.OnPlayerActionCompleted(PlayerAction.Call, (int)availableCallAmount, "Call");
+                    //ClubInGameManager.instance.OnPlayerActionCompleted(PlayerAction.Call, (int)availableCallAmount, "Call");
+                    clubInGameManager.OnPlayerActionCompleted(PlayerAction.Call, (int)availableCallAmount, "Call");
                 }
                 break;
             case "allin":
                 {
-                    PlayerScript player = ClubInGameManager.instance.GetMyPlayerObject();
+                    PlayerScript player = clubInGameManager.GetMyPlayerObject();
                     player.ResetTurn();
-                    ClubInGameManager.instance.OnPlayerActionCompleted(PlayerAction.AllIn, (int)player.GetPlayerData().balance, "AllIn");
+                    clubInGameManager.OnPlayerActionCompleted(PlayerAction.AllIn, (int)player.GetPlayerData().balance, "AllIn");
                 }
                 break;
 
             case "check":
                 {
-                    PlayerScript player = ClubInGameManager.instance.GetMyPlayerObject();
+                    PlayerScript player = clubInGameManager.GetMyPlayerObject();
                     player.ResetTurn();
-                    ClubInGameManager.instance.OnPlayerActionCompleted(PlayerAction.Check, 0, "Check");
+                    clubInGameManager.OnPlayerActionCompleted(PlayerAction.Check, 0, "Check");
                 }
                 break;
 
 
             case "raiseOpen":
                 {
-                    PlayerScript player = ClubInGameManager.instance.GetMyPlayerObject();
+                    PlayerScript player = clubInGameManager.GetMyPlayerObject();
 
                     if (player != null)
                     {
                         Debug.Log("availableCallAmount..." + availableCallAmount + ", " + player.GetPlayerData().balance + ", " + GlobalGameManager.instance.GetRoomData().smallBlind);
                         if (availableCallAmount < GlobalGameManager.instance.GetRoomData().smallBlind)
                             availableCallAmount = GlobalGameManager.instance.GetRoomData().smallBlind;
-                        ToggleRaisePopUp(true, availableCallAmount, player.GetPlayerData().balance, ClubInGameManager.instance.GetPotAmount());
+                        ToggleRaisePopUp(true, availableCallAmount, player.GetPlayerData().balance, clubInGameManager.GetPotAmount());
                     }
                     else
                     {
@@ -378,12 +386,12 @@ public class ClubInGameUIManager : MonoBehaviour
                 {
                     if (sliderText.text == "All In")
                     {
-                        PlayerScript player = ClubInGameManager.instance.GetMyPlayerObject();
+                        PlayerScript player = clubInGameManager.GetMyPlayerObject();
 
                         if (player != null)
                         {
                             player.ResetTurn();
-                            ClubInGameManager.instance.OnPlayerActionCompleted(PlayerAction.Raise, (int)player.GetPlayerData().balance, "AllIn");
+                            clubInGameManager.OnPlayerActionCompleted(PlayerAction.Raise, (int)player.GetPlayerData().balance, "AllIn");
                         }
                         else
                         {
@@ -394,7 +402,7 @@ public class ClubInGameUIManager : MonoBehaviour
                     }
                     else
                     {
-                        ClubInGameManager.instance.OnPlayerActionCompleted(PlayerAction.Raise, (int)selectedRaiseAmount, "Raise");
+                        clubInGameManager.OnPlayerActionCompleted(PlayerAction.Raise, (int)selectedRaiseAmount, "Raise");
                     }
                 }
                 break;
@@ -403,7 +411,7 @@ public class ClubInGameUIManager : MonoBehaviour
                 {
                     if (useRaisePotWise) // PotWise Calculation
                     {
-                        slider.value = ClubInGameManager.instance.GetPotAmount();
+                        slider.value = clubInGameManager.GetPotAmount();
                         OnSliderValueChange();
                     }
                     else // Call Amount wise calculation
@@ -418,7 +426,7 @@ public class ClubInGameUIManager : MonoBehaviour
                 {
                     if (useRaisePotWise) // PotWise Calculation
                     {
-                        slider.value = (ClubInGameManager.instance.GetPotAmount() / 2f);
+                        slider.value = (clubInGameManager.GetPotAmount() / 2f);
                         OnSliderValueChange();
                     }
                     else // Call Amount wise calculation
@@ -433,7 +441,7 @@ public class ClubInGameUIManager : MonoBehaviour
                 {
                     if (useRaisePotWise) // PotWise Calculation
                     {
-                        slider.value = ((ClubInGameManager.instance.GetPotAmount() * 2f) / 3f);
+                        slider.value = ((clubInGameManager.GetPotAmount() * 2f) / 3f);
                         OnSliderValueChange();
                     }
                     else // Call Amount wise calculation
@@ -729,7 +737,7 @@ public class ClubInGameUIManager : MonoBehaviour
     public void ToggleSuggestionButton(bool isShow, bool isCheckAvailable = false, int callAmount = 0, float availableBalance = 0)
     {
         //DEV_CODE Added
-        if (!ClubInGameManager.instance.userWinner)
+        if (!clubInGameManager.userWinner)
             suggestionButtonParent.SetActive(isShow);
         else
             suggestionButtonParent.SetActive(false);
@@ -930,7 +938,7 @@ public class ClubInGameUIManager : MonoBehaviour
 
         //    availableCallAmount = callAmount;
         //}
-
+        Debug.LogError("AAAAA  " + transform.parent.name);
         if (isShow)
         {
             ResetSuggetionAction();
@@ -1014,6 +1022,16 @@ public class ClubInGameUIManager : MonoBehaviour
 
             switch (screenName)
             {
+                case InGameScreens.Menu:
+                    {
+                        if(GlobalGameManager.instance.AllTables.Count > 1)
+                        {
+                            int count = gm.transform.GetChild(0).childCount;
+                            gm.transform.GetChild(0).GetChild(count - 2).gameObject.SetActive(false);
+                            gm.transform.GetChild(0).GetChild(count - 1).gameObject.SetActive(true);
+                        }
+                    }
+                    break;
                 case InGameScreens.TopUp:
                     {
                         Debug.Log("Init topUp screen");
@@ -1169,7 +1187,7 @@ public class ClubInGameUIManager : MonoBehaviour
 
     public void OnClickOnBack()
     {
-        ClubInGameManager.instance.LoadMainMenu();
+        clubInGameManager.LoadMainMenu();
     }
 
     /////// EMOJI

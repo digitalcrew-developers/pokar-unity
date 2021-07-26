@@ -35,6 +35,8 @@ public class PlayerScript : MonoBehaviour
     private int localBetAmount = 0;
     private int localBetRoundNo = 0;
 
+    Image tableBtnTimer;
+
     public void Start()
     {
         instance = this;   
@@ -128,6 +130,8 @@ public class PlayerScript : MonoBehaviour
         lastActionImage.SetActive(false);
         lastActionText.text = "";
         timerBar.fillAmount = 0;
+        if (tableBtnTimer != null)
+            tableBtnTimer.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
         //Debug.Log("OTHERE USERNAME  ___   " + playerData.userName);
         if (playerData.userName.Length > 3)
@@ -212,7 +216,7 @@ public class PlayerScript : MonoBehaviour
 
     public void TogglePlayerUI(bool isShow, string avatarUrl = null, string flagUrl = null)
     {
-        Debug.Log(transform.parent.parent.parent.parent.parent.name);
+        //Debug.Log(transform.parent.parent.parent.parent.parent.name);
         LoadUI();
         parentObject.SetActive(isShow);
         if (avatarUrl != null && flagUrl != null)
@@ -270,6 +274,8 @@ public class PlayerScript : MonoBehaviour
         //ShowAvtars_frame_flag(playerData.userId);
         //LoadAvtars_Frame_Flag(playerData.avatarurl);
         timerBar.fillAmount = 0;
+        if (tableBtnTimer != null)
+            tableBtnTimer.fillAmount = 0;
         fx_holder.gameObject.SetActive(false);
         lastActionImage.SetActive(false);
         lastActionText.text = "";
@@ -338,6 +344,8 @@ public class PlayerScript : MonoBehaviour
         avtar.GetComponent<Animator>().SetBool("Play", false);
         fx_holder.gameObject.SetActive(false);
         timerBar.fillAmount = 0;
+        if (tableBtnTimer != null)
+            tableBtnTimer.fillAmount = 0;
         if (lastRoutine != null)
         {
             StopCoroutine(lastRoutine);
@@ -499,6 +507,8 @@ public class PlayerScript : MonoBehaviour
         {
             t += Time.deltaTime;
             timerBar.fillAmount = t / playerTimer;
+            if (tableBtnTimer != null)
+                tableBtnTimer.fillAmount = t / playerTimer;
             fx_holder.rotation = Quaternion.Euler(new Vector3(0, 0, -(timerBar.fillAmount) * 360));
         }
     }
@@ -516,6 +526,8 @@ public class PlayerScript : MonoBehaviour
         {
             t += Time.deltaTime;
             timerBar.fillAmount = t / time;
+            if (tableBtnTimer != null)
+                tableBtnTimer.fillAmount = t / time;
             fx_holder.rotation = Quaternion.Euler(new Vector3(0, 0, -(timerBar.fillAmount) * 360));
             CountDownTimerRunning = true;
             //Debug.Log("Value " + timerBar.fillAmount.ToString("F2"));
@@ -537,9 +549,10 @@ public class PlayerScript : MonoBehaviour
     //    StartCoroutine(CountDownAnimation(time));      
     //}
 
-    public void ShowRemainingTime(int remainingTime)
+    public void ShowRemainingTime(int remainingTime, Image btnTimer = null)
     {
         //UnityEngine.Debug.LogError("ShowRemainingTime = " + remainingTime);
+        tableBtnTimer = btnTimer;
         int extraTime = 0;
         int.TryParse(playerData.bufferTime, out extraTime);
         //Debug.Log("playerData.bufferTime " + playerData.bufferTime);
@@ -564,6 +577,8 @@ public class PlayerScript : MonoBehaviour
         if (remainingTime == GameConstants.TURN_TIME)
         {
             timerBar.fillAmount = 0;
+            if (btnTimer != null)
+                btnTimer.fillAmount = 0;
             if (lastRoutine != null)
             {
                 StopCoroutine(lastRoutine);

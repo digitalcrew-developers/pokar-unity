@@ -62,10 +62,10 @@ public class WebServices : MonoBehaviour
 
 		request.retryCount = 0;
 
-#if DEBUG_LOG
+//#if DEBUG_LOG
 		//Debug.Log("Calling API sending data requestCode = " + request.requestCode + "  data = " + requestData);
 		Debug.Log("Request API  URL ===> " + request.url+" requestCode ===> " + request.requestCode + "  data ===> " + requestData);
-#endif
+//#endif
 
 		SendRequestToServer(request);
 	}
@@ -94,9 +94,9 @@ public class WebServices : MonoBehaviour
 
 		StopCoroutine(request.timerMethod);
 
-#if DEBUG_LOG
-		//Debug.Log("Response requestCode ---> " + request.requestCode + "    data ---> " + www.text);
-#endif
+//#if DEBUG_LOG
+		Debug.Log("Response requestCode ---> " + request.requestCode + "    data ---> " + www.text);
+//#endif
 
 
 		if (request.callbackMethod != null)

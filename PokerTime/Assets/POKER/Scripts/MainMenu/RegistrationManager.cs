@@ -477,7 +477,7 @@ public class RegistrationManager : MonoBehaviour
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
-
+        Debug.Log("Reg " + errorMessage);
         if (errorMessage.Length > 0)
         {
             if (isShowErrorMessage)

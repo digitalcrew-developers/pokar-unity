@@ -29,6 +29,7 @@ public class ClubListUiManager : MonoBehaviour
         {
             FetchList();			
 		}
+        Debug.Log(gameObject.name);
 	}
 
 	public void FetchList(bool isShowLoading = true)
@@ -106,11 +107,23 @@ public class ClubListUiManager : MonoBehaviour
 			}			
 		}
 
-		//layoutManager.UpdateLayout();
+        //layoutManager.UpdateLayout();
+        Debug.Log("Back from club " + GlobalGameManager.instance.currentClubName);
+        if (!string.IsNullOrEmpty(GlobalGameManager.instance.currentClubName))
+            OnClickOnClub(GlobalGameManager.instance.currentClubName, GlobalGameManager.instance.currentUniqueClubId, GlobalGameManager.instance.currentClubId, GlobalGameManager.instance.currentClubProfileImagePath, GlobalGameManager.instance.currentPlayerType, GlobalGameManager.instance.currentPlayerRole);
 	}
 
-	private void OnClickOnClub(string clubName,string uniqueClubId,string clubId, string clubProfileImagePath, string playerType, string playerRole)
+    //string currentClubName, currentUniqueClubId, currentClubId, currentClubProfileImagePath, currentPlayerType, currentPlayerRole;
+
+    private void OnClickOnClub(string clubName,string uniqueClubId,string clubId, string clubProfileImagePath, string playerType, string playerRole)
 	{
+        GlobalGameManager.instance.currentClubName = clubName;
+        GlobalGameManager.instance.currentUniqueClubId = uniqueClubId;
+        GlobalGameManager.instance.currentClubId = clubId;
+        GlobalGameManager.instance.currentClubProfileImagePath = clubProfileImagePath;
+        GlobalGameManager.instance.currentPlayerType = playerType;
+        GlobalGameManager.instance.currentPlayerRole = playerRole;
+
 		SoundManager.instance.PlaySound(SoundType.Click);
 
 		object[] parameters = new object[6];

@@ -218,7 +218,10 @@ public class MenuScript : MonoBehaviour
                         else
                         {
                             //exit for club menu
-                            ClubInGameManager.instance.LoadMainMenu();
+                            ClubSocketController.instance.buttonCanvas.SetActive(false);
+                            PlayerPrefs.SetString("Exit", "Exiting");
+                            ClubInGameManager cigm = transform.parent.parent.parent.GetChild(1).GetComponent<ClubInGameManager>();
+                            cigm.LoadMainMenu();
                         }
                     }
                     else
@@ -235,6 +238,38 @@ public class MenuScript : MonoBehaviour
                     }
                 }
             break;
+
+            case "closeTable":
+                {
+                    if (GameConstants.poker)
+                    {
+                        if (InGameUiManager.instance != null)
+                        {
+                            //InGameManager.instance.LoadMainMenu();
+                        }
+                        else
+                        {
+                            //close for club menu and table
+                            //ClubSocketController.instance.buttonCanvas.SetActive(false);
+                            //PlayerPrefs.SetString("Exit", "Exiting");
+                            //ClubInGameManager.instance.LoadMainMenu();
+                            ClubSocketController.instance.SendLeaveTableRequest(transform.parent.parent.parent.name);
+                        }
+                    }
+                    else
+                    {
+                        if (InGameUiManagerTeenPatti.instance != null)
+                        {
+                            InGameManagerTeenPatti.instance.LoadMainMenu();
+                        }
+                        else
+                        {
+                            //exit for club menu
+                            ClubInGameManager.instance.LoadMainMenu();
+                        }
+                    }
+                }
+                break;
 
             case "topUp":
                 {

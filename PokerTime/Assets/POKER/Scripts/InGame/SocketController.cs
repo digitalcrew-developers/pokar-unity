@@ -133,6 +133,7 @@ public class SocketController : MonoBehaviour
         socketManager.Socket.On("playerExit", PlayerExit);
         socketManager.Socket.On("lineNo", LineNumber);
         socketManager.Socket.On("switchTable", SwitchTableDone);
+
         socketManager.Open();
     }
 
@@ -182,6 +183,10 @@ public class SocketController : MonoBehaviour
         if (isPaused)
         {
             MinimizeAppEvent();
+        }
+        else
+        {
+            MaximizeAppEvent();
         }
     }
 
@@ -316,6 +321,9 @@ public class SocketController : MonoBehaviour
                 case SocketEvetns.RECONNECT_ATTEMPT:
                     break;
 
+                case SocketEvetns.ON_UPDATETOURNAMENTLIST:
+                    Debug.LogError("ON_UPDATETOURNAMENTLIST");
+                    break;
 
                 case SocketEvetns.PLAYER_OBJECT:
                     if (InGameManager.instance != null)
@@ -485,7 +493,7 @@ public class SocketController : MonoBehaviour
 
 
 
-#region LISTNER_METHODS
+    #region LISTNER_METHODS
 
     void OnPlayerObjectFound(Socket socket, Packet packet, params object[] args)
     {
@@ -1747,7 +1755,8 @@ public enum SocketEvetns
     ON_AskMultiRun,
     ON_ConfirmMultiRun,
     ON_CLOSEPOPUP,
-    ON_COMCARDS
+    ON_COMCARDS,
+    ON_UPDATETOURNAMENTLIST
 }
 
 [System.Serializable]

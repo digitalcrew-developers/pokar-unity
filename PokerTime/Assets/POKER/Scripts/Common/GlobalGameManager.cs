@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GlobalGameManager : MonoBehaviour
 {
@@ -34,17 +35,22 @@ public class GlobalGameManager : MonoBehaviour
     public RoomData currentRoomData = new RoomData();
 
     public static bool IsJoiningPreviousGame = false;
-    public bool isTokenSent = false;
+    public bool isTokenSent = false, creatingNewTable = false;
 
     //DEV_CODE
-    public static int RunItMultiTimes = 0;
-
+    public static int RunItMultiTimes = 0, currentTableInd;
+    [HideInInspector]
+    public string currentClubName, currentUniqueClubId, currentClubId, currentClubProfileImagePath, currentPlayerType, currentPlayerRole;
+    public GameObject newClubTable;
+    public Dictionary<string, GameObject> AllTables = new Dictionary<string, GameObject>();
+    public List<GameObject> table = new List<GameObject>();
+    
     private void Awake()
     {
         instance = this;
-   //   PlayerPrefs.DeleteAll();
+        //PlayerPrefs.DeleteAll();
     }
-    
+
 
     private void Start()
     {
@@ -60,9 +66,9 @@ public class GlobalGameManager : MonoBehaviour
 
     public void LoadScene(Scenes gameScene)
     {
-        
 
-        Debug.Log("************SCENE******************" + (GameObject.Find("MainMenuScene(Clone)")?"Find Success ==> " + gameScene.ToString() :"No Scene Available" + gameScene.ToString()));
+
+        Debug.Log("************SCENE******************" + (GameObject.Find("MainMenuScene(Clone)") ? "Find Success ==> " + gameScene.ToString() : "No Scene Available" + gameScene.ToString()));
 
         //if (gameScene.ToString().Equals("MainMenu") && GameObject.Find("MainMenuScene(Clone)"))
         //{
@@ -74,14 +80,20 @@ public class GlobalGameManager : MonoBehaviour
         //}
         //else
         //{
-            if (previousScene != null)
-            {
-                StartCoroutine(WaitAndDestroyOldScreen(previousScene));
-            }
-
-            previousScene = Instantiate(gameScens[(int)gameScene], Vector3.zero, Quaternion.identity) as GameObject;
-            //previousScene.name = "First";
-        //}
+        Debug.Log(previousScene);
+        if (previousScene != null)
+        {
+            StartCoroutine(WaitAndDestroyOldScreen(previousScene));
+        }
+        previousScene = Instantiate(gameScens[(int)gameScene], Vector3.zero, Quaternion.identity) as GameObject;
+        Debug.Log(previousScene + " - " + gameScens[(int)gameScene].name);
+        /*if (previousScene.name != "MainMenuScene(Clone)" && previousScene.name == gameScens[(int)gameScene].name + "(Clone)")
+        {
+            previousScene.name = GetRoomData().roomId;
+            AllTables.Add(GetRoomData().roomId, previousScene);
+            table.Add(previousScene);
+            ClubSocketController.instance.tableButton[0].name = GetRoomData().roomId;
+        }*/
 
         if (MenuHandller.instance != null)
         {
@@ -96,8 +108,15 @@ public class GlobalGameManager : MonoBehaviour
         
         if (gm != null)
         {
-            //Destroy(gm);          //DEV_CODE This line is commented
-            gm.SetActive(false);    //DEV_CODE This line is added
+            if (gm.name == "MainMenuScene(Clone)" || gm.name == "ClubSocketController(Clone)" || gm.name == "InGameTournament(Clone)")
+            {
+                Destroy(gm);
+            }
+            else
+            {
+                //Destroy(gm);          //DEV_CODE This line is commented
+                gm.SetActive(false);    //DEV_CODE This line is added
+            }
         }
         else
         {
@@ -222,7 +241,8 @@ public enum Scenes
     InGame,
     MainMenuTeenPatti,
     InGameTeenPatti,
-    ClubInGame  //DEV_CODE Added for referencing Club Prefab
+    ClubInGame,  //DEV_CODE Added for referencing Club Prefab
+    TournamentInGame
 }
 
 public enum GameMode
