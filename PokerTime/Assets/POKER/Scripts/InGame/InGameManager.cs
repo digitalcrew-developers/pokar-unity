@@ -669,12 +669,12 @@ public class InGameManager : MonoBehaviour
         Debug.LogError("WaitAndSendLeaveRequest");
         yield return new WaitForEndOfFrame();
         SocketController.instance.SendLeaveMatchRequest();
-        yield return new WaitForSeconds(7f);
-        InGameUiManager.instance.ShowScreen(InGameScreens.Menu);
-        /*yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
-        SocketController.instance.ResetConnection();
+        //yield return new WaitForSeconds(7f);
+        //InGameUiManager.instance.ShowScreen(InGameScreens.Menu);
+        yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
         gameExitCalled = true;
-        GlobalGameManager.instance.LoadScene(Scenes.MainMenu);*/
+        SocketController.instance.ResetConnection();
+        //GlobalGameManager.instance.LoadScene(Scenes.MainMenu);
     }
 
     public IEnumerator SwitchToAnotherTableReset()

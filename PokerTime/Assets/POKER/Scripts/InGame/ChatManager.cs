@@ -47,7 +47,11 @@ public class ChatManager : MonoBehaviour
         chatMessage.isMe = true;
         chatMessage.title = GetUserName();
         chatList.Add(chatMessage);
-        SocketController.instance.SendChatMessage(chatMessage.title, messageToSend);
+
+        if (InGameUiManager.instance != null)
+            SocketController.instance.SendChatMessage(chatMessage.title, messageToSend);
+        else if (TournamentInGameUiManager.instance != null)
+            TournamentSocketController.instance.SendChatMessage(chatMessage.title, messageToSend);
     }
 
     private string GetUserName()

@@ -33,9 +33,24 @@ public class PlayerSeat : MonoBehaviour
                 GetComponent<Transform>().localScale = new Vector3(1f, 1f, 1f);
             }
         }
-        else
+        else if (ClubInGameManager.instance != null)
         {
             if (ClubInGameManager.instance.AmISpectator)
+            {
+                GetComponent<Image>().sprite = PlusImage;
+                myButton.interactable = true;
+                GetComponent<Transform>().localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            }
+            else
+            {
+                GetComponent<Image>().sprite = EmptyImage;
+                myButton.interactable = false;
+                GetComponent<Transform>().localScale = new Vector3(1f, 1f, 1f);
+            }
+        }
+        else
+        {
+            if (TournamentInGameManager.instance.AmISpectator)
             {
                 GetComponent<Image>().sprite = PlusImage;
                 myButton.interactable = true;
@@ -82,12 +97,19 @@ public class PlayerSeat : MonoBehaviour
                 SocketController.instance.SendGameJoinRequest(int.Parse(seatNo));
             }
         }
-        else
+        else if(ClubInGameManager.instance != null)
         {
             if (ClubInGameManager.instance.AmISpectator)
             {
                 ClubSocketController.instance.SendClubGameJoinRequest();
             }
         }
+        //else
+        //{
+        //    if (TournamentInGameManager.instance.AmISpectator)
+        //    {
+        //        TournamentInGameManager.instance.Send();
+        //    }
+        //}
     }
 }

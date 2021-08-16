@@ -5,7 +5,7 @@ using BestHTTP.SocketIO;
 using System.Collections;
 using BestHTTP.JSON;
 using LitJson;
-
+using Newtonsoft.Json.Linq;
 
 public class TournamentSocketController : MonoBehaviour
 {
@@ -23,6 +23,7 @@ public class TournamentSocketController : MonoBehaviour
     [SerializeField]
     private string TABLE_ID = "";
 
+    public string TOURNEY_ID = "";
 
     void Awake()
     {
@@ -137,6 +138,14 @@ public class TournamentSocketController : MonoBehaviour
 
         //Tournament
         socketManager.Socket.On("updateTournamentList", OnGetTournamentList);
+
+        //MTT Events
+        //socketManager.Socket.On("tournamentWinner", OnGetTournamentWinner);
+        //socketManager.Socket.On("tournamentWinner", OnGetTournamentWinner);
+        //socketManager.Socket.On("tournamentWinner", OnGetTournamentWinner);
+
+        //DEV_CODE
+        //socketManager.Socket.On("register", OnTournamentRegister);
         socketManager.Open();
     }
 
@@ -331,14 +340,18 @@ public class TournamentSocketController : MonoBehaviour
                     {
                         Debug.LogError("Current Socket State: " + GetSocketState());
 
+                        JsonData data = JsonMapper.ToObject(responseObject.data);
+
+                        //if (GetSocketState() == SocketState.ReConnecting || GetSocketState() == SocketState.WaitingForOpponent)
                         if (GetSocketState() == SocketState.ReConnecting)// || GetSocketState() == SocketState.WaitingForOpponent)
                         {
                             SetSocketState(SocketState.Game_Running);
                         }
 
                         TournamentInGameManager.instance.OnPlayerObjectFound(responseObject.data);
-                        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Reconnecting);
-                        TournamentInGameUiManager.instance.ShowTableMessage("");
+                        //TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentLobby);
+                        //TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Reconnecting);
+                        //TournamentInGameUiManager.instance.ShowTableMessage("");
                     }
                     else
                     {
@@ -499,6 +512,49 @@ public class TournamentSocketController : MonoBehaviour
 
 
     #region LISTNER_METHODS
+//    void OnTournamentRegister(Socket socket, Packet packet, params object[] args)
+//    {
+//        string responseText = JsonMapper.ToJson(args);
+
+//#if DEBUG
+
+//#if UNITY_EDITOR
+//        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_REGISTERFORTOURNAMENT))
+//        {
+//            Debug.Log("OnTournamentRegister = " + responseText + "  Time = " + System.DateTime.Now);
+
+//        }
+//#else
+//        Debug.Log("OnTournamentRegister = " + responseText + "  Time = " + System.DateTime.Now);
+//#endif
+//#endif
+//        SocketResponse response = new SocketResponse();
+//        response.eventType = SocketEvetns.ON_REGISTERFORTOURNAMENT;
+//        response.data = responseText;
+//        socketResponse.Add(response);
+//    }
+
+//    void OnTournamentJoinRoom(Socket socket, Packet packet, params object[] args)
+//    {
+//        string responseText = JsonMapper.ToJson(args);
+
+//#if DEBUG
+
+//#if UNITY_EDITOR
+//        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_TOURNAMENTJOINROOM))
+//        {
+//            Debug.Log("OnTournamentJoinRoom = " + responseText + "  Time = " + System.DateTime.Now);
+
+//        }
+//#else
+//        Debug.Log("OnTournamentJoinRoom = " + responseText + "  Time = " + System.DateTime.Now);
+//#endif
+//#endif
+//        SocketResponse response = new SocketResponse();
+//        response.eventType = SocketEvetns.ON_TOURNAMENTJOINROOM;
+//        response.data = responseText;
+//        socketResponse.Add(response);
+//    }
 
     void OnGetTournamentList(Socket socket, Packet packet, params object[] args)
     {
@@ -1157,7 +1213,7 @@ public class TournamentSocketController : MonoBehaviour
         socketResponse.Add(response);
     }
 
-#endregion
+    #endregion
 
 
 
@@ -1166,7 +1222,60 @@ public class TournamentSocketController : MonoBehaviour
     // EMIT_METHODS ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-#region EMIT_METHODS
+    #region EMIT_METHODS
+
+    public void RequestRegisterForTournament(int tourneyId)
+    {
+        string requestStringData = "{\"tourneyId\":\"" + tourneyId + "\"," +
+                                    "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
+
+        Debug.Log("Registering for Tournament ---> " + requestStringData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        //socketManager.Socket.Emit("register", OnAckCallback, "tourneyId", "userId");
+        socketManager.Socket.Emit("register", OnAckCallback, requestStringData);
+    }
+
+    void OnAckCallback(Socket socket, Packet originalPacket, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+        JsonData data = JsonMapper.ToObject(responseText);
+
+        Debug.Log("OnAckCallback!" + responseText);
+        TournamentLobbyUiManager.instance.popUpText.color = Color.red;
+
+        if (data[0]["message"].ToString().Equals("Tourney registration stopped"))
+            StartCoroutine(TournamentLobbyUiManager.instance.ShowPopUp(data[0]["message"].ToString(), 1.5f));
+        else
+            TournamentInGameUiManager.instance.tipsPanel.SetActive(true);
+
+        GetTournamentList();
+    }
+
+    public void RequestTournamentJoinRoom(double tourneyId)
+    {
+        TOURNEY_ID = tourneyId.ToString();
+
+        string requestStringData = "{\"tourneyId\":\"" + tourneyId + "\"," +
+                                    "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
+
+        Debug.Log("Joining Room in Tournament ---> " + requestStringData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "joinRoom";
+
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+
+        //SendGameJoinRequest();
+        //TournamentInGameManager.instance.OnPlayerObjectFound(responseObject.data);
+        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentLobby);
+        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Reconnecting);
+        //TournamentInGameUiManager.instance.ShowTableMessage("");
+    }    
 
     public void RequestRabbitCard()
     {
@@ -1247,16 +1356,14 @@ public class TournamentSocketController : MonoBehaviour
 
     public void SentEmoji(int otherUserId,int emojiIndex)
     {
-   
-        string requestStringData = "{\"sentBy\":\"" + ((int.Parse(PlayerManager.instance.GetPlayerGameData().userId)).ToString() + "\"," +
+        string requestStringData = "{\"sentBy\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
             "\"sentTo\":\"" + otherUserId + "\"," +
             "\"deductionValue\":\"" + 2 + "\"," +
             "\"emojiIndex\":\"" + emojiIndex + "\"," +
-            "\"tableId\":\"" + int.Parse(TABLE_ID)).ToString() + "\"}";
+            "\"tableId\":\"" + TABLE_ID + "\"}";
 
-        //Debug.LogError("i am SentEmoji   " + requestStringData);
+        Debug.LogError("i am SentEmoji   " + requestStringData);
         object requestObjectData = Json.Decode(requestStringData);
-
         
         SocketRequest request = new SocketRequest();
         request.emitEvent = "sendEmoji";
@@ -1704,9 +1811,14 @@ public class TournamentSocketController : MonoBehaviour
         //InGameManagerScript.instance.MATCH_ROUND = -1;
 
 
-        ReconnectData data = new ReconnectData();
+        //ReconnectData data = new ReconnectData();
+        //data.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
+        //data.tableId = TABLE_ID;
+        //data.isYesOrNo = "Yes";
+
+        ReconnectDataTournament data = new ReconnectDataTournament();
         data.userId = "" + PlayerManager.instance.GetPlayerGameData().userId;
-        data.tableId = TABLE_ID;
+        data.tourneyId = TOURNEY_ID;
         data.isYesOrNo = "Yes";
 
         string requestdeta = JsonMapper.ToJson(data);
@@ -1769,7 +1881,13 @@ public class TournamentSocketController : MonoBehaviour
 
 }
 
-
+[System.Serializable]
+public class ReconnectDataTournament
+{
+    public string tourneyId;
+    public string userId;
+    public string isYesOrNo;
+}
 
 /*
 public enum SocketEvetns

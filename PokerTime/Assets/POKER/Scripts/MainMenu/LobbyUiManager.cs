@@ -205,7 +205,7 @@ public class LobbyUiManager: MonoBehaviour
 
         if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
         {
-            Debug.LogError("Download failed");
+            //Debug.LogError("Download failed");
         }
         else
         {

@@ -115,6 +115,8 @@ public class ChatUiManager : MonoBehaviour
                         InGameUiManager.instance.DestroyScreen(InGameScreens.Chat);
                     else if (InGameUiManagerTeenPatti.instance != null)
                         InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.Chat);
+                    else if(TournamentInGameUiManager.instance != null)
+                        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Chat);
                 }
             break;
 
@@ -136,7 +138,11 @@ public class ChatUiManager : MonoBehaviour
                     if (inputFild.text.Length > 0)
                     {
                         ChatManager.instance.SendChatMessage(inputFild.text);
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.Chat);
+
+                        if (InGameUiManager.instance != null)
+                            InGameUiManager.instance.DestroyScreen(InGameScreens.Chat);
+                        else if (TournamentInGameUiManager.instance != null)
+                            TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Chat);
                     }
                 }
                 break;
@@ -154,6 +160,10 @@ public class ChatUiManager : MonoBehaviour
         SoundManager.instance.PlaySound(SoundType.Click);
 
         ChatManager.instance.SendChatMessage(suggestionText.text);
-        InGameUiManager.instance.DestroyScreen(InGameScreens.Chat);
+
+        if (InGameUiManager.instance != null)
+            InGameUiManager.instance.DestroyScreen(InGameScreens.Chat);
+        else if (TournamentInGameUiManager.instance != null)
+            TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Chat);
     }
 }

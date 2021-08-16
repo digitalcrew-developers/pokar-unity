@@ -45,6 +45,10 @@ public class EmojiUIScreenManager : MonoBehaviour
         {
             GetUserDetails(ClubInGameUIManager.instance.TempUserID);
         }
+        else if(TournamentInGameUiManager.instance != null && TournamentInGameUiManager.instance.TempUserID != null)
+        {
+            GetUserDetails(TournamentInGameUiManager.instance.TempUserID);
+        }
     }
 
     private void ClearAll()
@@ -60,6 +64,8 @@ public class EmojiUIScreenManager : MonoBehaviour
             InGameUiManager.instance.ShowScreen(InGameScreens.DealerImageScreen);
         else if (ClubInGameUIManager.instance != null)
             ClubInGameUIManager.instance.ShowScreen(InGameScreens.DealerImageScreen);
+        else if (TournamentInGameUiManager.instance != null)
+            TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.DealerImageScreen);
     }
 
     public void GetUserDetails(string playerid)
@@ -96,7 +102,10 @@ public class EmojiUIScreenManager : MonoBehaviour
             }
             else
             {
-                InGameUiManager.instance.ShowMessage(data["message"].ToString());
+                if (InGameUiManager.instance != null)
+                    InGameUiManager.instance.ShowMessage(data["message"].ToString());
+                else if (TournamentInGameUiManager.instance != null)
+                    TournamentInGameUiManager.instance.ShowMessage(data["message"].ToString());
             }
         }
     }
@@ -132,7 +141,7 @@ public class EmojiUIScreenManager : MonoBehaviour
     {
         for (int i = 0; i < containerAry.Length; i++)
         {
-            if (i == ((InGameUiManager.instance!=null)? InGameUiManager.instance.emojiContainerVal : ClubInGameUIManager.instance.emojiContainerVal))
+            if (i == ((InGameUiManager.instance!=null)? InGameUiManager.instance.emojiContainerVal : (ClubInGameUIManager.instance!=null)?ClubInGameUIManager.instance.emojiContainerVal:TournamentInGameUiManager.instance.emojiContainerVal))
             {
                 containerAry[i].SetActive(true);
                 
@@ -224,11 +233,13 @@ public class EmojiUIScreenManager : MonoBehaviour
         //InGameUiManager.instance.emojiIndex = emojiIndex;
         // InGameUiManager.instance.ShowEmojiOnScreen(str);
         Debug.Log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$    "+emojiIndex);
-        
+
         if (InGameUiManager.instance != null)
             InGameUiManager.instance.CallEmojiSocket(emojiIndex);
         else if (ClubInGameUIManager.instance != null)
             ClubInGameUIManager.instance.CallEmojiSocket(emojiIndex);
+        else if (TournamentInGameUiManager.instance != null)
+            TournamentInGameUiManager.instance.CallEmojiSocket(emojiIndex);
 
         OnClickOnButton("back");
     }
@@ -249,6 +260,8 @@ public class EmojiUIScreenManager : MonoBehaviour
                         InGameUiManager.instance.DestroyScreen(InGameScreens.EmojiScreen);
                     else if (ClubInGameUIManager.instance != null)
                         ClubInGameUIManager.instance.DestroyScreen(InGameScreens.EmojiScreen);
+                    else if (TournamentInGameUiManager.instance != null)
+                        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.EmojiScreen);
                 }
                 break;
 

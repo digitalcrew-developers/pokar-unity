@@ -45,6 +45,8 @@ public class HandHistoryManager : MonoBehaviour
                         InGameUiManager.instance.DestroyScreen(InGameScreens.HandHistory);
                     else if (ClubInGameUIManager.instance != null)
                         ClubInGameUIManager.instance.DestroyScreen(InGameScreens.HandHistory);
+                    else if (TournamentInGameUiManager.instance != null)
+                        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.HandHistory);
                 }
                 break;
 

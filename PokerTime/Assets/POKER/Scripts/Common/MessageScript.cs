@@ -57,7 +57,6 @@ public class MessageScript : MonoBehaviour
         okButton.SetActive(true);
     }
 
-
     public void ShowDoubleButtonPopUp(string messageToShow,Action yesButtonCallBack = null,Action noButtonCallBack = null,string yesText = "Yes",string noText = "No")
     {
         messageText.text = messageToShow;
@@ -76,8 +75,6 @@ public class MessageScript : MonoBehaviour
         okButton.SetActive(false);
     }
 
-
-
     public void OnClickOnOk()
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -92,13 +89,14 @@ public class MessageScript : MonoBehaviour
         {
             MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Message);
         }
-        else
+        else if(InGameUiManager.instance != null)
         {
             InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
         }
-
-
-        
+        else if(TournamentInGameUiManager.instance !=null)
+        {
+            TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Message);
+        }        
     }
 
     public void OnClickOnNo()
@@ -109,9 +107,13 @@ public class MessageScript : MonoBehaviour
         {
             MainMenuController.instance.DestroyScreen(MainMenuScreens.Message);
         }
-        else
+        else if(InGameUiManager.instance != null)
         {
             InGameUiManager.instance.DestroyScreen(InGameScreens.Message);
+        }
+        else if (TournamentInGameUiManager.instance != null)
+        {
+            TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Message);
         }
     }
 
@@ -131,11 +133,14 @@ public class MessageScript : MonoBehaviour
         {
             MainMenuControllerTeen.instance.DestroyScreen(MainMenuScreensTeen.Message);
         }
+        else if (TournamentInGameUiManager.instance != null)
+        {
+            TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Message);
+        }
     }
 
     public void ExecuteDefaultMethod()
     {
         defaultCallBackMethod?.Invoke();
     }
-
 }

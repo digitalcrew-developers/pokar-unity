@@ -108,7 +108,7 @@ public class GlobalGameManager : MonoBehaviour
         
         if (gm != null)
         {
-            if (gm.name == "MainMenuScene(Clone)" || gm.name == "ClubSocketController(Clone)" || gm.name == "InGameTournament(Clone)")
+            if (gm.name == "MainMenuScene(Clone)" || gm.name == "InGame(Clone)" || gm.name == "ClubSocketController(Clone)" || gm.name == "InGameTournament(Clone)")
             {
                 Destroy(gm);
             }

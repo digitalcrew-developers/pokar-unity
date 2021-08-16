@@ -164,7 +164,7 @@ public class SpinManager : MonoBehaviour
 
         if (!string.IsNullOrEmpty(www.error))
         {
-            Debug.LogError("Download failed");
+            //Debug.LogError("Download failed");
         }
         else
         {

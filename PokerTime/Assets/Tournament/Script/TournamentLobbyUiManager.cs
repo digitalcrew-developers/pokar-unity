@@ -6,6 +6,7 @@ using LitJson;
 using TMPro;
 using UnityEngine.Networking;
 using System.Runtime.InteropServices;
+using System;
 
 public class TournamentLobbyUiManager : MonoBehaviour
 {
@@ -13,17 +14,30 @@ public class TournamentLobbyUiManager : MonoBehaviour
     [SerializeField]
     private LayoutManager layoutManager;
 
+    public Text popUpText;
+
     [SerializeField]
     private GameObject roomPrefab;
 
     [SerializeField]
+    private ScrollRect scrollRect;
+
+    [SerializeField]
+    //private List<RectTransform> containers = new List<RectTransform>();
     private Transform container;
+    //private Transform container_Recommended;
+    //private Transform container_SpinUp;
+    //private Transform container_MMT;
 
     [SerializeField]
-    private Button[] gameModeButtons;
+    private Button[] tournamentTypeButtons;
 
     [SerializeField]
-    private List<List<RoomData>> allRoomData = new List<List<RoomData>>();
+    private List<List<TournamentRoomData>> allRoomData = new List<List<TournamentRoomData>>();
+
+    [Space(9)]
+    public Sprite regSprite;
+    public Sprite lateRegSprite, observeSprite;
 
     public Text coinsText;
     public Button missionBtn;
@@ -31,11 +45,13 @@ public class TournamentLobbyUiManager : MonoBehaviour
     public Button shopBtn;
     public Button BagPackBtn;
 
+    public GameObject tournamentDetailsPanel;
+
     private void OnEnable()
     {
         //Deactivate Bottom Panel
         //if (MainMenuController.instance.bottomPanel.activeSelf /*&& GameConstants.poker*/)
-            //MainMenuController.instance.bottomPanel.SetActive(false);
+        //MainMenuController.instance.bottomPanel.SetActive(false);
         //else if(MainMenuController.instance.bottomPanel.activeSelf && !GameConstants.poker)
         //    MainMenuController.instance.bottomPanelTeen.SetActive(false);
 
@@ -44,26 +60,19 @@ public class TournamentLobbyUiManager : MonoBehaviour
         //shopBtn.onClick.AddListener(() => ShowShopScreen());
         //BagPackBtn.onClick.AddListener(() => ShowBackPackScreen());
         //ChangeTextColor(0);
+
     }
 
     private void Awake()
     {
         instance = this;
+
+        ResetContainers();
+        ResetRoomData();
     }
 
     private void Start()
     {
-        for (int i = 0; i < 3; i++)
-        {
-            List<RoomData> dummyList = new List<RoomData>();
-            allRoomData.Add(dummyList);
-        }
-
-        for (int i = 0; i < container.childCount; i++)
-        {
-            //Destroy(container.GetChild(i).gameObject);
-        }
-
         coinsText.text = Utility.GetTrimmedAmount(""+PlayerManager.instance.GetPlayerGameData().coins);
 
         //TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.Loading);
@@ -108,32 +117,54 @@ public class TournamentLobbyUiManager : MonoBehaviour
                 break;
 
 
-            case "nlh":
-                {
-                    ShowScreen(GameMode.NLH);
-                    ChangeTextColor(0);
+            //case "nlh":
+            //    {
+            //        ShowScreen(GameMode.NLH);
+            //        ChangeTextColor(0);
                     
-                }
-                break;
+            //    }
+            //    break;
 
-            case "plo":
-                {
-                    ShowScreen(GameMode.PLO);
-                    ChangeTextColor(1);
-                }
-                break;
+            //case "plo":
+            //    {
+            //        ShowScreen(GameMode.PLO);
+            //        ChangeTextColor(1);
+            //    }
+            //    break;
 
-            case "ofc":
-                {
-                    ShowScreen(GameMode.OFC);
-                    ChangeTextColor(2);
-                }
-                break;
+            //case "ofc":
+            //    {
+            //        ShowScreen(GameMode.OFC);
+            //        ChangeTextColor(2);
+            //    }
+            //    break;
+
             case "FriendList":
                 {
                     MainMenuController.instance.ShowScreen(MainMenuScreens.FriendList);
                 }
                 break;
+
+            case "Recommended":
+            {
+                ShowScreen(TournamentType.Recommended);
+                //ChangeTextColor((int)TournamentType.Recommended);
+            }
+            break;
+
+            case "SpinUp":
+            {
+                ShowScreen(TournamentType.SpinUp);
+                //ChangeTextColor((int)TournamentType.SpinUp);
+            }
+            break;
+
+            case "MTT":
+            {
+                ShowScreen(TournamentType.MTT);
+                //ChangeTextColor((int)TournamentType.MTT);
+            }
+            break;
 
             default:
 #if ERROR_LOG
@@ -144,55 +175,75 @@ public class TournamentLobbyUiManager : MonoBehaviour
     }
 
     void ChangeTextColor (int val){
-        for (int i = 0; i < gameModeButtons.Length; i++)
+        for (int i = 0; i < tournamentTypeButtons.Length; i++)
         {
             if (i == val)
             {
-                //gameModeButtons[i].transform.GetChild(0).GetComponent<Text>().color = new Color32(0, 0, 35, 255);
+                //tournamentTypeButtons[i].transform.GetChild(0).GetComponent<Text>().color = new Color32(0, 0, 35, 255);
             }
-            else {
-                //gameModeButtons[i].transform.GetChild(0).GetComponent<Text>().color = new Color32(200, 200, 200, 255);
+            else 
+            {
+                //tournamentTypeButtons[i].transform.GetChild(0).GetComponent<Text>().color = new Color32(255, 255, 255, 255);
             }
         }
     }
     
-    private void ShowScreen(GameMode gameMode)
+    private void ShowScreen(/*GameMode gameMode*/TournamentType tournamentType)
     {
+        ResetContainers();
 
-        for (int i = 0; i < container.childCount; i++)
+        for (int i = 0; i < tournamentTypeButtons.Length; i++)
         {
-            Destroy(container.GetChild(i).gameObject);
+            tournamentTypeButtons[i].interactable = true;
+            tournamentTypeButtons[i].transform.GetComponent<Image>().enabled = false;
         }
 
-        for (int i = 0; i < gameModeButtons.Length; i++)
-        {
-            gameModeButtons[i].interactable = true;
-        }
+        tournamentTypeButtons[(int)tournamentType].interactable = false;
+        tournamentTypeButtons[(int)tournamentType].transform.GetComponent<Image>().enabled = true;
 
-        gameModeButtons[(int)gameMode].interactable = false;
-
-        int index = (int)gameMode;
+        int index = (int)tournamentType;
 
         for (int i = 0; i < allRoomData[index].Count; i++)
         {
-            RoomData data = allRoomData[index][i];
+            TournamentRoomData data = allRoomData[index][i];
 
             GameObject gm = Instantiate(roomPrefab, container) as GameObject;
 
-            loadRoomImage(data.roomIconUrl, gm);
-            LoadRoomBG(data.roomBG, gm);
+            gm.transform.GetChild(1).GetComponent<Text>().text = data.name;
 
-            gm.transform.Find("Name").GetComponent<Text>().text = data.title;
-            gm.transform.Find("Blinds").GetComponent<Text>().text = "" + Utility.GetTrimmedAmount("" + data.smallBlind) + "/" + Utility.GetTrimmedAmount("" + data.bigBlind);
-            gm.transform.Find("BuyIn").transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "" + Utility.GetTrimmedAmount("" + data.minBuyIn);
+            gm.transform.GetChild(3).GetComponent<Text>().text = data.entryChipAmt.ToString();
 
-            gm.transform.Find("LivePlayer").GetComponent<Text>().text = data.totalActivePlayers.ToString();
+            gm.transform.GetChild(5).GetComponent<Text>().text = data.registeredUsers + "/" + data.maxPlayer;
 
-            gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(data,index));
-            gm.GetComponent<Button>().onClick.AddListener(() => gm.GetComponent<LobbyRoomManager>().CallInsufficientCoin(data));
+            int tournyId = int.Parse(data.id);
+            //print("Tournay ID:  " + tournyId.ToString() + " ------ User Status: " + data.isRegistered);
+
+            if (data.isRegistered)
+            {
+                //print("User Registered..");
+                gm.transform.GetChild(11).gameObject.SetActive(false);
+                gm.transform.GetChild(12).gameObject.SetActive(true);
+            }
+            else
+            {
+                //print("User not Registered...");
+                gm.transform.GetChild(11).gameObject.SetActive(true);
+                gm.transform.GetChild(12).gameObject.SetActive(false);
+            }
+
+            DateTime date = Convert.ToDateTime(data.gameStart).ToLocalTime();
+            gm.transform.GetChild(9).GetComponent<Text>().text = date.ToString(@"MM'/'yy");
+            gm.transform.GetChild(10).GetChild(0).GetComponent<Text>().text = date.ToString(@"HH':'mm");
+
+            gm.transform.GetChild(11).GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId));
+            gm.transform.GetChild(12).GetComponent<Button>().onClick.AddListener(() => OnClickTournamentJoinRoom(tournyId));
+
+            gm.transform.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails());
+            //loadRoomImage(data.roomIconUrl, gm);
+            //LoadRoomBG(data.roomBG, gm);            
         }
 
-        layoutManager.UpdateLayout();
+        //layoutManager.UpdateLayout();
 
     }
 
@@ -200,6 +251,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
     {
         StartCoroutine(loadRoomBGSpriteFromUrl(url, obj));
     }
+
     IEnumerator loadRoomBGSpriteFromUrl(string URL, GameObject obj)
     {
         UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(URL);
@@ -297,34 +349,121 @@ public class TournamentLobbyUiManager : MonoBehaviour
     {
         JsonData data = JsonMapper.ToObject(serverResponse);
 
-        Debug.Log(data[0]["data"][0]["name"].ToString());
-        int totalData = data[0]["data"].Count;
+        int totalData = data[0]/*["data"]*/.Count;
 
-        for (int i = 0; i < container.childCount; i++)
+        //print("Total Data: " + totalData);
+        if (totalData > 0)
         {
-            Destroy(container.GetChild(i).gameObject);
+            ResetContainers();
+            ResetRoomData();
+
+            for (int i = 0; i < totalData; i++)
+            {
+                TournamentRoomData roomData = new TournamentRoomData();
+
+                roomData.id = data[0]/*["data"]*/[i]["id"].ToString();
+                roomData.name = data[0]/*["data"]*/[i]["name"].ToString();
+                roomData.modifiedAt = data[0]/*["data"]*/[i]["modified_at"].ToString();
+                roomData.isRebuy = !data[0]/*["data"]*/[i]["is_rebuy"].ToString().Equals("0");
+                roomData.isAddOn = !data[0]/*["data"]*/[i]["is_addon"].ToString().Equals("0");
+                roomData.isFreezOut = !data[0]/*["data"]*/[i]["is_freez_out"].ToString().Equals("0");
+                roomData.isLaterRegister = !data[0]/*["data"]*/[i]["is_later_register"].ToString().Equals("0");
+
+                if (data[0]/*["data"]*/[i]["entry_chip_type"] != null)
+                    roomData.entryChipType = data[0]/*["data"]*/[i]["entry_chip_type"].ToString();
+
+                if (data[0]/*["data"]*/[i]["entry_chip_amt"] != null)
+                    roomData.entryChipAmt = int.Parse(data[0]/*["data"]*/[i]["entry_chip_amt"].ToString());
+
+                if (data[0]/*["data"]*/[i]["rebuy_amt"] != null)
+                    roomData.rebuyAmt = int.Parse(data[0]/*["data"]*/[i]["rebuy_amt"].ToString());
+
+                if (data[0]/*["data"]*/[i]["addon_amt"] != null)
+                    roomData.addonAmt = int.Parse(data[0]/*["data"]*/[i]["addon_amt"].ToString());
+
+                roomData.defaultStack = int.Parse(data[0]/*["data"]*/[i]["default_stack"].ToString());
+                roomData.sb = int.Parse(data[0]/*["data"]*/[i]["sb"].ToString());
+                roomData.bb = int.Parse(data[0]/*["data"]*/[i]["bb"].ToString());
+                roomData.prizeType = !data[0]/*["data"]*/[i]["prize_type"].ToString().Equals("0");
+                roomData.minPlayer = int.Parse(data[0]/*["data"]*/[i]["min_player"].ToString());
+                roomData.maxPlayer = int.Parse(data[0]/*["data"]*/[i]["max_player"].ToString());
+                roomData.regStart = data[0]/*["data"]*/[i]["reg_start"].ToString();
+                roomData.gameStart = data[0]/*["data"]*/[i]["game_start"].ToString();
+                roomData.lateRegStart = data[0]/*["data"]*/[i]["lat_reg_start"].ToString();
+                roomData.status = int.Parse(data[0]/*["data"]*/[i]["status"].ToString());
+                roomData.isRegistered = !data[0]/*["data"]*/[i]["is_registered"].ToString().Equals("0");
+                //print("")
+                roomData.registeredUsers = int.Parse(data[0]/*["data"]*/[i]["registered_users"].ToString());
+
+                switch (data[0]/*["data"]*/[i]["type"].ToString())
+                {
+                    case "SpinUp":
+                        roomData.type = TournamentType.SpinUp;
+                        break;
+
+                    case "MTT":
+                        roomData.type = TournamentType.MTT;
+                        break;
+
+                    default:
+                        roomData.type = TournamentType.Recommended;
+                        break;
+                }
+
+                allRoomData[(int)roomData.type].Add(roomData);
+                allRoomData[0].Add(roomData);
+            }
+            //print("Showing Screen");
+            ShowScreen(TournamentType.MTT);
         }
 
-        Debug.Log(totalData);
-        for (int i = 0; i < totalData; i++)
-        {
-            Debug.Log(data[0]["data"][i]["name"].ToString());
-            GameObject gm = Instantiate(roomPrefab, container) as GameObject;
 
-            //loadRoomImage(data.roomIconUrl, gm);
-            //LoadRoomBG(data.roomBG, gm);
 
-            gm.transform.GetChild(1).GetComponent<Text>().text = data[0]["data"][i]["name"].ToString();
-            gm.transform.GetChild(5).GetComponent<Text>().text = data[0]["data"][i]["min_player"] + "/" + data[0]["data"][i]["max_player"];
 
-            //gm.GetComponent<Button>().onClick.AddListener(() => OnClickOnPlayButton(data, index));
-            //gm.GetComponent<Button>().onClick.AddListener(() => gm.GetComponent<LobbyRoomManager>().CallInsufficientCoin(data));
-        }
+        //for (int i = 0; i < totalData; i++)
+        //{
+        //    Debug.Log(data[0]["data"][i]["name"].ToString());
+        //    GameObject gm = Instantiate(roomPrefab, container) as GameObject;
 
-        //layoutManager.UpdateLayout();
+        //    //loadRoomImage(data.roomIconUrl, gm);
+        //    //LoadRoomBG(data.roomBG, gm);
+
+        //    gm.transform.GetChild(1).GetComponent<Text>().text = data[0]["data"][i]["name"].ToString();
+
+        //    if (data[0]["data"][i]["entry_chip_amt"] != null)
+        //        gm.transform.GetChild(3).GetComponent<Text>().text = data[0]["data"][i]["entry_chip_amt"].ToString();
+
+        //    gm.transform.GetChild(5).GetComponent<Text>().text = data[0]["data"][i]["registered_users"] + "/" + data[0]["data"][i]["max_player"];
+
+        //    int tournyId = int.Parse(data[0]["data"][i]["id"].ToString());
+        //    print("Tournay ID:  " + tournyId.ToString() + " ------ Status: " + data[0]["data"][i]["is_registered"]);
+
+        //    if (data[0]["data"][i]["is_registered"].ToString().Equals("1"))
+        //    {
+        //        print("User Registered..");
+        //        gm.transform.GetChild(11).gameObject.SetActive(false);
+        //        gm.transform.GetChild(12).gameObject.SetActive(true);
+        //    }
+        //    else
+        //    {
+        //        print("User not Registered...");
+        //        gm.transform.GetChild(11).gameObject.SetActive(true);
+        //        gm.transform.GetChild(12).gameObject.SetActive(false);
+        //    }
+
+        //    DateTime date = Convert.ToDateTime(data[0]["data"][i]["game_start"].ToString()).ToLocalTime();
+        //    gm.transform.GetChild(9).GetComponent<Text>().text = date.ToString(@"MM'/'yy");
+        //    gm.transform.GetChild(10).GetChild(0).GetComponent<Text>().text = date.ToString(@"HH':'mm");
+
+        //    gm.transform.GetChild(11).GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId));
+        //    gm.transform.GetChild(12).GetComponent<Button>().onClick.AddListener(() => OnClickTournamentJoinRoom(tournyId));
+        //    //gm.GetComponent<Button>().onClick.AddListener(() => gm.GetComponent<LobbyRoomManager>().CallInsufficientCoin(data));
+        //}
+
+        ////layoutManager.UpdateLayout();
         TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Loading);
     }
-    
+
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
     {
         MainMenuController.instance.DestroyScreen(MainMenuScreens.Loading);
@@ -364,4 +503,88 @@ public class TournamentLobbyUiManager : MonoBehaviour
         }
 
     }
+
+    //DEV_CODE
+    private void OnClickOnRegisterForTournament(int id)
+    {
+        SoundManager.instance.PlaySound(SoundType.Click);
+
+        TournamentSocketController.instance.RequestRegisterForTournament(id);
+    }
+
+    private void OnClickTournamentJoinRoom(double id)
+    {
+        SoundManager.instance.PlaySound(SoundType.Click);
+
+        TournamentSocketController.instance.RequestTournamentJoinRoom(id);
+    }
+
+    private void OnClickTournamentDetails()
+    {
+        TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.TournamentDetails);
+        //tournamentDetailsPanel.SetActive(true);
+    }
+
+    private void ResetRoomData()
+    {
+        allRoomData.Clear();
+        for (int i = 0; i < 3; i++)
+        {
+            List<TournamentRoomData> dummyList = new List<TournamentRoomData>();
+            allRoomData.Add(dummyList);
+            //print("Adding Dummy Data");
+        }
+    }
+
+    private void ResetContainers()
+    {
+        //Reseting Container
+        for (int i = 0; i < container.childCount; i++)
+        {
+            Destroy(container.GetChild(i).gameObject);
+        }
+    }
+
+    public IEnumerator ShowPopUp(string msg, float delay)
+    {
+        popUpText.gameObject.SetActive(true);
+        popUpText.text = msg;
+        yield return new WaitForSeconds(delay);
+        popUpText.gameObject.SetActive(false);
+    }
+}
+
+public enum TournamentType
+{
+    Recommended,
+    SpinUp,
+    MTT
+}
+
+public class TournamentRoomData
+{
+    public string id;
+    public string name;
+    public TournamentType type;
+    public string modifiedAt;
+    public bool isRebuy;
+    public bool isAddOn;
+    public bool isFreezOut;
+    public bool isLaterRegister;
+    public string entryChipType;
+    public int entryChipAmt;
+    public int rebuyAmt;
+    public int addonAmt;
+    public int defaultStack;
+    public int sb;
+    public int bb;
+    public bool prizeType;
+    public int minPlayer;
+    public int maxPlayer;
+    public string regStart;
+    public string gameStart;
+    public string lateRegStart;
+    public int status;
+    public bool isRegistered;
+    public int registeredUsers;
 }

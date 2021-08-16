@@ -31,7 +31,12 @@ public class MissionsUiManager : MonoBehaviour
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                if (InGameUiManager.instance != null)
+                    InGameUiManager.instance.ShowMessage(errorMessage);
+                else if (TournamentInGameUiManager.instance != null)
+                    TournamentInGameUiManager.instance.ShowMessage(errorMessage);
+                else
+                    MainMenuController.instance.ShowMessage(errorMessage);
             }
 
             return;
@@ -113,9 +118,13 @@ public class MissionsUiManager : MonoBehaviour
                     {
                         MainMenuController.instance.DestroyScreen(MainMenuScreens.Missions);
                     }
-                    if (InGameUiManager.instance != null)
+                    else if (InGameUiManager.instance != null)
                     {
                         InGameUiManager.instance.DestroyScreen(InGameScreens.Missions);
+                    }
+                    else if (TournamentInGameUiManager.instance != null)
+                    {
+                        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Missions);
                     }
                 }
                 break;

@@ -78,6 +78,8 @@ public class TableSettingsUiManager : MonoBehaviour
                         InGameUiManager.instance.DestroyScreen(InGameScreens.TableSettings);
                     else if (ClubInGameUIManager.instance != null)
                         ClubInGameUIManager.instance.DestroyScreen(InGameScreens.TableSettings);
+                    else if(TournamentInGameUiManager.instance != null)
+                        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TableSettings);
                 }
                 break;
             case "voicemsg":

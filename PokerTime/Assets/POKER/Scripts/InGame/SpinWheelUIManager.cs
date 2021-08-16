@@ -71,7 +71,12 @@ public class SpinWheelUIManager : MonoBehaviour
         {
             if (isShowErrorMessage)
             {
-                MainMenuController.instance.ShowMessage(errorMessage);
+                if (MainMenuController.instance != null)
+                    MainMenuController.instance.ShowMessage(errorMessage);
+                else if (InGameUiManager.instance != null)
+                    InGameUiManager.instance.ShowMessage(errorMessage);
+                else if (TournamentInGameUiManager.instance != null)
+                    TournamentInGameUiManager.instance.ShowMessage(errorMessage);
             }
 
             return;
@@ -154,7 +159,13 @@ public class SpinWheelUIManager : MonoBehaviour
             }
             else
             {
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                if(MainMenuController.instance != null)
+                    MainMenuController.instance.ShowMessage(data["message"].ToString());
+                else if (InGameUiManager.instance != null)
+                    InGameUiManager.instance.ShowMessage(errorMessage);
+                else if (TournamentInGameUiManager.instance != null)
+                    TournamentInGameUiManager.instance.ShowMessage(errorMessage);
+
             }
         }
         else if (requestType == RequestType.deductFromWallet)
@@ -168,7 +179,12 @@ public class SpinWheelUIManager : MonoBehaviour
             }
             else
             {
-                MainMenuController.instance.ShowMessage(data["message"].ToString());
+                if (MainMenuController.instance != null)
+                    MainMenuController.instance.ShowMessage(data["message"].ToString());
+                else if (InGameUiManager.instance != null)
+                    InGameUiManager.instance.ShowMessage(errorMessage);
+                else if (TournamentInGameUiManager.instance != null)
+                    TournamentInGameUiManager.instance.ShowMessage(errorMessage);
             }
         }
     }
@@ -275,7 +291,8 @@ public class SpinWheelUIManager : MonoBehaviour
                         InGameUiManager.instance.DestroyScreen(InGameScreens.SpinWheelScreen);
                     else if (MainMenuController.instance != null)
                         MainMenuController.instance.DestroyScreen(MainMenuScreens.LuckyDraw);
-
+                    else if (TournamentInGameUiManager.instance != null)
+                        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.SpinWheelScreen);
                 }
                 break;
             case "1x":
@@ -297,6 +314,11 @@ public class SpinWheelUIManager : MonoBehaviour
                         {
                             MainMenuController.instance.DestroyScreen(MainMenuScreens.LuckyDraw);
                             MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
+                        }
+                        else if(TournamentInGameUiManager.instance != null)
+                        {
+                            TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.SpinWheelScreen);
+                            TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.InGameShop);
                         }
                     }
                     DeductCoinPostServer(1500);
@@ -321,7 +343,12 @@ public class SpinWheelUIManager : MonoBehaviour
                             MainMenuController.instance.DestroyScreen(MainMenuScreens.LuckyDraw);
                             MainMenuController.instance.ShowScreen(MainMenuScreens.Shop);
                         }
-                    }
+                        else if (TournamentInGameUiManager.instance != null)
+                        {
+                            TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.SpinWheelScreen);
+                            TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.InGameShop);
+                        }
+                }
                     DeductCoinPostServer(4800);
                 }
                 break;

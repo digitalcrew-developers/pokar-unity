@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GameConstants : MonoBehaviour
 {
-//    Poker Time Server 3 (Demo)
+    //    Poker Time Server 3 (Demo)
 
-//IP: 3.137.10.123
+    //IP: 3.137.10.123
 
-    public static int TURN_TIME = 20;
+    public static int TURN_TIME = 5; /*20;*/
     public static bool playerblind = false;
     public static bool showmatch = false;
     public static bool sideShowMatch = false;
@@ -174,7 +174,7 @@ public class GameConstants : MonoBehaviour
         API_URL+"/getClubTableDataAnalytics",
         API_URL+"/getClubUserDetail",
         API_URL+"/verifyTablePassCode",
-        API_URL+"/careerData"
+        API_URL+"/careerData",
 };
     #endregion
 
@@ -216,7 +216,7 @@ public class GameConstants : MonoBehaviour
         API_URL_TP +"/tp_getAgentDetails"
     };
 
-    
+
     #endregion
 }
 
@@ -315,7 +315,7 @@ public enum RequestType
     GetClubTableDataAnalytics,
     getClubUserDetail,
     verifyTablePassCode,
-    CareerData
+    CareerData,
 }
 
 [System.Serializable]

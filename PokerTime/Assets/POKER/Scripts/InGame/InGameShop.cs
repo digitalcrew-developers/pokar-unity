@@ -127,6 +127,10 @@ public class InGameShop : MonoBehaviour
                     {
                         ClubInGameUIManager.instance.DestroyScreen(InGameScreens.InGameShop);
                     }
+                    else if(TournamentInGameUiManager.instance != null)
+                    {
+                        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.InGameShop);
+                    }
                     else
                     { 
                         MainMenuController.instance.DestroyScreen(MainMenuScreens.InGameShop);

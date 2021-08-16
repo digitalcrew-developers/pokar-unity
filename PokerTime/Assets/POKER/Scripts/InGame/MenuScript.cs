@@ -37,9 +37,13 @@ public class MenuScript : MonoBehaviour
                         {
                             InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
                         }
-                        else
+                        else if(ClubInGameUIManager.instance != null)
                         {
                             ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                        }
+                        else if(TournamentInGameUiManager.instance != null)
+                        {
+                            TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Menu);
                         }
                     }
                     else
@@ -48,14 +52,18 @@ public class MenuScript : MonoBehaviour
                         {
                             InGameUiManagerTeenPatti.instance.DestroyScreen(InGameScreensTeenPatti.MenuTeenPatti);
                         }
-                        else
+                        else if (ClubInGameUIManager.instance != null)
                         {
                             ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
                         }
+                        else if (TournamentInGameUiManager.instance != null)
+                        {
+                            TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Menu);
+                        }
                     }
 
-                    //DEV_CODE
-                  //  InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
+                        //DEV_CODE
+                      //  InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
                 }
                 break;
 
@@ -149,7 +157,7 @@ public class MenuScript : MonoBehaviour
                     {
                         InGameUiManager.instance.ShowScreen(InGameScreens.HandRanking);
                     }
-                    else
+                    else if(ClubInGameUIManager.instance != null)
                     {
                         ClubInGameUIManager.instance.ShowScreen(InGameScreens.HandRanking);
                     }
@@ -215,13 +223,17 @@ public class MenuScript : MonoBehaviour
                         {
                             InGameManager.instance.LoadMainMenu();
                         }
-                        else
+                        else if(ClubInGameUIManager.instance != null)
                         {
                             //exit for club menu
                             ClubSocketController.instance.buttonCanvas.SetActive(false);
                             PlayerPrefs.SetString("Exit", "Exiting");
                             ClubInGameManager cigm = transform.parent.parent.parent.GetChild(1).GetComponent<ClubInGameManager>();
                             cigm.LoadMainMenu();
+                        }
+                        else if(TournamentInGameUiManager.instance != null)
+                        {
+                            TournamentInGameManager.instance.LoadMainMenu();
                         }
                     }
                     else
@@ -230,10 +242,14 @@ public class MenuScript : MonoBehaviour
                         {
                             InGameManagerTeenPatti.instance.LoadMainMenu();
                         }
-                        else
+                        else if (ClubInGameUIManager.instance != null)
                         {
                             //exit for club menu
                             ClubInGameManager.instance.LoadMainMenu();
+                        }
+                        else if (TournamentInGameUiManager.instance != null)
+                        {
+                            TournamentInGameManager.instance.LoadMainMenu();
                         }
                     }
                 }

@@ -85,7 +85,7 @@ public class PlayerScript : MonoBehaviour
 
         if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
         {
-            Debug.LogError("Download failed");
+            //Debug.LogError("Download failed");
         }
         else
         {
@@ -112,6 +112,10 @@ public class PlayerScript : MonoBehaviour
             else if(ClubInGameManager.instance!=null)
             {
                 ClubInGameManager.instance.UpdateAvailableBalance(playerData.balance);
+            }
+            else if(TournamentInGameManager.instance != null)
+            {
+                TournamentInGameManager.instance.UpdateAvailableBalance(playerData.balance);
             }
             RealTimeResult.SetActive(true);
 
@@ -157,6 +161,10 @@ public class PlayerScript : MonoBehaviour
             {
                 UpdateLocalPot((int)playerData.totalBet, ClubInGameManager.instance.GetMatchRound());
             }
+            else if(TournamentInGameManager.instance != null)
+            {
+                UpdateLocalPot((int)playerData.totalBet, TournamentInGameManager.instance.GetMatchRound());
+            }
         }
     }
     private void LoadUI()
@@ -183,6 +191,10 @@ public class PlayerScript : MonoBehaviour
             else if (ClubInGameManager.instance != null)
             {
                 emptyObject = ClubInGameManager.instance.GetSeatObject(playerData.seatNo); // transform.Find("Empty").gameObject;
+            }
+            else if(TournamentInGameManager.instance != null)
+            {
+                emptyObject = TournamentInGameManager.instance.GetSeatObject(playerData.seatNo);
             }
 
 
@@ -245,6 +257,10 @@ public class PlayerScript : MonoBehaviour
             else if (ClubInGameManager.instance != null)
             {
                 emptyObject = ClubInGameManager.instance.GetSeatObject(playerData.seatNo); //transform.Find("Empty").gameObject;
+            }
+            else if(TournamentInGameManager.instance != null)
+            {
+                emptyObject = TournamentInGameManager.instance.GetSeatObject(playerData.seatNo);
             }
         }
 
@@ -340,7 +356,7 @@ public class PlayerScript : MonoBehaviour
 
     public void ResetTurn()
     {
-        //Debug.LogError("Stopping Turn");
+        Debug.LogError("Stopping Turn");
         avtar.GetComponent<Animator>().SetBool("Play", false);
         fx_holder.gameObject.SetActive(false);
         timerBar.fillAmount = 0;
@@ -379,7 +395,13 @@ public class PlayerScript : MonoBehaviour
                 amount = 0;
             }
         }
-
+        else if(TournamentInGameManager.instance != null)
+        {
+            if(roundNo != TournamentInGameManager.instance.GetMatchRound())
+            {
+                amount = 0;
+            }
+        }
 
         if (amount > 0)
         {
@@ -417,6 +439,12 @@ public class PlayerScript : MonoBehaviour
             ClubInGameUIManager.instance.TempUserID = this.playerData.userId;
             ClubInGameUIManager.instance.currentClickedSeatNum = this.playerData.userId;
         }
+        else if(TournamentInGameUiManager.instance != null)
+        {
+            TournamentInGameUiManager.instance.TempUserID = this.playerData.userId;
+            TournamentInGameUiManager.instance.currentClickedSeatNum = this.playerData.userId;
+        }
+
         Debug.LogError("Onclick " + this.playerData.userId);
         
     }
@@ -515,13 +543,16 @@ public class PlayerScript : MonoBehaviour
 
     IEnumerator CountDownAnimation(float time, bool isSound)
     {
-        UnityEngine.Debug.LogError("CountDownAnimation timer " + time);
+        Debug.LogError("CountDownAnimation timer " + time);
         if (isSound)
             SoundManager.instance.PlaySound(SoundType.TurnSwitch);
 
         //   if (time == 0) yield break;
         float t = 0;
         fx_holder.gameObject.SetActive(true);
+
+        print("Is Fx Holder Enable: " + fx_holder.gameObject.activeSelf);
+
         while (t <= time)
         {
             t += Time.deltaTime;
@@ -563,7 +594,7 @@ public class PlayerScript : MonoBehaviour
 
         remainingTime = totalTime - remainingTime;      //10  - 30
 
-        //Debug.LogError("Updated RemainingTime = " + remainingTime);
+        Debug.LogError("Updated RemainingTime = " + remainingTime);
         //UnityEngine.Debug.LogError("Starting timer " + remainingTime + ", " + PrefsManager.GetPlayerData().userId + ", " + playerData.userId);
         if (remainingTime == 0)
         {
@@ -640,6 +671,10 @@ public class PlayerScript : MonoBehaviour
                 }
                 ClubInGameManager.instance.UpdateAvailableBalance(playerData.balance);
             }
+            else if(TournamentInGameManager.instance != null)
+            {
+                TournamentInGameManager.instance.UpdateAvailableBalance(playerData.balance);
+            }
         }
 
         ToggleFoldScreen(playerData.isFold);
@@ -675,7 +710,20 @@ public class PlayerScript : MonoBehaviour
                     UpdateLastAction("");
                 }
             }
-
+            else if(TournamentInGameManager.instance != null)
+            {
+                if(lastActionRoundNo == TournamentInGameManager.instance.GetMatchRound())
+                {
+                    UpdateLastAction(lastPlayerAction);
+                }
+                else
+                {
+                    if (playerData.isFold)
+                        UpdateLastAction("fold");
+                    else
+                        UpdateLastAction("");
+                }
+            }
         }
     }
 
@@ -787,6 +835,21 @@ public class PlayerScript : MonoBehaviour
                                     }
                                 }
                             }
+                            else if (TournamentInGameManager.instance != null)
+                            {
+                                if (TournamentInGameManager.instance.isHighlightCard)
+                                {
+                                    for (int num2 = 0; num2 < TournamentInGameManager.instance.highlightCards.Length; num2++)
+                                    {
+                                        if (cardsImage[i].sprite.name == TournamentInGameManager.instance.highlightCards[num2].cardsSprite.name)
+                                        {
+                                            //cardsImage[i].color = Color.yellow;
+                                            cardsImage[i].transform.GetChild(0).gameObject.SetActive(true);
+                                            //Debug.LogError("Community Card: " + communityCards[num].sprite.name);
+                                        }
+                                    }
+                                }
+                            }
                         }
                         else
                         {
@@ -797,26 +860,26 @@ public class PlayerScript : MonoBehaviour
 
                             if (i == 0)
                             {
-                                if (InGameManager.instance != null)
+                                if (InGameManager.instance != null || TournamentInGameManager.instance != null)
                                     cardsImage[i].transform.localPosition = new Vector3(-11, 0);
                                 else if (ClubInGameManager.instance != null)
                                     cardsImage[i].transform.localPosition = new Vector3(-22, 0);
                             }
                             if (i == 1)
                             {
-                                if (InGameManager.instance != null)
+                                if (InGameManager.instance != null || TournamentInGameManager.instance != null)
                                     cardsImage[i].transform.localPosition = new Vector3(11, 0);
                                 else if (ClubInGameManager.instance != null)
                                     cardsImage[i].transform.localPosition = new Vector3(0, 0);
                             }
                             if (i == 2)
                             {
-                                if (InGameManager.instance != null)
+                                if (InGameManager.instance != null || TournamentInGameManager.instance != null)
                                     cardsImage[i].transform.localPosition = new Vector3(33, 0);
                             }
                             if (i == 3)
                             {
-                                if (InGameManager.instance != null)
+                                if (InGameManager.instance != null || TournamentInGameManager.instance != null)
                                     cardsImage[i].transform.localPosition = new Vector3(55, 0);
                             }
                         }

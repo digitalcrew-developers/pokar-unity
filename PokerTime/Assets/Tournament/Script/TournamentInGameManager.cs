@@ -514,6 +514,7 @@ public class TournamentInGameManager : MonoBehaviour
     {
         availableBalance = balance;
     }
+    
     public void PlayerTimerReset()
     {
         for (int i = 0; i < onlinePlayersScript.Length; i++)
@@ -662,19 +663,11 @@ public class TournamentInGameManager : MonoBehaviour
         StartCoroutine(WaitAndSendLeaveRequest());
     }
 
-
-
     private IEnumerator WaitAndSendLeaveRequest()
     {
-        Debug.LogError("WaitAndSendLeaveRequest");
-        yield return new WaitForEndOfFrame();
-        TournamentSocketController.instance.SendLeaveMatchRequest();
-        yield return new WaitForSeconds(7f);
-        TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.Menu);
-        /*yield return new WaitForSeconds(GameConstants.BUFFER_TIME);
-        SocketController.instance.ResetConnection();
-        gameExitCalled = true;
-        GlobalGameManager.instance.LoadScene(Scenes.MainMenu);*/
+        Debug.Log("Leaving From Tournament");
+        yield return new WaitForSeconds(1f);
+        GlobalGameManager.instance.LoadScene(Scenes.TournamentInGame);
     }
 
     public IEnumerator SwitchToAnotherTableReset()
@@ -1291,8 +1284,7 @@ public class TournamentInGameManager : MonoBehaviour
 
     public void SendEmoji(string serverResponse)
     {
-        TournamentInGameUiManager.instance.OnGetEmoji(serverResponse);
-       
+        TournamentInGameUiManager.instance.OnGetEmoji(serverResponse);       
     }
     public void TipToDealer(string serverResponse)
     {
@@ -1479,7 +1471,7 @@ public class TournamentInGameManager : MonoBehaviour
         }
 
 
-        Debug.Log("OnResultREsponse: " + serverResponse);
+        Debug.Log("OnResultResponse: " + serverResponse);
         JsonData jsonData = JsonMapper.ToObject(serverResponse);
 
         //Debug.Log("isMyPlayerWin:" + jsonData[0]["sidePot"][0]["users"].Count.ToString());
@@ -1653,7 +1645,7 @@ public class TournamentInGameManager : MonoBehaviour
 
     public void OnTurnCountDownFound(string serverResponse)
     {
-        //Debug.LogWarning("OnTurnCountDownFound" + serverResponse);
+        Debug.LogWarning("OnTurnCountDownFound" + serverResponse);
         //if (SocketController.instance.GetSocketState() == SocketState.Game_Running)
         //{
         //    JsonData data = JsonMapper.ToObject(serverResponse);
@@ -1680,8 +1672,8 @@ public class TournamentInGameManager : MonoBehaviour
         //}
 
         //Debug.Log("State " + SocketController.instance.GetSocketState());
-        if (TournamentSocketController.instance.GetSocketState() == SocketState.Game_Running)
-        {
+        //if (TournamentSocketController.instance.GetSocketState() == SocketState.Game_Running)
+        //{
             JsonData data = JsonMapper.ToObject(serverResponse);
             //Debug.Log("Timer " + data[0]["userName"].ToString() + "" + PrefsManager.GetPlayerData().userName);
             int remainingTime = (int)float.Parse(data[0].ToString());
@@ -1689,15 +1681,19 @@ public class TournamentInGameManager : MonoBehaviour
             {
                 InGameUiManager.instance.ToggleActionButton(true, currentPlayer, isMyTurn, LAST_BET_AMOUNT, GetMyPlayerObject().GetPlayerData().balance);
             }*/
-            Debug.Log("Me&Other " + currentPlayer.IsMe() + ", " + currentPlayer.playerData.isTurn + ", " + remainingTime + ", " + GameConstants.TURN_TIME);
             if (currentPlayer != null)
             {
-                if (remainingTime == 0)
+                Debug.Log("Me&Other " + currentPlayer.IsMe() + ", " + currentPlayer.playerData.isTurn + ", " + remainingTime + ", " + GameConstants.TURN_TIME);
+                //if (remainingTime == 0)
+                //{
+                //    PlayerTimerReset();
+                //}
+                if (remainingTime <= GameConstants.TURN_TIME)
+                //if (remainingTime == GameConstants.TURN_TIME)
                 {
-                    PlayerTimerReset();
-                }
-                if (remainingTime == GameConstants.TURN_TIME)
-                {
+                    //if (!currentPlayer.fx_holder.gameObject.activeSelf)
+                    //    currentPlayer.fx_holder.gameObject.SetActive(true);
+
                     if (!currentPlayer.avtar.GetComponent<Animator>().GetBool("Play"))
                     {
                         currentPlayer.avtar.GetComponent<Animator>().SetBool("Play", true);
@@ -1737,7 +1733,7 @@ public class TournamentInGameManager : MonoBehaviour
             {
                 Debug.LogError("Null reference exception found current player object is null");
             }
-        }
+        //}
     }
 
     public void OnBetDataFound(string serverResponse)

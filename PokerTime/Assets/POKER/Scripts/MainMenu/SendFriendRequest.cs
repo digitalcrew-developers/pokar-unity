@@ -9,11 +9,23 @@ public class SendFriendRequest : MonoBehaviour
    
     public void Sendfriendrequest()
     {
-        if (PlayerManager.instance.GetPlayerGameData().userId != InGameUiManager.instance.TempUserID)
+        if (InGameUiManager.instance != null)
         {
-            string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
-                                   "\"ToUserId\":\"" + InGameUiManager.instance.TempUserID + "\"}";
-            WebServices.instance.SendRequest(RequestType.SendFriendRequest, requestData, true, OnServerResponseFound);
+            if (PlayerManager.instance.GetPlayerGameData().userId != InGameUiManager.instance.TempUserID)
+            {
+                string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                                       "\"ToUserId\":\"" + InGameUiManager.instance.TempUserID + "\"}";
+                WebServices.instance.SendRequest(RequestType.SendFriendRequest, requestData, true, OnServerResponseFound);
+            }
+        }
+        else if(TournamentInGameUiManager.instance != null)
+        {
+            if (PlayerManager.instance.GetPlayerGameData().userId != TournamentInGameUiManager.instance.TempUserID)
+            {
+                string requestData = "{\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"," +
+                                       "\"ToUserId\":\"" + TournamentInGameUiManager.instance.TempUserID + "\"}";
+                WebServices.instance.SendRequest(RequestType.SendFriendRequest, requestData, true, OnServerResponseFound);
+            }
         }
     }
     public void OnServerResponseFound(RequestType requestType, string serverResponse, bool isShowErrorMessage, string errorMessage)
@@ -29,7 +41,11 @@ public class SendFriendRequest : MonoBehaviour
         if (requestType == RequestType.SendFriendRequest)
         {
             JsonData data = JsonMapper.ToObject(serverResponse);
+
+            if (InGameUiManager.instance != null)
                 InGameUiManager.instance.ShowMessage(data["response"].ToString());
+            else if (TournamentInGameUiManager.instance != null)
+                TournamentInGameUiManager.instance.ShowMessage(data["response"].ToString());
             /*if (data["status"].Equals(true))
             {
             }   */         

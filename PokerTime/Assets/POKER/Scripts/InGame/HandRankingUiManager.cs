@@ -12,7 +12,8 @@ public class HandRankingUiManager : MonoBehaviour
         {
             case "back":
                 {
-                    InGameUiManager.instance.DestroyScreen(InGameScreens.HandRanking);
+                    if(InGameUiManager.instance != null)
+                        InGameUiManager.instance.DestroyScreen(InGameScreens.HandRanking);
                 }
                 break;
 

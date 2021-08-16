@@ -45,7 +45,7 @@ public class RealTimeResultUiManager : MonoBehaviour
                         Destroy(spectatorContent.GetChild(i).gameObject);
                     }
 
-                    for (int i=0;i< data["data"]["realTimeArr"].Count; i++)
+                    for (int i = 0; i < data["data"]["realTimeArr"].Count; i++)
                     {
                         LoadingText.SetActive(false);
                         GameObject gm = Instantiate(resultPrefab, RealTimeContent) as GameObject;
@@ -66,12 +66,12 @@ public class RealTimeResultUiManager : MonoBehaviour
                             else
                             {
                                 gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().color = Color.green;
-                                if(float.Parse(data["data"]["realTimeArr"][i]["totalWinCoin"].ToString()) > 0)
+                                if (float.Parse(data["data"]["realTimeArr"][i]["totalWinCoin"].ToString()) > 0)
                                     gm.transform.Find("Winnings").GetComponent<TMPro.TextMeshProUGUI>().text = "+" + data["data"]["realTimeArr"][i]["totalWinCoin"].ToString();
                             }
                         }
                     }
-                    if(data["data"]["standoutArr"].Count > 0)
+                    if (data["data"]["standoutArr"].Count > 0)
                     {
                         for (int i = 0; i < data["data"]["standoutArr"].Count; i++)
                         {
@@ -97,19 +97,19 @@ public class RealTimeResultUiManager : MonoBehaviour
         switch (eventName)
         {
             case "back":
-                {
-                    if (InGameUiManager.instance != null)
-                        InGameUiManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
-                    else if (ClubInGameUIManager.instance != null)
-                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
-                }
-                break;
-          
+            {
+                if (InGameUiManager.instance != null)
+                    InGameUiManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
+                else if (ClubInGameUIManager.instance != null)
+                    ClubInGameUIManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
+            }
+            break;
+
             default:
-                {
-                    Debug.LogError("Unhandled eventName found in RealTimeResultUiManager = " + eventName);
-                }
-                break;
+            {
+                Debug.LogError("Unhandled eventName found in RealTimeResultUiManager = " + eventName);
+            }
+            break;
         }
     }
 }

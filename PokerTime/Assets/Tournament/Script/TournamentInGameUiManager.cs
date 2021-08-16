@@ -76,6 +76,9 @@ public class TournamentInGameUiManager : MonoBehaviour
 
     public Animator actionPanelAnimator;
 
+    [Space(10)]
+    public GameObject tipsPanel;
+
     private void Awake()
     {
         instance = this;
@@ -867,7 +870,7 @@ public class TournamentInGameUiManager : MonoBehaviour
             TournamentInGameActiveScreens mainMenuScreen = new TournamentInGameActiveScreens();
             mainMenuScreen.screenName = screenName;
             mainMenuScreen.screenLayer = GetScreenLayer(screenName);
-            Debug.Log((int)screenName + " - " + screenLayers[(int)mainMenuScreen.screenLayer]);
+            //Debug.Log((int)screenName + " - " + screenLayers[(int)mainMenuScreen.screenLayer]);
             GameObject gm = Instantiate(screens[(int)screenName], screenLayers[(int)mainMenuScreen.screenLayer]) as GameObject;
             mainMenuScreen.screenObject = gm;
             inGameActiveScreens.Add(mainMenuScreen);
@@ -893,7 +896,7 @@ public class TournamentInGameUiManager : MonoBehaviour
                     break;*/
                 case TournamentInGameScreens.RealTimeResult:
                     {
-                        gm.GetComponent<RealTimeResultUiManager>().OnOpen();
+                        gm.GetComponent<RealTimeResultUiManagerTournament>().OnOpen();
                     }
                     break;
                 case TournamentInGameScreens.HandHistory:
@@ -993,6 +996,7 @@ public class TournamentInGameUiManager : MonoBehaviour
         switch (screenName)
         {
             case TournamentInGameScreens.Message:
+            case TournamentInGameScreens.TournamentDetails:
                 return ScreenLayer.LAYER2;
 
             case TournamentInGameScreens.Reconnecting:
@@ -1029,12 +1033,11 @@ public class TournamentInGameUiManager : MonoBehaviour
     public int otherId;
     public string sentToEmojiValue;
 
-    public void CallEmojiSocket(int index) {
+    public void CallEmojiSocket(int index) 
+    {
         emojiIndex = index;
         Debug.LogError("i am here------------ call emoji index "+index+"   "+emojiIndex+"    "+otherId);
         TournamentSocketController.instance.SentEmoji(otherId, emojiIndex);
-
-
     }
 
     public void ShowEmojiOnScreen(string str)
@@ -1126,7 +1129,7 @@ public class TournamentInGameUiManager : MonoBehaviour
 
     public void OnGetEmoji(string serverResponse)
     {
-        Debug.LogError("OnSentEmoji:" + serverResponse);
+        Debug.Log("OnSentEmoji:" + serverResponse);
 
         JsonData data = JsonMapper.ToObject(serverResponse);
        
@@ -1244,7 +1247,8 @@ public enum TournamentInGameScreens
     SpinWheelScreen,
     DealerImageScreen,
     SwitchTable,
-    TournamentLobby
+    TournamentLobby,
+    TournamentDetails
 }
 
 /*
