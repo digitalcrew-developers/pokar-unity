@@ -382,7 +382,8 @@ public class InGameShop : MonoBehaviour
                 WebServices.instance.SendRequest(RequestType.GetUserDetails, "{\"userId\":\"" +
                     PlayerManager.instance.GetPlayerGameData().userId+ "\"}", true, OnServerResponseFound);
 
-                if (null== InGameUiManager.instance)
+                if (MainMenuController.instance != null)
+                //if (null== InGameUiManager.instance)
                 {
                     MainMenuController.instance.ShowMessage(data["response"].ToString());
                     if (MenuHandller.instance != null)
@@ -391,15 +392,20 @@ public class InGameShop : MonoBehaviour
                     }
                     //LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
                 }
-                else
+                else if(InGameUiManager.instance != null)
                 {
                     InGameUiManager.instance.ShowMessage(data["response"].ToString());
+                }
+                else if(TournamentInGameUiManager.instance != null)
+                {
+                    TournamentInGameUiManager.instance.ShowMessage(data["response"].ToString());
                 }
             }
             else
             {
                 Debug.Log("You don't have sufficient fund to purchase");
-                if (null == InGameUiManager.instance)
+                if (MainMenuController.instance != null)
+                //if (null == InGameUiManager.instance)
                 {
                     MainMenuController.instance.ShowMessage(data["response"].ToString());
                     if (MenuHandller.instance != null)
@@ -408,9 +414,13 @@ public class InGameShop : MonoBehaviour
                     }
                     //LobbyUiManager.instance.coinsText.text = Utility.GetTrimmedAmount("" + PlayerManager.instance.GetPlayerGameData().coins);
                 }
-                else
+                else if (InGameUiManager.instance != null)
                 {
                     InGameUiManager.instance.ShowMessage(data["response"].ToString());
+                }
+                else if (TournamentInGameUiManager.instance != null)
+                {
+                    TournamentInGameUiManager.instance.ShowMessage(data["response"].ToString());
                 }
             }
         }

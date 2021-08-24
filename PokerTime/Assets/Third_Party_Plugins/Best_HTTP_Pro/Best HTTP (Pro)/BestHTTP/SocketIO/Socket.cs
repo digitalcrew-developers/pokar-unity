@@ -468,6 +468,11 @@ namespace BestHTTP.SocketIO
             IsOpen = true;
         }
 
+        internal void Emit(string v, Action<Socket> p)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

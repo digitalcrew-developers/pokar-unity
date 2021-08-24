@@ -140,9 +140,9 @@ public class TournamentSocketController : MonoBehaviour
         socketManager.Socket.On("updateTournamentList", OnGetTournamentList);
 
         //MTT Events
-        //socketManager.Socket.On("tournamentWinner", OnGetTournamentWinner);
-        //socketManager.Socket.On("tournamentWinner", OnGetTournamentWinner);
-        //socketManager.Socket.On("tournamentWinner", OnGetTournamentWinner);
+        socketManager.Socket.On("tournamentWinner", OnGetTournamentWinner);
+        socketManager.Socket.On("pauseTable", OnPauseTable);
+        socketManager.Socket.On("unpauseTable", OnUnpauseTable);
 
         //DEV_CODE
         //socketManager.Socket.On("register", OnTournamentRegister);
@@ -468,6 +468,18 @@ public class TournamentSocketController : MonoBehaviour
                     TournamentLobbyUiManager.instance.ReadRoomData(responseObject.data);
                     break;
 
+                case SocketEvetns.ON_PAUSETABLE:
+                    print("ON GET PAUSE TABLE");
+                    break;
+
+                case SocketEvetns.ON_UNPAUSETABLE:
+                    print("ON GET UNPAUSE TABLE");
+                    break;
+
+                case SocketEvetns.ON_TOURNAMENTWINNER:
+                    print("ON FOUND TOURNAMENT WINNER");
+                    break;
+
                 default:
                     Debug.LogError("UnHandlled EventType Found in response eventType = " + responseObject.eventType + "   responseStructure = " + responseObject.data);
                     break;
@@ -512,50 +524,6 @@ public class TournamentSocketController : MonoBehaviour
 
 
     #region LISTNER_METHODS
-//    void OnTournamentRegister(Socket socket, Packet packet, params object[] args)
-//    {
-//        string responseText = JsonMapper.ToJson(args);
-
-//#if DEBUG
-
-//#if UNITY_EDITOR
-//        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_REGISTERFORTOURNAMENT))
-//        {
-//            Debug.Log("OnTournamentRegister = " + responseText + "  Time = " + System.DateTime.Now);
-
-//        }
-//#else
-//        Debug.Log("OnTournamentRegister = " + responseText + "  Time = " + System.DateTime.Now);
-//#endif
-//#endif
-//        SocketResponse response = new SocketResponse();
-//        response.eventType = SocketEvetns.ON_REGISTERFORTOURNAMENT;
-//        response.data = responseText;
-//        socketResponse.Add(response);
-//    }
-
-//    void OnTournamentJoinRoom(Socket socket, Packet packet, params object[] args)
-//    {
-//        string responseText = JsonMapper.ToJson(args);
-
-//#if DEBUG
-
-//#if UNITY_EDITOR
-//        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_TOURNAMENTJOINROOM))
-//        {
-//            Debug.Log("OnTournamentJoinRoom = " + responseText + "  Time = " + System.DateTime.Now);
-
-//        }
-//#else
-//        Debug.Log("OnTournamentJoinRoom = " + responseText + "  Time = " + System.DateTime.Now);
-//#endif
-//#endif
-//        SocketResponse response = new SocketResponse();
-//        response.eventType = SocketEvetns.ON_TOURNAMENTJOINROOM;
-//        response.data = responseText;
-//        socketResponse.Add(response);
-//    }
-
     void OnGetTournamentList(Socket socket, Packet packet, params object[] args)
     {
         string responseText = JsonMapper.ToJson(args);
@@ -577,6 +545,74 @@ public class TournamentSocketController : MonoBehaviour
         response.data = responseText;
         socketResponse.Add(response);
     }
+
+    void OnGetTournamentWinner(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_TOURNAMENTWINNER))
+        {
+            Debug.Log("OnTournamentWinner = " + responseText + "  Time = " + System.DateTime.Now);
+
+        }
+#else
+            Debug.Log("OnTournamentWinner = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.ON_TOURNAMENTWINNER;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+    void OnPauseTable(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_PAUSETABLE))
+        {
+            Debug.Log("OnPauseTable = " + responseText + "  Time = " + System.DateTime.Now);
+
+        }
+#else
+            Debug.Log("OnPauseTable = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.ON_PAUSETABLE;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+    void OnUnpauseTable(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_UNPAUSETABLE))
+        {
+            Debug.Log("OnUnpauseTable = " + responseText + "  Time = " + System.DateTime.Now);
+
+        }
+#else
+            Debug.Log("OnUnpauseTable = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.ON_UNPAUSETABLE;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+
 
     void OnPlayerObjectFound(Socket socket, Packet packet, params object[] args)
     {
