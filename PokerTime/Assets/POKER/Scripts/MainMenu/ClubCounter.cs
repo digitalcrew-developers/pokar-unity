@@ -923,9 +923,9 @@ public class ClubCounter : MonoBehaviour, IPointerDownHandler
             selectedSendPlayerCount++;
 
             PlayerSelected.text = "x" + selectedSendPlayerCount;
-            //selectedMembers += "{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + "Member" + "\"},";
+            selectedMembers += "{\"userId\":" + clubMemberDetails.userId + ",\"role\":\"" + "Member" + "\"},";
 
-            selectedMembers += "{\"userId\":" + clubMemberDetails.userId + "},";
+            //selectedMembers += "{\"userId\":" + clubMemberDetails.userId + "},";
 
             if (isClaimBack)
             {
@@ -1032,10 +1032,10 @@ public class ClubCounter : MonoBehaviour, IPointerDownHandler
             {
                 if (SendOutListContent.GetChild(i).Find("Toggle").GetComponent<Toggle>().isOn)
                 {
-                    //selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text.Substring(5) + "\"," +
-                    //                   "\"role\":\"" + "Member" + "\"},";
+                    selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text.Substring(5) + "\"," +
+                                       "\"role\":\"" + "Member" + "\"},";
 
-                    selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text.Substring(5) + "\"},";
+                    //selectedMembers += "{\"userId\":\"" + SendOutListContent.GetChild(i).Find("TextId").GetComponent<TMPro.TextMeshProUGUI>().text.Substring(5) + "\"},";
 
                     if (claimBackAmount == 0)
                         float.TryParse(SendOutListContent.GetChild(i).Find("Image/Coins").GetComponent<TMP_Text>().text, out claimBackAmount);

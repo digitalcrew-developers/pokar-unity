@@ -17,7 +17,9 @@ public class GoogleManager : MonoBehaviour
     //public Text statusTxt;
 
     //private string webClientId = "960874965249-13tfg83naj3hrieknkk2ic5s96r5g73p.apps.googleusercontent.com";
-    private string webClientId = "814110012075-h3k1nsq4asvjoflddg6kei95lqetiq33.apps.googleusercontent.com";
+    //private string webClientId = "814110012075-h3k1nsq4asvjoflddg6kei95lqetiq33.apps.googleusercontent.com";
+    //private string webClientId = "273412800975-3jnahp49nqvjhg8769tsfer3i9lgf8dv.apps.googleusercontent.com";
+    private string webClientId = "273412800975-4n6bek0vshsh40249ggf31r5ugodusef.apps.googleusercontent.com";
 
     public string userName, userId, email;
 
