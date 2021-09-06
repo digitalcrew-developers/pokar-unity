@@ -410,11 +410,20 @@ public class MemberListUIManager : MonoBehaviour
             if (data["data"][i]["requestUserId"].ToString().Equals(PlayerManager.instance.GetPlayerGameData().userId))
             {
                 if (data["data"][i]["assignRole"].ToString().Equals("Member"))
+                {
                     ClubDetailsUIManager.instance.CLubChips.text = data["data"][i]["ptChips"].ToString();
+                    ClubAdminManager.instance.bottomPanel.SetActive(false);
+                }
                 else if (data["data"][i]["assignRole"].ToString().Equals("Creater"))
+                {
                     ClubDetailsUIManager.instance.CLubChips.text = data["data"][i]["clubPtChips"].ToString();
+                    ClubAdminManager.instance.bottomPanel.SetActive(true);
+                }
                 else
+                {
                     ClubDetailsUIManager.instance.CLubChips.text = data["data"][i]["creditChips"].ToString();
+                    ClubAdminManager.instance.bottomPanel.SetActive(true);
+                }
             }
 
             if (!newMembers)
