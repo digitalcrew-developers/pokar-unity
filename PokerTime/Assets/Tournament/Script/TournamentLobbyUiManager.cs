@@ -606,118 +606,147 @@ public class TournamentLobbyUiManager : MonoBehaviour
     {
         JsonData data = JsonMapper.ToObject(serverResponse);
 
-        int totalData = data[0]/*["data"]*/.Count;
+        //IDictionary tdictionary = data[0] as IDictionary;
 
-        //print("Total Data: " + totalData);
-        if (totalData > 0)
-        {
-            ResetContainers();
-            ResetRoomData();
-
-            for (int i = 0; i < totalData; i++)
-            {
-                TournamentRoomData roomData = new TournamentRoomData();
-
-                roomData.id = data[0]/*["data"]*/[i]["id"].ToString();
-                roomData.name = data[0]/*["data"]*/[i]["name"].ToString();
-                roomData.modifiedAt = data[0]/*["data"]*/[i]["modified_at"].ToString();
-                roomData.isRebuy = !data[0]/*["data"]*/[i]["is_rebuy"].ToString().Equals("0");
-                roomData.isAddOn = !data[0]/*["data"]*/[i]["is_addon"].ToString().Equals("0");
-                roomData.isFreezOut = !data[0]/*["data"]*/[i]["is_freez_out"].ToString().Equals("0");
-                roomData.isLaterRegister = !data[0]/*["data"]*/[i]["is_later_register"].ToString().Equals("0");
-
-                if (data[0]/*["data"]*/[i]["entry_chip_type"] != null)
-                    roomData.entryChipType = data[0]/*["data"]*/[i]["entry_chip_type"].ToString();
-
-                if (data[0]/*["data"]*/[i]["entry_chip_amt"] != null)
-                    roomData.entryChipAmt = int.Parse(data[0]/*["data"]*/[i]["entry_chip_amt"].ToString());
-
-                if (data[0]/*["data"]*/[i]["rebuy_amt"] != null)
-                    roomData.rebuyAmt = int.Parse(data[0]/*["data"]*/[i]["rebuy_amt"].ToString());
-
-                if (data[0]/*["data"]*/[i]["addon_amt"] != null)
-                    roomData.addonAmt = int.Parse(data[0]/*["data"]*/[i]["addon_amt"].ToString());
-
-                roomData.defaultStack = int.Parse(data[0]/*["data"]*/[i]["default_stack"].ToString());
-                roomData.sb = int.Parse(data[0]/*["data"]*/[i]["sb"].ToString());
-                roomData.bb = int.Parse(data[0]/*["data"]*/[i]["bb"].ToString());
-                roomData.prizeType = !data[0]/*["data"]*/[i]["prize_type"].ToString().Equals("0");
-                roomData.minPlayer = int.Parse(data[0]/*["data"]*/[i]["min_player"].ToString());
-                roomData.maxPlayer = int.Parse(data[0]/*["data"]*/[i]["max_player"].ToString());
-                roomData.regStart = data[0]/*["data"]*/[i]["reg_start"].ToString();
-                roomData.gameStart = data[0]/*["data"]*/[i]["game_start"].ToString();
-                roomData.lateRegStart = data[0]/*["data"]*/[i]["lat_reg_start"].ToString();
-                roomData.status = int.Parse(data[0]/*["data"]*/[i]["status"].ToString());
-                roomData.isRegistered = !data[0]/*["data"]*/[i]["is_registered"].ToString().Equals("0");
-                //print("")
-                roomData.registeredUsers = int.Parse(data[0]/*["data"]*/[i]["registered_users"].ToString());
-
-                switch (data[0]/*["data"]*/[i]["type"].ToString())
-                {
-                    case "SpinUp":
-                        roomData.type = TournamentType.SpinUp;
-                        break;
-
-                    case "MTT":
-                        roomData.type = TournamentType.MTT;
-                        break;
-
-                    default:
-                        roomData.type = TournamentType.Recommended;
-                        break;
-                }
-
-                allRoomData[(int)roomData.type].Add(roomData);
-                allRoomData[0].Add(roomData);
-            }
-            //print("Showing Screen");
-            ShowScreen(TournamentType.MTT);
-        }
-
-
-
-
-        //for (int i = 0; i < totalData; i++)
+        //if (tdictionary.Contains("data"))
         //{
-        //    Debug.Log(data[0]["data"][i]["name"].ToString());
-        //    GameObject gm = Instantiate(roomPrefab, container) as GameObject;
+        //    int totalData = data[0]["data"].Count;
 
-        //    //loadRoomImage(data.roomIconUrl, gm);
-        //    //LoadRoomBG(data.roomBG, gm);
-
-        //    gm.transform.GetChild(1).GetComponent<Text>().text = data[0]["data"][i]["name"].ToString();
-
-        //    if (data[0]["data"][i]["entry_chip_amt"] != null)
-        //        gm.transform.GetChild(3).GetComponent<Text>().text = data[0]["data"][i]["entry_chip_amt"].ToString();
-
-        //    gm.transform.GetChild(5).GetComponent<Text>().text = data[0]["data"][i]["registered_users"] + "/" + data[0]["data"][i]["max_player"];
-
-        //    int tournyId = int.Parse(data[0]["data"][i]["id"].ToString());
-        //    print("Tournay ID:  " + tournyId.ToString() + " ------ Status: " + data[0]["data"][i]["is_registered"]);
-
-        //    if (data[0]["data"][i]["is_registered"].ToString().Equals("1"))
+        //    print("Total Data: " + totalData);
+        //    if (totalData > 0)
         //    {
-        //        print("User Registered..");
-        //        gm.transform.GetChild(11).gameObject.SetActive(false);
-        //        gm.transform.GetChild(12).gameObject.SetActive(true);
-        //    }
-        //    else
-        //    {
-        //        print("User not Registered...");
-        //        gm.transform.GetChild(11).gameObject.SetActive(true);
-        //        gm.transform.GetChild(12).gameObject.SetActive(false);
-        //    }
+        //        ResetContainers();
+        //        ResetRoomData();
 
-        //    DateTime date = Convert.ToDateTime(data[0]["data"][i]["game_start"].ToString()).ToLocalTime();
-        //    gm.transform.GetChild(9).GetComponent<Text>().text = date.ToString(@"MM'/'yy");
-        //    gm.transform.GetChild(10).GetChild(0).GetComponent<Text>().text = date.ToString(@"HH':'mm");
+        //        for (int i = 0; i < totalData; i++)
+        //        {
+        //            TournamentRoomData roomData = new TournamentRoomData();
 
-        //    gm.transform.GetChild(11).GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId));
-        //    gm.transform.GetChild(12).GetComponent<Button>().onClick.AddListener(() => OnClickTournamentJoinRoom(tournyId));
-        //    //gm.GetComponent<Button>().onClick.AddListener(() => gm.GetComponent<LobbyRoomManager>().CallInsufficientCoin(data));
+        //            roomData.id = data[0]["data"][i]["id"].ToString();
+        //            roomData.name = data[0]["data"][i]["name"].ToString();
+        //            roomData.modifiedAt = data[0]["data"][i]["modified_at"].ToString();
+        //            roomData.isRebuy = !data[0]["data"][i]["is_rebuy"].ToString().Equals("0");
+        //            roomData.isAddOn = !data[0]["data"][i]["is_addon"].ToString().Equals("0");
+        //            roomData.isFreezOut = !data[0]["data"][i]["is_freez_out"].ToString().Equals("0");
+        //            roomData.isLaterRegister = !data[0]["data"][i]["is_later_register"].ToString().Equals("0");
+
+        //            if (data[0]["data"][i]["entry_chip_type"] != null)
+        //                roomData.entryChipType = data[0]["data"][i]["entry_chip_type"].ToString();
+
+        //            if (data[0]["data"][i]["entry_chip_amt"] != null)
+        //                roomData.entryChipAmt = int.Parse(data[0]["data"][i]["entry_chip_amt"].ToString());
+
+        //            if (data[0]["data"][i]["rebuy_amt"] != null)
+        //                roomData.rebuyAmt = int.Parse(data[0]["data"][i]["rebuy_amt"].ToString());
+
+        //            if (data[0]["data"][i]["addon_amt"] != null)
+        //                roomData.addonAmt = int.Parse(data[0]["data"][i]["addon_amt"].ToString());
+
+        //            roomData.defaultStack = int.Parse(data[0]["data"][i]["default_stack"].ToString());
+        //            roomData.sb = int.Parse(data[0]["data"][i]["sb"].ToString());
+        //            roomData.bb = int.Parse(data[0]["data"][i]["bb"].ToString());
+        //            roomData.prizeType = !data[0]["data"][i]["prize_type"].ToString().Equals("0");
+        //            roomData.minPlayer = int.Parse(data[0]["data"][i]["min_player"].ToString());
+        //            roomData.maxPlayer = int.Parse(data[0]["data"][i]["max_player"].ToString());
+        //            roomData.regStart = data[0]["data"][i]["reg_start"].ToString();
+        //            roomData.gameStart = data[0]["data"][i]["game_start"].ToString();
+        //            roomData.lateRegStart = data[0]["data"][i]["lat_reg_start"].ToString();
+        //            roomData.status = int.Parse(data[0]["data"][i]["status"].ToString());
+        //            roomData.isRegistered = !data[0]["data"][i]["is_registered"].ToString().Equals("0");
+        //            roomData.registeredUsers = int.Parse(data[0]["data"][i]["registered_users"].ToString());
+
+        //            switch (data[0]["data"][i]["type"].ToString())
+        //            {
+        //                case "SpinUp":
+        //                    roomData.type = TournamentType.SpinUp;
+        //                    break;
+
+        //                case "MTT":
+        //                    roomData.type = TournamentType.MTT;
+        //                    break;
+
+        //                default:
+        //                    roomData.type = TournamentType.Recommended;
+        //                    break;
+        //            }
+
+        //            allRoomData[(int)roomData.type].Add(roomData);
+        //            allRoomData[0].Add(roomData);
+        //        }
+        //        ShowScreen(TournamentType.MTT);
+        //    }
+        //}
+        //else
+        //{
+            int totalData = data[0].Count;
+            print("Total Data: " + totalData);
+            if (totalData > 0)
+            {
+                ResetContainers();
+                ResetRoomData();
+
+                for (int i = 0; i < totalData; i++)
+                {
+                    TournamentRoomData roomData = new TournamentRoomData();
+
+                    roomData.id = data[0]/*["data"]*/[i]["id"].ToString();
+                    roomData.name = data[0]/*["data"]*/[i]["name"].ToString();
+                    roomData.modifiedAt = data[0]/*["data"]*/[i]["modified_at"].ToString();
+                    roomData.isRebuy = !data[0]/*["data"]*/[i]["is_rebuy"].ToString().Equals("0");
+                    roomData.isAddOn = !data[0]/*["data"]*/[i]["is_addon"].ToString().Equals("0");
+                    roomData.isFreezOut = !data[0]/*["data"]*/[i]["is_freez_out"].ToString().Equals("0");
+                    roomData.isLaterRegister = !data[0]/*["data"]*/[i]["is_later_register"].ToString().Equals("0");
+
+                    if (data[0]/*["data"]*/[i]["entry_chip_type"] != null)
+                        roomData.entryChipType = data[0]/*["data"]*/[i]["entry_chip_type"].ToString();
+
+                    if (data[0]/*["data"]*/[i]["entry_chip_amt"] != null)
+                        roomData.entryChipAmt = int.Parse(data[0]/*["data"]*/[i]["entry_chip_amt"].ToString());
+
+                    if (data[0]/*["data"]*/[i]["rebuy_amt"] != null)
+                        roomData.rebuyAmt = int.Parse(data[0]/*["data"]*/[i]["rebuy_amt"].ToString());
+
+                    if (data[0]/*["data"]*/[i]["addon_amt"] != null)
+                        roomData.addonAmt = int.Parse(data[0]/*["data"]*/[i]["addon_amt"].ToString());
+
+                    roomData.defaultStack = int.Parse(data[0]/*["data"]*/[i]["default_stack"].ToString());
+                    roomData.sb = int.Parse(data[0]/*["data"]*/[i]["sb"].ToString());
+                    roomData.bb = int.Parse(data[0]/*["data"]*/[i]["bb"].ToString());
+                    roomData.prizeType = !data[0]/*["data"]*/[i]["prize_type"].ToString().Equals("0");
+                    roomData.minPlayer = int.Parse(data[0]/*["data"]*/[i]["min_player"].ToString());
+                    roomData.maxPlayer = int.Parse(data[0]/*["data"]*/[i]["max_player"].ToString());
+                    roomData.regStart = data[0]/*["data"]*/[i]["reg_start"].ToString();
+                    roomData.gameStart = data[0]/*["data"]*/[i]["game_start"].ToString();
+
+                    if(data[0]/*["data"]*/[i]["lat_reg_start"] != null)
+                        roomData.lateRegStart = data[0]/*["data"]*/[i]["lat_reg_start"].ToString();
+                    roomData.status = int.Parse(data[0]/*["data"]*/[i]["status"].ToString());
+                    roomData.isRegistered = !data[0]/*["data"]*/[i]["is_registered"].ToString().Equals("0");
+                    roomData.registeredUsers = int.Parse(data[0]/*["data"]*/[i]["registered_users"].ToString());
+
+                    switch (data[0]/*["data"]*/[i]["type"].ToString())
+                    {
+                        case "SpinUp":
+                            roomData.type = TournamentType.SpinUp;
+                            break;
+
+                        case "MTT":
+                            roomData.type = TournamentType.MTT;
+                            break;
+
+                        default:
+                            roomData.type = TournamentType.Recommended;
+                            break;
+                    }
+
+                    allRoomData[(int)roomData.type].Add(roomData);
+                    allRoomData[0].Add(roomData);
+                }
+                //print("Showing Screen");
+                ShowScreen(TournamentType.MTT);
+            }
         //}
 
-        ////layoutManager.UpdateLayout();
         TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Loading);
     }
 

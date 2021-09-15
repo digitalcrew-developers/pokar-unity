@@ -469,15 +469,28 @@ public class TournamentSocketController : MonoBehaviour
                     break;
 
                 case SocketEvetns.ON_PAUSETABLE:
-                    print("ON GET PAUSE TABLE");
+                    Debug.Log("ON GET PAUSE TABLE");
                     break;
 
                 case SocketEvetns.ON_UNPAUSETABLE:
-                    print("ON GET UNPAUSE TABLE");
+                    Debug.Log("ON GET UNPAUSE TABLE");
                     break;
 
                 case SocketEvetns.ON_TOURNAMENTWINNER:
-                    print("ON FOUND TOURNAMENT WINNER");
+                    {
+                        Debug.Log("ON FOUND TOURNAMENT WINNER");
+
+                        JsonData data = JsonMapper.ToObject(responseObject.data);
+
+                        if (data[0]["players"][0]["userId"].ToString().Equals(PlayerManager.instance.GetPlayerGameData().userId))
+                        {
+                            TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.WinnerScreen);
+                            if (TournamentWinnerManager.instance != null)
+                                TournamentWinnerManager.instance.Initialize(responseObject.data);
+                        }
+                        else
+                            TournamentInGameManager.instance.LoadMainMenu();
+                    }
                     break;
 
                 default:

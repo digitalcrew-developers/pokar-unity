@@ -1248,7 +1248,8 @@ public enum TournamentInGameScreens
     DealerImageScreen,
     SwitchTable,
     TournamentLobby,
-    TournamentDetails
+    TournamentDetails,
+    WinnerScreen
 }
 
 /*

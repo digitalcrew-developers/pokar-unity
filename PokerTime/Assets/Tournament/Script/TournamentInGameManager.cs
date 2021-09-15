@@ -2275,7 +2275,7 @@ public class TournamentInGameManager : MonoBehaviour
         {
             File.Delete(fileInfo[j].FullName);
         }
-    }
+    }   
 }
 
 /*

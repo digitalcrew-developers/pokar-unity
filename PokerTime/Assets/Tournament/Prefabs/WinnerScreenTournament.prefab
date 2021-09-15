@@ -120,7 +120,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4167602585703251132}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6087963196958426873}
+        m_TargetAssemblyTypeName: TournamentWinnerManager, Assembly-CSharp
+        m_MethodName: OnExit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4167602586047749828
 GameObject:
   m_ObjectHideFlags: 0
@@ -992,13 +1004,14 @@ GameObject:
   - component: {fileID: 4167602587324153545}
   - component: {fileID: 4167602587324153399}
   - component: {fileID: 4167602587324153544}
+  - component: {fileID: 6087963196958426873}
   m_Layer: 5
-  m_Name: ResultScreenTournament
+  m_Name: WinnerScreenTournament
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4167602587324153545
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1062,6 +1075,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6087963196958426873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4167602587324153546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89f9fbcec33bf2d49a248a2fa3c91226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rankingText: {fileID: 4167602587683689970}
+  tournamentName: {fileID: 4167602587517007587}
+  playerName: {fileID: 4167602587320678790}
+  playerId: {fileID: 4167602586238589358}
 --- !u!1 &4167602587517007589
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,7 +1103,7 @@ GameObject:
   - component: {fileID: 4167602587517007586}
   - component: {fileID: 4167602587517007587}
   m_Layer: 5
-  m_Name: ProgressiveText
+  m_Name: TournamentName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1261,7 +1290,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4167602587626683786}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6087963196958426873}
+        m_TargetAssemblyTypeName: TournamentWinnerManager, Assembly-CSharp
+        m_MethodName: OnExit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4167602587683689972
 GameObject:
   m_ObjectHideFlags: 0
