@@ -470,10 +470,12 @@ public class TournamentSocketController : MonoBehaviour
 
                 case SocketEvetns.ON_PAUSETABLE:
                     Debug.Log("ON GET PAUSE TABLE");
+                    TournamentInGameUiManager.instance.ShowMessage("Table Paused..");
                     break;
 
                 case SocketEvetns.ON_UNPAUSETABLE:
                     Debug.Log("ON GET UNPAUSE TABLE");
+                    TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Message);
                     break;
 
                 case SocketEvetns.ON_TOURNAMENTWINNER:
