@@ -457,14 +457,14 @@ public class TournamentLobbyUiManager : MonoBehaviour
             }
 
             lateRegisterBtn.GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId));
-            enrolledBtn.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails());
+            enrolledBtn.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails(tournyId));
 
             //END: for timer
 
             gm.transform.GetChild(11).GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId));
             gm.transform.GetChild(12).GetComponent<Button>().onClick.AddListener(() => OnClickTournamentJoinRoom(tournyId));
 
-            gm.transform.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails());
+            gm.transform.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails(tournyId));
             //loadRoomImage(data.roomIconUrl, gm);
             //LoadRoomBG(data.roomBG, gm);            
         }
@@ -679,7 +679,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
         //else
         //{
             int totalData = data[0].Count;
-            print("Total Data: " + totalData);
+            //print("Total Data: " + totalData);
             if (totalData > 0)
             {
                 ResetContainers();
@@ -805,10 +805,11 @@ public class TournamentLobbyUiManager : MonoBehaviour
         TournamentSocketController.instance.RequestTournamentJoinRoom(id);
     }
 
-    private void OnClickTournamentDetails()
+    private void OnClickTournamentDetails(int id)
     {
         TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.TournamentDetails);
         //tournamentDetailsPanel.SetActive(true);
+        TournamentDetailsManager.instance.Initialize(id);
     }
 
     private void ResetRoomData()
