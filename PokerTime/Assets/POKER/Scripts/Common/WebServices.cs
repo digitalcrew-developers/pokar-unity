@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class WebServices : MonoBehaviour
 {
@@ -254,7 +255,37 @@ public class WebServices : MonoBehaviour
 		StopCoroutine(request.requestMethod);
 		SendRequestToServerTP(request);
 	}
-#endregion
+	#endregion
+
+
+	//DEV_CODE Method for independent request
+	public IEnumerator POSTRequestData(string uri, string json, System.Action<string, bool, string> callbackOnFinish)
+	{
+		UnityWebRequest uwr = new UnityWebRequest(uri, "POST");
+
+		Debug.Log("Request : " + uri);
+
+		if (json != "")
+		{
+			byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
+			uwr.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+		}
+
+		uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+
+		uwr.SetRequestHeader("Content-Type", "application/json");
+
+		yield return uwr.SendWebRequest();
+
+		if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.DataProcessingError)
+		{
+			callbackOnFinish("", true, uwr.error);
+		}
+		else
+		{
+			callbackOnFinish(uwr.downloadHandler.text, false, "");
+		}
+	}
 }
 
 
