@@ -136,15 +136,16 @@ public class RealTimeResultUiManagerTournament : MonoBehaviour
         });*/
 
         string tourneyId = TournamentSocketController.instance.TOURNEY_ID;
+        string tableId = TournamentSocketController.instance.GetTableID();
         string userId = PlayerManager.instance.GetPlayerGameData().userId;
-        GetTournamentDetails(tourneyId, userId);
+        GetTournamentDetails(tourneyId, userId, tableId);
     }
 
-    public void GetTournamentDetails(string tourneyId, string userId)
+    public void GetTournamentDetails(string tourneyId, string userId, string tableId)
     {
         if (!string.IsNullOrEmpty(tourneyId) && !string.IsNullOrEmpty(userId))
         { 
-            string requestData = "{\"tourneyId\":\"" + tourneyId + "\", \"userId\":\"" + userId + "\"}";
+            string requestData = "{\"tourneyId\":\"" + tourneyId + "\", \"userId\":\"" + userId + "\", \"tableId\":\"" + tableId + "\"}";
             Debug.Log("from real time ui manager requestData=" + requestData);
             StartCoroutine(WebServices.instance.POSTRequestData("http://3.109.177.149:3335/tournament/details", requestData, OnGetTournamentDetailsComplete));
         }
@@ -265,9 +266,9 @@ public class RealTimeResultUiManagerTournament : MonoBehaviour
                     {
                         GameObject blindObj = Instantiate(resultPrefab_Blinds, blindsObjContainer);
                         blindObj.name = blindObj.name + "_" + i;
-                        //blindObj.transform.Find("Level").GetComponent<Text>().text = "";
-                        //blindObj.transform.Find("Blinds").GetComponent<Text>().text = "";
-                        //blindObj.transform.Find("Ante").GetComponent<Text>().text = "";
+                        blindObj.transform.Find("Level").GetComponent<Text>().text = jsonData["data"]["blind_structure"][i]["level"].ToString();
+                        blindObj.transform.Find("Blinds").GetComponent<Text>().text = Utility.GetTrimmedAmount(jsonData["data"]["blind_structure"][i]["sb"].ToString()) + "/" + Utility.GetTrimmedAmount(jsonData["data"]["blind_structure"][i]["bb"].ToString());
+                        blindObj.transform.Find("Ante").GetComponent<Text>().text = jsonData["data"]["blind_structure"][i]["ante"].ToString();
                     }
                 }
 
