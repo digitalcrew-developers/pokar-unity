@@ -118,6 +118,11 @@ public class TournamentInGameUiManager : MonoBehaviour
         SwitchTables(counter);
     }
 
+    public void Initialize(int smallBlind, int bigBlind)
+    {
+        tableInfoText.text = "Blinds " + smallBlind + "/" + bigBlind + " Ante " + smallBlind;
+    }
+
     private void SwitchTables(int counter)
     {
         //Debug.LogError("counter is " + counter);

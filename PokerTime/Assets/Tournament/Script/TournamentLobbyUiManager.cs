@@ -462,7 +462,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
             //END: for timer
 
             gm.transform.GetChild(11).GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId));
-            gm.transform.GetChild(12).GetComponent<Button>().onClick.AddListener(() => OnClickTournamentJoinRoom(tournyId));
+            gm.transform.GetChild(12).GetComponent<Button>().onClick.AddListener(() => OnClickTournamentJoinRoom(tournyId, data.sb, data.bb));
 
             gm.transform.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails(tournyId));
             //loadRoomImage(data.roomIconUrl, gm);
@@ -798,11 +798,12 @@ public class TournamentLobbyUiManager : MonoBehaviour
         TournamentSocketController.instance.RequestRegisterForTournament(id);
     }
 
-    private void OnClickTournamentJoinRoom(double id)
+    private void OnClickTournamentJoinRoom(double id, int sb, int bb)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
 
         TournamentSocketController.instance.RequestTournamentJoinRoom(id);
+        TournamentInGameUiManager.instance.Initialize(sb, bb);
     }
 
     private void OnClickTournamentDetails(int id)
