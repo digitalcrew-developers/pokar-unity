@@ -79,10 +79,10 @@ public class TournamentDetailsManager : MonoBehaviour
     public void Initialize(int id)
     {
         string requestData = "{\"tourneyId\":\"" + id + "\"}";
-        StartCoroutine(WebServices.instance.POSTRequestData("http://3.109.177.149:3335/tournament/details", requestData, OnGetStreamDetailsComplete));
+        StartCoroutine(WebServices.instance.POSTRequestData("http://3.109.177.149:3335/tournament/details", requestData, OnGetTourneyDetailsComplete));
     }
 
-    private void OnGetStreamDetailsComplete(string serverResponse, bool isErrorMessage, string errorMessage)
+    private void OnGetTourneyDetailsComplete(string serverResponse, bool isErrorMessage, string errorMessage)
     {
         if (isErrorMessage)
         {

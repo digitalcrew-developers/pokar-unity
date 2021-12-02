@@ -143,6 +143,7 @@ public class TournamentSocketController : MonoBehaviour
         socketManager.Socket.On("tournamentWinner", OnGetTournamentWinner);
         socketManager.Socket.On("pauseTable", OnPauseTable);
         socketManager.Socket.On("unpauseTable", OnUnpauseTable);
+        socketManager.Socket.On("kickedOut", OnKickedOut);
 
         //DEV_CODE
         //socketManager.Socket.On("register", OnTournamentRegister);
@@ -482,16 +483,28 @@ public class TournamentSocketController : MonoBehaviour
                     {
                         Debug.Log("ON FOUND TOURNAMENT WINNER");
 
-                        JsonData data = JsonMapper.ToObject(responseObject.data);
+                        TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.WinnerScreen);
+                        TournamentWinnerManager.instance.Initialize();
 
-                        if (data[0]["players"][0]["userId"].ToString().Equals(PlayerManager.instance.GetPlayerGameData().userId))
-                        {
-                            TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.WinnerScreen);
-                            if (TournamentWinnerManager.instance != null)
-                                TournamentWinnerManager.instance.Initialize(responseObject.data);
-                        }
-                        else
-                            TournamentInGameManager.instance.LoadMainMenu();
+                        //JsonData data = JsonMapper.ToObject(responseObject.data);
+
+                        //if (data[0]["players"][0]["userId"].ToString().Equals(PlayerManager.instance.GetPlayerGameData().userId))
+                        //{
+                        //    TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.WinnerScreen);
+                        //    if (TournamentWinnerManager.instance != null)
+                        //        TournamentWinnerManager.instance.Initialize(responseObject.data);
+                        //}
+                        //else
+                        //    TournamentInGameManager.instance.LoadMainMenu();
+                    }
+                    break;
+
+                case SocketEvetns.ON_KICKEDOUT:
+                    {
+                        Debug.Log("ON FOUND KICKED OUT");
+
+                        TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.WinnerScreen);
+                        TournamentWinnerManager.instance.Initialize();
                     }
                     break;
 
@@ -623,6 +636,27 @@ public class TournamentSocketController : MonoBehaviour
 #endif
         SocketResponse response = new SocketResponse();
         response.eventType = SocketEvetns.ON_UNPAUSETABLE;
+        response.data = responseText;
+        socketResponse.Add(response);
+    }
+
+    void OnKickedOut(Socket socket, Packet packet, params object[] args)
+    {
+        string responseText = JsonMapper.ToJson(args);
+
+#if DEBUG
+
+#if UNITY_EDITOR
+        if (GlobalGameManager.instance.CanDebugThis(SocketEvetns.ON_KICKEDOUT))
+        {
+            Debug.Log("OnKickedOut = " + responseText + "  Time = " + System.DateTime.Now);
+        }
+#else
+            Debug.Log("OnKickedOut = " + responseText + "  Time = " + System.DateTime.Now);
+#endif
+#endif
+        SocketResponse response = new SocketResponse();
+        response.eventType = SocketEvetns.ON_KICKEDOUT;
         response.data = responseText;
         socketResponse.Add(response);
     }

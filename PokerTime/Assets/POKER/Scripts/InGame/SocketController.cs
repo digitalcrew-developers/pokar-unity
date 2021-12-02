@@ -1761,7 +1761,8 @@ public enum SocketEvetns
     ON_TOURNAMENTJOINROOM,
     ON_PAUSETABLE,
     ON_UNPAUSETABLE,
-    ON_TOURNAMENTWINNER
+    ON_TOURNAMENTWINNER,
+    ON_KICKEDOUT
 }
 
 [System.Serializable]
