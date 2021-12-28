@@ -509,7 +509,7 @@ public class MemberListUIManager : MonoBehaviour
                 newMemberButton.transform.Find("Notification").gameObject.SetActive(true);
 
                 //Clear all list of players
-                oldMembersList.Clear();
+                //oldMembersList.Clear();
                 newMembersList.Clear();
 
                 ShowMemberDetails(data,true);
@@ -535,7 +535,7 @@ public class MemberListUIManager : MonoBehaviour
 
                 //Clear all list of players
                 oldMembersList.Clear();
-                newMembersList.Clear();
+                //newMembersList.Clear();
 
                 ShowMemberDetails(data);
             }

@@ -34,6 +34,10 @@ public class ClubSocketController : MonoBehaviour
     {
         instance = this;
         SetSocketState(SocketState.NULL);
+
+        Canvas btnCanvas = buttonCanvas.GetComponent<Canvas>();
+        btnCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+        btnCanvas.worldCamera = Camera.main;
     }
 
     void Start()

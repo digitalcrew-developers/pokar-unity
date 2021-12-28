@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class RealTimeResultUiManager : MonoBehaviour
 {
-    public GameObject LoadingText;
+    public GameObject LoadingText1, LoadingText2;
     public GameObject resultPrefab;
     public GameObject spectatorPrefab;
     public Transform RealTimeContent;
@@ -47,7 +47,8 @@ public class RealTimeResultUiManager : MonoBehaviour
 
                     for (int i = 0; i < data["data"]["realTimeArr"].Count; i++)
                     {
-                        LoadingText.SetActive(false);
+                        LoadingText1.SetActive(false);
+                        LoadingText2.SetActive(false);
                         GameObject gm = Instantiate(resultPrefab, RealTimeContent) as GameObject;
                         gm.SetActive(true);
                         gm.transform.Find("Name").GetComponent<TMPro.TextMeshProUGUI>().text = data["data"]["realTimeArr"][i]["userName"].ToString();
@@ -84,7 +85,8 @@ public class RealTimeResultUiManager : MonoBehaviour
                 }
                 else
                 {
-                    InGameUiManager.instance.ShowMessage(data["message"].ToString());
+                    if(InGameUiManager.instance != null)
+                        InGameUiManager.instance.ShowMessage(data["message"].ToString());
                 }
             }
         });
@@ -101,7 +103,11 @@ public class RealTimeResultUiManager : MonoBehaviour
                 if (InGameUiManager.instance != null)
                     InGameUiManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
                 else if (ClubInGameUIManager.instance != null)
+                {
+                    ClubInGameUIManager.instance.canvas.sortingOrder = 0;
                     ClubInGameUIManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
+                    //Debug.Log("OnclickButton:..... BACK "+ InGameScreens.RealTimeResult + ", tableId:" + tableId);
+                }    
             }
             break;
 

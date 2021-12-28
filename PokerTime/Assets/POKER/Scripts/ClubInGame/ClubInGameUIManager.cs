@@ -79,6 +79,9 @@ public class ClubInGameUIManager : MonoBehaviour
     public Animator actionPanelAnimator;
     public ClubInGameManager clubInGameManager;
 
+    [HideInInspector]
+    public Canvas canvas;
+
     private void Awake()
     {
         instance = this;
@@ -87,7 +90,7 @@ public class ClubInGameUIManager : MonoBehaviour
         inGamePopUp.SetActive(false);
         //cameraObj = GameObject.Find("VideoRecordingCamera").GetComponent<Camera>();
 
-        Canvas canvas = gameObject.GetComponent<Canvas>();
+        canvas = gameObject.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
         canvas.worldCamera = Camera.main;
 
@@ -1051,6 +1054,7 @@ public class ClubInGameUIManager : MonoBehaviour
                 case InGameScreens.RealTimeResult:
                     {
                         gm.GetComponent<RealTimeResultUiManager>().OnOpen();
+                        canvas.sortingOrder = 2;
                     }
                     break;
                 case InGameScreens.HandHistory:
