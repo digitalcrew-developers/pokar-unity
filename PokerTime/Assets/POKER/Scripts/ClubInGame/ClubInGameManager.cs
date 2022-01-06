@@ -242,7 +242,7 @@ public class ClubInGameManager : MonoBehaviour
     private void Start()
     {
         Debug.Log("Data " + GlobalGameManager.instance.GetRoomData().exclusiveTable + ", " + GlobalGameManager.instance.GetRoomData().passCode + ", " + GlobalGameManager.instance.GetRoomData().assignRole);
-        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && GlobalGameManager.instance.GetRoomData().assignRole.Equals("Member"))
+        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && (GlobalGameManager.instance.GetRoomData().assignRole.Equals("Member") || GlobalGameManager.instance.GetRoomData().assignRole.Equals("Agent")))
         {
             ShowPasswordScreen(false);
         }
