@@ -44,6 +44,8 @@ public class GlobalGameManager : MonoBehaviour
     public GameObject newClubTable;
     public Dictionary<string, GameObject> AllTables = new Dictionary<string, GameObject>();
     public List<GameObject> table = new List<GameObject>();
+
+    public List<RoomData> tableData = new List<RoomData>();
     
     private void Awake()
     {

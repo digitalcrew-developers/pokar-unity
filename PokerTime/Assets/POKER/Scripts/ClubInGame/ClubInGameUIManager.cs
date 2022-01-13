@@ -98,6 +98,16 @@ public class ClubInGameUIManager : MonoBehaviour
         width = gameObject.GetComponent<RectTransform>().rect.width;
     }
 
+    private void OnDestroy()
+    {
+        instance = null;
+    }
+
+    private void OnEnable()
+    {
+        instance = this;    
+    }
+
     public GameObject ClubMainMenu = null;
     private void Start()
     {
@@ -1027,6 +1037,9 @@ public class ClubInGameUIManager : MonoBehaviour
             {
                 case InGameScreens.Menu:
                     {
+                        gm.GetComponent<MenuScript>().OnOpen();
+                        canvas.sortingOrder = 2;
+
                         if(GlobalGameManager.instance.AllTables.Count > 1)
                         {
                             int count = gm.transform.GetChild(0).childCount;
@@ -1060,6 +1073,7 @@ public class ClubInGameUIManager : MonoBehaviour
                 case InGameScreens.HandHistory:
                     {
                         gm.GetComponent<HandHistoryManager>().Init();
+                        canvas.sortingOrder = 2;
                     }
                     break;
                 case InGameScreens.PointEarnMsg:

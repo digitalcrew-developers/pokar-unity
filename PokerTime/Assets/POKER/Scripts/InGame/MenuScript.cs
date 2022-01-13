@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class MenuScript : MonoBehaviour
 {
+    ClubInGameUIManager clubGameUiReference = null;
+
     //DEV_CODE
     private void Awake()
     {
@@ -23,6 +25,14 @@ public class MenuScript : MonoBehaviour
     }
     //***********************************************************
 
+    public void OnOpen()
+    {
+        if (ClubSocketController.instance != null)
+        {
+            clubGameUiReference = GlobalGameManager.instance.AllTables[GlobalGameManager.instance.currentRoomData.roomId].transform.GetChild(0).GetComponent<ClubInGameUIManager>();
+        }
+    }
+
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -37,9 +47,10 @@ public class MenuScript : MonoBehaviour
                         {
                             InGameUiManager.instance.DestroyScreen(InGameScreens.Menu);
                         }
-                        else if(ClubInGameUIManager.instance != null)
+                        else if(ClubSocketController.instance != null) //ClubInGameUIManager.instance != null
                         {
-                            ClubInGameUIManager.instance.DestroyScreen(InGameScreens.Menu);
+                            clubGameUiReference.canvas.sortingOrder = 0;
+                            clubGameUiReference.DestroyScreen(InGameScreens.Menu);
                         }
                         else if(TournamentInGameUiManager.instance != null)
                         {
@@ -223,7 +234,7 @@ public class MenuScript : MonoBehaviour
                         {
                             InGameManager.instance.LoadMainMenu();
                         }
-                        else if(ClubInGameUIManager.instance != null)
+                        else if(ClubSocketController.instance != null) //else if(ClubInGameUIManager.instance != null)
                         {
                             //exit for club menu
                             ClubSocketController.instance.buttonCanvas.SetActive(false);

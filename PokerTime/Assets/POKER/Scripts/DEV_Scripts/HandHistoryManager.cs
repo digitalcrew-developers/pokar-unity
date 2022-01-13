@@ -33,6 +33,8 @@ public class HandHistoryManager : MonoBehaviour
 
     public Text DebugText;
 
+    ClubInGameUIManager clubGameUiReference = null;
+
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -43,8 +45,11 @@ public class HandHistoryManager : MonoBehaviour
                 {
                     if (InGameUiManager.instance != null)
                         InGameUiManager.instance.DestroyScreen(InGameScreens.HandHistory);
-                    else if (ClubInGameUIManager.instance != null)
-                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.HandHistory);
+                    else if (clubGameUiReference != null)//(ClubInGameUIManager.instance != null)
+                    {
+                        clubGameUiReference.DestroyScreen(InGameScreens.HandHistory); //ClubInGameUIManager.instance.DestroyScreen(InGameScreens.HandHistory);
+                        clubGameUiReference.canvas.sortingOrder = 0;
+                    }
                     else if (TournamentInGameUiManager.instance != null)
                         TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.HandHistory);
                 }
@@ -84,6 +89,11 @@ public class HandHistoryManager : MonoBehaviour
 
     public void Init()
     {
+        if (ClubSocketController.instance != null)
+        {
+            clubGameUiReference = GlobalGameManager.instance.AllTables[GlobalGameManager.instance.currentRoomData.roomId].transform.GetChild(0).GetComponent<ClubInGameUIManager>();
+        }
+
         ButtonNext.onClick.RemoveAllListeners();
         ButtonBack.onClick.RemoveAllListeners();
 

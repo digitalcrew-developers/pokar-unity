@@ -404,6 +404,11 @@ public class ClubSocketController : MonoBehaviour
         }
         ResetTablesAfterClose("");
         Destroy(GameObject.Find(commanData[0]["tableId"].ToString()));
+
+        //Debug.Log("1 ResetTablesAfterClose ClubInGameUIManager-tableId:"+ClubInGameUIManager.instance.tableId + ",   ClubInGameManager parent name:"+ClubInGameManager.instance.transform.parent.name);
+        GlobalGameManager.instance.table[GlobalGameManager.currentTableInd].SetActive(false);
+        GlobalGameManager.instance.table[GlobalGameManager.currentTableInd].SetActive(true);
+        //Debug.Log("2 ResetTablesAfterClose ClubInGameUIManager-tableId:"+ClubInGameUIManager.instance.tableId + ",   ClubInGameManager parent name:"+ClubInGameManager.instance.transform.parent.name);
     }
 
     //DEV_CODE Added this method to be called when PlayerExit event emited 
@@ -2087,6 +2092,11 @@ public class ClubSocketController : MonoBehaviour
                 break;
         }
         GlobalGameManager.currentTableInd = tableNum;
+
+        GlobalGameManager.instance.SetRoomData(GlobalGameManager.instance.tableData[tableNum]);
+        currentTable = GameObject.Find(GlobalGameManager.instance.tableData[tableNum].roomId);
+        TABLE_ID = GlobalGameManager.instance.tableData[tableNum].roomId;
+
         StartCoroutine(ResetTopTimer(tableNum));
     }
 
@@ -2123,6 +2133,22 @@ public class ClubSocketController : MonoBehaviour
                 tableButton[0].SetActive(true);
                 tableButton[0].transform.GetChild(0).GetComponent<Image>().sprite = tableButtonSprite[0];
                 GlobalGameManager.instance.table[0].transform.GetChild(0).GetChild(0).localPosition = new Vector2(0f, 0f);
+
+                if (GlobalGameManager.currentTableInd==1)
+                {
+                    GlobalGameManager.currentTableInd = 0;
+                    GlobalGameManager.instance.SetRoomData(GlobalGameManager.instance.tableData[0]);
+                    currentTable = GameObject.Find(GlobalGameManager.instance.tableData[0].roomId);
+                    TABLE_ID = GlobalGameManager.instance.tableData[0].roomId;
+                    GlobalGameManager.instance.tableData.RemoveAt(1);
+                }
+                else if  (GlobalGameManager.currentTableInd==0)
+                {
+                    GlobalGameManager.instance.SetRoomData(GlobalGameManager.instance.tableData[1]);
+                    currentTable = GameObject.Find(GlobalGameManager.instance.tableData[1].roomId);
+                    TABLE_ID = GlobalGameManager.instance.tableData[1].roomId;
+                    GlobalGameManager.instance.tableData.RemoveAt(0);
+                }
                 break;
             case 2:
                 tableButton[0].SetActive(true);
@@ -2144,6 +2170,7 @@ public class ClubSocketController : MonoBehaviour
         }
         GlobalGameManager.instance.table.Clear();
         GlobalGameManager.instance.AllTables.Clear();
+        GlobalGameManager.instance.tableData.Clear();
         //GlobalGameManager.instance.creatingNewTable = false;
     }
 

@@ -462,7 +462,12 @@ public class TournamentLobbyUiManager : MonoBehaviour
             //END: for timer
 
             gm.transform.GetChild(11).GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId));
-            gm.transform.GetChild(12).GetComponent<Button>().onClick.AddListener(() => OnClickTournamentJoinRoom(tournyId, data.sb, data.bb));
+            gm.transform.GetChild(12).GetComponent<Button>().onClick.AddListener(() => {
+                if (data.status == 1 || data.status == 2)
+                    OnClickTournamentJoinRoom(tournyId, data.sb, data.bb);
+                else
+                    StopCoroutine(ShowPopUp("Tournament ended...", 1.5f));
+            });
 
             gm.transform.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails(tournyId));
             //loadRoomImage(data.roomIconUrl, gm);

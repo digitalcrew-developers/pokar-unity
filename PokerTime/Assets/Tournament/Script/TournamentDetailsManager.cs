@@ -94,7 +94,7 @@ public class TournamentDetailsManager : MonoBehaviour
 
             JsonData jsonData = JsonMapper.ToObject(serverResponse);
 
-            IDictionary dictionary = jsonData;      //DEV_CODE Converting to dictionary for checking key availability
+            IDictionary dictionary = jsonData["data"];      //DEV_CODE Converting to dictionary for checking key availability
 
             if (jsonData["status"].Equals(true))
             {
@@ -140,7 +140,10 @@ public class TournamentDetailsManager : MonoBehaviour
                 entryValue.text = jsonData["data"]["default_stack"].ToString();
                 entriyRange.text = jsonData["data"]["smallest_stack"].ToString() + "-" + jsonData["data"]["larget_stack"].ToString();
                 startingChips.text = jsonData["data"]["entry_chip_amt"].ToString();
-                avgStack.text = jsonData["data"]["avg_stack"].ToString();
+                if (dictionary.Contains("avg_stack"))
+                    avgStack.text = jsonData["data"]["avg_stack"].ToString();
+                else
+                    avgStack.text = "";
                 rebuy.text = jsonData["data"]["rebuy"].ToString();
                 addOn.text = (int.Parse(jsonData["data"]["add_on"].ToString()) > 0 ? jsonData["data"]["add_on"].ToString() + "x starting chips" : "0");
                 breakVal.text = "No";

@@ -15,10 +15,23 @@ public class RealTimeResultUiManager : MonoBehaviour
 
     private string tableId;
 
+    ClubInGameUIManager clubGameUiReference = null;
+
     public void OnOpen()
     {
         TimeText.text = System.DateTime.Now.ToLocalTime().ToShortTimeString();
-        tableId = GlobalGameManager.instance.GetRoomData().socketTableId;
+
+        if (ClubSocketController.instance != null)
+        {
+            tableId = GlobalGameManager.instance.currentRoomData.roomId;
+            clubGameUiReference = GlobalGameManager.instance.AllTables[tableId].transform.GetChild(0).GetComponent<ClubInGameUIManager>();
+            Debug.Log("tid:"+clubGameUiReference.tableId);
+        }
+        else
+        {
+            tableId = GlobalGameManager.instance.GetRoomData().socketTableId;
+        }
+
         UnityEngine.Debug.Log("Table ID ;" + tableId);
 
         string requestData = "{\"tableId\":\"" + tableId + "\"}";
@@ -102,10 +115,10 @@ public class RealTimeResultUiManager : MonoBehaviour
             {
                 if (InGameUiManager.instance != null)
                     InGameUiManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
-                else if (ClubInGameUIManager.instance != null)
+                else if (clubGameUiReference != null)
                 {
-                    ClubInGameUIManager.instance.canvas.sortingOrder = 0;
-                    ClubInGameUIManager.instance.DestroyScreen(InGameScreens.RealTimeResult);
+                    clubGameUiReference.canvas.sortingOrder = 0;
+                    clubGameUiReference.DestroyScreen(InGameScreens.RealTimeResult);
                     //Debug.Log("OnclickButton:..... BACK "+ InGameScreens.RealTimeResult + ", tableId:" + tableId);
                 }    
             }

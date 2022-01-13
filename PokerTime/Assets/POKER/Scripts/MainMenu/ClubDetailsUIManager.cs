@@ -643,6 +643,7 @@ public class ClubDetailsUIManager : MonoBehaviour
             {
                 data.isLobbyRoom = false;
                 data.assignRole = d["response"]["assignRole"].ToString();
+				GlobalGameManager.instance.tableData.Add(data);
                 GlobalGameManager.instance.SetRoomData(data);
                 Debug.Log(data.gameMode + " - " + GlobalGameManager.instance.GetRoomData().roomId + " - " + GlobalGameManager.instance.creatingNewTable + " - " + GlobalGameManager.instance.GetRoomData().exclusiveTable);
                 GameConstants.TURN_TIME = data.callTimer;

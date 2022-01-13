@@ -20,6 +20,8 @@ public class InGameShop : MonoBehaviour
     public GameObject UniWebViewObject;
     public UniWebView UniWebView;
 
+    ClubInGameUIManager clubGameUiReference = null;
+
     public void OnEnable()
     {
         playerData = PlayerManager.instance.GetPlayerGameData();
@@ -102,6 +104,16 @@ public class InGameShop : MonoBehaviour
         var colors = menuBtn[0].GetComponent<Button>().colors;
         colors.normalColor = new Color32(255, 255, 255, 255);
         menuBtn[0].GetComponent<Button>().colors = colors;
+
+        CheckClubGameUiReference();
+    }
+
+    void CheckClubGameUiReference()
+    {
+        if (ClubSocketController.instance != null)
+        {
+            clubGameUiReference = GlobalGameManager.instance.AllTables[GlobalGameManager.instance.currentRoomData.roomId].transform.GetChild(0).GetComponent<ClubInGameUIManager>();
+        }
     }
 
     private void UpdateAlltext(PlayerGameDetails playerData)
@@ -123,9 +135,9 @@ public class InGameShop : MonoBehaviour
                     {
                         InGameUiManager.instance.DestroyScreen(InGameScreens.InGameShop);
                     } 
-                    else if (ClubInGameManager.instance != null)
+                    else if (clubGameUiReference != null) //(ClubInGameManager.instance != null)
                     {
-                        ClubInGameUIManager.instance.DestroyScreen(InGameScreens.InGameShop);
+                        clubGameUiReference.DestroyScreen(InGameScreens.InGameShop);
                     }
                     else if(TournamentInGameUiManager.instance != null)
                     {

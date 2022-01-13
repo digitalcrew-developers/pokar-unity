@@ -124,8 +124,9 @@ public class ClubInGameManager : MonoBehaviour
 
     public Text TableName;
     public GameObject RabbitButton;
-    public GameObject ResumeHand, EVCHOPButton, EVCHOPPanel, passwordScreen;
+    public GameObject ResumeHand, EVCHOPButton, EVCHOPPanel, passwordScreen, passwordIcon;
     public TMP_InputField[] passFields;//passField1, passField2, passField3, passField4;
+    public bool isPasswordVerified = false; // for exclusive table, true if user already verified, use for close password screen
     public GameObject popUpText;
 
     public ClubInGameUIManager clubInGameUIManager;
@@ -152,6 +153,28 @@ public class ClubInGameManager : MonoBehaviour
         //Debug.Log("Time: " + System.DateTime.Now.Hour + System.DateTime.Now.Minute);
     }
 
+    private void OnDestroy()
+    {
+        instance = null;
+    }
+
+    private void OnEnable()
+    {
+        instance = this;    
+    }
+
+    public void ManagePasswordScreen()
+    {
+        Debug.Log("Data " + GlobalGameManager.instance.GetRoomData().exclusiveTable + ", " + GlobalGameManager.instance.GetRoomData().passCode + ", " + GlobalGameManager.instance.GetRoomData().assignRole);
+        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("Off"))
+        {
+            passwordIcon.SetActive(false);
+        }
+        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && (GlobalGameManager.instance.GetRoomData().assignRole.Equals("Member") || GlobalGameManager.instance.GetRoomData().assignRole.Equals("Agent")))
+        {
+            ShowPasswordScreen(false);
+        }
+    }
     public void ShowPasswordScreen(bool showPass)
     {
         passwordScreen.SetActive(true);
@@ -169,11 +192,15 @@ public class ClubInGameManager : MonoBehaviour
             {
                 passFields[i].text = GlobalGameManager.instance.GetRoomData().passCode.ToString()[i].ToString();
             }
-        }        
+        }
     }
     Dictionary<int, bool> otpFields = new Dictionary<int, bool>();
     public void VerifyPassword(int otpNum)
     {
+        if(GlobalGameManager.instance.GetRoomData().assignRole.Equals("Creater"))
+        {
+            return;
+        }
         if (!string.IsNullOrEmpty(passFields[otpNum].text))
         {
             otpFields.Add(otpNum, true);
@@ -210,6 +237,7 @@ public class ClubInGameManager : MonoBehaviour
                 Debug.Log(d["success"].ToString());
                 if(d["success"].ToString().Equals("1"))
                 {
+                    isPasswordVerified = true;
                     ClubSocketController.instance.SendClubGameJoinRequest();
                     passwordScreen.SetActive(false);
                 }
@@ -241,11 +269,7 @@ public class ClubInGameManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Data " + GlobalGameManager.instance.GetRoomData().exclusiveTable + ", " + GlobalGameManager.instance.GetRoomData().passCode + ", " + GlobalGameManager.instance.GetRoomData().assignRole);
-        if(GlobalGameManager.instance.GetRoomData().exclusiveTable.Equals("On") && (GlobalGameManager.instance.GetRoomData().assignRole.Equals("Member") || GlobalGameManager.instance.GetRoomData().assignRole.Equals("Agent")))
-        {
-            ShowPasswordScreen(false);
-        }
+        ManagePasswordScreen();
 
         //DEV_CODE
         highlightCardString = new string[5];
@@ -874,7 +898,9 @@ public class ClubInGameManager : MonoBehaviour
 
     public void CloseTable()
     {
-        if (GlobalGameManager.instance.AllTables.Count > 1)
+        if(GlobalGameManager.instance.GetRoomData().assignRole.Equals("Creater") || isPasswordVerified)
+            passwordScreen.SetActive(false);
+        else if (GlobalGameManager.instance.AllTables.Count > 1)
             ClubSocketController.instance.SendLeaveTableRequest(transform.parent.name);
         else
         {
