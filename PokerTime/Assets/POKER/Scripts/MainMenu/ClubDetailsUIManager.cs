@@ -797,6 +797,7 @@ public class ClubDetailsUIManager : MonoBehaviour
                     //	MainMenuController.instance.bottomPanelTeen.SetActive(true);
                     //	MainMenuController.instance.bottomPanel.SetActive(false);
                     //}
+					GlobalGameManager.instance.ResetClubData();
                     MainMenuController.instance.SwitchToMainMenu(true);
                 }
                 break;

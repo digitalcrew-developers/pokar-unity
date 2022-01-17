@@ -234,6 +234,16 @@ public class GlobalGameManager : MonoBehaviour
 
         return GetDigitOfANumber(num / 10, ++totalDigit);
     }
+
+    public void ResetClubData()
+    {
+        this.currentClubName = string.Empty;
+        this.currentUniqueClubId = string.Empty;
+        this.currentClubId = string.Empty;
+        this.currentClubProfileImagePath = string.Empty;
+        this.currentPlayerType = string.Empty;
+        this.currentPlayerRole = string.Empty;
+    }
 }
 
 

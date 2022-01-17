@@ -2043,6 +2043,7 @@ public class ClubSocketController : MonoBehaviour
     {
         GlobalGameManager.instance.creatingNewTable = true;
         GameObject gm = Instantiate(clubDetail, clubDetailLayer.transform) as GameObject;
+        gm.AddComponent<Crystal.SafeArea>();
         gm.GetComponent<ClubDetailsUIManager>().Initialize(GlobalGameManager.instance.currentClubName, GlobalGameManager.instance.currentUniqueClubId, GlobalGameManager.instance.currentClubId, GlobalGameManager.instance.currentClubProfileImagePath, GlobalGameManager.instance.currentPlayerType, GlobalGameManager.instance.currentPlayerRole);
         //buttonCanvas.SetActive(false);
         Debug.Log("Table " + GlobalGameManager.instance.table.Count);
