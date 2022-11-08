@@ -36,6 +36,13 @@ public class TournamentDetailsManager : MonoBehaviour
     public Transform prizeContainer;
     public GameObject prizeObject, infoObject;
 
+    [Header("Prizes Panel")]
+    public GameObject registrationBtn;
+    public TMP_Text registrationBtnText;
+    public TMP_Text statusText;
+
+    int forLoopIndex = -1;
+
     private bool isTimerStart = false;
     private float timeRemaining = 0.0f;
 
@@ -76,8 +83,9 @@ public class TournamentDetailsManager : MonoBehaviour
         timerText.text = t.ToString(@"hh\:mm\:ss");
     }
 
-    public void Initialize(int id)
+    public void Initialize(int id, int forLoopIndex)
     {
+        this.forLoopIndex = forLoopIndex;
         string requestData = "{\"tourneyId\":\"" + id + "\"}";
         StartCoroutine(WebServices.instance.POSTRequestData("http://3.109.177.149:3335/tournament/details", requestData, OnGetTourneyDetailsComplete));
     }
@@ -95,6 +103,60 @@ public class TournamentDetailsManager : MonoBehaviour
             JsonData jsonData = JsonMapper.ToObject(serverResponse);
 
             IDictionary dictionary = jsonData["data"];      //DEV_CODE Converting to dictionary for checking key availability
+
+            try {
+                if (forLoopIndex > -1) {
+                    Transform row = TournamentLobbyUiManager.instance.container.GetChild(forLoopIndex);
+                    GameObject registerBtn = row.GetChild(11).gameObject;
+                    GameObject joinBtn = row.GetChild(12).gameObject;
+                    GameObject lateRegisterBtn = row.GetChild(13).gameObject;
+                    GameObject observeBtn = row.GetChild(14).gameObject;
+                    GameObject enrolledBtn = row.GetChild(15).gameObject;
+
+                    if(registerBtn.activeInHierarchy) {
+                        registrationBtn.GetComponent<Button>().onClick.AddListener(() => {
+                            Debug.Log("REGISTER clicked");
+                            registerBtn.GetComponent<Button>().onClick.Invoke();
+                            if (TournamentInGameUiManager.instance != null) {
+                                TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentDetails);
+                            }
+                        });
+                    } else if(joinBtn.activeSelf) {
+                        registrationBtnText.text = "Join";
+                        registrationBtn.GetComponent<Button>().onClick.AddListener(() => {
+                            Debug.Log("JOIN clicked");
+                            joinBtn.GetComponent<Button>().onClick.Invoke();
+                            if (TournamentInGameUiManager.instance != null) {
+                                TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentDetails);
+                            }
+                        });
+                    } else if(lateRegisterBtn.activeSelf) {
+                        registrationBtnText.text = "Late Reg.";
+                        registrationBtn.GetComponent<Button>().onClick.AddListener(() => {
+                            Debug.Log("LATE REG clicked");
+                            lateRegisterBtn.GetComponent<Button>().onClick.Invoke();
+                            if (TournamentInGameUiManager.instance != null) {
+                                TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentDetails);
+                            }
+                        });
+                    } else if(observeBtn.activeSelf) {
+                        registrationBtnText.text = "Observe";
+                        registrationBtn.GetComponent<Button>().onClick.AddListener(() => {
+                            Debug.Log("OBSERVE clicked");
+                            observeBtn.GetComponent<Button>().onClick.Invoke();
+                            if (TournamentInGameUiManager.instance != null) {
+                                TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentDetails);
+                            }
+                        });
+                    } else if(enrolledBtn.activeSelf) {
+                        registrationBtn.SetActive(false);
+                        statusText.text = "Finished";
+                        statusText.gameObject.SetActive(true);
+                    }
+                }
+            } catch (Exception e) {
+                Debug.Log("button status error: "+e.Message);
+            }
 
             if (jsonData["status"].Equals(true))
             {
@@ -185,9 +247,13 @@ public class TournamentDetailsManager : MonoBehaviour
 
                         //if(jsonData["data"]["ranking"][i]["profileImage"] != null || jsonData["data"]["ranking"][i]["profileImage"].ToString().Length > 0)
 
-                        string userName = jsonData["data"]["ranking"][i]["nickName"].ToString();
+                        try {
+                            string userName = jsonData["data"]["ranking"][i]["nickName"].ToString();
+                            obj.transform.Find("Username").GetComponent<Text>().text = (userName.Length > 13 ? userName.Remove(13) + "..." : userName);
+                        } catch (Exception e) {
+                            Debug.Log("nickName not found");
+                        }
 
-                        obj.transform.Find("Username").GetComponent<Text>().text = (userName.Length > 13 ? userName.Remove(13) + "..." : userName);
                         obj.transform.Find("UserID").GetComponent<Text>().text = jsonData["data"]["ranking"][i]["userId"].ToString();
                     }
                 }

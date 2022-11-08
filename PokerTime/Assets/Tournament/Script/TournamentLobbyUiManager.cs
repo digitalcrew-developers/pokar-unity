@@ -24,7 +24,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
 
     [SerializeField]
     //private List<RectTransform> containers = new List<RectTransform>();
-    private Transform container;
+    public Transform container;
     //private Transform container_Recommended;
     //private Transform container_SpinUp;
     //private Transform container_MMT;
@@ -233,6 +233,9 @@ public class TournamentLobbyUiManager : MonoBehaviour
                 gm.transform.GetChild(12).gameObject.SetActive(false);
             }*/
 
+            int forLoopIndex = i;
+            DateTime regStartDate = Convert.ToDateTime(data.regStart).ToLocalTime();
+            DateTime lateRegStartDate = Convert.ToDateTime(data.lateRegStart).ToLocalTime();
             DateTime gameStartDate = Convert.ToDateTime(data.gameStart).ToLocalTime();
             gm.transform.GetChild(9).GetComponent<Text>().text = gameStartDate.ToString(@"MM'/'dd"); //previously: (@"MM'/'yy");
             gm.transform.GetChild(10).GetChild(0).GetComponent<Text>().text = gameStartDate.ToString(@"HH':'mm");
@@ -249,11 +252,14 @@ public class TournamentLobbyUiManager : MonoBehaviour
 
             DateTime today = DateTime.Now;
 
+            TimeSpan differenceRegStart = today.Subtract(regStartDate);
+            int totalSecondsRegStart = (int)differenceRegStart.TotalSeconds;
+
             TimeSpan differenceGameStart = today.Subtract(gameStartDate);
             int totalSecondsGameStart = (int)differenceGameStart.TotalSeconds;
 
             DateTime lateRegStart = gameStartDate;
-            DateTime lateRegEnd = lateRegStart.AddMinutes(30); //30min, late registration starts after gameStart time & its end upto this min
+            DateTime lateRegEnd = lateRegStartDate; //lateRegStart.AddMinutes(30); //30min, late registration starts after gameStart time & its end upto this min
             TimeSpan differenceLateReg = lateRegStart.Subtract(lateRegEnd);
             int totalSecondsLateReg = (int)differenceLateReg.TotalSeconds;
 
@@ -263,6 +269,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
 
             /*
             button cases:
+            //
             timer1 running && time before gameStart: register ? "Enrolled" : "Register" 
             timer1 complete immediately
                 timer2 (late reg. timer) starts
@@ -277,11 +284,14 @@ public class TournamentLobbyUiManager : MonoBehaviour
                     register ? "Join": "Observe"
             */
 
+            string buttonStatus = string.Empty;
+
             if (totalSecondsGameStart < 0)
             {
                 if (data.isRegistered)
                 {
                     // enrolled
+                    buttonStatus = "enrolled";
                     enrolledBtn.SetActive(true);
                     joinBtn.SetActive(false);
                     observeBtn.SetActive(false);
@@ -291,6 +301,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                 else
                 {
                     // register
+                    buttonStatus = "register";
                     enrolledBtn.SetActive(false);
                     joinBtn.SetActive(false);
                     observeBtn.SetActive(false);
@@ -305,6 +316,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                     if (data.isRegistered)
                     {
                         // join
+                        buttonStatus = "join";
                         enrolledBtn.SetActive(false);
                         joinBtn.SetActive(true);
                         observeBtn.SetActive(false);
@@ -314,6 +326,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                     else
                     {
                         // late reg.
+                        buttonStatus = "late reg.";
                         enrolledBtn.SetActive(false);
                         joinBtn.SetActive(false);
                         observeBtn.SetActive(false);
@@ -323,27 +336,43 @@ public class TournamentLobbyUiManager : MonoBehaviour
                 }
                 else
                 {
-                    if (data.isRegistered)
+                    if (data.status > 3)
                     {
-                        // join
-                        enrolledBtn.SetActive(false);
-                        joinBtn.SetActive(true);
+                        // finished
+                        buttonStatus = "finished";
+                        enrolledBtn.SetActive(true);
+                        enrolledBtn.transform.GetChild(0).GetComponent<Text>().text = "Finished";
+                        joinBtn.SetActive(false);
                         observeBtn.SetActive(false);
                         registerBtn.SetActive(false);
                         lateRegisterBtn.SetActive(false);
                     }
-                    else
-                    {
-                        // observe
-                        enrolledBtn.SetActive(false);
-                        joinBtn.SetActive(false);
-                        observeBtn.SetActive(true);
-                        registerBtn.SetActive(false);
-                        lateRegisterBtn.SetActive(false);
+                    else {
+                        if (data.isRegistered)
+                        {
+                            // join
+                            buttonStatus = "join";
+                            enrolledBtn.SetActive(false);
+                            joinBtn.SetActive(true);
+                            observeBtn.SetActive(false);
+                            registerBtn.SetActive(false);
+                            lateRegisterBtn.SetActive(false);
+                        }
+                        else
+                        {
+                            // observe
+                            buttonStatus = "observe";
+                            enrolledBtn.SetActive(false);
+                            joinBtn.SetActive(false);
+                            observeBtn.SetActive(true);
+                            registerBtn.SetActive(false);
+                            lateRegisterBtn.SetActive(false);
+                        }
                     }
                 }
             }
 
+Debug.Log("REG time i="+i+", diff="+totalSecondsRegStart);
 
             if ((totalSecondsGameStart < 0) && (differenceGameStart.Days == 0) && (differenceGameStart.Hours == 0))
             {
@@ -355,6 +384,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                         if (data.isRegistered)
                         {
                             // join
+                            buttonStatus = "join";
                             enrolledBtn.SetActive(false);
                             joinBtn.SetActive(true);
                             observeBtn.SetActive(false);
@@ -364,6 +394,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                         else
                         {
                             // observe
+                            buttonStatus = "observe";
                             enrolledBtn.SetActive(false);
                             joinBtn.SetActive(false);
                             observeBtn.SetActive(true);
@@ -378,6 +409,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                             if (data.isRegistered)
                             {
                                 // join
+                                buttonStatus = "join";
                                 enrolledBtn.SetActive(false);
                                 joinBtn.SetActive(true);
                                 observeBtn.SetActive(false);
@@ -387,6 +419,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                             else
                             {
                                 // late reg.
+                                buttonStatus = "late reg.";
                                 enrolledBtn.SetActive(false);
                                 joinBtn.SetActive(false);
                                 observeBtn.SetActive(false);
@@ -401,6 +434,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                                     if (data.isRegistered)
                                     {
                                         // join
+                                        buttonStatus = "join";
                                         enrolledBtn.SetActive(false);
                                         joinBtn.SetActive(true);
                                         observeBtn.SetActive(false);
@@ -410,6 +444,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                                     else
                                     {
                                         // observe
+                                        buttonStatus = "observe";
                                         enrolledBtn.SetActive(false);
                                         joinBtn.SetActive(false);
                                         observeBtn.SetActive(true);
@@ -435,6 +470,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                         if (data.isRegistered)
                         {
                             // join
+                            buttonStatus = "join";
                             enrolledBtn.SetActive(false);
                             joinBtn.SetActive(true);
                             observeBtn.SetActive(false);
@@ -444,6 +480,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                         else
                         {
                             // observe
+                            buttonStatus = "observe";
                             enrolledBtn.SetActive(false);
                             joinBtn.SetActive(false);
                             observeBtn.SetActive(true);
@@ -456,20 +493,32 @@ public class TournamentLobbyUiManager : MonoBehaviour
                 }));
             }
 
-            lateRegisterBtn.GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId));
-            enrolledBtn.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails(tournyId));
+            lateRegisterBtn.GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId, totalSecondsRegStart, regStartDate));
+            enrolledBtn.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails(tournyId, forLoopIndex));
+            observeBtn.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentJoinRoom(tournyId, data.sb, data.bb));
 
             //END: for timer
 
-            gm.transform.GetChild(11).GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId));
+            // register
+            gm.transform.GetChild(11).GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId, totalSecondsRegStart, regStartDate));
+
+            // join
             gm.transform.GetChild(12).GetComponent<Button>().onClick.AddListener(() => {
-                if (data.status == 1 || data.status == 2)
+                // server status
+                // TOUNREY_REGISTRATION_PENDING : 0,
+                // TOUNREY_REGISTRATION_APPROVED : 1,
+                // TOUNREY_REGISTRATION_OPEN : 2,
+                // TOUNREY_REGISTRATION_STARTED : 3,
+                // TOUNREY_REGISTRATION_CLOSE: 4,
+                // TOUNREY_REGISTRATION_FINISHED : 5,
+                // TOUNREY_REGISTRATION_CANCELLED : 6,
+                if (data.status <= 3)
                     OnClickTournamentJoinRoom(tournyId, data.sb, data.bb);
                 else
-                    StopCoroutine(ShowPopUp("Tournament ended...", 1.5f));
+                    StartCoroutine(ShowPopUp("Tournament ended...", 1.5f));
             });
 
-            gm.transform.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails(tournyId));
+            gm.transform.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails(tournyId, forLoopIndex));
             //loadRoomImage(data.roomIconUrl, gm);
             //LoadRoomBG(data.roomBG, gm);            
         }
@@ -796,26 +845,35 @@ public class TournamentLobbyUiManager : MonoBehaviour
     }
 
     //DEV_CODE
-    private void OnClickOnRegisterForTournament(int id)
+    private void OnClickOnRegisterForTournament(int id, int totalSecondsRegStart, DateTime regStartDate)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
 
-        TournamentSocketController.instance.RequestRegisterForTournament(id);
+        if (totalSecondsRegStart < 0)
+        {
+            popUpText.color = Color.red;
+            StartCoroutine(ShowPopUp("Reg. Starts in "+regStartDate.ToString(@"MM'/'dd' 'HH':'mm"), 1.5f));
+        }
+        else
+        {
+            TournamentSocketController.instance.RequestRegisterForTournament(id);
+        }
     }
 
     private void OnClickTournamentJoinRoom(double id, int sb, int bb)
     {
+Debug.Log("OnClickTournamentJoinRoom => id:"+id+", sb:"+sb+", bb:"+bb);
         SoundManager.instance.PlaySound(SoundType.Click);
 
         TournamentSocketController.instance.RequestTournamentJoinRoom(id);
         TournamentInGameUiManager.instance.Initialize(sb, bb);
     }
 
-    private void OnClickTournamentDetails(int id)
+    private void OnClickTournamentDetails(int id, int forLoopIndex)
     {
         TournamentInGameUiManager.instance.ShowScreen(TournamentInGameScreens.TournamentDetails);
         //tournamentDetailsPanel.SetActive(true);
-        TournamentDetailsManager.instance.Initialize(id);
+        TournamentDetailsManager.instance.Initialize(id, forLoopIndex);
     }
 
     private void ResetRoomData()
