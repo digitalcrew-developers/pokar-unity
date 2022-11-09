@@ -11,7 +11,7 @@ public class RegistrationManager : MonoBehaviour
     public static RegistrationManager instance = null;
 
     public GameObject registrationScreen, loginScreen,signUpScreen, forgotPassword, resetPassword;
-    public InputField registrationUserName, registrationPassword, registrationConfirmPassword;
+    public InputField registrationUserName, registrationEmail, registrationPassword, registrationConfirmPassword;
     public InputField loginUserName, loginPassword;
     public InputField newPassword;
 
@@ -176,6 +176,11 @@ public class RegistrationManager : MonoBehaviour
                             /*return;*/
                             break;
                         }
+                        else if (!Utility.IsValidEmail(registrationEmail.text, out error))
+                        {
+                            StartCoroutine(MsgForVideo(error, 1.5f));
+                            break;
+                        }
                         else if (!Utility.IsValidPassword(/*tmp_registrationPassword*/registrationPassword.text, out error))
                         {
                             StartCoroutine(MsgForVideo(error, 1.5f));
@@ -194,6 +199,7 @@ public class RegistrationManager : MonoBehaviour
                         else
                         {
                            string requestData = "{\"userName\":\"" + /*tmp_registrationUserName*/registrationUserName.text + "\"," +
+                           "\"userEmail\":\"" + registrationEmail.text + "\"," +
                            "\"userPassword\":\"" + /*tmp_registrationPassword*/registrationPassword.text + "\"," +
                            "\"registrationType\":\"" + registrationType + "\"," +
                            "\"socialId\":\"\"," +

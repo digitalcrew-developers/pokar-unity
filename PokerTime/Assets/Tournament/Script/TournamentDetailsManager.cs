@@ -104,6 +104,7 @@ public class TournamentDetailsManager : MonoBehaviour
 
             IDictionary dictionary = jsonData["data"];      //DEV_CODE Converting to dictionary for checking key availability
 
+            string status = "Already Started..";
             try {
                 if (forLoopIndex > -1) {
                     Transform row = TournamentLobbyUiManager.instance.container.GetChild(forLoopIndex);
@@ -113,9 +114,9 @@ public class TournamentDetailsManager : MonoBehaviour
                     GameObject observeBtn = row.GetChild(14).gameObject;
                     GameObject enrolledBtn = row.GetChild(15).gameObject;
 
-                    if(registerBtn.activeInHierarchy) {
+                    if(registerBtn.activeSelf) {
+                        status = "Register";
                         registrationBtn.GetComponent<Button>().onClick.AddListener(() => {
-                            Debug.Log("REGISTER clicked");
                             registerBtn.GetComponent<Button>().onClick.Invoke();
                             if (TournamentInGameUiManager.instance != null) {
                                 TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentDetails);
@@ -123,8 +124,8 @@ public class TournamentDetailsManager : MonoBehaviour
                         });
                     } else if(joinBtn.activeSelf) {
                         registrationBtnText.text = "Join";
+                        status = "Join";
                         registrationBtn.GetComponent<Button>().onClick.AddListener(() => {
-                            Debug.Log("JOIN clicked");
                             joinBtn.GetComponent<Button>().onClick.Invoke();
                             if (TournamentInGameUiManager.instance != null) {
                                 TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentDetails);
@@ -132,8 +133,8 @@ public class TournamentDetailsManager : MonoBehaviour
                         });
                     } else if(lateRegisterBtn.activeSelf) {
                         registrationBtnText.text = "Late Reg.";
+                        status = "Late Reg.";
                         registrationBtn.GetComponent<Button>().onClick.AddListener(() => {
-                            Debug.Log("LATE REG clicked");
                             lateRegisterBtn.GetComponent<Button>().onClick.Invoke();
                             if (TournamentInGameUiManager.instance != null) {
                                 TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentDetails);
@@ -141,22 +142,24 @@ public class TournamentDetailsManager : MonoBehaviour
                         });
                     } else if(observeBtn.activeSelf) {
                         registrationBtnText.text = "Observe";
+                        status = "Observe";
                         registrationBtn.GetComponent<Button>().onClick.AddListener(() => {
-                            Debug.Log("OBSERVE clicked");
                             observeBtn.GetComponent<Button>().onClick.Invoke();
                             if (TournamentInGameUiManager.instance != null) {
                                 TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentDetails);
                             }
                         });
                     } else if(enrolledBtn.activeSelf) {
+                        status = enrolledBtn.transform.GetChild(0).GetComponent<Text>().text;
                         registrationBtn.SetActive(false);
-                        statusText.text = "Finished";
+                        statusText.text = status;
                         statusText.gameObject.SetActive(true);
                     }
                 }
             } catch (Exception e) {
                 Debug.Log("button status error: "+e.Message);
             }
+            Debug.Log("status="+status);
 
             if (jsonData["status"].Equals(true))
             {
@@ -185,7 +188,8 @@ public class TournamentDetailsManager : MonoBehaviour
                 }
                 else
                 {
-                    timerText.text = "Already Started..";
+                    // timerText.text = "Already Started..";
+                    timerText.text = status;
                 }
 
                 startTime.text = "Start Time: " + (dt.Day.ToString().Length < 2 ? "0" + dt.Day.ToString() : dt.Day.ToString()) + "/" +
@@ -242,17 +246,26 @@ public class TournamentDetailsManager : MonoBehaviour
 
                     for (int i = 0; i < rankingCount; i++)
                     {
+                        IDictionary ranking = jsonData["data"]["ranking"][i];
+
                         GameObject obj = Instantiate(entryObject, entriesContainer);
                         obj.SetActive(true);
 
                         //if(jsonData["data"]["ranking"][i]["profileImage"] != null || jsonData["data"]["ranking"][i]["profileImage"].ToString().Length > 0)
 
-                        try {
+                        if (ranking.Contains("nickName")) {
                             string userName = jsonData["data"]["ranking"][i]["nickName"].ToString();
                             obj.transform.Find("Username").GetComponent<Text>().text = (userName.Length > 13 ? userName.Remove(13) + "..." : userName);
-                        } catch (Exception e) {
-                            Debug.Log("nickName not found");
+                        } else if (ranking.Contains("userName")) {
+                            string userName = jsonData["data"]["ranking"][i]["userName"].ToString();
+                            obj.transform.Find("Username").GetComponent<Text>().text = (userName.Length > 13 ? userName.Remove(13) + "..." : userName);
                         }
+                        // try {
+                        //     string userName = jsonData["data"]["ranking"][i]["nickName"].ToString();
+                        //     obj.transform.Find("Username").GetComponent<Text>().text = (userName.Length > 13 ? userName.Remove(13) + "..." : userName);
+                        // } catch (Exception e) {
+                        //     Debug.Log("nickName not found");
+                        // }
 
                         obj.transform.Find("UserID").GetComponent<Text>().text = jsonData["data"]["ranking"][i]["userId"].ToString();
                     }

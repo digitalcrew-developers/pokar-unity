@@ -1362,6 +1362,28 @@ public class TournamentSocketController : MonoBehaviour
         //TournamentInGameUiManager.instance.ShowTableMessage("");
     }    
 
+    public void RequestTournamentObserveRoom(double tourneyId)
+    {
+        TOURNEY_ID = tourneyId.ToString();
+
+        string requestStringData = "{\"tourneyId\":\"" + tourneyId + "\"," +
+                                    "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
+
+        Debug.Log("Observing Room in Tournament ---> " + requestStringData);
+        object requestObjectData = Json.Decode(requestStringData);
+
+        SocketRequest request = new SocketRequest();
+        request.emitEvent = "observe";
+
+        request.plainDataToBeSend = null;
+        request.jsonDataToBeSend = requestObjectData;
+        request.requestDataStructure = requestStringData;
+        socketRequest.Add(request);
+
+        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.TournamentLobby);
+        TournamentInGameUiManager.instance.DestroyScreen(TournamentInGameScreens.Reconnecting);
+    }    
+
     public void RequestRabbitCard()
     {
         RabitData requestData = new RabitData();

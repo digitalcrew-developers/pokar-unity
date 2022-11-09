@@ -2,11 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
+using System.Text.RegularExpressions;
 
 
 
 public class Utility : MonoBehaviour
 {
+    public const string MatchEmailPattern =
+        @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
+        + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
+        + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+        + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})$";
+
     public static bool IsValidUserName(string dataToValidate, out string error)
     {
         error = "";
@@ -47,6 +54,32 @@ public class Utility : MonoBehaviour
         }
 
         return true;
+    }
+
+    public static bool IsValidEmail(string dataToValidate, out string error)
+    {
+        error = "";
+
+        if (dataToValidate.Length <= 0)
+        {
+            error = "Please enter email";
+            return false;
+        }
+        else if (dataToValidate != null && dataToValidate.Length > 3)
+        {
+            if (Regex.IsMatch(dataToValidate, MatchEmailPattern))
+                return true;
+            else
+            {
+                error = "Please enter valid email";
+                return false;
+            }
+        }
+        else
+        {
+            error = "Please enter valid email";
+            return false;
+        }
     }
 
     public static bool IsValidClubName(string dataToValidate, out string error)

@@ -372,11 +372,107 @@ public class TournamentLobbyUiManager : MonoBehaviour
                 }
             }
 
-Debug.Log("REG time i="+i+", diff="+totalSecondsRegStart);
-
-            if ((totalSecondsGameStart < 0) && (differenceGameStart.Days == 0) && (differenceGameStart.Hours == 0))
+            // registration k phele ka time
+            if ((totalSecondsRegStart < 0) && (differenceRegStart.Days == 0) && (differenceRegStart.Hours == 0))
             {
-                dateTextParent.GetComponent<Text>().text = "Starts in";
+                dateTextParent.GetComponent<Text>().text = "Reg. starts in";
+
+                StartCoroutine(TournamentStartTimer(regStartDate, totalSecondsRegStart, timerTextParent, (myReturnValue) =>
+                {
+                    if (myReturnValue)
+                    {
+                        // dateTextParent.GetComponent<Text>().text = gameStartDate.ToString(@"MM'/'dd");
+                        // timerTextParent.transform.GetChild(0).GetComponent<Text>().text = gameStartDate.ToString(@"HH':'mm");
+
+                        dateTextParent.GetComponent<Text>().text = "Game Starts in";
+
+                        StartCoroutine(TournamentStartTimer(gameStartDate, totalSecondsGameStart, timerTextParent, (myReturnValue) => {
+                            if (myReturnValue)
+                            {
+                                if (data.isRegistered)
+                                {
+                                    // join
+                                    buttonStatus = "join";
+                                    enrolledBtn.SetActive(false);
+                                    joinBtn.SetActive(true);
+                                    observeBtn.SetActive(false);
+                                    registerBtn.SetActive(false);
+                                    lateRegisterBtn.SetActive(false);
+                                }
+                                else
+                                {
+                                    // observe
+                                    buttonStatus = "observe";
+                                    enrolledBtn.SetActive(false);
+                                    joinBtn.SetActive(false);
+                                    observeBtn.SetActive(true);
+                                    registerBtn.SetActive(false);
+                                    lateRegisterBtn.SetActive(false);
+                                }
+
+                                dateTextParent.GetComponent<Text>().text = "Late Reg. ends in";
+
+                                if ((totalSecondsLateReg < 0) && (differenceLateReg.Days == 0) && (differenceLateReg.Hours == 0))
+                                {
+                                    if (data.isRegistered)
+                                    {
+                                        // join
+                                        buttonStatus = "join";
+                                        enrolledBtn.SetActive(false);
+                                        joinBtn.SetActive(true);
+                                        observeBtn.SetActive(false);
+                                        registerBtn.SetActive(false);
+                                        lateRegisterBtn.SetActive(false);
+                                    }
+                                    else
+                                    {
+                                        // late reg.
+                                        buttonStatus = "late reg.";
+                                        enrolledBtn.SetActive(false);
+                                        joinBtn.SetActive(false);
+                                        observeBtn.SetActive(false);
+                                        registerBtn.SetActive(false);
+                                        lateRegisterBtn.SetActive(true);
+                                    }
+
+                                    StartCoroutine(TournamentStartTimer(lateRegEnd, totalSecondsLateReg, timerTextParent, (myReturnValue) =>
+                                    {
+                                        if (myReturnValue)
+                                        {
+                                            if (data.isRegistered)
+                                            {
+                                                // join
+                                                buttonStatus = "join";
+                                                enrolledBtn.SetActive(false);
+                                                joinBtn.SetActive(true);
+                                                observeBtn.SetActive(false);
+                                                registerBtn.SetActive(false);
+                                                lateRegisterBtn.SetActive(false);
+                                            }
+                                            else
+                                            {
+                                                // observe
+                                                buttonStatus = "observe";
+                                                enrolledBtn.SetActive(false);
+                                                joinBtn.SetActive(false);
+                                                observeBtn.SetActive(true);
+                                                registerBtn.SetActive(false);
+                                                lateRegisterBtn.SetActive(false);
+                                            }
+                                            dateTextParent.GetComponent<Text>().text = gameStartDate.ToString(@"MM'/'dd");
+                                            timerTextParent.transform.GetChild(0).GetComponent<Text>().text = gameStartDate.ToString(@"HH':'mm");
+                                        }
+                                    }));
+                                }
+                            }
+                        }));
+                    }
+                }));
+            }
+            // game-start k phele ka time
+            else if ((totalSecondsGameStart < 0) && (differenceGameStart.Days == 0) && (differenceGameStart.Hours == 0))
+            {
+                dateTextParent.GetComponent<Text>().text = "Game Starts in";
 
                 StartCoroutine(TournamentStartTimer(gameStartDate, totalSecondsGameStart, timerTextParent, (myReturnValue) => {
                     if (myReturnValue)
@@ -402,7 +498,7 @@ Debug.Log("REG time i="+i+", diff="+totalSecondsRegStart);
                             lateRegisterBtn.SetActive(false);
                         }
 
-                        dateTextParent.GetComponent<Text>().text = "Reg. ends in";
+                        dateTextParent.GetComponent<Text>().text = "Late Reg. ends in";
 
                         if ((totalSecondsLateReg < 0) && (differenceLateReg.Days == 0) && (differenceLateReg.Hours == 0))
                         {
@@ -452,16 +548,17 @@ Debug.Log("REG time i="+i+", diff="+totalSecondsRegStart);
                                         lateRegisterBtn.SetActive(false);
                                     }
                                     dateTextParent.GetComponent<Text>().text = gameStartDate.ToString(@"MM'/'dd");
-                                    timerTextParent.GetComponent<Text>().text = gameStartDate.ToString(@"HH':'mm");
+                                    timerTextParent.transform.GetChild(0).GetComponent<Text>().text = gameStartDate.ToString(@"HH':'mm");
                                 }
                             }));
                         }
                     }
                 }));
             }
+            // late-reg start (game-start k bad) ka time
             else if ((totSecondLateRegWithNow < 0) && (diffLateRegWithNow.Days == 0) && (diffLateRegWithNow.Hours == 0))
             {
-                dateTextParent.GetComponent<Text>().text = "Reg. ends in";
+                dateTextParent.GetComponent<Text>().text = "Late Reg. ends in";
 
                 StartCoroutine(TournamentStartTimer(lateRegEnd, totSecondLateRegWithNow, timerTextParent, (myReturnValue) =>
                 {
@@ -488,14 +585,16 @@ Debug.Log("REG time i="+i+", diff="+totalSecondsRegStart);
                             lateRegisterBtn.SetActive(false);
                         }
                         dateTextParent.GetComponent<Text>().text = gameStartDate.ToString(@"MM'/'dd");
-                        timerTextParent.GetComponent<Text>().text = gameStartDate.ToString(@"HH':'mm");
+                        timerTextParent.transform.GetChild(0).GetComponent<Text>().text = gameStartDate.ToString(@"HH':'mm");
                     }
                 }));
             }
 
-            lateRegisterBtn.GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId, totalSecondsRegStart, regStartDate));
+            // lateRegisterBtn.GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId, totalSecondsRegStart, regStartDate));
+            gm.transform.GetChild(13).GetComponent<Button>().onClick.AddListener(() => OnClickOnRegisterForTournament(tournyId, totalSecondsRegStart, regStartDate));
+
             enrolledBtn.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentDetails(tournyId, forLoopIndex));
-            observeBtn.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentJoinRoom(tournyId, data.sb, data.bb));
+            observeBtn.GetComponent<Button>().onClick.AddListener(() => OnClickTournamentObserveRoom(tournyId, data.sb, data.bb));
 
             //END: for timer
 
@@ -551,7 +650,13 @@ Debug.Log("REG time i="+i+", diff="+totalSecondsRegStart);
             }
             else
             {
-                timerText.text = (difference1.Minutes * -1).ToString("D2") + ":" + (difference1.Seconds * -1).ToString("D2");
+                try
+                {
+                    timerText.text = (difference1.Minutes * -1).ToString("D2") + ":" + (difference1.Seconds * -1).ToString("D2");
+                }
+                catch(Exception e){
+                    Debug.Log("error in timerText: "+e.Message);
+                }
                 yield return new WaitForSecondsRealtime(1f);
             }
         }
@@ -847,8 +952,11 @@ Debug.Log("REG time i="+i+", diff="+totalSecondsRegStart);
     //DEV_CODE
     private void OnClickOnRegisterForTournament(int id, int totalSecondsRegStart, DateTime regStartDate)
     {
+        Debug.Log("REG clicked totalSecondsRegStart="+totalSecondsRegStart);
         SoundManager.instance.PlaySound(SoundType.Click);
-
+TimeSpan differenceRegStart = DateTime.Now.Subtract(regStartDate);
+totalSecondsRegStart = (int)differenceRegStart.TotalSeconds;
+Debug.Log("NEW REG totalSecondsRegStart="+totalSecondsRegStart);
         if (totalSecondsRegStart < 0)
         {
             popUpText.color = Color.red;
@@ -862,10 +970,17 @@ Debug.Log("REG time i="+i+", diff="+totalSecondsRegStart);
 
     private void OnClickTournamentJoinRoom(double id, int sb, int bb)
     {
-Debug.Log("OnClickTournamentJoinRoom => id:"+id+", sb:"+sb+", bb:"+bb);
         SoundManager.instance.PlaySound(SoundType.Click);
 
         TournamentSocketController.instance.RequestTournamentJoinRoom(id);
+        TournamentInGameUiManager.instance.Initialize(sb, bb);
+    }
+
+    private void OnClickTournamentObserveRoom(double id, int sb, int bb)
+    {
+        SoundManager.instance.PlaySound(SoundType.Click);
+
+        TournamentSocketController.instance.RequestTournamentObserveRoom(id);
         TournamentInGameUiManager.instance.Initialize(sb, bb);
     }
 

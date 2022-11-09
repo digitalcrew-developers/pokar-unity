@@ -1930,6 +1930,7 @@ public class TournamentInGameManager : MonoBehaviour
             bool isMatchStarted = data[0][0]["isStart"].Equals(true);
             isGameStart = isMatchStarted;
             //Debug.Log("**[OnPlayerObjectFound]" + serverResponse);
+Debug.Log("TABLE ID="+data[0][0]["tableId"].ToString());
             TournamentSocketController.instance.SetTableId(data[0][0]["tableId"].ToString());
             TournamentInGameUiManager.instance.tableId = data[0][0]["tableId"].ToString();
             
