@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using System.Globalization;
 
 public class RealTimeResultUiManagerTournament : MonoBehaviour
 {
@@ -57,6 +59,8 @@ public class RealTimeResultUiManagerTournament : MonoBehaviour
     public Text myTitleStack;
     public Text myTitleRA;
     public Text myTitleValue;
+
+    string tableIdGlobalVar;
 
     public void OnOpen()
     {
@@ -139,6 +143,9 @@ public class RealTimeResultUiManagerTournament : MonoBehaviour
         string tableId = TournamentSocketController.instance.GetTableID();
         string userId = PlayerManager.instance.GetPlayerGameData().userId;
         GetTournamentDetails(tourneyId, userId, tableId);
+
+        tableIdGlobalVar = tableId;
+        StartCoroutine(SetTimer(360, "06:00"));
     }
 
     public void GetTournamentDetails(string tourneyId, string userId, string tableId)
@@ -167,6 +174,8 @@ public class RealTimeResultUiManagerTournament : MonoBehaviour
 
             if (jsonData["status"].Equals(true))
             {
+                IDictionary dictionaryData = jsonData["data"];
+
                 myPositionTextValue.text = jsonData["data"]["position"].ToString();
                 entriesTextValue.text = jsonData["data"]["entries"].ToString();
                 prizePoolTextValue.text = jsonData["data"]["prize_pool"].ToString();
@@ -176,12 +185,33 @@ public class RealTimeResultUiManagerTournament : MonoBehaviour
                 currentLevelTextValue.text = jsonData["data"]["current_level"].ToString();
                 nextLevelTextValue.text = jsonData["data"]["next_level"].ToString();
 
-                avgStackTextValue.text = jsonData["data"]["avg_stack"].ToString();
+                // avgStackTextValue.text = jsonData["data"]["avg_stack"].ToString();
+                if (dictionaryData.Contains("tables")) {
+                    for (int i = 0; i < jsonData["data"]["tables"].Count; i++)
+                    {
+                        if (jsonData["data"]["tables"][i]["tableId"].ToString().Equals(tableIdGlobalVar))
+                        {
+                            avgStackTextValue.text = Decimal.Truncate(Convert.ToDecimal(jsonData["data"]["tables"][i]["av_stack"].ToString())).ToString();
+                            break;
+                        }
+                    }
+                } else {
+                    avgStackTextValue.text = "0";
+                }
                 totalBuyInsTextValue.text = jsonData["data"]["total_buyin"].ToString();
                 largestStackTextValue.text = jsonData["data"]["larget_stack"].ToString();
                 rebuysTextValue.text = jsonData["data"]["rebuy"].ToString();
                 smallestStackTextValue.text = jsonData["data"]["smallest_stack"].ToString();
                 addonsTextValue.text = jsonData["data"]["add_on"].ToString();
+
+                try {
+                    string str = jsonData["data"]["game_start"].ToString();
+                    str = str.Substring(0, str.IndexOf('(') - 1);
+                    DateTime strToDt = DateTime.ParseExact(str, "ddd MMM dd yyyy HH:mm:ss 'GMT'K", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+                    StartCoroutine(SetRunningTimerContinue(strToDt));
+                } catch(Exception e) {
+                    Debug.Log("game start timer error: "+e.Message);
+                }
 
                 for (int i = 0; i < rankingObjContainer.childCount; i++)
                 {
@@ -277,6 +307,66 @@ public class RealTimeResultUiManagerTournament : MonoBehaviour
         }
     }
 
+    IEnumerator SetTimer(int totalSeconds, string startingTimerString)
+    {
+        DateTime afterMin = DateTime.Now.AddSeconds((double) totalSeconds);
+        TimeText.text = startingTimerString;
+
+        for (int i = totalSeconds; i >= 0; i--)
+        {
+            TimeSpan difference1 = DateTime.Now.Subtract(afterMin);
+            if (i == 0)
+            {
+                StartCoroutine(SetTimer(totalSeconds, startingTimerString));
+                yield return null;
+                break;
+            }
+            else
+            {
+                yield return new WaitForSecondsRealtime(1f);
+                try
+                {
+                    TimeText.text = (difference1.Minutes * -1).ToString("D2") + ":" + (difference1.Seconds * -1).ToString("D2");
+                }
+                catch(Exception e){
+                    Debug.Log("error in timerText: "+e.Message);
+                }
+            }
+        }
+    }
+
+    IEnumerator SetRunningTimerContinue(DateTime gameStartTime)
+    {
+        DateTime givenTime = gameStartTime.ToLocalTime();
+
+        TimeSpan differenceGameStart = DateTime.Now.Subtract(givenTime);
+        int totalSecondsGameStart = (int)differenceGameStart.TotalSeconds;
+
+        // if (totalSecondsGameStart < 0) { Debug.Log("game will be starts"); }
+        if (totalSecondsGameStart == 0 || totalSecondsGameStart > 0) {
+            //Debug.Log("game already started");
+            try {
+                runningTextValue.text = (differenceGameStart.Hours).ToString("D2") + ":" + (differenceGameStart.Minutes).ToString("D2") + ":" + (differenceGameStart.Seconds).ToString("D2");
+            }
+            catch(Exception e) {
+                Debug.Log("error in RunningTimer: "+e.Message);
+            }
+
+            TimeSpan timerTs = differenceGameStart;
+            while(true)
+            {
+                yield return new WaitForSecondsRealtime(1f);
+                try {
+                    timerTs += TimeSpan.FromSeconds(1.0f);
+                    runningTextValue.text = (timerTs.Hours).ToString("D2") + ":" + (timerTs.Minutes).ToString("D2") + ":" + (timerTs.Seconds).ToString("D2");
+                }
+                catch(Exception e) {
+                    Debug.Log("error in RunningTimer: "+e.Message);
+                }
+            }
+        }
+    }
+
     public void OnClickOnButton(string eventName)
     {
         SoundManager.instance.PlaySound(SoundType.Click);
@@ -321,5 +411,10 @@ public class RealTimeResultUiManagerTournament : MonoBehaviour
                 bottomScreens[i].SetActive(false);
             }
         }
+    }
+
+    private void OnDestroy() {
+        StopCoroutine("SetRunningTimerContinue");
+        StartCoroutine("SetTimer");
     }
 }
