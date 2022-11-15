@@ -197,11 +197,13 @@ public class TournamentLobbyUiManager : MonoBehaviour
         for (int i = 0; i < tournamentTypeButtons.Length; i++)
         {
             tournamentTypeButtons[i].interactable = true;
-            tournamentTypeButtons[i].transform.GetComponent<Image>().enabled = false;
+            //tournamentTypeButtons[i].transform.GetComponent<Image>().enabled = false;
+            tournamentTypeButtons[i].transform.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
         }
 
         tournamentTypeButtons[(int)tournamentType].interactable = false;
-        tournamentTypeButtons[(int)tournamentType].transform.GetComponent<Image>().enabled = true;
+        //tournamentTypeButtons[(int)tournamentType].transform.GetComponent<Image>().enabled = true;
+        tournamentTypeButtons[(int)tournamentType].transform.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
 
         int index = (int)tournamentType;
 
@@ -410,7 +412,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                                     lateRegisterBtn.SetActive(false);
                                 }
 
-                                dateTextParent.GetComponent<Text>().text = "Late Reg. ends in";
+                                dateTextParent.GetComponent<Text>().text = "Late Reg.\nends in";
 
                                 if ((totalSecondsLateReg < 0) && (differenceLateReg.Days == 0) && (differenceLateReg.Hours == 0))
                                 {
@@ -498,7 +500,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
                             lateRegisterBtn.SetActive(false);
                         }
 
-                        dateTextParent.GetComponent<Text>().text = "Late Reg. ends in";
+                        dateTextParent.GetComponent<Text>().text = "Late Reg.\nends in";
 
                         if ((totalSecondsLateReg < 0) && (differenceLateReg.Days == 0) && (differenceLateReg.Hours == 0))
                         {
@@ -558,7 +560,7 @@ public class TournamentLobbyUiManager : MonoBehaviour
             // late-reg start (game-start k bad) ka time
             else if ((totSecondLateRegWithNow < 0) && (diffLateRegWithNow.Days == 0) && (diffLateRegWithNow.Hours == 0))
             {
-                dateTextParent.GetComponent<Text>().text = "Late Reg. ends in";
+                dateTextParent.GetComponent<Text>().text = "Late Reg.\nends in";
 
                 StartCoroutine(TournamentStartTimer(lateRegEnd, totSecondLateRegWithNow, timerTextParent, (myReturnValue) =>
                 {
