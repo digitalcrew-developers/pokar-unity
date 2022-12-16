@@ -154,7 +154,7 @@ public class RealTimeResultUiManagerTournament : MonoBehaviour
         { 
             string requestData = "{\"tourneyId\":\"" + tourneyId + "\", \"userId\":\"" + userId + "\", \"tableId\":\"" + tableId + "\"}";
             Debug.Log("from real time ui manager requestData=" + requestData);
-            StartCoroutine(WebServices.instance.POSTRequestData("http://3.109.177.149:3335/tournament/details", requestData, OnGetTournamentDetailsComplete));
+            StartCoroutine(WebServices.instance.POSTRequestData("http://dcpoker.dcgames.co.in:3335/tournament/details", requestData, OnGetTournamentDetailsComplete)); //http://3.109.177.149
         }
     }
 

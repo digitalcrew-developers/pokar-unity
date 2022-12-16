@@ -87,7 +87,7 @@ public class TournamentDetailsManager : MonoBehaviour
     {
         this.forLoopIndex = forLoopIndex;
         string requestData = "{\"tourneyId\":\"" + id + "\"}";
-        StartCoroutine(WebServices.instance.POSTRequestData("http://3.109.177.149:3335/tournament/details", requestData, OnGetTourneyDetailsComplete));
+        StartCoroutine(WebServices.instance.POSTRequestData("http://dcpoker.dcgames.co.in:3335/tournament/details", requestData, OnGetTourneyDetailsComplete)); //http://3.109.177.149
     }
 
     private void OnGetTourneyDetailsComplete(string serverResponse, bool isErrorMessage, string errorMessage)

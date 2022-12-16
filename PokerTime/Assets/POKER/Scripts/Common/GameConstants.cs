@@ -46,7 +46,7 @@ public class GameConstants : MonoBehaviour
 
 
     //public const string BASE_URL = "http://3.137.10.123";// "http://192.168.0.151";////"http://3.137.10.123";//// // //"http://18.191.15.121"; // "http://3.6.137.204";
-    public const string BASE_URL = "http://3.109.177.149";  /*"http://3.17.201.78";*/   /*"http://3.137.10.123";*/  //"http://192.168.0.151";////"http://3.137.10.123";//// // //"http://18.191.15.121"; // "http://3.6.137.204";
+    public const string BASE_URL = "http://dcpoker.dcgames.co.in"; //"http://3.109.177.149";  /*"http://3.17.201.78";*/   /*"http://3.137.10.123";*/  //"http://192.168.0.151";////"http://3.137.10.123";//// // //"http://18.191.15.121"; // "http://3.6.137.204";
     //public static string lobbyTeenUrl = "http://3.17.201.78:3000";
     //public static string lobbyTeenUrl = BASE_URL + ":3000";
 

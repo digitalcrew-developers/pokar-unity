@@ -39,7 +39,7 @@ public class TournamentWinnerManager : MonoBehaviour
 
         string requestData = "{\"tourneyId\":\"" + TournamentSocketController.instance.TOURNEY_ID + "\"," +
                              "\"userId\":\"" + PlayerManager.instance.GetPlayerGameData().userId + "\"}";
-        StartCoroutine(WebServices.instance.POSTRequestData("http://3.109.177.149:3335/tournament/details", requestData, OnGetTourneyDetailsComplete));
+        StartCoroutine(WebServices.instance.POSTRequestData("http://dcpoker.dcgames.co.in:3335/tournament/details", requestData, OnGetTourneyDetailsComplete)); //http://3.109.177.149
     }
 
     private void OnGetTourneyDetailsComplete(string serverResponse, bool isErrorMessage, string errorMessage)
@@ -59,6 +59,7 @@ public class TournamentWinnerManager : MonoBehaviour
             if (jsonData["status"].Equals(true))
             {
                 rankingText.text = "Ranking " + jsonData["data"]["myRank"].ToString() + "/" + jsonData["data"]["ranking"].Count.ToString();
+                tournamentName.text = jsonData["data"]["name"].ToString();
             }
         }
     }

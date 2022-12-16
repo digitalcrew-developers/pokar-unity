@@ -788,6 +788,7 @@ public class TournamentInGameUiManager : MonoBehaviour
             {
                 selectedSuggestionButton = SuggestionActions.Null;
             }
+            LayoutRebuilder.ForceRebuildLayoutImmediate(suggestionButtonParent.GetComponent<HorizontalLayoutGroup>().GetComponent<RectTransform>());
         }
     }
 
